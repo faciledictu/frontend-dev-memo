@@ -29,27 +29,35 @@ JavaScript includes 8 data types.
 
   - **Object**
 
-  It is important not to confuse a primitive value itself with a variable
-  assigned a primitive value. Primitives are immutable[^2], so if you intend to
-  alter the variable containing a primitive, you need to replace its value with
-  a new one.
+#### Primitives
 
-  Strings are immutable, so you can't replace one letter in the string value.
-  Symbols are immutable also.
-  <details>
-    <summary>More Details about Primitives</summary>
-    Technically, primitives have no methods or properties, but they behave as if
-    they do. When we try to access property or method of a primitive, JavaScript
-    temporary converts the primitive to the corresponding object.
+##### Immutability[^2]
 
-  > [!NOTE]
-  > Fun fact. -Infinity, +Infinity and even NaN (not a number) are a
-  > special values of the number data type. And NaN it's also the only value in
-  > JavaScript that isn't equal to itself when we use the loose or strict
-  > equality operator to compare it (only `Object.is(NaN, NaN)` will return
-  > `true`).
+It is important not to confuse a primitive value itself with a variable
+assigned a primitive value. Primitives are immutable, so if you intend to
+alter the variable containing a primitive, you need to replace its value with
+a new one.
 
-  </details>
+Strings are immutable, so you can't replace one letter in the string value.
+Symbols are immutable also.
+
+##### Auto-boxing
+
+Technically, primitives have no methods or properties, but they behave as if
+they do. When we try to access property or method of a primitive, JavaScript
+temporary converts the primitive to the corresponding object.
+
+> [!NOTE]
+> `typeof null` will return `object` instead of `null`. This behaviour has some
+historical reasons.
+> [!NOTE]
+> `-Infinity`, `+Infinity` and even `NaN` (not a number) are a
+> special values of the number data type. And `NaN` it's also the only value in
+> JavaScript that isn't equal to itself when we use the loose or strict
+> equality operator to compare it (only `Object.is(NaN, NaN)` will return
+> `true`).
+
+#### Objects
 
 Objects are stored in memory, and variable reference them by links. In
 JavaScript, objects are the sole mutable values.
