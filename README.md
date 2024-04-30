@@ -126,7 +126,7 @@ Variable of this type can also be local, which occurs when they are declared wit
 
 Introduced in ES6, `let` and `const` allow you to declare variables that can be not only global or local but also block-scoped. A block is to a portion of code delimited by a pair of curly braces. If the `const` or `let` variable are declared within any block (e.g., inside `if` or `for` statement), they are only avaliable inside this block.
 
-For `let` variables, an initializer is optional, similar for var.
+For `let` variables, an initializer is optional, similar for `var`.
 
 Keyword `const` declares a constant whose value can’t be reassigned after its creation. So for them an initializer is necessary. It's worth noting that objects (including arrays) stored in `const` variables still can be mutated. This happens because variable holds only a reference to the object, and while the remains constant, the object's properties can be changed or new ones can be created.
 
