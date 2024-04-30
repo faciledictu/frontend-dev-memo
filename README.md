@@ -141,16 +141,18 @@ Variables declared with `let` and `const` can only be accessed after their decla
 
 ### Function Declarations, Function Expressions, and Arrow Functions
 
-#### Function Declarations
+#### Function Keyword (regular functions)
 
-Function declarations define a named function that can be called later in your code, even before the function declaration itself. They start with the function keyword followed by the function name, a list of parameters in parentheses, and the function body enclosed in curly braces.
+##### Function Declarations
 
-Function declarations are hoisted, so they actually can be declared below the code that uses it.
+Function declarations define named functions that can be called later in your code, even before the function declaration itself. They start with the `function` keyword followed by the function name, a list of parameters in parentheses, and the function body enclosed in curly braces.
 
-#### Function Expressions
+Function declarations are hoisted, meaning they can be declared below the code that uses them.
 
-Function expressions define a function as part of an expression, so they can be assigned to a variable. They can be anonymous (without a name) or named.
+##### Function Expressions
+
+Function expressions define functions as part of an expression, allowing them to be assigned to variables. They can be anonymous (without a name) or named. After declaration they can be invoked by variable name.
 
 #### Arrow Functions
 
-Arrow functions use another syntax with the arrow `=>` symbol. They are always anonymous, so they can be only assigned to a variable or be used to declare callback in-place. They don’t have their own this keyword. Instead, they inherit it from the outer lexical environment. That’s why they can’t be used as constructors. And they don’t have their own arguments array-like object.
+Arrow functions use another syntax with the arrow `=>` symbol. They are always anonymous, meaning they can only be assigned to a variable or used to declare callbacks in-place. Unlike regular functions, arrow functions don't have their own `this` keyword. Instead, they inherit it from the outer lexical environment. This is why they can't be used as constructors. Additionally, arrow functions don't have their own `arguments` array-like object.
