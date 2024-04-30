@@ -3,7 +3,8 @@
 I've put together this file of answers to some of the most common questions
 about JavaScript and React that you might be asked in a job interview.
 
-> [!IMPORTANT] I've answered all the questions myself, using different sources.
+> [!IMPORTANT]
+> I've answered all the questions myself, using different sources.
 > I can't promise that the answers are 100% correct and comprehensive, but I'm
 > working on it!
 
@@ -41,7 +42,8 @@ JavaScript includes 8 data types.
     they do. When we try to access property or method of a primitive, JavaScript
     temporary converts the primitive to the corresponding object.
 
-  > [!NOTE] Fun fact. -Infinity, +Infinity and even NaN (not a number) are a
+  > [!NOTE]
+  > Fun fact. -Infinity, +Infinity and even NaN (not a number) are a
   > special values of the number data type. And NaN it's also the only value in
   > JavaScript that isn't equal to itself when we use the loose or strict
   > equality operator to compare it (only `Object.is(NaN, NaN)` will return
@@ -59,10 +61,6 @@ callable.
 Each object represents a collection of key-value pairs. Keys are either strings
 or symbols, and values can be of any data type, including other objects.[^3]
 
-[^1]:
-    <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#data_structures_and_types>
-
+[^1]: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#data_structures_and_types>
 [^2]: <https://developer.mozilla.org/en-US/docs/Glossary/Mutable>
-
-[^3]:
-    <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#objects>
+[^3]: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#objects>
