@@ -25,6 +25,10 @@ JavaScript includes 8 data types.
   - **bigint**: an integer with infinite precision
   - **symbol**: a data type whose instances are always unique
 
+> [!NOTE]
+> `typeof null` will return `object` instead of `null`. This behaviour has some
+historical reasons.
+
 - And one is a non-primitive, or composite, data type
 
   - **Object**
@@ -47,9 +51,6 @@ Technically, primitives have no methods or properties, but they behave as if
 they do. When we try to access property or method of a primitive, JavaScript
 temporary converts the primitive to the corresponding object.
 
-> [!NOTE]
-> `typeof null` will return `object` instead of `null`. This behaviour has some
-historical reasons.
 > [!NOTE]
 > `-Infinity`, `+Infinity` and even `NaN` (not a number) are a
 > special values of the number data type. And `NaN` it's also the only value in
