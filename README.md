@@ -73,3 +73,19 @@ or symbols, and values can be of any data type, including other objects.[^3]
 [^1]: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#data_structures_and_types>
 [^2]: <https://developer.mozilla.org/en-US/docs/Glossary/Mutable>
 [^3]: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#objects>
+
+### What is type coercion
+
+JavaScript is a weakly typed language, so values can be implicitly converted to
+another types when that type is expected. For instance, this occurs when we apply
+the unary plus operator `+` or invoke `console.log()` with any argument. In the
+first case, the value will be converted to a number, while in the second, the
+argument will be converted to a string.
+
+Values can be converted different ways: to primitives (it’s called Primitive coercion),
+to strings (String coercion), to booleans (Boolean coercion), to numbers (Numeric
+coercion), etc. However, values cannot be coerced to `null`, `undefined`, or `symbol`.
+In other words, all data types, except `null`, `undefined`, and `symbol`, have
+their coercion process.[^4]
+
+[^4]: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#type_coercion>
