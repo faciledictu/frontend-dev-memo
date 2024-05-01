@@ -8,9 +8,7 @@ about JavaScript and React that you might be asked in a job interview.
 > I can't promise that the answers are 100% correct and comprehensive, but I'm
 > working on it!
 
-## JavaScript Basics
-
-### What data types exist in modern JS?
+## What data types exist in modern JS?
 
 JavaScript includes 8 data types.
 
@@ -33,9 +31,9 @@ historical reasons.
 
   - **Object**
 
-#### Primitives
+### Primitives
 
-##### Immutability[^2]
+#### Immutability[^2]
 
 It is important not to confuse a primitive value itself with a variable
 assigned a primitive value. Primitives are immutable, so if you intend to
@@ -45,7 +43,7 @@ a new one.
 Strings are immutable, so you can't replace one letter in the string value.
 Symbols are immutable also.
 
-##### Auto-boxing
+#### Auto-boxing
 
 Technically, primitives have no methods or properties, but they behave as if
 they do. When we try to access property or method of a primitive, JavaScript
@@ -58,7 +56,7 @@ temporary converts the primitive to the corresponding object.
 > equality operator to compare it (only `Object.is(NaN, NaN)` will return
 > `true`).
 
-#### Objects
+### Objects
 
 Objects are stored in memory, and variable reference them by links. In
 JavaScript, objects are the sole mutable values.
@@ -74,7 +72,7 @@ or symbols, and values can be of any data type, including other objects.[^3]
 [^2]: <https://developer.mozilla.org/en-US/docs/Glossary/Mutable>
 [^3]: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#objects>
 
-### What is type coercion
+## What is type coercion
 
 JavaScript is a weakly typed language, so values can be implicitly converted to
 another types when that type is expected. For instance, this occurs when we apply
@@ -90,7 +88,7 @@ their coercion process.[^4]
 
 [^4]: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#type_coercion>
 
-### Variables in JS
+## Variables in JS
 
 In JavaScript, there are three keywords used to declare variables: `var`, `let`, and `const`. A keyword is followed by an identifier name and optionally by a value.
 
@@ -109,7 +107,7 @@ Identifier names must follow certain rules:
 - They are case-sensitive (`myVar` and `MyVar` are different variables).
 - The standard convention is to use CamelCase-styled identifiers in JS code.
 
-#### Keyword `var`[^5]
+### Keyword `var`[^5]
 
 `Var` is used to declare a variable with an optional initializer. If a variable is declared without an initializer, it is automatically assigned the value `undefined`.
 
@@ -122,7 +120,7 @@ Variable of this type can also be local, which occurs when they are declared wit
 >[!NOTE]
 >Unlike `let` or `const`, `var` variables can be redeclared in the same scope. If `var` is declared as a global variable, it adds a property of global object.
 
-#### Keywords `let` and `const`[^6]
+### Keywords `let` and `const`[^6]
 
 Introduced in ES6, `let` and `const` allow you to declare variables that can be not only global or local but also block-scoped. A block is to a portion of code delimited by a pair of curly braces. If the `const` or `let` variable are declared within any block (e.g., inside `if` or `for` statement), they are only avaliable inside this block.
 
@@ -139,25 +137,25 @@ Variables declared with `let` and `const` can only be accessed after their decla
 [^6]: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#declarations>
 [^7]: <https://developer.mozilla.org/en-US/docs/Glossary/Hoisting>
 
-### Function Declarations, Function Expressions, and Arrow Functions
+## Function Declarations, Function Expressions, and Arrow Functions
 
-#### Function Keyword (regular functions)
+### Function Keyword (regular functions)
 
-##### Function Declarations
+#### Function Declarations
 
 Function declarations define named functions that can be called later in your code, even before the function declaration itself. They start with the `function` keyword followed by the function name, a list of parameters in parentheses, and the function body enclosed in curly braces.
 
 Function declarations are hoisted, meaning they can be declared below the code that uses them.
 
-##### Function Expressions
+#### Function Expressions
 
 Function expressions define functions as part of an expression, allowing them to be assigned to variables. They can be anonymous (without a name) or named. After declaration they can be invoked by variable name.
 
-#### Arrow Functions
+### Arrow Functions
 
 Arrow functions use another syntax with the arrow `=>` symbol. They are always anonymous, meaning they can only be assigned to a variable or used to declare callbacks in-place. Unlike regular functions, arrow functions don't have their own `this` keyword. Instead, they inherit it from the outer lexical environment. This is why they can't be used as constructors. Additionally, arrow functions don't have their own `arguments` array-like object.
 
-### What is the `this` keyword used for in JavaScript?[^8]
+## What is the `this` keyword used for in JavaScript?[^8]
 
 The `this` keyword in JavaScript is a special idetifier that references the context in which the code is executing.
 
@@ -166,11 +164,11 @@ Its behavior can vary depending on whether the code is running in strict mode or
 1. In non-strict mode this always should refer to an object. If this is `undefined` or `null`, `this` gets substituted with `globalThis`.
 2. If this points to any other primitive value, that value will be wrapped in the corresponding object.
 
-#### Global This
+### Global This
 
 Outside of any function, `this` refers to `globalThis`, which is `undefined` in strict mode or the 'global object' in non-strict mode. In code running at a top-level of a module `this` is always 'undefined' because modules always run in strict mode[^10].
 
-#### Inside regular functions
+### Inside regular functions
 
 For regular functions, `this` is always defined at the time of invocation:
 
@@ -288,11 +286,11 @@ obj1.showThis() // undefined
 [^9]: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode#securing_javascript>
 [^10]: <https://tc39.es/ecma262/#sec-strict-mode-code>
 
-### `bind`, `call`, and `apply` Methods in JavaScript
+## `bind`, `call`, and `apply` Methods in JavaScript
 
 These are methods of `Function` prototype, they allow invoking a function with explicitly bound `this` and applied arguments.
 
-#### `bind`
+### `bind`
 
 The bind method returns a bound function. This is a new function with the same body as the original, but with its `this` keyword set to the provided value. Additionally, it allows you to specify a sequence of arguments, which will precede any provided when the new function is called. This method can be used for creating partially applied functions.
 
@@ -311,7 +309,7 @@ binded('c'); // {} a b c
 
 </details>
 
-#### `call` and `apply`
+### `call` and `apply`
 
 Unlike `bind`, these methods are used to invoke a function immediately. They both accept `this` value as the first argument. The difference between these methods lies in how they take arguments for the function being called. The `call` method receives arguments provided individually, while the `apply` method accepts arguments provided as an array.
 
