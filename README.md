@@ -72,20 +72,21 @@ or symbols, and values can be of any data type, including other objects.[^3]
 [^2]: <https://developer.mozilla.org/en-US/docs/Glossary/Mutable>
 [^3]: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#objects>
 
-## What is type coercion
+## What is type converson
 
-JavaScript is a weakly typed language, so values can be implicitly converted to
-another types when that type is expected. For instance, this occurs when we apply
-the unary plus operator `+` or invoke `console.log()` with any argument. In the
-first case, the value will be converted to a number, while in the second, the
-argument will be converted to a string.
+JavaScript is a weakly typed language, so values can be converted to
+another type when needed. This called **impicit type conversion** or **type coercion**.
+For example, when we use logical negation operator `!` followed value is coerced
+to boolean. Invoking `console.log()` with any non-string argument triggers string coercion.
 
-Values can be converted different ways: to primitives (it’s called Primitive coercion),
-to strings (String coercion), to booleans (Boolean coercion), to numbers (Numeric
-coercion), etc. However, values cannot be coerced to `null`, `undefined`, or `symbol`.
-In other words, all data types, except `null`, `undefined`, and `symbol`, have
-their coercion process.[^4]
+Values can be converted different ways: to primitives (it’s called *Primitive coercion*),
+to strings (*String coercion*), to booleans (*Boolean coercion*), to numbers (*Numeric
+coercion*) and to object (*Object coercion*). However, values cannot be coerced to
+`null`, `undefined`, or `symbol`. In other words, these data types don't have their
+coercion process.[^4]
 
+Manual transformations of data from one type to another called **explicit type conversion**
+and achieved through functions like `parseInt()`, `Object()` or methods like `.toString`.
 [^4]: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#type_coercion>
 
 ## Variables in JS
