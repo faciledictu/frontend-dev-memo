@@ -326,3 +326,13 @@ showThisAndArgs.apply({}, 'a', 'b');  // {} a b
 ```
 
 </details>
+
+## How to Create Objects in JavaScript
+
+- **Object Literal notation[^11].** It allows defining key-value pairs within curly braces `{}`.
+- **Object.create() method[^12].** This method allows you to create a new object using a prototype object passed as an argument.
+- **Constructor function and ES6 Classes[^13].** These approaches allows you to create an object using the `new` keyword. JavaScript offers various built-in constructors for creating different objects, and it's also possible to define custom ones. While both constructor functions and ES6 classes can be used, classes provide a more organized and structured way to create objects.
+
+[^11]: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer>
+[^12]: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create>
+[^13]: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects#using_a_constructor_function>
