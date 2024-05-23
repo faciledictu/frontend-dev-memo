@@ -8,4 +8,9 @@ about JavaScript and React that you might be asked in a job interview.
 > I can't promise that the answers are 100% correct and comprehensive, but I'm
 > working on it!
 
-1. [JavaScript](JavaScript.md)
+## Table of contents
+
+1. Common topics [in progress]
+2. Git Basics[in progress]
+3. [JavaScript Basics](JavaScript.md)
+4. Browser [in progress]
