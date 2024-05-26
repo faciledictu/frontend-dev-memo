@@ -1,6 +1,6 @@
 # React Developer Memo
 
-[react-dev-memo.vercel.app](https://react-dev-memo.vercel.app)
+[frontend-dev-memo.vercel.app](https://frontend-dev-memo.vercel.app)
 
 The answers to some of the most common questions about JavaScript and React that
 you might be asked in a job interview.
