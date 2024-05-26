@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <style>
+      .cls-1 {
+        opacity: .5;
+      }
+
+      .cls-1, .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        stroke-width: 0px;
+      }
+
+      .cls-3 {
+        fill: #006e98;
+      }
+    </style>
+  </defs>
+  <rect class="cls-3" width="32" height="32" rx="7.64" ry="7.64"/>
+  <rect class="cls-2" x="4" y="5" width="8" height="2" rx="1" ry="1"/>
+  <rect class="cls-2" x="13" y="5" width="4" height="2" rx="1" ry="1"/>
+  <rect class="cls-1" x="9" y="15" width="5" height="2" rx="1" ry="1"/>
+  <rect class="cls-2" x="15" y="15" width="7" height="2" rx="1" ry="1"/>
+  <rect class="cls-2" x="9" y="20" width="7" height="2" rx="1" ry="1"/>
+  <rect class="cls-2" x="23" y="10" width="4" height="2" rx="1" ry="1"/>
+  <rect class="cls-1" x="17" y="20" width="7" height="2" rx="1" ry="1"/>
+  <rect class="cls-1" x="18" y="5" width="8" height="2" rx="1" ry="1"/>
+  <rect class="cls-2" x="9" y="25" width="8" height="2" rx="1" ry="1" transform="translate(26 52) rotate(180)"/>
+  <rect class="cls-2" x="4" y="25" width="4" height="2" rx="1" ry="1" transform="translate(12 52) rotate(180)"/>
+  <rect class="cls-1" x="18" y="10" width="4" height="2" rx="1" ry="1"/>
+  <rect class="cls-2" x="4" y="10" width="4" height="2" rx="1" ry="1"/>
+  <rect class="cls-2" x="9" y="10" width="8" height="2" rx="1" ry="1"/>
+</svg>

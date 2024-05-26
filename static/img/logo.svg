@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #fff;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .cls-2 {
+        fill: #62a8d1;
+      }
+
+      .cls-2, .cls-3, .cls-4 {
+        stroke-width: 0px;
+      }
+
+      .cls-3 {
+        fill: #003b52;
+      }
+
+      .cls-4 {
+        fill: #006e98;
+      }
+    </style>
+  </defs>
+  <rect class="cls-3" x="6" y="6" width="26" height="26" rx="4.73" ry="4.73"/>
+  <rect class="cls-2" x="3" y="3" width="26" height="26" rx="4.73" ry="4.73"/>
+  <rect class="cls-4" x="0" y="0" width="26" height="26" rx="4.73" ry="4.73"/>
+  <g>
+    <polyline class="cls-1" points="9 10 5.5 13.5 9 17"/>
+    <polyline class="cls-1" points="16.5 17 20 13.5 16.5 10"/>
+    <line class="cls-1" x1="14.12" y1="8.49" x2="11.12" y2="18.49"/>
+  </g>
+</svg>

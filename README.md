@@ -1,16 +1,38 @@
-# React Developer Interwiev Questions
+# React Developer Memo
 
-I've put together this file of answers to some of the most common questions
-about JavaScript and React that you might be asked in a job interview.
+[react-dev-memo.vercel.app](https://react-dev-memo.vercel.app)
 
-> [!IMPORTANT]
-> I've answered all the questions myself, using different sources.
-> I can't promise that the answers are 100% correct and comprehensive, but I'm
-> working on it!
+The answers to some of the most common questions about JavaScript and React that
+you might be asked in a job interview.
 
-## Table of contents
+## Built with
 
-1. Common topics [in progress]
-2. Git Basics[in progress]
-3. [JavaScript Basics](JavaScript.md)
-4. Browser [in progress]
+[![Docusaurus][Docusaurus-badge]][Docusaurus-url]
+
+## Installation
+
+```sh
+npm ci
+```
+
+## Local Development
+
+```sh
+npm start
+```
+
+This command starts a local development server and opens up a browser window.
+Most changes are reflected live without having to restart the server.
+
+## Build
+
+```sh
+npm build
+```
+
+This command generates static content into the `build` directory and can be
+served using any static contents hosting service.
+
+[Docusaurus-badge]:
+  https://img.shields.io/badge/Docusaurus-222?style=for-the-badge&logo=docusaurus
+[Docusaurus-url]: https://docusaurus.io/
