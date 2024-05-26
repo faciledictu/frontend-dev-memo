@@ -46,7 +46,7 @@ const config: Config = {
         docs: {
           routeBasePath: '/',
           sidebarPath: './sidebars.ts',
-          editUrl: `${REPO_URL}/tree/main/docs/`,
+          editUrl: `${REPO_URL}/tree/main/`,
         },
         blog: false,
         theme: {
