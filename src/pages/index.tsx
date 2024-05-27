@@ -16,7 +16,7 @@ function HomepageHeader() {
         >
           {siteConfig.title}
         </Heading>
-        <p className="hero__subtitle">
+        <p className={clsx(styles.subtitle, 'hero__subtitle')}>
           Here are answers to some of the most common questions about JavaScript
           and React that you might be asked in a job interview.
         </p>
