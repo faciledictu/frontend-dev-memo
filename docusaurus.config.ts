@@ -26,7 +26,7 @@ const navbarItems = categories.map(
 const config: Config = {
   title: SITE_NAME,
   tagline: 'Information to help you prepare for a frontend developer interview',
-  favicon: 'img/logo.svg',
+  favicon: '/img/logo.svg',
 
   url: SITE_URL,
   baseUrl: '/',

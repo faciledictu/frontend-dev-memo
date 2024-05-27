@@ -1,0 +1,7 @@
+.heroBg {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0) 75%, var(--ifm-color-primary) 200%);
+}
+
+.title {
+  font-size: 6rem;
+}

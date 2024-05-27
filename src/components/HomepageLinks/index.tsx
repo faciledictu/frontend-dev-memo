@@ -36,7 +36,7 @@ function CategoryLink({ label, Icon, link, description }: CategoryLink) {
     <div className={clsx(styles.card, 'col col--3 padding-vert--lg')}>
       <Icon width={64} height={64} role="img" />
       <Heading as="h3">
-        <Link to={link}> {label}</Link>
+        <Link to={link}>{label}</Link>
       </Heading>
       <p>{description}</p>
     </div>

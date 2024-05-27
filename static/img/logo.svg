@@ -10,7 +10,7 @@
       }
 
       .cls-2 {
-        fill: #62a8d1;
+        fill: #bfd8ff;
       }
 
       .cls-2, .cls-3, .cls-4 {
@@ -18,20 +18,22 @@
       }
 
       .cls-3 {
-        fill: #003b52;
+        fill: #1000ed;
       }
 
       .cls-4 {
-        fill: #006e98;
+        fill: #0062ff;
       }
     </style>
   </defs>
-  <rect class="cls-3" x="6" y="6" width="26" height="26" rx="4.73" ry="4.73"/>
-  <rect class="cls-2" x="3" y="3" width="26" height="26" rx="4.73" ry="4.73"/>
-  <rect class="cls-4" x="0" y="0" width="26" height="26" rx="4.73" ry="4.73"/>
+  <rect class="cls-3" x="7.22" y="1.08" width="21.08" height="26" rx="4.73" ry="4.73" transform="translate(-.29 27.78) rotate(-75.61)"/>
+  <rect class="cls-2" x="1.76" y="7.54" width="26" height="21.08" rx="4.73" ry="4.73"/>
   <g>
-    <polyline class="cls-1" points="9 10 5.5 13.5 9 17"/>
-    <polyline class="cls-1" points="16.5 17 20 13.5 16.5 10"/>
-    <line class="cls-1" x1="14.12" y1="8.49" x2="11.12" y2="18.49"/>
+    <rect class="cls-4" x="1" y="3.96" width="26" height="21.08" rx="4.73" ry="4.73" transform="translate(-2.02 2.27) rotate(-8.63)"/>
+    <g>
+      <polyline class="cls-1" points="9.52 11.64 6.58 15.63 10.57 18.56"/>
+      <polyline class="cls-1" points="17.99 17.44 20.92 13.45 16.94 10.51"/>
+      <line class="cls-1" x1="14.36" y1="9.38" x2="12.89" y2="19.72"/>
+    </g>
   </g>
 </svg>
