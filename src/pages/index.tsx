@@ -2,16 +2,21 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import HomepageLinks from '@site/src/components/HomepageLinks';
 import Heading from '@theme/Heading';
 import Layout from '@theme/Layout';
+import clsx from 'clsx';
+import styles from './index.module.css';
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
   return (
-    <header className="hero hero--dark">
+    <header className={clsx(styles.heroBg, 'hero')}>
       <div className="container">
-        <Heading as="h1" className="hero__title">
+        <Heading
+          as="h1"
+          className={clsx(styles.title, 'hero__title text--primary')}
+        >
           {siteConfig.title}
         </Heading>
-        <p className="hero__subtitle">
+        <p className={clsx(styles.subtitle, 'hero__subtitle')}>
           Here are answers to some of the most common questions about JavaScript
           and React that you might be asked in a job interview.
         </p>
