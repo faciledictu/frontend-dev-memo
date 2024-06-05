@@ -42,20 +42,32 @@ eavesdropping and tampering.
 ### CRUD Methods
 
 CRUD stands for Create, Read, Update, and Delete, which map to the following
-HTTP methods:
+HTTP methods.
+
+:::info Idempotency
+
+Idempotent methods are those that can be called many times without different
+outcomes.
+
+:::
 
 `POST` _Create a new resource_. Submits data to a server (e.g., submitting a
-form).
+form). **Not idempotent**. Multiple POST requests can result in multiple new
+resources.
 
 `GET` _Read or retrieve a resource_. Requests data from a server (e.g., fetching
-a webpage).
+a webpage). Idempotent.
 
-`PUT` _Update an existing resource_ (replace it). If the resource doesn't exist,
-it will be created.
+`PUT` _Update an existing resource_. If the resource doesn't exist, it will be
+created, otherwise it will be replaced. Idempotent. Multiple PUT requests with
+the same data will produce the same result as a single request.
 
-`PATCH` _Partially update an existing resource_.
+`PATCH` _Partially update an existing resource_. Only the specified fields are
+updated. The rest of the resource remains unchanged. Generally idempotent.
+Multiple PATCH requests with the same data will produce the same result as a
+single request, but this can vary depending on the implementation.
 
-`DELETE` _Delete a resource_. Removes data from a server.
+`DELETE` _Delete a resource_. Removes data from a server. Idempotent.
 
 ### REST
 
