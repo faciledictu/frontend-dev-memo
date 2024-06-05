@@ -1,4 +1,5 @@
 ---
+sidebar_position: 10
 description: What is Garbage collector (GC) and what is used for
 ---
 

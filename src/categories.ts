@@ -22,6 +22,12 @@ export const javascript: Category = {
   description: 'JavaScript basic concepts',
 };
 
-const categories: Category[] = [common, git, javascript];
+export const browser: Category = {
+  id: 'browser',
+  label: 'Browser',
+  description: 'Working with web-content',
+};
+
+const categories: Category[] = [common, git, javascript, browser];
 
 export default categories;

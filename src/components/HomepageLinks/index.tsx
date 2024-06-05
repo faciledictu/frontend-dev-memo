@@ -17,7 +17,8 @@ const icons = new Map<string, Icon>([
   ['common', require('@site/static/img/category-common.svg').default],
   ['git', require('@site/static/img/category-git.svg').default],
   ['javascript', require('@site/static/img/category-javascript.svg').default],
-  ['default', require('@site/static/img/category-javascript.svg').default],
+  ['browser', require('@site/static/img/category-browser.svg').default],
+  ['default', require('@site/static/img/category-common.svg').default],
 ]);
 
 const getIcon = (id: string) => icons.get(id) ?? icons.get('default');
