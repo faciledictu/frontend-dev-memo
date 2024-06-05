@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #fff;
-      }
-
-      .cls-1, .cls-2 {
-        stroke-width: 0px;
-      }
-
-      .cls-2 {
-        fill: var(--ifm-color-primary);
-      }
-    </style>
-  </defs>
-  <path class="cls-2" d="M0,8v20C0,30.2,1.8,32,4,32h24c2.2,0,4-1.8,4-4V8H0Z"/>
-  <rect class="cls-1" x="15" y="15" width="5" height="2" rx="1" ry="1"/>
-  <rect class="cls-1" x="3" y="11" width="17" height="2" rx="1" ry="1"/>
-  <rect class="cls-1" x="3" y="15" width="10" height="10" rx="1" ry="1"/>
-  <rect class="cls-1" x="21" y="15" width="7" height="2" rx="1" ry="1"/>
-  <rect class="cls-1" x="15" y="19" width="7" height="2" rx="1" ry="1"/>
-  <rect class="cls-1" x="23" y="19" width="7" height="2" rx="1" ry="1"/>
-  <rect class="cls-1" x="20" y="23" width="8" height="2" rx="1" ry="1"/>
-  <rect class="cls-1" x="15" y="23" width="4" height="2" rx="1" ry="1"/>
-  <path class="cls-2" d="M28,0H4.7C2.11,0,0,2.11,0,4.7v2.27s.02.04.04.04h31.93s.04-.02.04-.04v-2.96c0-2.2-1.8-4-4-4Z"/>
-  <circle class="cls-1" cx="4.5" cy="3.5" r="1.5"/>
-  <circle class="cls-1" cx="8.5" cy="3.5" r="1.5"/>
-  <circle class="cls-1" cx="12.5" cy="3.5" r="1.5"/>
+  <path d="M0,8v20C0,30.2,1.8,32,4,32h24c2.2,0,4-1.8,4-4V8H0Z" style="fill: var(--ifm-color-primary); stroke-width: 0px;"/>
+  <rect x="15" y="15" width="5" height="2" rx="1" ry="1" style="fill: #fff; stroke-width: 0px;"/>
+  <rect x="3" y="11" width="17" height="2" rx="1" ry="1" style="fill: #fff; stroke-width: 0px;"/>
+  <rect x="3" y="15" width="10" height="10" rx="1" ry="1" style="fill: #fff; stroke-width: 0px;"/>
+  <rect x="21" y="15" width="7" height="2" rx="1" ry="1" style="fill: #fff; stroke-width: 0px;"/>
+  <rect x="15" y="19" width="7" height="2" rx="1" ry="1" style="fill: #fff; stroke-width: 0px;"/>
+  <rect x="23" y="19" width="7" height="2" rx="1" ry="1" style="fill: #fff; stroke-width: 0px;"/>
+  <rect x="20" y="23" width="8" height="2" rx="1" ry="1" style="fill: #fff; stroke-width: 0px;"/>
+  <rect x="15" y="23" width="4" height="2" rx="1" ry="1" style="fill: #fff; stroke-width: 0px;"/>
+  <path d="M28,0H4.7C2.11,0,0,2.11,0,4.7v2.27s.02.04.04.04h31.93s.04-.02.04-.04v-2.96c0-2.2-1.8-4-4-4Z" style="fill: var(--ifm-color-primary); stroke-width: 0px;"/>
+  <circle cx="4.5" cy="3.5" r="1.5" style="fill: #fff; stroke-width: 0px;"/>
+  <circle cx="8.5" cy="3.5" r="1.5" style="fill: #fff; stroke-width: 0px;"/>
+  <circle cx="12.5" cy="3.5" r="1.5" style="fill: #fff; stroke-width: 0px;"/>
 </svg>
