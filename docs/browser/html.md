@@ -12,11 +12,13 @@ which defines the document type and version of HTML. This is followed by the
 `<html>` tag, which encloses the entire document. Inside the`<html>`tag, there
 are two main sections: the `<head>` and the `<body>`.
 
-<!DOCTYPE html>: Declares the document type and version.
-<html>: Root element of the HTML document.
-<head>: Contains meta-information about the document, such as the title, character set, styles, and links to external resources.
-<body>: Contains the content of the HTML document, including text, images, links, tables, forms, etc.
-Here’s an example of a basic HTML document structure:
+- `<!DOCTYPE html>` Declares the document type and version. -`<html>`: Root
+  element of the HTML document.
+- `<head>` Contains meta-information about the document, such as the title,
+  character set, styles, and links to external resources.
+- `<body>` Contains the content of the HTML document, including text, images,
+  links, tables, forms, etc. Here’s an example of a basic HTML document
+  structure:
 
 ```html
 <!DOCTYPE html>
@@ -35,22 +37,18 @@ Here’s an example of a basic HTML document structure:
 To to display reserved characters or special symbols in an HTML document,
 character entities are used. For example:
 
-- `&lt;` represents <
-- `&gt;` represents >
+- `&lt;` represents &lt;
+- `&gt;` represents &gt;
 - `&amp;` represents &
 - `&quot;` represents "
 - `&apos;` represents '
 
 ## Text Formatting and Paragraphs
 
-<p>: Defines a paragraph.
-<br>: Inserts a line break.
-<strong>: Makes text bold.
-<em>: Emphasizes text (usually italic).
-<u>: Underlines text.
-<h1> to <h6>: Define headings from level 1 to 6.
-<span>: Used for inline formatting without adding any block-level semantics.
-Example:
+-`<p>`: Defines a paragraph. -`<br>`: Inserts a line break. -`<strong>`: Makes
+text bold. -`<em>`: Emphasizes text (usually italic). -`<u>`: Underlines
+text. -`<h1>` to `<h6>`: Define headings from level 1 to 6. -`<span>`: Used for
+inline formatting without adding any block-level semantics.
 
 ```html
 <p>
@@ -60,7 +58,7 @@ Example:
 
 ### HTML Links
 
-Links are created using the <a> tag.
+Links are created using the `<a>` tag.
 
 - `href` attribute specifies the URL of the linked page.
 
