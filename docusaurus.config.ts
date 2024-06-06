@@ -27,6 +27,8 @@ const config: Config = {
   title: SITE_NAME,
   tagline: 'Information to help you prepare for a frontend developer interview',
   favicon: '/img/logo.svg',
+  organizationName: 'Dmitrii Zhigulin',
+  projectName: SITE_NAME,
 
   url: SITE_URL,
   baseUrl: '/',
