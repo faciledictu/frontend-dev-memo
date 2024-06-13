@@ -1,5 +1,5 @@
 ---
-sidbar_position: 5
+sidebar_position: 7
 ---
 
 # State
@@ -7,29 +7,7 @@ sidbar_position: 5
 In React, state refers to a built-in object that stores property values that
 belong to a component. When the state object changes, the component re-renders.
 
-## Working with State in Class and Functional Components
-
-In functional components, the state should be initialized with `useState()`
-hook. It returns a variable containing state and function to update it.
-
-Setter function schedules an update to the component’s state and tells React
-that this component and its children need to be re-rendered with the updated
-state.
-
-```javascript
-const [count, setCount] = useState(0);
-
-const increment = () => {
-  setCount(count + 1);
-};
-
-return (
-  <div>
-    <button onClick={increment}>+ 1</button>
-    <p>Count: {count}</p>
-  </div>
-);
-```
+## Working with State in Class Components
 
 In class components, the state is typically initialized in the constructor
 method as the `state` property and updated using the `this.setState` method.
@@ -57,6 +35,30 @@ class MyComponent extends React.Component {
     );
   }
 }
+```
+
+## `useState`
+
+In functional components, the state should be initialized with `useState()`
+hook. It returns a variable containing state and function to update it.
+
+Setter function schedules an update to the component’s state and tells React
+that this component and its children need to be re-rendered with the updated
+state.
+
+```javascript
+const [count, setCount] = useState(0);
+
+const increment = () => {
+  setCount(count + 1);
+};
+
+return (
+  <div>
+    <button onClick={increment}>+ 1</button>
+    <p>Count: {count}</p>
+  </div>
+);
 ```
 
 ## Asynchornous nature of setting state
@@ -97,6 +99,8 @@ return (
   </div>
 );
 ```
+
+### Functional Updates
 
 To avoid this, setter function that can accept an updater function. This
 function receives the previous state as an argument and returns the new state.
@@ -147,5 +151,67 @@ trigger a separate re-render.
 
 With _Automatic Batching_ feature of React 18, batching extends to asynchronous
 functions, making it more comprehensive.
+
+:::
+
+## `useReducer`
+
+The `useReducer` hook is a built-in React hook that provides an alternative to
+`useState` for managing state in functional components.
+
+:::note When to Use
+
+It's particularly useful By using useReducer, you can manage state in a more
+declarative and predictable manner.
+
+It can be useful when:
+
+- you have complex state logic that involves multiple sub-values,
+- the next state depends on the previous one,
+- when multiple actions lead to the same state update.
+
+:::
+
+You start by defining a reducer function. This function takes the current state
+and an action as arguments and returns a new state based on the action.
+
+```javascript
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'increment':
+      return { ...state, count: state.count + 1 };
+    case 'decrement':
+      return { ...state, count: state.count - 1 };
+    default:
+      throw new Error();
+  }
+};
+```
+
+You also need to define an initial state. This can be a single value, an object,
+or an array.
+
+```javascript
+const initialState = { count: 0 };
+```
+
+You use the useReducer hook, passing in your reducer function and initial state.
+It returns an array containing the current state and a dispatch function
+
+```javascript
+const [state, dispatch] = useReducer(reducer, initialState);
+```
+
+To update the state, you call the dispatch function with an `action` argument
+that describes what should happen.
+
+```javascript
+dispatch({ type: 'increment' });
+```
+
+:::tip
+
+Conventionally, `action` argument is an object that has a `type` property that
+indicates the type of action and can have additional data as needed
 
 :::
