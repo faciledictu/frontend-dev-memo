@@ -82,4 +82,4 @@ responsive and efficient update mechanism.
 
 ## Links
 
-<https://github.com/acdlite/react-fiber-architecture>
+https://github.com/acdlite/react-fiber-architecture
