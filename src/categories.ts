@@ -1,8 +1,8 @@
-type Category = {
+interface Category {
   id: string;
   label: string;
   description: string;
-};
+}
 
 export const common: Category = {
   id: 'common',
@@ -28,6 +28,12 @@ export const browser: Category = {
   description: 'Working with web-content',
 };
 
-const categories: Category[] = [common, git, javascript, browser];
+export const react: Category = {
+  id: 'react',
+  label: 'React',
+  description: 'An overview of React and Redux',
+};
+
+const categories: Category[] = [common, git, javascript, browser, react];
 
 export default categories;

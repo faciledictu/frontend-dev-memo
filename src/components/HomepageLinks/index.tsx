@@ -18,6 +18,7 @@ const icons = new Map<string, Icon>([
   ['git', require('@site/static/img/category-git.svg').default],
   ['javascript', require('@site/static/img/category-javascript.svg').default],
   ['browser', require('@site/static/img/category-browser.svg').default],
+  ['react', require('@site/static/img/category-react.svg').default],
   ['default', require('@site/static/img/category-common.svg').default],
 ]);
 
