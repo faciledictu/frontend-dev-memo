@@ -47,7 +47,7 @@ Updating happens when a component's state or props change.
 
 **Commit phase**
 
-5. componentDidUpdate(prevProps, prevState, snapshot) is called immediately
+5. `componentDidUpdate(prevProps, prevState, snapshot)` is called immediately
    after updating.
 
 ## Unmounting Stage
