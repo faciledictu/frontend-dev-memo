@@ -34,6 +34,12 @@ export const react: Category = {
   description: 'An overview of React and Redux',
 };
 
-const categories: Category[] = [common, git, javascript, browser, react];
+export const typescript: Category = {
+  id: 'typescript',
+  label: 'TypeScript',
+  description: 'Statically typed superset of JavaScript',
+};
+
+const categories: Category[] = [common, git, javascript, browser, react, typescript];
 
 export default categories;
