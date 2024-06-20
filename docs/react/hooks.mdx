@@ -2,6 +2,9 @@
 sidebar_position: 8
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Hooks
 
 Hooks are functions that allow you to use additional React features in
@@ -53,7 +56,7 @@ function ValidComponent() {
 ```
 
 ```javascript
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 function ConditionalEffectComponent() {
   const [data, setData] = useState(null);
@@ -96,20 +99,6 @@ functions. They follow the same rules as standard hooks but encapsulate more
 complex stateful logic or side effects that can be reused across multiple
 components.
 
-```javascript title="useToggle.js"
-import { useState } from 'react';
-
-function useToggle(initialValue = false) {
-  const [value, setValue] = useState(initialValue);
-
-  const toggle = () => {
-    setValue(!value);
-  };
-
-  return [value, toggle];
-}
-```
-
 :::info
 
 When you create custom hooks, their names must start with the prefix "use". This
@@ -120,9 +109,12 @@ they may use React state or effects
 
 Once you have defined a custom hook, you can use it in any functional component
 
-```javascript title="ToggleComponent.jsx"
-import React from 'react';
-import useToggle from './useToggle'; // Assume useToggle is defined in a separate file
+<Tabs>
+
+  <TabItem value="ToggleComponent.jsx" label="ToggleComponent.jsx" default>
+
+```javascript
+import useToggle from './useToggle';
 
 function ToggleComponent() {
   const [isOn, toggleIsOn] = useToggle(false);
@@ -137,6 +129,28 @@ function ToggleComponent() {
 
 export default ToggleComponent;
 ```
+
+</TabItem>
+
+  <TabItem value="useToggle.js" label="useToggle.js">
+
+```javascript
+import { useState } from 'react';
+
+function useToggle(initialValue = false) {
+  const [value, setValue] = useState(initialValue);
+
+  const toggle = () => {
+    setValue(!value);
+  };
+
+  return [value, toggle];
+}
+```
+
+</TabItem>
+
+</Tabs>
 
 ### Benefits
 

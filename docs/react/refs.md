@@ -1,5 +1,5 @@
 ---
-sidebar_posinion: 12
+sidebar_position: 12
 ---
 
 # Using Refs in React
@@ -89,7 +89,7 @@ const App = () => {
 ## Using Ref for Keeping Data
 
 ```javascript
-import React, { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 const PreviousValue = () => {
   const [value, setValue] = useState('');
@@ -122,8 +122,8 @@ The useImperativeHandle hook takes three arguments:
 2. `createHandle`: a function that returns the object to be exposed.
 3. `[deps]`: an optional array of dependencies that, when changed, will re-create the handle.
 
-```typescript
-import React, { useRef, useImperativeHandle, forwardRef } from 'react';
+```javascript
+import { useRef, useImperativeHandle, forwardRef } from 'react';
 
 // Define a functional component that uses useImperativeHandle
 const MyInput = forwardRef((props, ref) => {
