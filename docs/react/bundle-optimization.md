@@ -64,7 +64,7 @@ You can use `React.lazy` and dynamic `import()` syntax to load components as
 needed for code splitting at the component level. It works with Suspense to show
 a fallback UI while loading the split code.
 
-```javascript
+```jsx
 import { Suspense, lazy } from 'react';
 
 const OtherComponent = lazy(() => import('./OtherComponent'));
