@@ -13,7 +13,7 @@ In React, "keys" are special attributes you need to include when creating lists
 of elements. Each key must be unique among its siblings. Commonly, you can use
 unique IDs from your data.
 
-```javascript
+```jsx
 const listItems = items.map((item) => <li key={item.id}>{item.name}</li>);
 ```
 
@@ -32,7 +32,7 @@ non-unique keys or keys that change can lead to unpredictable behaviour.
 Wrap functional components with `React.memo` to prevent re-renders when props
 remain unchanged.
 
-```javascript
+```jsx
 const MyComponent = React.memo((props) => {
   // Component code
 });
@@ -47,7 +47,7 @@ dependencies as the second argument. These hooks don't create objects from
 scratch on every re-render, but return the same refenrences when none of the
 dependencies changes.
 
-```javascript
+```jsx
 const handleClick = useCallback(() => {
   // Handle click
 }, []);
@@ -62,7 +62,7 @@ return <MyComponent onClick={handleClick} config={memoizedValue} />;
 Extend PureComponent instead of Component to automatically perform a shallow
 comparison of props and state.
 
-```javascript
+```jsx
 class MyComponent extends React.PureComponent {
   // Component code
 }

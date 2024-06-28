@@ -22,7 +22,7 @@ is necessary.
 
 :::
 
-```javascript
+```jsx
 import { PureComponent } from 'react';
 
 class MyComponent extends PureComponent {
@@ -38,7 +38,7 @@ class MyComponent extends PureComponent {
 components. It is similar to `PureComponent`, but it is used for optimizing
 functional components by memoizing the output.
 
-```javascript
+```jsx
 import { memo } from 'react';
 
 const MyFunctionalComponent = ({ name }) => {
@@ -51,7 +51,7 @@ export default memo(MyFunctionalComponent);
 You can also pass a custom comparison function to memo if you need more control
 over the re-rendering behavior.
 
-```javascript
+```jsx
 const areEqual = (prevProps, nextProps) => {
   // Custom comparison logic
   return prevProps.name === nextProps.name;

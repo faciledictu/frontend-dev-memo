@@ -16,7 +16,7 @@ or viewport size.
 `react-virtualized` is a feature-rich library, providing a variety of components
 and utilities for virtualizing large lists, tables, and grids.
 
-```javascript
+```jsx
 import React from 'react';
 import { List } from 'react-virtualized';
 
