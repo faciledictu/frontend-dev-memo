@@ -177,7 +177,7 @@ balanced approach to testing. However, the Testing Trophy emphasizes integration
 tests more, suggesting they provide a better balance between speed, coverage,
 and maintainability compared to unit tests alone.
 
-![Testing Pyramid and Testing Trophy](/static/img/test-shapes.png)
+![Testing Pyramid and Testing Trophy](/img/test-shapes.png)
 
 ## Libraries for E2E Testing
 
