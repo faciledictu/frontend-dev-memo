@@ -35,13 +35,6 @@ A library for testing React components that encourages good testing practices by
 focusing on how the user interacts with your components. It promotes testing
 from the user's perspective rather than the implementation details.
 
-## Patterns
-
-### Arrange — Act — Assert
-
-Organize tests by arranging the conditions, acting on the component, and
-asserting the outcomes.
-
 ```javascript
 test('increments counter', () => {
   // Arrange
@@ -53,21 +46,6 @@ test('increments counter', () => {
 
   // Assert
   expect(screen.getByText(/count: 1/i)).toBeInTheDocument();
-});
-```
-
-### Mocking
-
-Use mocks to isolate the component under test from external dependencies.
-
-```jsx
-import axios from 'axios';
-jest.mock('axios');
-
-test('fetches data on mount', async () => {
-  axios.get.mockResolvedValue({ data: { value: 'response' } });
-  render(<MyComponent />);
-  expect(await screen.findByText('response')).toBeInTheDocument();
 });
 ```
 
@@ -134,50 +112,6 @@ test('HOC enhances the component', () => {
   expect(getByText('Dummy')).toBeInTheDocument();
 });
 ```
-
-## Types of Tests
-
-### Static Tests (Linter/Type Checker)
-
-- **Purpose** Ensure code quality and catch potential errors early by checking
-  for syntax errors, type mismatches, and style issues.
-- **Tools** ESLint, TypeScript
-- **Benefits** Fast feedback, helps maintain code quality, and catches issues
-  before runtime.
-
-### Unit Tests
-
-- **Purpose** Test individual functions, methods, or components in isolation.
-- **Tools** Jest, Mocha, Jasmine
-- **Benefits** Fast execution, easy to write, and maintain. Provides confidence
-  in small, isolated pieces of code.
-
-### Integration Tests
-
-- **Purpose** Test the interaction between multiple units/components to ensure
-  they work together as expected.
-- **Tools** React Testing Library, Enzyme (though React Testing Library is
-  preferred for modern React applications)
-- **Benefits** Verifies that different parts of the application integrate
-  correctly. More realistic than unit tests but still relatively fast.
-
-### End-to-End (E2E) Tests
-
-- **Purpose** Test the entire application flow from the user's perspective by
-  simulating real user interactions.
-- **Tools** Cypress, Selenium, Playwright
-- **Benefits** Highest level of confidence, tests the entire stack including
-  frontend, backend, and database. However, these tests are slower and more
-  brittle.
-
-## Testing Pyramid and Testing Trophy
-
-The Testing Pyramid and the Testing Trophy share similarities in promoting a
-balanced approach to testing. However, the Testing Trophy emphasizes integration
-tests more, suggesting they provide a better balance between speed, coverage,
-and maintainability compared to unit tests alone.
-
-![Testing Pyramid and Testing Trophy](/img/test-shapes.png)
 
 ## Libraries for E2E Testing
 
