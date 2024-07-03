@@ -1,0 +1,8 @@
+{
+  "label": "Page Router",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "The Page Router is the traditional routing mechanism in Next.js, used before the introduction of the App Router."
+  }
+}

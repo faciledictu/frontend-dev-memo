@@ -1,0 +1,8 @@
+{
+  "label": "App Router",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "The App Router is a more recent addition to Next.js, offering a more flexible and scalable routing solution, especially beneficial for larger applications."
+  }
+}

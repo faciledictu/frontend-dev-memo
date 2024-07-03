@@ -42,7 +42,7 @@ export const typescript: Category = {
 
 export const nextjs: Category = {
   id: 'nextjs',
-  label: 'Next.JS',
+  label: 'Next.js',
   description: 'React framework for building full-stack web applications',
 };
 
