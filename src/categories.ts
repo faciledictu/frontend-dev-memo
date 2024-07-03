@@ -40,6 +40,20 @@ export const typescript: Category = {
   description: 'Statically typed superset of JavaScript',
 };
 
-const categories: Category[] = [common, git, javascript, browser, react, typescript];
+export const nextjs: Category = {
+  id: 'nextjs',
+  label: 'Next.JS',
+  description: 'React framework for building full-stack web applications',
+};
+
+const categories: Category[] = [
+  common,
+  git,
+  javascript,
+  browser,
+  react,
+  typescript,
+  nextjs,
+];
 
 export default categories;
