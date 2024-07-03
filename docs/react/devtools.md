@@ -40,3 +40,9 @@ inspect every action and state change.
 - You will see a timeline of actions on the left, the state tree in the center,
   and the action details on the right.
 - Click on an action to see the state before and after it was dispatched.
+
+Used for:
+
+- State Inspection
+- Action History
+- Time Travel Debugging
