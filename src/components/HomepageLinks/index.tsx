@@ -19,6 +19,7 @@ const icons = new Map<string, Icon>([
   ['javascript', require('@site/static/img/category-javascript.svg').default],
   ['browser', require('@site/static/img/category-browser.svg').default],
   ['react', require('@site/static/img/category-react.svg').default],
+  ['nextjs', require('@site/static/img/category-nextjs.svg').default],
   ['typescript', require('@site/static/img/category-typescript.svg').default],
 ]);
 
