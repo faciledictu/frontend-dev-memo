@@ -31,10 +31,11 @@ necessary changes.
 
 ## Functors
 
-A functor is a data structure that can be mapped over. It implements a map
+A functor is a data structure that can be mapped over. It implements a `map`
 method that applies a function to each value inside the functor, returning a new
-functor with the transformed values. In JavaScript, arrays are the most common
-example of functors.
+functor with the transformed values.
+
+In JavaScript, arrays are the most common example of functors.
 
 ```javascript
 const array = [1, 2, 3];
@@ -112,10 +113,9 @@ console.log(doubleAndPlus2(3), plus2AndDouble(3)); // Output: 8, 10
 
 ## Monads
 
-Monads are a fundamental concept in functional programming, providing a way to
-handle side effects and structure programs. They allow for chaining operations
-while maintaining a functional style, making it easier to manage side effects,
-such as handling null values, asynchronous computations, state, etc.
+Monads allow for chaining operations while maintaining a functional style,
+making it easier to manage side effects, such as handling null values,
+asynchronous computations, state, etc.
 
 - A monad has functor-like structure: it implements the `map` function, which
   applies a function to the wrapped value inside the monad.
