@@ -89,9 +89,14 @@ export default ExampleComponent;
 
 ## Considerations for SSR
 
+### Benefits
+
 - **SSR can improve perceived performance** by sending pre-rendered HTML to
   clients.
 - **Search engines index SSR content effectively** since the initial HTML
   contains rendered content.
-- SSR may require careful handling of client-side specific features like browser
-  APIs and global state management
+
+### Limitations
+
+- SSR doesn't client-side specific features like browser APIs (geolocations,
+  event handling etc.) and state management.

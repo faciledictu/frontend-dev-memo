@@ -85,5 +85,5 @@ Pages suitable for SSG usually:
 - Do not change frequently (or can use ISR for updates).
 - Can benefit from improved load times.
 
-Common examples include: marketing pages (e.g., homepage, about us), blog posts,
+Common examples include marketing pages (e.g., homepage, about us), blog posts,
 documentation, product pages (for e-commerce).

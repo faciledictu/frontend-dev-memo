@@ -43,7 +43,7 @@ changes. More complex requirements might benefit from a hybrid approach.
 
 - SSG and SSR: Both are SEO-friendly as they pre-render content, which is
   beneficial for search engine indexing.
-- CSR: May not be ideal for SEO since content is loaded dynamically and may not
+- CSR: Not be ideal for SEO since content is loaded dynamically and may not
   be indexed properly by search engines.
 
 ### User Experience
