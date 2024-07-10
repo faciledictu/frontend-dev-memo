@@ -1,0 +1,327 @@
+---
+sidebar_position: 7
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Data Fetching
+
+## Server-Side Fetching
+
+### At Build Time (for SSG)
+
+1. `getStaticProps()` fetches data at build time and passes it to the page
+   component as props.
+
+2. `getStaticPaths()` generates dynamic routes at build time. Used in
+   conjunction with `getStaticProps()` for pages with dynamic paths.
+
+```javascript title="pages/posts/[id].js"
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+
+// Fetch data at build time
+export async function getStaticProps({ params }) {
+  const res = await fetch(`https://api.example.com/posts/${params.id}`);
+  const post = await res.json();
+
+  return {
+    props: {
+      post,
+    },
+  };
+}
+
+// Specify dynamic routes to be pre-rendered
+export async function getStaticPaths() {
+  const res = await fetch('https://api.example.com/posts');
+  const posts = await res.json();
+
+  const paths = posts.map((post) => ({
+    params: { id: post.id.toString() },
+  }));
+
+  return { paths, fallback: false };
+}
+
+const Post = ({ post }) => {
+  const router = useRouter();
+
+  // If the page is not yet generated, show a loading state
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <h1>{post.title}</h1>
+      <p>{post.body}</p>
+      <Link href="/posts">Back to posts</Link>
+    </div>
+  );
+};
+
+export default Post;
+```
+
+- `getStaticProps`: Fetches data at build time for the post with the given `id`.
+- `getStaticPaths` specifies the dynamic routes that should be pre-rendered. It
+  fetches all posts and generates a list of paths.
+- If `fallback` is `false`, any paths not returned by `getStaticPaths` will
+  result in a 404 page.
+
+#### Incremental Static Regeneration (ISR)
+
+Pages generated with `getStaticProps` can be cached and served as static files,
+resulting in faster load times. ISR allows you to update static content after
+you’ve built your site.
+
+by setting a `revalidate` interval in the `getStaticProps` function, you can
+specify how frequently a page should be revalidated and updated in the
+background. This is done .
+
+:::tip
+
+Revalidation combines the performance benefits of static generation with the
+flexibility of server-side rendering.
+
+:::
+
+```javascript
+export async function getStaticProps() {
+  const data = await fetchData();
+
+  return {
+    props: { data },
+    revalidate: 10, // Revalidate every 10 seconds
+  };
+}
+```
+
+#### When to Use
+
+ISR in Next.js is useful when you need:
+
+- Frequent Content Updates: Updates content periodically without rebuilding.
+- Dynamic User-Dependent Content: Content changes based on user interactions.
+- Optimized Build Times: Updates specific pages without rebuilding all.
+
+Imagine you have an e-commerce site where product availability changes
+frequently. Using ISR, you can:
+
+- Use `getStaticProps` to statically generate product pages with initial
+  availability and other data.
+- Set a revalidation interval to periodically check and update product
+  availability without rebuilding the entire site.
+
+### On Page Request (SSR)
+
+Next.js provides a specific function for server-side fetching:
+`getServerSideProps`.
+
+```javascript
+export async function getServerSideProps() {
+  const res = await fetch('https://api.example.com/data');
+  const data = await res.json();
+
+  return {
+    props: { data },
+  };
+}
+```
+
+### `getInitialProps`
+
+The method `getInitialProps` is executed on both the server side and the client
+side. On the server, it runs during the initial page load, and on the client, it
+runs when navigating to a different route.
+
+:::note
+
+`getInitialProps` is legacy data fetching method. It is not recommended for new
+projects as it can lead to performance issues and is more complex to manage
+compared to `getStaticProps` and `getServerSideProps`.
+
+:::
+
+```javascript
+// components/ExampleComponent.js
+import React from 'react';
+
+function ExampleComponent({ data }) {
+  return (
+    <div>
+      <p>{data}</p>
+    </div>
+  );
+}
+
+ExampleComponent.getInitialProps = async () => {
+  // Fetch data from an API or database
+  const res = await fetch('https://api.example.com/data');
+  const data = await res.json();
+
+  // Return data to be passed as props
+  return { data };
+};
+
+export default ExampleComponent;
+```
+
+`getInitialProps` can only be used in top-level files within the `pages/`
+directory. It cannot be used inside nested components.
+
+:::warning
+
+`getInitialProps` should return an object containing the props that will be
+passed to your component. Ensure that the data you fetch does not contain
+circular references or objects that cannot be serialized into JSON. This can
+cause serialization errors.
+
+:::
+
+### Summary
+
+|                                | When They Run                                              | Use Cases                                          | Performance                                          |
+| ------------------------------ | ---------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------- |
+| `getStaticProps`               | Build time for static generation; optional runtime for ISR | Static generation with optional revalidation (ISR) | Fastest for static content; optional ISR for updates |
+| `getServerSideProps`           | Server-side on every request                               | Up-to-date data needed on each request             | Slower due to server-side processing                 |
+| `getInitialProps` (deprecated) | Initial page load on server; subsequent client navigations | Data fetching for both server and client rendering | Can be slower due to dual server-client execution    |
+
+## Client-Side Fetching
+
+Client-side fetching is useful when you need to load data in response to user
+interactions or when the data doesn't need to be available during the initial
+page render.
+
+### Example with Fetch API
+
+- Use a hook such as useEffect to perform the fetch when the component mounts.
+
+- Use useState hooks (data, loading, error) to manage the fetched data, loading
+  state, and errors.
+
+```javascript
+import { useEffect, useState } from 'react';
+
+const ClientSideFetch = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/data');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        setData(result);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  return (
+    <div>
+      <h1>Data Fetched Client-Side</h1>
+      {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+    </div>
+  );
+};
+
+export default ClientSideFetch;
+```
+
+### Example With Thrid-Party Libraries
+
+:::tip
+
+Libraries such as Tanstack Query simplifies working with fetching state and
+error handling by using properties like `isLoading`, `isError` etc. returned
+from useQuery
+
+The `error` object returned by useQuery contains an error message.
+
+:::
+
+<Tabs>
+<TabItem value="ClientSideFetch.jsx" label="ClientSideFetch.jsx" default>
+
+```jsx
+import { useQuery } from '@tanstack/react-query';
+import fetchData from '../fetchData';
+
+const ClientSideFetch = () => {
+  const { data, error, isLoading } = useQuery(['data'], fetchData);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  return (
+    <div>
+      <h1>Data Fetched Client-Side</h1>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+};
+
+export default ClientSideFetch;
+```
+
+</TabItem>
+
+<TabItem value="axiosInstance.js" label="axiosInstance.js">
+
+```javascript
+import axios from 'axios';
+
+const axiosInstance = axios.create({
+  baseURL: '/api',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+export default axiosInstance;
+```
+
+</TabItem>
+
+<TabItem value="fetchData.js" label="fetchData.js">
+
+```javascript
+import axiosInstance from '../axiosInstance';
+
+const fetchData = async () => {
+  const response = await axiosInstance.get('/data');
+  return response.data;
+};
+
+export default fetchData;
+```
+
+</TabItem>
+
+</Tabs>

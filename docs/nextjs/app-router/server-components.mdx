@@ -1,0 +1,239 @@
+---
+sidebar_position: 3
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Server Components
+
+One of the key features of App Router system is the ability to use Server
+Components.
+
+Server Components allow you to offload the rendering of components to the
+server, improving performance by reducing the amount of JavaScript that needs to
+be sent to the client.
+
+All components are treated as React Server Components by default.
+
+In the following example, the `UsersPage` component fetches data on the server
+and renders a list of users. This approach ensures that the user data is
+available immediately when the page loads, improving both performance and SEO.
+
+```javascript title="app/users/page.js"
+import { fetchUsers } from '../lib/api';
+
+export default async function UsersPage() {
+  const users = await fetchUsers();
+
+  return (
+    <div>
+      <h1>Users</h1>
+      <ul>
+        {users.map((user) => (
+          <li key={user.id}>{user.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+## When to Use
+
+- **When your component relies on data that can be fetched on the server**, such
+  as from a database or an external API, using a Server Component can reduce
+  client-side JavaScript and improve performance.
+
+- **For pages that require better SEO**, server-side rendering ensures that the
+  content is fully rendered when the page is served to the client, making it
+  more accessible to search engines.
+
+- **For reducing the initial load time** of your page since the server can send
+  fully rendered HTML to the client.
+
+- **When results can be cached** and used again on future requests and across
+  users.
+
+- **When you need to handle sensitive data** or perform operations that should
+  not be exposed to the client.
+
+## Rendering Strategies
+
+There are three different server rendering strategies:
+
+- Static Rendering
+- Dynamic Rendering on Server
+- Streaming
+
+### Static Rendering
+
+With static rendering, routes are pre-rendered **at build time** and the results
+are cached.
+
+This approach is suitable for content that doesn't change frequently, like blog
+posts or product pages. The pre-rendered HTML is served quickly, enhancing
+performance and reducing server load.
+
+### Dynamic Rendering
+
+Dynamic rendering occurs **at request time**, providing personalized content or
+data that changes frequently.
+
+If **a dynamic function** or **uncached data request** is found during
+rendering, Next.js will render the whole route dynamically.
+
+:::note
+
+Dynamic functions use information known at request time, such as cookies and
+headers (`cookies()` and `headers()` functions), or search parameters
+(`searchParams` prop).
+
+:::
+
+#### Instant Loading State
+
+:::info How Does Serves-Side Rendering Work
+
+With SSR, there's a series of steps that need to be completed before a user can
+see and interact with a page:
+
+1. All data for a given page is fetched on the server.
+2. The server then renders the HTML for the page.
+3. The HTML, CSS, and JavaScript for the page are sent to the client.
+4. A non-interactive user interface is shown using the generated HTML, and CSS.
+5. Finally, React hydrates the user interface to make it interactive.
+
+:::
+
+Instant Loading State allows us to show the user a non-interactive version of
+the route as soon as possible, and replace it with an interactive version as
+soon as the actual data is prepared.
+
+To implement this you need to create a file `loading.js` in the route folder.
+
+```javascript
+export default function Loading() {
+  // You can add any UI inside Loading, including a Skeleton.
+  return <LoadingSkeleton />;
+}
+```
+
+The file `loading.js` will be nested inside `layout.js`. It will automatically
+wrap the `page.js` file and any children below in a `<Suspense>` boundary. It
+can be represented this way:
+
+```palintext title="Component Hierarchy"
+  <Layout>                            <- export from layout.js
+    <Header />
+    <SideNav />
+    <Suspense fallback={<Loading />}> <- export from loading.js
+      <Page />                        <- export from page.js
+    </Suspense>
+  </Layout>
+```
+
+However, the user won't be able to see the actual content of the page until all
+the fetches in the `page.js` have been performed on the server.
+
+### Streaming
+
+Streaming allows you to progressive output the page by components. The whole
+work is splitted into chunks and streamed to the client as it is ready.
+
+Streaming is built into the Next.js App Router by default.
+
+Using Suspense boundaries, developers can show fallback UI and swap in the
+actual content once it loads, enhancing user experience and interaction speed.
+
+By streaming, we allow to send parts of the actual to the client progressively
+as they are rendered on the server.
+
+<Tabs>
+
+<TabItem value="app/page.js" label="app/page.js" default>
+
+```jsx
+import { Suspense } from 'react';
+import Posts from 'components/Posts';
+import Users from 'components/Users';
+import Placeholder from 'components/Placeholder';
+
+export default function Page() {
+  return (
+    <div>
+      <h1>My Blog</h1>
+      <Suspense fallback={<Placeholder />}>
+        <Posts />
+      </Suspense>
+      <Suspense fallback={<Placeholder />}>
+        <Users />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+</TabItem>
+
+<TabItem value="components/Posts.js" label="components/Posts.js">
+
+```jsx
+async function fetchPosts() {
+  const res = await fetch('https://api.example.com/posts');
+  return res.json();
+}
+
+export default async function Posts() {
+  const posts = await fetchPosts();
+
+  return (
+    <ul>
+      {posts.map((post) => (
+        <li key={post.id}>{post.title}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+</TabItem>
+
+<TabItem value="components/Users.js" label="components/Users.js">
+
+```jsx
+async function fetchUsers() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/users');
+  return res.json();
+}
+
+export default async function Users() {
+  const users = await fetchUsers();
+
+  return (
+    <ul>
+      {users.map((user) => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+</TabItem>
+
+<TabItem value="components/Placeholder.js" label="components/Placeholder.js">
+
+```jsx
+export default function Placeholder() {
+  return <p>Loading...</p>;
+}
+```
+
+</TabItem>
+
+</Tabs>
+
+This approach reduces Time to First Byte (TTFB), First Contentful Paint (FCP)
+and Time to Interactive(TTI) and allows users to see and interact with parts of
+the page sooner, even before other data is fetched and rendered.

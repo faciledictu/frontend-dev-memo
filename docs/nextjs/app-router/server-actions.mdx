@@ -1,0 +1,108 @@
+---
+sidebar_position: 6
+---
+
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Server Actions
+
+:::note
+
+Next.js **extends** the native `fetch` Web API primarily through the use of its
+server-side rendering (SSR) capabilities and server-side data fetching
+strategies. It adds caching and revalidating behaviour.
+
+React extends `fetch` to memoize fetch requests while rendering a React
+component tree.
+
+You can use `fetch` with `async/await` in Server Components, in Route Handlers,
+and in Server Actions.
+
+:::
+
+Server actions allow you to define asynchronous server functions that can be
+invoked directly from your components without manually creating API routes.
+
+By running server actions on the server, you can keep sensitive information
+secure and avoid the complexities of client-server communication.
+
+## Server Components
+
+Server actions can be directly called in server components.
+
+```javascript
+// Server Component
+export default function Page() {
+  // Server Action
+  async function create() {
+    'use server'
+
+    // ...
+  }
+
+  return (
+    // ...
+  )
+}
+```
+
+## Client Components
+
+To use server actions in client components, ensure that the server action
+function is prefixed with `'use server'` to indicate that it should run on the
+server.
+
+You need to import and call them as you would any asynchronous function.
+
+<Tabs>
+  <TabItem value="app/ui/button.tsx" label="app/ui/button.tsx" default>
+
+```typescript
+import { create } from '@/app/actions'
+
+export function Button() {
+  return (
+    // ...
+  )
+}
+```
+
+  </TabItem>
+
+  <TabItem value="app/actions.ts" label="app/actions.ts">
+
+```typescript
+'use server';
+
+export async function create() {
+  // ...
+}
+```
+
+</TabItem>
+</Tabs>
+
+Or you can use the server action as a prop to pass it to any component.
+
+```typescript
+export default function Page() {
+  async function create() {
+    'use server';
+
+    // ...
+  }
+
+  return <ClientComponent create={create} />;
+}
+```
+
+:::warning
+
+The arguments and return value of Server Actions must be serializable by React.
+
+:::
+
+Server Actions can be invoked from event handlers (from elements like
+`<button>`), useEffect, third-party libraries and for form `<form>` submitting.

@@ -41,51 +41,11 @@ function HomePage() {
 export default HomePage;
 ```
 
-#### Pages with Data
+### Pages with Data
 
 Use `getServerSideProps()` to fetch data for SSR at the page level. This
 function runs on every request and passes fetched data as props to the page
 component.
-
-```javascript
-export async function getServerSideProps() {
-  const res = await fetch('https://api.example.com/data');
-  const data = await res.json();
-
-  return {
-    props: { data },
-  };
-}
-```
-
-### Component-level SSR
-
-Use `getInitialProps` for component-level SSR when needed. This method is used
-within any component, not just pages.
-
-```javascript
-// components/ExampleComponent.js
-import React from 'react';
-
-function ExampleComponent({ data }) {
-  return (
-    <div>
-      <p>{data}</p>
-    </div>
-  );
-}
-
-ExampleComponent.getInitialProps = async () => {
-  // Fetch data from an API or database
-  const res = await fetch('https://api.example.com/data');
-  const data = await res.json();
-
-  // Return data to be passed as props
-  return { data };
-};
-
-export default ExampleComponent;
-```
 
 ## Considerations for SSR
 
