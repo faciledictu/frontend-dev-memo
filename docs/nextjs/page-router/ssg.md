@@ -17,65 +17,13 @@ file per page during build time using Static Generation.
 
 ## Pages with Data
 
-1. `getStaticProps()` fetches data at build time and passes it to the page
-   component as props.
+If the page need external data before they can be shown, use these functions to
+handle this:
 
-2. `getStaticPaths()` generates dynamic routes at build time. Used in
-   conjunction with `getStaticProps()` for pages with dynamic paths.
+- `getStaticProps`, if your page's content depends on external data.
 
-```javascript title="pages/posts/[id].js"
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-
-// Fetch data at build time
-export async function getStaticProps({ params }) {
-  const res = await fetch(`https://api.example.com/posts/${params.id}`);
-  const post = await res.json();
-
-  return {
-    props: {
-      post,
-    },
-  };
-}
-
-// Specify dynamic routes to be pre-rendered
-export async function getStaticPaths() {
-  const res = await fetch('https://api.example.com/posts');
-  const posts = await res.json();
-
-  const paths = posts.map((post) => ({
-    params: { id: post.id.toString() },
-  }));
-
-  return { paths, fallback: false };
-}
-
-const Post = ({ post }) => {
-  const router = useRouter();
-
-  // If the page is not yet generated, show a loading state
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <div>
-      <h1>{post.title}</h1>
-      <p>{post.body}</p>
-      <Link href="/posts">Back to posts</Link>
-    </div>
-  );
-};
-
-export default Post;
-```
-
-- `getStaticProps`: Fetches data at build time for the post with the given `id`.
-- `getStaticPaths` specifies the dynamic routes that should be pre-rendered. It
-  fetches all posts and generates a list of paths.
-- If `fallback` is `false`, any paths not returned by `getStaticPaths` will
-  result in a 404 page.
+- `getStaticPaths` along with `getStaticProps`, if your page's URLs depend on
+  external data.
 
 ### Considerations for SSG
 

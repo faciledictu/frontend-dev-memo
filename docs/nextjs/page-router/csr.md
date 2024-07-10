@@ -16,39 +16,7 @@ There are two ways to implement client-side rendering in Page Router:
 - Use a data fetching library like SWR or TanStack Query to fetch data on the
   client (recomended).
 
-```javascript
-// pages/index.js
-import { useState, useEffect } from 'react';
-
-const Home = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch('/api/data');
-      const result = await response.json();
-      setData(result);
-      setLoading(false);
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <div>
-      <h1>Client-Side Rendering with Next.js</h1>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
-    </div>
-  );
-};
-
-export default Home;
-```
+For more details see [Client-Side Fetching](/docs/nextjs/page-router/data-fetching.mdx#client-side-fetching)
 
 ## Considerations for CSR
 
