@@ -167,49 +167,80 @@ them.
 
 This is the process of determining what an authenticated user is allowed to do.
 
-### Route Types
-
-#### Public Routes
+### Public Routes
 
 Routes accessible to all users, regardless of authentication status.
+
+These routes do not require any authentication checks and are typically used for
+pages like home, about, or contact pages​​.
 
 All routes are public by default. Simply create pages without any authentication
 checks.
 
-#### Private Routes
+### Private Routes
 
-Routes that require users to be authenticated.
+Private Routes are accessible only to authenticated users. These routes require
+users to be logged in before accessing the content. In Next.js, private routes
+can be implemented using middleware to check for authentication tokens before
+rendering the page. If the user is not authenticated, they are redirected to a
+login page​​​​.
 
-#### Restricted Routes
+:::info Restricted Routes
 
-Routes accessible only to users with specific roles or permissions.
+Some of private routes can be restricted. Resticted routers are accessible by
+authenticated users but may restrict access based on user roles or permissions.
+For example, an admin dashboard might be a restricted route that only
+authenticated users with an admin role can access​​.
 
-```jsx
-const RestrictedRoute = ({ children, roles }) => {
-  const { data: session } = useSession();
-  if (!session || !roles.includes(session.user.role)) {
-    return <Unauthorized />;
-  }
-  return children;
-};
-```
+:::
 
-### HOC-Based Route Protection
+#### HOC-Based Route Protection
 
 Use a higher-order component (HOC) or middleware to check authentication status
 before rendering the component.
 
-```jsx
-const PrivateRoute = ({ children }) => {
-  const { data: session } = useSession();
-  if (!session) {
-    return <Login />;
-  }
-  return children;
+```jsx title="hoc/withAuth.js"
+import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+
+const withAuth = (WrappedComponent) => {
+  return (props) => {
+    const { user } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+      if (!user) {
+        router.push('/login');
+      }
+    }, [user, router]);
+
+    return <WrappedComponent {...props} />;
+  };
 };
+
+export default withAuth;
 ```
 
-### Middleware-Based Route Protection
+Wrap protected components:
+
+```jsx title="pages/dashboard.js"
+import withAuth from '../hoc/withAuth';
+
+const Dashboard = () => {
+  return <h1>Welcome to the Dashboard</h1>;
+};
+
+export default withAuth(Dashboard);
+```
+
+:::tip
+
+If the authentication check takes time, ensure a loading state is managed to prevent flashing of unauthorized content.
+
+:::
+
+#### Middleware-Based Route Protection
 
 Middleware allows you to run code before a request is completed. Then, based on
 the incoming request, you can modify the response by rewriting, redirecting,
@@ -258,3 +289,30 @@ convenience methods.
 - `matcher` option in middleware configuration allows you to specify which paths
   the middleware should apply to, providing control over where and how route
   protection is enforced.
+
+### Protecting Server Actions
+
+To protect these actions, you can use logic within the server action itself.
+
+```jsx title="lib/actions.ts"
+import { verifyJwtToken } from './auth';
+
+export async function authenticate(formData) {
+  const { email, password } = formData;
+  // Authentication logic here
+
+  // Example of token verification inside the action
+  const token = formData.get('token');
+  if (!token || !verifyJwtToken(token)) {
+    throw new Error('Unauthorized');
+  }
+
+  // Proceed with the action if authenticated
+}
+```
+
+## Authorization
+
+Authorization determines what parts of the application a user can access based
+on their role or permissions. It ensures that users only access resources they
+are allowed to, preventing unauthorized actions​​.
