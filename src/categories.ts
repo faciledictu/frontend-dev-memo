@@ -46,14 +46,21 @@ export const nextjs: Category = {
   description: 'React framework for building full-stack web applications',
 };
 
+export const nodejs: Category = {
+  id: 'nodejs',
+  label: 'Node.js',
+  description: 'JavaScript runtime that allows server-side execution of JavaScript code',
+};
+
 const categories: Category[] = [
   common,
   git,
   javascript,
+  typescript,
   browser,
   react,
-  typescript,
   nextjs,
+  nodejs
 ];
 
 export default categories;
