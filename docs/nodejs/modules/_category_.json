@@ -1,0 +1,8 @@
+{
+  "label": "Modules",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Reusable code components in Node.js, imported and exported using require or ES6 import/export"
+  }
+}

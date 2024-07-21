@@ -21,6 +21,7 @@ const icons = new Map<string, Icon>([
   ['react', require('@site/static/img/category-react.svg').default],
   ['nextjs', require('@site/static/img/category-nextjs.svg').default],
   ['typescript', require('@site/static/img/category-typescript.svg').default],
+  ['nodejs', require('@site/static/img/category-nodejs.svg').default],
 ]);
 
 const getIcon = (id: string) => icons.get(id) ?? icons.get('common');
