@@ -15,9 +15,10 @@ developers create more flexible, reusable, and maintainable code.
 These deal with object creation mechanisms, trying to create objects in a manner
 suitable to the situation.
 
-Examples: Singleton, Factory Method, Abstract Factory, Builder, Prototype.
+Examples: _Singleton_, _Factory Method_, _Abstract Factory_, _Builder_,
+_Prototype_.
 
-#### Factory Method
+#### Example: Factory Method
 
 ```javascript
 // Product classes
@@ -69,15 +70,15 @@ button3.render();
 These deal with object composition, helping to ensure that if one part of a
 system changes, the entire system doesn’t need to do the same.
 
-Examples: Adapter, Composite, Proxy, Flyweight, Facade.
+Examples: _Adapter_, _Composite_, _Proxy_, _Flyweight_, _Facade_.
 
-#### Facade
+#### Example: Facade
 
 The Facade pattern hides the complexities of the system and provides an
 easy-to-use interface for the client.
 
-Example: In a web application, a Facade might simplify interactions with a suite
-of complex APIs by providing a single method that abstracts multiple underlying
+In a web application, a Facade might simplify interactions with a suite of
+complex APIs by providing a single method that abstracts multiple underlying
 calls.
 
 ```javascript
@@ -125,9 +126,10 @@ facade.simplifiedOperation();
 These deal with object collaboration and how responsibilities are distributed
 among objects.
 
-Examples: Observer, Strategy, Command, Chain of Responsibility, Mediator.
+Examples: _Observer_, _Strategy_, _Command_, _Chain of Responsibility_,
+_Mediator_.
 
-#### Observer
+#### Example: Observer
 
 The Observer pattern defines a one-to-many dependency between objects. When one
 object changes state, all its dependents are updated. It allows a subject to
