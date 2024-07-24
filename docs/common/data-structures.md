@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Alogrithms and Data Structures
 
-# Algorithms
+## Algorithms
 
 :::info Algorithm
 
@@ -14,7 +14,7 @@ in programming for tasks like searching, sorting, and data manipulation.
 
 :::
 
-## Complexity of Algorithms
+### Complexity of Algorithms
 
 Big O notation, denoted as **O()**, is used to describe the upper bound, or
 worst case, performance or complexity of an algorithm.
@@ -23,7 +23,7 @@ We need Big O notation because it provides a standardized way of comparing the
 efficiency of algorithms. It helps to understand how the algorithm's performance
 scales with increasing input.
 
-### Examples of time complexity
+#### Examples of Time Complexity
 
 | Notation           | Explanation                  | Examples                                                   |
 | ------------------ | ---------------------------- | ---------------------------------------------------------- |
@@ -52,27 +52,27 @@ memory locations.
 
 ### Stacks
 
-A stack is a Last In, First Out (LIFO) data structure where elements are
+A stack is a _Last In, First Out (LIFO)_ data structure where elements are
 inserted and removed from the same end, called the top. It supports operations
-like push (insert) and pop (remove).
+like `push` (insert) and `pop` (remove).
 
 Stacks are commonly used in programming languages for function calls, expression
 evaluation, and backtracking algorithms.
 
 ### Queues
 
-A queue is a First In, First Out (FIFO) data structure where elements are
+A queue is a _First In, First Out (FIFO)_ data structure where elements are
 inserted at the rear end and removed from the front end. It supports operations
-like enqueue (insert) and dequeue (remove).
+like `enqueue` (insert) and `dequeue` (remove).
 
 Queues are used in scenarios like task scheduling, message passing, and
 breadth-first search algorithms.
 
 ### Trees
 
-Trees are hierarchical data structures consisting of nodes connected by edges.
-They have a root node at the top and may have multiple levels of child nodes
-branching out from it.
+Trees are hierarchical data structures consisting of _nodes_ connected by
+_edges_. They have a _root node_ at the top and may have multiple levels of
+_child nodes_ branching out from it.
 
 Trees are used in various applications, such as representing hierarchical data
 (e.g., file systems), organizing data for efficient searching and sorting, and
@@ -81,7 +81,7 @@ implementing decision-making algorithms.
 ### Graphs
 
 Graphs are collections of nodes (vertices) and edges that connect pairs of
-nodes. They can be directed (edges have a specific direction) or undirected
+nodes. They can be _directed_ (edges have a specific direction) or _undirected_
 (edges have no direction).
 
 Graphs are versatile data structures used to model relationships between

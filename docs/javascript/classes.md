@@ -68,7 +68,7 @@ dog1.speak(); // Rex barks.
 
 ## Private and Protected Properties and Methods
 
-ECMAScript 2022 introduced supports private fields and methods using the #
+ECMAScript 2022 introduced supports private fields and methods using the `#`
 prefix. Private fields and methods are only accessible within the class they are
 defined.
 
@@ -99,13 +99,12 @@ car1.startEngine(); // Engine started
 car1.status(); // The engine is running
 ```
 
-JavaScript does not have a built-in concept of **protected** properties are
-properties that are accessible within the class and its subclasses but not
-outside. However, you can simulate protected properties using naming conventions
-(such as a leading underscore) and by controlling access through getters and
-setters.
+JavaScript does not have a built-in concept of **protected** properties (that
+are accessible within the class and its subclasses but not outside). However,
+you can simulate protected properties using naming conventions (such as a
+leading underscore) and by controlling access through getters and setters.
 
-## instanceof Operator
+## `instanceof` Operator
 
 Used to check if an object is an instance of a specific class or constructor
 function.

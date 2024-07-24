@@ -7,8 +7,6 @@ sidebar_position: 6
 Functional programming is a programming paradigm that treats computation as the
 evaluation of mathematical functions and avoids changing state and mutable data.
 
-Functional programming favors a declarative programming style where programs.
-
 ## Pure Functions
 
 A pure function is a function that:
@@ -117,12 +115,12 @@ Monads allow for chaining operations while maintaining a functional style,
 making it easier to manage side effects, such as handling null values,
 asynchronous computations, state, etc.
 
-- A monad has functor-like structure: it implements the `map` function, which
+- A monad has _functor-like structure_: it implements the `map` function, which
   applies a function to the wrapped value inside the monad.
 
 - The `unit` (sometimes called `return` or `of`) function takes a value and
   wraps it in a monad. It serves as a way to lift a value into the monadic
-  context. flatMap (or bind) Function:
+  context.
 
 - The `flatMap` (sometimes called `bind` or `chain`) function applies a function
   that returns a monad to a monad, and then flattens the result. It enables
@@ -131,7 +129,9 @@ asynchronous computations, state, etc.
 ### Monad Laws
 
 - **Left Identity** `unit(a).flatMap(f)`is equivalent to`f(a)`
+
 - **Right Identity** `m.flatMap(unit)` is equivalent to `m`
+
 - **Associativity** `m.flatMap(f).flatMap(g)` is equivalent to
   `m.flatMap(x => f(x).flatMap(g))`
 
@@ -143,6 +143,7 @@ The Maybe monad is a common example, which handles computations that might fail
 The Maybe monad has two possible states:
 
 - `Just`, or `Some` represents a value.
+
 - `Nothing`, or `None` represents the absence of a value.
 
 ```javascript

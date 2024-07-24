@@ -6,8 +6,9 @@ sidebar_position: 2
 
 ## Basic Merge
 
-1. Checkout the Target Branch:
-2. Merge the branch containing the commits you want
+1. Checkout the Target Branch.
+
+2. Merge the branch containing the commits you want.
 
 ```sh
 git checkout main
@@ -31,8 +32,9 @@ git commit -m "Merged feature-branch as a single commit"
 
 ## Merge Specific Commits
 
-1. Checkout the target branch
-2. Use the commit hashes to cherry-pick specific commits
+1. Checkout the target branch.
+
+2. Use the commit hashes to cherry-pick specific commits.
 
 ```sh
 git checkout main
@@ -44,8 +46,9 @@ git cherry-pick a1b2c3d4 e5f6g7h8
 Rebasing can be useful to keep a clean history by applying your commits on top
 of another branch.
 
-1. Rebase branch containing the commits you want to target branch
-2. Perform basic merge
+1. Rebase branch containing the commits you want to target branch.
+
+2. Perform basic merge.
 
 ```sh
 git checkout feature-branch

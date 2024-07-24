@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 description: The main principles according the book of Robert C. Martin
 ---
 
@@ -49,36 +49,66 @@ encouraging practices that lead to more maintainable, understandable, and robust
 code. The book emphasizes the importance of writing clean, simple, and focused
 code, avoiding these common pitfalls.
 
-1. **The God Class**. A class that knows too much or does too much. It usually
-   ends up being a catch-all for functionality, violating the Single
-   Responsibility Principle.
-2. **Duplicated Code**. Code that is repeated in multiple places. This leads to
-   difficulties in maintenance and increases the risk of bugs, as changes need
-   to be replicated in all locations.
-3. **Long Methods**. Methods that are excessively long, making them hard to
-   understand and maintain. Clean Code advocates for short, single-purpose
-   methods.
-4. **Large Classes**. Classes that contain too much functionality, becoming
-   difficult to manage. They often indicate a need for refactoring into smaller,
-   more cohesive classes.
-5. **Feature Envy**. When a method in one class is more interested in the data
-   of another class than its own data, leading to tight coupling and low
-   cohesion.
-6. **Inappropriate Intimacy**. When one class is too familiar with the inner
-   workings of another class, leading to strong coupling and making changes more
-   difficult.
-7. **Primitive Obsession**. The use of primitive data types to represent domain
-   ideas instead of creating specific types that better represent the concepts
-   and provide more meaning.
-8. **Data Clumps**. Groups of data items that tend to be passed around together,
-   indicating they might belong in their own class.
-9. **Switch Statements**. Overuse of switch statements can lead to code
-   duplication and difficulty in maintaining the code, suggesting the need for
-   polymorphism to handle such cases.
-10. **Speculative Generality**. Writing code to handle cases that don't exist
-    yet, leading to unnecessary complexity and maintenance overhead.
-11. **Temporary Field**. Fields that are set only in certain circumstances,
-    making the class harder to understand and maintain.
-12. **Comments**. Over-reliance on comments to explain what the code does
-    instead of writing self-explanatory code. Comments should be used to explain
-    why something is done, not what is done.
+1. **The God Class**
+
+   A class that knows too much or does too much. It usually ends up being a
+   catch-all for functionality, violating the Single Responsibility Principle.
+
+2. **Duplicated Code**
+
+   Code that is repeated in multiple places. This leads to difficulties in
+   maintenance and increases the risk of bugs, as changes need to be replicated
+   in all locations.
+
+3. **Long Methods**
+
+   Methods that are excessively long, making them hard to understand and
+   maintain. Clean Code advocates for short, single-purpose methods.
+
+4. **Large Classes**
+
+   Classes that contain too much functionality, becoming difficult to manage.
+   They often indicate a need for refactoring into smaller, more cohesive
+   classes.
+
+5. **Feature Envy**
+
+   When a method in one class is more interested in the data of another class
+   than its own data, leading to tight coupling and low cohesion.
+
+6. **Inappropriate Intimacy**
+
+   When one class is too familiar with the inner workings of another class,
+   leading to strong coupling and making changes more difficult.
+
+7. **Primitive Obsession**
+
+   The use of primitive data types to represent domain ideas instead of creating
+   specific types that better represent the concepts and provide more meaning.
+
+8. **Data Clumps**
+
+   Groups of data items that tend to be passed around together, indicating they
+   might belong in their own class.
+
+9. **Switch Statements**
+
+   Overuse of switch statements can lead to code duplication and difficulty in
+   maintaining the code, suggesting the need for polymorphism to handle such
+   cases.
+
+10. **Speculative Generality**
+
+    Writing code to handle cases that don't exist yet, leading to unnecessary
+    complexity and maintenance overhead.
+
+11. **Temporary Field**
+
+    Fields that are set only in certain circumstances, making the class harder
+    to understand and maintain.
+
+12. **Comments**
+
+    Over-reliance on comments to explain what the code does instead of writing
+    self-explanatory code. Comments should be used to explain why something is
+    done, not what is done.

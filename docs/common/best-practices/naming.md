@@ -15,7 +15,7 @@ description: The best practices for naming variables and functions
 - Avoid reserved words as names.
 
 - Stick to a consistent naming convention throughout your codebase. For JS they
-  are camelCase and PascalCase.
+  are _camelCase_ and _PascalCase_.
 
 ## Variables
 
@@ -23,8 +23,7 @@ description: The best practices for naming variables and functions
 
 - Use Plurals for arrays and collections.
 
-- Except for loop indices, avoid using single character names and nouns for
-  variables.
+- Except for loop indices, avoid using single character names.
 
 - Use named constants instead of hard-coding values directly in your code.
 
