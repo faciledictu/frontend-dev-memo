@@ -22,11 +22,11 @@ anymore), and then frees the memory allocated to those objects for future use.
 
 ## Approaches
 
-The most common approach is **Mark and Sweep**. It marks all reachable objects
-and then frees the memory of those that aren't marked.
+- The most common approach is **Mark and Sweep**. It marks all reachable objects
+  and then frees the memory of those that aren't marked.
 
-Some garbage collectors use **Reference Counting**, where each object has a
-count of the number of references to it. When an object's reference count drops
-to zero, it can be safely deallocated. However, this approach has limitations,
-particularly with cyclic references (where two or more objects reference each
-other but are otherwise unreachable).
+- Some garbage collectors use **Reference Counting**, where each object has a
+  count of the number of references to it. When an object's reference count
+  drops to zero, it can be safely deallocated. However, this approach has
+  limitations, particularly with cyclic references (where two or more objects
+  reference each other but are otherwise unreachable).

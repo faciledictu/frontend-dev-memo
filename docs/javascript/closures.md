@@ -45,16 +45,16 @@ closureExample('Another message');
 
 Code with closures can be complex and hard to read.
 
-Long-lived state: The outer variable persists across multiple calls and its
+**Long-lived state:** The outer variable persists across multiple calls and its
 lifecycle is tied to the closure, not the function itself.
 
-Memory leaks: If closures retain references to large objects or variables that
-are no longer needed, they can prevent those objects from being
+**Memory leaks:** If closures retain references to large objects or variables
+that are no longer needed, they can prevent those objects from being
 garbage-collected. For example:
 
 ```javascript
 function createClosure() {
-  let bigData = new Array(1000000).fill('x'); // A large array
+  const bigData = new Array(1000000).fill('x'); // A large array
 
   return function () {
     console.log(bigData.length);

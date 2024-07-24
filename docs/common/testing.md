@@ -35,14 +35,18 @@ correctly.
 
 - **Purpose** Ensure code quality and catch potential errors early by checking
   for syntax errors, type mismatches, and style issues.
-- **Tools** ESLint, TypeScript
+
+- **Tools** ESLint, TypeScript.
+
 - **Benefits** Fast feedback, helps maintain code quality, and catches issues
   before runtime.
 
 ### Unit Tests
 
 - **Purpose** Test individual functions, methods, or components in isolation.
-- **Tools** Jest, Mocha, Jasmine
+
+- **Tools** Jest, Mocha, Jasmine.
+
 - **Benefits** Fast execution, easy to write, and maintain. Provides confidence
   in small, isolated pieces of code.
 
@@ -54,11 +58,15 @@ external systems or other tests.
 F.I.R.S.T is an acronym that describes the properties of good unit tests.
 
 1. Fast: Tests should run quickly to facilitate frequent execution.
+
 2. Independent: Tests should not depend on each other.
+
 3. Repeatable: Tests should yield the same result each time they run, regardless
    of the environment or the order of test execution.
+
 4. Self-Validating: Should have clear pass/fail criteria, eliminating the need
    for manual result checking.
+
 5. Timely: Should be written early enough to influence the code design.
 
 In addition, tests should have a clear strucure and be easy to understand and
@@ -70,8 +78,10 @@ maintain.
 
 - **Purpose** Test the interaction between multiple units/components to ensure
   they work together as expected.
+
 - **Tools** React Testing Library, Enzyme (though React Testing Library is
-  preferred for modern React applications)
+  preferred for modern React applications).
+
 - **Benefits** Verifies that different parts of the application integrate
   correctly. More realistic than unit tests but still relatively fast.
 
@@ -79,7 +89,9 @@ maintain.
 
 - **Purpose** Test the entire application flow from the user's perspective by
   simulating real user interactions.
-- **Tools** Cypress, Selenium, Playwright
+
+- **Tools** Cypress, Selenium, Playwright.
+
 - **Benefits** Highest level of confidence, tests the entire stack including
   frontend, backend, and database. However, these tests are slower and more
   brittle.
@@ -93,8 +105,10 @@ The AAA pattern helps to organize tests in a clear and consistent manner.
 1. **Arrange** step involves setting up the environment for your test. You
    initialize and configure the objects, mock dependencies, and set any
    preconditions required for the test.
+
 2. **Act** step involves invoking the method or function under test with the
    arranged parameters. You perform the action that you want to test.
+
 3. **Assert** step involves checking that the results of the action match the
    expected outcome.
 
@@ -123,8 +137,10 @@ test('adds two numbers', () => {
 
 - **Clarity.** It clearly separates the different stages of a test, making the
   test easier to read and understand.
+
 - **Maintainability.** Tests structured in this way are easier to maintain, as
   each part of the test has a distinct purpose.
+
 - **Consistency.** Using a consistent pattern across tests makes it easier for
   teams to write and review tests.
 
@@ -163,9 +179,11 @@ By using TDD, you write tests before writing the corresponding code. It follows
 a simple three-step process, often referred to as the **Red-Green-Refactor**
 cycle.
 
-1. Red: write a failing test.
-2. Green: write the minimum code required to pass the test.
-3. Refactor: clean up the code while keeping the test passing.
+1. *Red:* write a failing test.
+
+2. *Green:* write the minimum code required to pass the test.
+
+3. *Refactor:* clean up the code while keeping the test passing.
 
 ### Behavior-Driven Development (BDD)
 
@@ -179,13 +197,16 @@ That's why tests are written in a natural-like, human-readable language.
 
 These scenarios are typically written in a **Given-When-Then** format:
 
-1. Given: the initial context or state of the system.
-2. When: the action or event that triggers the behavior.
-3. Then: the expected outcome or result.
+1. *Given:* the initial context or state of the system.
 
-#### Write Scenarios in Gherkin Syntax
+2. *When:* the action or event that triggers the behavior.
 
-Write your test scenarios in Gherkin syntax (or recieve them). These scenarios describe the desired behavior of your application in a human-readable format.
+3. *Then:* the expected outcome or result.
+
+#### Example: Writing Scenarios in Gherkin Syntax
+
+Write your test scenarios in Gherkin syntax (or recieve them). These scenarios
+describe the desired behavior of your application in a human-readable format.
 
 ```gherkin
 Feature: User Login
