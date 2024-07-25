@@ -52,6 +52,12 @@ export const nodejs: Category = {
   description: 'JavaScript runtime that allows server-side execution of JavaScript code',
 };
 
+export const sql: Category = {
+  id: 'sql',
+  label: 'SQL',
+  description: 'Structured Query Language for managing and manipulating relational databases',
+};
+
 const categories: Category[] = [
   common,
   git,
@@ -60,7 +66,8 @@ const categories: Category[] = [
   browser,
   react,
   nextjs,
-  nodejs
+  nodejs,
+  sql
 ];
 
 export default categories;
