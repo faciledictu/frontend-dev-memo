@@ -92,7 +92,7 @@ SELECT * FROM timezone_test;
 -- | 2029-02-14 03:47:00 | 2029-02-14 08:47:00 |
 ```
 
-  <details>
+  </details>
 
 :::
 
