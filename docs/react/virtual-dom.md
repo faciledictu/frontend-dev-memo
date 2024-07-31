@@ -5,7 +5,7 @@ sidebar_position: 3
 # Virtual DOM
 
 Operations on the real DOM can be slow and resource-intensive. So libraries like
-React uses the Virtual DOM whis is a lightweight copy of the real DOM one.
+React use the Virtual DOM which is a lightweight copy of the real DOM one.
 
 It acts as an intermediary, allowing efficient updates to the user interface.
 When a change occurs in the application's state, the Virtual DOM updates first.

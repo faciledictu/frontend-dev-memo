@@ -7,64 +7,83 @@ sidebar_position: 4
 When a user enters a domain name in the browser input, the following sequence of
 events typically occurs.
 
-## 1. DNS Resolution
+## 1. DNS Lookup
 
 The browser first checks its cache to see if it has the IP address for the
-domain. If not, it sends a DNS query to a DNS server to resolve the domain name
-to an IP address.
+domain. If not, it sends a DNS (Domain Name System) server to resolve the domain
+name (e.g., www.example.com) into an IP address, which identifies the server
+hosting the website.
 
-## 2. TCP Connection
+## 2. TCP/IP Connection
 
-Once the IP address is obtained, the browser initiates a TCP connection with the
-server at that IP address on the specified port (usually port 80 for HTTP or
-port 443 for HTTPS).
+The browser establishes a TCP (Transmission Control Protocol) connection with
+the server using the IP address. This involves a three-way handshake process to
+ensure a reliable connection.
 
-:::info TLS Handshake
+:::info
 
 The browser can request a secure connection and the server can provide its
 SSL/TLS certificate.
 
 If the certificate is valid, the browser and server agree on encryption
-algorithms and establish a secure encrypted connection.
-
-For secure connections, a TLS handshake occurs to establish a secure connection.
-This involves verifying the server's certificate and establishing an encrypted
-communication channel.
+algorithms and a TLS handshake occurs to establish a secure connection.
 
 :::
 
-## 3. HTTP or HTTPS Request
+## 3. HTTP/HTTPS Request
 
-The browser sends an HTTP request to the server, typically a GET request, asking
-for the content of the page.
+The browser sends an HTTP (Hypertext Transfer Protocol) or HTTPS (HTTP Secure)
+request to the server. The request includes details such as the HTTP method,
+headers, cookies, and other relevant information. If other data needes (such as
+images, scripts etc.), the browser sends additional requests later.
 
-## 5. Server Response
+### How Server Responses
 
-The server processes the request and sends back an HTTP response (or encrypned
-HTTPS response), which includes the requested resources (HTML, CSS, JavaScript,
-images, etc.) and status information.
+#### Processing
 
-## 6. Rendering
+The server processes the request, fetching the requested resource (e.g., an HTML
+page, image, or data) from its storage.
 
-The browser parses the HTML content, constructs the DOM (Document Object Model),
-and then fetches and processes any linked resources (like CSS, JavaScript,
-images).
+### Response Sending
 
-## 7. Rendering Engine
+The server sends an HTTP response back to the browser. The response includes a
+status code (e.g., 200 OK, 404 Not Found), headers, and the requested content
+(e.g., HTML, CSS, JavaScript, images).
 
-The rendering engine applies CSS to the DOM, runs JavaScript, and constructs the
-render tree.
+## 4. Rendering the Page
 
-## 8. Layout and Painting
+The browser receives the response and begins to render the page. This involves
+several steps:
 
-The render tree is used to perform layout calculations, determining the exact
-position and size of each element on the page. The browser then paints the
-content to the screen.
+- **Parsing HTML.** The browser parses the HTML to construct the DOM (Document
+  Object Model) tree.
 
-## 9. User Interaction
+- **Parsing CSS.** CSS files are fetched and parsed to construct the CSSOM (CSS
+  Object Model) tree.
 
-The browser continues to interact with the user, responding to events like
-clicks, scrolls, and input.
+- **Combining DOM and CSSOM.** The DOM and CSSOM are combined to create the
+  render tree, which represents the structure and styles of the page.
+
+- **JavaScript Execution.** JavaScript files are fetched and executed.
+  JavaScript can manipulate the DOM and CSSOM, dynamically updating the content
+  and styles of the page.
+
+- **Layout.** The browser calculates the layout of each element based on the
+  render tree.
+
+- **Painting.** The browser paints the pixels to the screen, rendering the final
+  visual representation of the page.
+
+## Additional Resources
+
+If the HTML includes references to additional resources (e.g., images, videos,
+fonts), the browser makes additional requests to fetch these resources and
+incorporates them into the page.
+
+## User Interaction
+
+Once the page is rendered, the browser handles user interactions (e.g., clicks,
+form submissions) and updates the page accordingly.
 
 If JavaScript or other actions modify the layout or style, the browser may need
 to reflow (recalculate layout) and repaint (update the display).

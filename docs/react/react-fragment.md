@@ -5,13 +5,13 @@ sidebar_position: 2
 # React.Fragment
 
 Each React component should return only one element. If you need to return
-multiple elements, you can use a single wrapper element (like a `<div>`). React
-Fragments let you group elements without a wrapper node.
+multiple elements, you can use a single wrapper element (like a `<div>`) or React
+Fragments, that let you group elements without a wrapper element.
 
 :::tip
 
-This is useful when you need to return multiple elements from a component's
-render method but don't want to create unnecessary wrapper elements, which can
+This is useful when you need to return multiple elements from a component's return
+(or render method) but don't want to create unnecessary wrapper elements, which can
 clutter the DOM and affect styling and performance. Another way is returning an
 array of components, alhough you will need to add a `key` prop for each element.
 
