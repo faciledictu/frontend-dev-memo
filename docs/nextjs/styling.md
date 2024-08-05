@@ -4,9 +4,8 @@ sidebar_position: 10
 
 # Styling
 
-ext.js 14 offers various opportunities for styling your applications, providing
-flexibility and accommodating different preferences and needs. Here are the main
-styling options available:
+Here is a review of various opportunities for styling your applications,
+providing flexibility and accommodating different preferences and needs.
 
 ## CSS Modules
 

@@ -86,7 +86,25 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
       additionalLanguages: ['bash', 'typescript'],
     },
+    mermaid: {
+      theme: {light: 'base', dark: 'base'},
+      options: {
+        themeVariables: {
+          'primaryColor': '#0062ff',
+          'primaryTextColor': '#fff',
+          'primaryBorderColor': '#0062ff',
+          'lineColor': '#0062ff',
+          'secondaryColor': '#4d91ff',
+          'tertiaryColor': '#fff'
+        },
+      },
+    },
   } satisfies Preset.ThemeConfig,
+
+  markdown: {
+    mermaid: true,
+  },
+  themes: ['@docusaurus/theme-mermaid'],
 };
 
 export default config;
