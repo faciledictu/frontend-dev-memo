@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <path d="M29,19.43c0,.95-5.82,2.29-13,2.29-7.18,0-13-1.34-13-2.29" style="fill: none; stroke: var(--ifm-color-primary); stroke-miterlimit: 10; stroke-width: 2px;"/>
+  <path d="M29,11.22c0,.95-5.82,2.29-13,2.29-7.18,0-13-1.34-13-2.29" style="fill: none; stroke: var(--ifm-color-primary); stroke-miterlimit: 10; stroke-width: 2px;"/>
+  <path d="M29,3.65v24.06c0,.95-5.82,2.29-13,2.29s-13-1.34-13-2.29V3.65c0-.91,5.82-1.65,13-1.65s13,.74,13,1.65Z" style="fill: none; stroke: var(--ifm-color-primary); stroke-miterlimit: 10; stroke-width: 2px;"/>
+  <ellipse cx="25.02" cy="8.64" rx="1.51" ry="1.37" transform="translate(-1.11 12.84) rotate(-28.17)" style="fill: none; stroke: var(--ifm-color-primary); stroke-miterlimit: 10;"/>
+  <ellipse cx="25.02" cy="17.04" rx="1.51" ry="1.37" transform="translate(-5.08 13.83) rotate(-28.17)" style="fill: none; stroke: var(--ifm-color-primary); stroke-miterlimit: 10;"/>
+  <ellipse cx="25.02" cy="25.44" rx="1.51" ry="1.37" transform="translate(-9.05 14.83) rotate(-28.17)" style="fill: none; stroke: var(--ifm-color-primary); stroke-miterlimit: 10;"/>
+  <path d="M29,3.65c0,.91-5.82,1.65-13,1.65s-13-.74-13-1.65" style="fill: none; stroke: var(--ifm-color-primary); stroke-miterlimit: 10; stroke-width: 2px;"/>
+</svg>
