@@ -47,8 +47,14 @@ element.removeEventListener('click', handleClick);
 ## Event Propagation
 
 Event propagation determines the order in which event handlers are executed.
-Bubbling. The event starts from the target element and bubbles up to the
-ancestors. By default, all event handlers are executed on this phase. Capturing:
+
+### Bubbling
+
+The event starts from the target element and bubbles up to the ancestors. _By
+default_, all event handlers are executed on this phase.
+
+### Capturing
+
 The event starts from the root and captures down to the target element. To
 execute the event handler on this phase, you need to add `{ capture: true }` (or
 just `true`) as the third argument.
