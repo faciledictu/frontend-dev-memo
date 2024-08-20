@@ -34,6 +34,12 @@ export const react: Category = {
   description: 'An overview of React and Redux',
 };
 
+export const reactNative: Category = {
+  id: 'react-native',
+  label: 'React Native',
+  description: 'Framework for building mobile apps using JavaScript and React',
+};
+
 export const typescript: Category = {
   id: 'typescript',
   label: 'TypeScript',
@@ -65,6 +71,7 @@ const categories: Category[] = [
   typescript,
   browser,
   react,
+  reactNative,
   nextjs,
   nodejs,
   sql

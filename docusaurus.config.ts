@@ -91,11 +91,11 @@ const config: Config = {
       options: {
         themeVariables: {
           'primaryColor': '#0062ff',
-          'primaryTextColor': '#fff',
+          'primaryTextColor': '#ffffff',
           'primaryBorderColor': '#0062ff',
           'lineColor': '#0062ff',
           'secondaryColor': '#4d91ff',
-          'tertiaryColor': '#fff'
+          'tertiaryColor': '#ffffff'
         },
       },
     },
