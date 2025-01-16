@@ -1,5 +1,23 @@
 @media screen and (max-width: 996px) {
   .card {
+    display: flex;
     text-align: center;
+    align-items: center;
   }
+}
+
+.card {
+  height: 100%;
+  transition: all 0.15s ease;
+  text-decoration: none !important;
+  border: 2px solid transparent;
+}
+
+.card:hover {
+  border-color: var(--ifm-color-primary);
+}
+
+.stretch {
+  display: flex;
+  align-items: stretch
 }
