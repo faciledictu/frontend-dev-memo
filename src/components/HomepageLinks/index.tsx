@@ -39,12 +39,12 @@ const categoryLinks: CategoryLink[] = categories.map(
 
 function CategoryLink({ label, Icon, link, description }: CategoryLink) {
   return (
-    <div className={clsx(styles.card, 'col col--3 padding-vert--lg')}>
-      <Icon width={64} height={64} role="img" />
-      <Heading as="h3">
-        <Link to={link}>{label}</Link>
-      </Heading>
-      <p>{description}</p>
+    <div className="col col--3 margin-bottom--lg">
+      <Link to={link} className={clsx('card padding--md', styles.card)}>
+        <Icon width={64} height={64} role="img" className="margin-bottom--md" />
+        <Heading as="h3">{label}</Heading>
+        <p>{description}</p>
+      </Link>
     </div>
   );
 }
@@ -53,7 +53,7 @@ export default function HomepageLinks(): JSX.Element {
   return (
     <section>
       <div className="container">
-        <div className="row">
+        <div className={clsx('row', styles.stretch)}>
           {categoryLinks.map((props, idx) => (
             <CategoryLink key={idx} {...props} />
           ))}
