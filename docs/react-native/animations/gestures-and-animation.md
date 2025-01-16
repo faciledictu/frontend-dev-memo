@@ -91,6 +91,74 @@ combination of `react-native-reanimated` and `react-native-gesture-handler`.
    );
    ```
 
+## PanResponder
+
+PanResponder provides full control over multiple touches. You can track and
+manage `gestureState.numberActiveTouches` to handle multi-touch gestures like
+_pinch-to-zoom_ or _rotation_.
+
+The gesture responder system in React Native is a low-level interface for
+handling touch interactions.
+
+- PanResponder wraps these handlers and provides:
+- A native `event` object: Contains the raw event details (e.g., touch
+  positions, timestamps, etc.).
+
+- A `gestureState` object.
+
+`gestureState` is an object passed to many of the gesture handler callbacks
+(e.g., onPanResponderMove, onPanResponderRelease) that contains detailed
+information about the current state of the user’s gesture. It provides a range
+of data points about touch behavior, such as velocity, distance, and the number
+of active touches.
+
+```javascript
+onPanResponderMove: (event, gestureState) => {};
+```
+
+### Exapmle[^1]
+
+```javascript
+const ExampleComponent = () => {
+  const panResponder = React.useRef(
+    PanResponder.create({
+      // Ask to be the responder:
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+
+      onPanResponderGrant: (evt, gestureState) => {
+        // The gesture has started. Show visual feedback so the user knows
+        // what is happening!
+        // gestureState.d{x,y} will be set to zero now
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        // The most recent move distance is gestureState.move{X,Y}
+        // The accumulated gesture distance since becoming responder is
+        // gestureState.d{x,y}
+      },
+      onPanResponderTerminationRequest: (evt, gestureState) => true,
+      onPanResponderRelease: (evt, gestureState) => {
+        // The user has released all touches while this view is the
+        // responder. This typically means a gesture has succeeded
+      },
+      onPanResponderTerminate: (evt, gestureState) => {
+        // Another component has become the responder, so this gesture
+        // should be cancelled
+      },
+      onShouldBlockNativeResponder: (evt, gestureState) => {
+        // Returns whether this component should block native components from becoming the JS
+        // responder. Returns true by default. Is currently only supported on android.
+        return true;
+      },
+    })
+  ).current;
+
+  return <View {...panResponder.panHandlers} />;
+};
+```
+
 ## Additional Tips
 
 - **Combine Gestures**: With `react-native-gesture-handler`, you can use
@@ -104,3 +172,5 @@ combination of `react-native-reanimated` and `react-native-gesture-handler`.
 - **Performance Considerations**: As gesture handlers and animations run on the
   UI thread, they are optimized for responsiveness and can handle complex
   interactions smoothly.
+
+[^1]: https://reactnative.dev/docs/panresponder#usage-pattern
