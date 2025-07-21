@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 ---
 
 # Fonts
@@ -13,23 +13,26 @@ Follow these steps:
    exist.
 2. Place your font files in the assets/fonts folder.
 
-```text
-your-project/
-├── android/
-├── ios/
-├── src/
-├── assets/
-│   └── fonts/
-│       ├── CustomFont-Regular.ttf
-│       └── CustomFont-Bold.ttf
-└── ...
-```
+   ```text
+   your-project/
+   ├── android/
+   ├── ios/
+   ├── src/
+   ├── assets/
+   │   └── fonts/
+   │       ├── CustomFont-Regular.ttf
+   │       └── CustomFont-Bold.ttf
+   └── ...
+   ```
 
 ## Linking
 
-In React Native, you need to link the assets to make them accessible in the native code. This is done differently based on the React Native version you're using.
+In React Native, you need to link the assets to make them accessible in the
+native code. This is done differently based on the React Native version you're
+using.
 
-Add the following to your react-native.config.js file in the root of your project
+Add the following to your react-native.config.js file in the root of your
+project
 
 ```javascript
 module.exports = {

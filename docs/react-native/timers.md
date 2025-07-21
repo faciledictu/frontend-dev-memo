@@ -1,5 +1,5 @@
 ---
-sidebar_position: 11
+sidebar_position: 13
 ---
 
 # Timers and requestAnimationFrame
@@ -81,24 +81,24 @@ export default AnimatedBox;
 
 ## How requestAnimationFrame Works Internally
 
-1.Frame Synchronization:
+1. Frame Synchronization
 
-- The browser (or the React Native runtime) calls the function you pass to
-  requestAnimationFrame just before the next repaint. This ensures the updates
-  occur in sync with the display refresh rate (usually 60fps, equating to
-  16.67ms per frame).
+   The browser (or the React Native runtime) calls the function you pass to
+   requestAnimationFrame just before the next repaint. This ensures the updates
+   occur in sync with the display refresh rate (usually 60fps, equating to
+   16.67ms per frame).
 
-2. Rendering Queue:
+2. Rendering Queue
 
-- Instead of running immediately, the callback is queued and invoked as part of
-  the rendering pipeline, allowing the system to batch updates for efficiency.
+   Instead of running immediately, the callback is queued and invoked as part of
+   the rendering pipeline, allowing the system to batch updates for efficiency.
 
-3. Throttling:
+3. Throttling
 
-- If the system is under heavy load and can’t maintain 60fps, it automatically
-  adjusts the callback frequency, reducing unnecessary work.
+   If the system is under heavy load and can’t maintain 60fps, it automatically
+   adjusts the callback frequency, reducing unnecessary work.
 
-4. High Priority:
+4. High Priority
 
-- The callbacks are part of the native rendering loop, ensuring they are
-  prioritized over non-essential background tasks.
+   The callbacks are part of the native rendering loop, ensuring they are
+   prioritized over non-essential background tasks.

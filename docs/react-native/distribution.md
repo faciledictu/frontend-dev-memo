@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 11
 ---
 
 # Publishing and Distribution
@@ -21,61 +21,56 @@ Store. Here’s an explanation of the key aspects you mentioned.
 
 ## Apple Store Distribution
 
-### 1. Prepare for Submission:
+1. Create an App Store entry in App Store Connect. Set up app metadata
+   (description, screenshots, categories, etc.).
 
-- Create an App Store entry in App Store Connect.
-- Set up app metadata (description, screenshots, categories, etc.).
+2. Switch to the Release scheme (Product → Scheme → Edit Scheme, set
+   Configuration to Release), then:
+   - Archive the app (Product → Archive) for distribution.
+   - Press Distribute App (Product → Distribute App).
+   - Select App Store Connect.
+   - Sign it with the appropriate provisioning profile and distribution
+     certificate.
 
-### 2. Build the App:
+:::info
 
-- Use Xcode to archive the app for distribution.
-- Sign it with the appropriate provisioning profile and distribution
-  certificate.
+Xcode includes an app validation step when you archive your app for
+distribution. It checks:
 
-  :::info
+- Provisioning profiles and certificates.
+- App Store guidelines compliance.
+- Missing or invalid settings in the app’s metadata.
 
-  Xcode includes an app validation step when you archive your app for
-  distribution. It checks:
+:::
 
-  - Provisioning profiles and certificates.
-  - App Store guidelines compliance.
-  - Missing or invalid settings in the app’s metadata.
+3. Upload the app binary. Now you can find it in the App Store Connect under
+   TestFlight.
 
-    :::
+4. Apple manually reviews the app to ensure compliance with guidelines. Approval
+   typically takes a few days, though it may vary.
 
-### 3. Submit via Xcode/Transporter:
+5. Once approved, publish the app or schedule a release date.
 
-- Upload the app binary to App Store Connect.
-- Pass Apple’s automated checks.
+### Provisioning Profile and Distribution Certificate
 
-### 4. Review Process:
+- When building an app, you sign it using a certificate.
+- Then, you associate that signed app with a provisioning profile.
 
-- Apple manually reviews the app to ensure compliance with guidelines.
-- Approval typically takes a few days, though it may vary.
+**Provisioning Profiles** are Apple-specific and are a key component of Apple’s
+app development and distribution process. They are required to run apps on
+physical devices (for testing) and to distribute apps via the App Store or
+TestFlight.
 
-### 5. Go Live:
+Types of provisioning profiles:
 
-- Once approved, publish the app or schedule a release date.
+| Type        | Purpose                                      | Includes Device UDIDs? |
+| ----------- | -------------------------------------------- | ---------------------- |
+| Development | Run and debug apps on real devices via Xcode | Yes                    |
+| Ad Hoc      | Distribute to testers outside the App Store  | Yes (max 100 devices)  |
+| App Store   | Submit app to App Store                      | No (open to public)    |
+| Enterprise  | Internal distribution within an organisation | No                     |
 
-### Provisioning Profile
-
-Provisioning Profiles are Apple-specific and are a key component of Apple’s app
-development and distribution process. They are required to run apps on physical
-devices (for testing) and to distribute apps via the App Store or TestFlight.
-
-- **App ID:** Unique identifier for your app.
-- **Devices (for development):** A list of devices where the app can be
-  installed (only for development profiles).
-- **Certificates:** A file that proves your app was signed by you.
-
-There are different types of provisioning profiles:
-
-- **Development Profile**: Used for testing on physical devices during
-  development.
-- **Ad-Hoc Profile**: Allows testing on specified devices before release.
-- **Distribution Profile**: Required for submitting apps to the App Store.
-
-:::tip Do Android Apps Have an Equivalent?
+:::info Do Android Apps Have an Equivalent?
 
 Not directly. Android apps don’t use provisioning profiles, but they do require:
 
@@ -87,14 +82,21 @@ Apple’s, making provisioning profiles unnecessary in the Android ecosystem.
 
 :::
 
-### Distribution Certificate
+**The distribution certificate** proves to Apple and devices that the app was
+created by a trusted developer.
 
-The distribution certificate proves the app was developed by an authorized Apple
-developer. This certificate:
-
+- Created in the Apple Developer Portal or via Xcode.
 - Identifies the developer or organization that published the app.
 - Ensures that the app has not been tampered with after being signed.
 - Is required to build and sign the app for distribution.
+
+You can only have two active iOS Distribution Certificates at once (per team).
+
+Types:
+
+- Development Certificate: For testing apps on real devices.
+- Distribution Certificate: For distributing apps either to the App Store or via
+  Ad Hoc/Enterprise channels.
 
 When creating a build for distribution (App Store or Enterprise), the app must
 be signed using the Distribution Certificate associated with your Apple
@@ -102,33 +104,47 @@ Developer Account.
 
 ## Google Play Distribution
 
-### 1. Prepare Your Google **Play Console**:
+1. In Google Play Console, create your app entry and configure app details
+   (name, description, graphics, etc.).
 
-- Create an app entry in the Play Console.
-- Configure app details (name, description, graphics, etc.).
+2. Android requires signing with a release key. Generate one with `keytool`
 
-### 2. Generate a Signed App Bundle:
+   ```sh
+   keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+   ```
 
-- Use tools like Android Studio to build a release **APK** or **AAB** (Android
-  App Bundle).
-- Sign it with your keystore (digital signature unique to your app).
+   - `keystore`: A file that holds the key used to sign your app.
+   - `alias`: A unique identifier for the key.
+   - `keyalg`: The algorithm used to generate the key (RSA).
+   - `keysize`: The size of the key (2048 bits).
+   - `validity`: The duration for which the key is valid (10000 days, ~27
+     years).
 
-### 3. Upload to Play Console:
+   This creates my-upload-key.keystore (valid ~27 years). Keep the keystore and
+   passwords safe. Place the `.keystore` in `android/app/` and reference it in
+   ~/.gradle/gradle.properties to avoid committing.
 
-- Upload the signed APK or AAB.
-- Set app details, such as pricing, target devices, and release notes.
+   ```properties
+   MYAPP_RELEASE_STORE_FILE=my-release-key.keystore
+   MYAPP_RELEASE_KEY_ALIAS=alias_name
+   MYAPP_RELEASE_STORE_PASSWORD=your_store_password
+   MYAPP_RELEASE_KEY_PASSWORD=your_key_password
+   ```
 
-:::info
+3. Generate a Signed App Bundle. Use tools like Android Studio to build a signed
+   release **APK** (not recommended) or **AAB** (Android App Bundle, preferred).
 
-Play Console performs checks during the APK or AAB upload process. This includes
-verifying target API levels, permissions, and adherence to Android Developer
-Guidelines.
+4. Upload signed build to Play Console. Fill in release notes etc.
 
-:::
+   :::info
 
-### 4. Release:
+   Play Console performs checks during the APK or AAB upload process. This
+   includes verifying target API levels, permissions, and adherence to Android
+   Developer Guidelines.
 
-- Once approved, publish your app or roll out in phases (via staged rollout).
+   :::
+
+5. Once approved, publish your app or roll out in phases (via staged rollout).
 
 ## Tools for Simplifying Distribution:
 
