@@ -41,6 +41,16 @@ const config: Config = {
     locales: ['en'],
   },
 
+  plugins: [
+    [
+      'vercel-analytics',
+      {
+        debug: false,
+        mode: 'auto',
+      },
+    ],
+  ],
+
   presets: [
     [
       'classic',
@@ -87,15 +97,15 @@ const config: Config = {
       additionalLanguages: ['bash', 'typescript'],
     },
     mermaid: {
-      theme: {light: 'base', dark: 'base'},
+      theme: { light: 'base', dark: 'base' },
       options: {
         themeVariables: {
-          'primaryColor': '#0062ff',
-          'primaryTextColor': '#ffffff',
-          'primaryBorderColor': '#0062ff',
-          'lineColor': '#0062ff',
-          'secondaryColor': '#4d91ff',
-          'tertiaryColor': '#ffffff'
+          primaryColor: '#0062ff',
+          primaryTextColor: '#ffffff',
+          primaryBorderColor: '#0062ff',
+          lineColor: '#0062ff',
+          secondaryColor: '#4d91ff',
+          tertiaryColor: '#ffffff',
         },
       },
     },
