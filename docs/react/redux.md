@@ -2,7 +2,7 @@
 sidebar_position: 20
 ---
 
-# Redux Overview\*
+# Redux Overview
 
 ## What is Redux and Why Use It in React Native?
 
@@ -99,3 +99,37 @@ response. Use temporary state and rollback logic if needed.
 - Simple apps or local state only
 - When Context API or component state is sufficient
 - For highly decoupled UI states with no global dependency
+
+## Advanced Tips & Good-to-Know
+
+I**mmutable Updates:** RTK uses Immer under the hood, but be mindful of
+accidentally mutating external objects or API responses.
+
+**DevTools Setup:** You can configure Redux DevTools to limit action history and
+disable it in production.
+
+**Selective Persist:** Avoid persisting volatile or sensitive data; use
+transforms to filter persisted state.
+
+**Hydration Conflicts:** When using redux-persist, ensure hydration race
+conditions are handled gracefully (e.g., show splash screen until rehydration
+completes).
+
+**Serializability:** Redux Toolkit warns about non-serializable values. If
+needed (e.g., for Dates or custom classes), configure
+serializableCheck.ignoreActions.
+
+**Custom Middleware:** You can chain multiple middlewares for tasks like
+analytics, offline queuing, or conditional dispatching.
+
+**Store Enhancers:** Use enhancers sparingly; prefer RTK’s default setup unless
+integrating with legacy tooling.
+
+**Dynamic Reducers:** For large apps with code-splitting, dynamically inject
+reducers using store.replaceReducer().
+
+**Error Boundaries + Redux:** Catch errors at UI level, but log them via Redux
+middleware for unified telemetry.
+
+**Batched Updates:** React Redux v8 uses automatic batching, but for non-React
+async triggers, you may still need unstable_batchedUpdates from react-native.
