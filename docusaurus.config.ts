@@ -15,10 +15,10 @@ type CustomNavbarItem = {
 };
 
 const navbarItems = categories.map(
-  ({ id, label }): CustomNavbarItem => ({
+  ({ id, navbarLabel }): CustomNavbarItem => ({
     type: 'docSidebar',
     sidebarId: id,
-    label,
+    label: navbarLabel,
     position: 'left',
   })
 );
@@ -69,9 +69,7 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: SITE_NAME,
       logo: {
         alt: ' ',
         src: 'img/logo.svg',
