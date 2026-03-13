@@ -34,7 +34,11 @@ const config: Config = {
   baseUrl: '/',
 
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+
+  future: {
+    experimental_faster: true,
+    v4: true,
+  },
 
   i18n: {
     defaultLocale: 'en',
@@ -111,6 +115,9 @@ const config: Config = {
 
   markdown: {
     mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
   },
   themes: ['@docusaurus/theme-mermaid'],
 };
