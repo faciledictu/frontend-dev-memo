@@ -1,6 +1,15 @@
 import Link from '@docusaurus/Link';
 import Heading from '@theme/Heading';
 import clsx from 'clsx';
+import CategoryBrowser from '@site/static/img/category-browser.svg';
+import CategoryCommon from '@site/static/img/category-common.svg';
+import CategoryGit from '@site/static/img/category-git.svg';
+import CategoryJavascript from '@site/static/img/category-javascript.svg';
+import CategoryNextjs from '@site/static/img/category-nextjs.svg';
+import CategoryNodejs from '@site/static/img/category-nodejs.svg';
+import CategoryReact from '@site/static/img/category-react.svg';
+import CategorySql from '@site/static/img/category-sql.svg';
+import CategoryTypescript from '@site/static/img/category-typescript.svg';
 import categories from '../../categories';
 import styles from './index.module.css';
 
@@ -14,16 +23,16 @@ type CategoryLink = {
 };
 
 const icons = new Map<string, Icon>([
-  ['common', require('@site/static/img/category-common.svg').default],
-  ['git', require('@site/static/img/category-git.svg').default],
-  ['javascript', require('@site/static/img/category-javascript.svg').default],
-  ['browser', require('@site/static/img/category-browser.svg').default],
-  ['react', require('@site/static/img/category-react.svg').default],
-  ['react-native', require('@site/static/img/category-react.svg').default],
-  ['nextjs', require('@site/static/img/category-nextjs.svg').default],
-  ['typescript', require('@site/static/img/category-typescript.svg').default],
-  ['nodejs', require('@site/static/img/category-nodejs.svg').default],
-  ['sql', require('@site/static/img/category-sql.svg').default],
+  ['common', CategoryCommon],
+  ['git', CategoryGit],
+  ['javascript', CategoryJavascript],
+  ['browser', CategoryBrowser],
+  ['react', CategoryReact],
+  ['react-native', CategoryReact],
+  ['nextjs', CategoryNextjs],
+  ['typescript', CategoryTypescript],
+  ['nodejs', CategoryNodejs],
+  ['sql', CategorySql],
 ]);
 
 const getIcon = (id: string) => icons.get(id) ?? icons.get('common');
