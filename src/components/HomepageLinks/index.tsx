@@ -22,20 +22,20 @@ type CategoryLink = {
   link: string;
 };
 
-const icons = new Map<string, Icon>([
-  ['common', CategoryCommon],
-  ['git', CategoryGit],
-  ['javascript', CategoryJavascript],
-  ['browser', CategoryBrowser],
-  ['react', CategoryReact],
-  ['react-native', CategoryReact],
-  ['nextjs', CategoryNextjs],
-  ['typescript', CategoryTypescript],
-  ['nodejs', CategoryNodejs],
-  ['sql', CategorySql],
-]);
+const icons: Record<string, Icon> = {
+  common: CategoryCommon,
+  git: CategoryGit,
+  javascript: CategoryJavascript,
+  browser: CategoryBrowser,
+  react: CategoryReact,
+  'react-native': CategoryReact,
+  nextjs: CategoryNextjs,
+  typescript: CategoryTypescript,
+  nodejs: CategoryNodejs,
+  sql: CategorySql,
+};
 
-const getIcon = (id: string) => icons.get(id) ?? icons.get('common');
+const getIcon = (id: string) => icons[id] ?? icons.common;
 
 const categoryLinks: CategoryLink[] = categories.map(
   ({ id, label, description }) => ({
