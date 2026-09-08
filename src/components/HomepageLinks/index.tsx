@@ -16,6 +16,7 @@ import styles from './index.module.css';
 type Icon = React.ComponentType<React.ComponentProps<'svg'>>;
 
 type CategoryLink = {
+  id: string;
   label: string;
   Icon: Icon;
   description: JSX.Element;
@@ -39,6 +40,7 @@ const getIcon = (id: string) => icons[id] ?? icons.common;
 
 const categoryLinks: CategoryLink[] = categories.map(
   ({ id, label, description }) => ({
+    id,
     label,
     Icon: getIcon(id),
     link: `/${id}`,
@@ -63,8 +65,8 @@ export default function HomepageLinks(): JSX.Element {
     <section>
       <div className="container">
         <div className={clsx('row', styles.stretch)}>
-          {categoryLinks.map((props, idx) => (
-            <CategoryLink key={idx} {...props} />
+          {categoryLinks.map((props) => (
+            <CategoryLink key={props.id} {...props} />
           ))}
         </div>
       </div>
