@@ -68,8 +68,15 @@ Links are created using the `<a>` tag.
   - `_parent` Opens in the parent frame.
   - `_top` Opens in the full body of the window.
 
+  **Security Note**: When using `target="_blank"`, it is highly recommended to
+  add `rel="noopener noreferrer"` to prevent a security vulnerability known as
+  Reverse Tabnabbing, where the newly opened page can maliciously redirect the
+  original page.
+
 ```html
-<a href="https://www.example.com" target="_blank">Visit Example</a>
+<a href="https://www.example.com" target="_blank" rel="noopener noreferrer"
+  >Visit Example</a
+>
 ```
 
 ### HTML Tables
