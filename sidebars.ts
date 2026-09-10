@@ -19,7 +19,8 @@ const sidebars: SidebarsConfig = categories.reduce((acc, { id, label }) => {
     },
   ];
 
-  return { [id]: sidebar, ...acc };
-}, {});
+  acc[id] = sidebar;
+  return acc;
+}, {} as SidebarsConfig);
 
 export default sidebars;
