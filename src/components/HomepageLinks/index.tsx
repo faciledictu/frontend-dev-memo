@@ -24,16 +24,16 @@ type CategoryLink = {
 };
 
 const icons: Record<string, Icon> = {
-  common: CategoryCommon,
-  git: CategoryGit,
-  javascript: CategoryJavascript,
-  browser: CategoryBrowser,
-  react: CategoryReact,
+  'common': CategoryCommon,
+  'git': CategoryGit,
+  'javascript': CategoryJavascript,
+  'browser': CategoryBrowser,
+  'react': CategoryReact,
   'react-native': CategoryReact,
-  nextjs: CategoryNextjs,
-  typescript: CategoryTypescript,
-  nodejs: CategoryNodejs,
-  sql: CategorySql,
+  'nextjs': CategoryNextjs,
+  'typescript': CategoryTypescript,
+  'nodejs': CategoryNodejs,
+  'sql': CategorySql,
 };
 
 const getIcon = (id: string) => icons[id] ?? icons.common;
