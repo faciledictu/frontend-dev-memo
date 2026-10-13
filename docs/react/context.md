@@ -30,11 +30,9 @@ value.
 
 ```javascript
 const MyProvider = ({ children }) => {
-  const value = {
-    /* your context value */
-  };
+  const value = {/* your context value */};
 
-  return <MyContext.Provider value={value}><{children}></MyContext.Provider>;
+  return <MyContext.Provider value={value}>{children}</MyContext.Provider>;
 };
 ```
 
