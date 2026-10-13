@@ -60,7 +60,7 @@ console.log(clone); // { a: 1, b: 2 }
 
 #### Using `structuredClone()` global function
 
-`tructuredClone()` is a built-in JavaScript function that creates a deep clone
+`structuredClone()` is a built-in JavaScript function that creates a deep clone
 of a given value, including objects, arrays, and other complex data types.
 
 ```javascript
@@ -116,12 +116,17 @@ console.log(person.age); // 30
 
 #### The optional chaining operator
 
-The optional chaining operator (also known as nullish coalescing) allows you to
-access properties of an object without the fear of encountering _TypeError_ if
-the property does not exist (or is nullish).
+The optional chaining operator `?.` allows you to access properties of an object
+without the fear of encountering _TypeError_ if the value before the operator is
+nullish (`null` or `undefined`). In that case the whole expression evaluates to
+`undefined`.
+
+It is often combined with the nullish coalescing operator `??`, which provides a
+fallback for a nullish value.
 
 ```javascript
 console.log(person.contacts?.email); // undefined
+console.log(person.contacts?.email ?? 'no email'); // 'no email'
 ```
 
 This operator simplifies code and makes it more readable, especially in
@@ -160,9 +165,9 @@ for (const key in person) {
 
 ## `Object` static methods
 
-`Object.hasOwn(obj)` returns `true` if the object has the specified property as
-its own property, otherwise returns false. Introduced in ECMAScript 2022 (ES13),
-this method provides a more reliable and modern alternative to
+`Object.hasOwn(obj, prop)` returns `true` if the object has the specified
+property as its own property, otherwise returns false. Introduced in ECMAScript
+2022 (ES13), this method provides a more reliable and modern alternative to
 `Object.prototype.hasOwnProperty()`.
 
 ```javascript
