@@ -42,6 +42,12 @@ pnpm typecheck
 
 `pnpm format` fixes formatting issues automatically.
 
+## Writing Pages
+
+New pages follow [docs/\_template.md](docs/_template.md): the term or question
+as a title, a short model answer right under it, then details, an example and
+follow-up questions for the interviewer.
+
 [Docusaurus-badge]:
   https://img.shields.io/badge/Docusaurus-222?style=for-the-badge&logo=docusaurus
 [Docusaurus-url]: https://docusaurus.io/
