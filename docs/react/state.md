@@ -22,14 +22,14 @@ class MyComponent extends React.Component {
     };
   }
 
-  handleIncrement() => {
+  handleIncrement = () => {
     this.setState((prevState) => ({ count: prevState.count + 1 }));
-  }
+  };
 
   render() {
     return (
       <div>
-        <button onClick={increment}>+ 1</button>
+        <button onClick={this.handleIncrement}>+ 1</button>
         <p>Count: {this.state.count}</p>
       </div>
     );
@@ -61,7 +61,7 @@ return (
 );
 ```
 
-## Asynchornous nature of setting state
+## Asynchronous nature of setting state
 
 The `setState` function is asynchronous to optimize performance and ensure that
 the UI is updated efficiently. When you call `setState`, React batches multiple
@@ -86,7 +86,7 @@ const increment = () => {
   setCount(count + 1);
   setCount(count + 1);
   // After all 3 setCount calls, count is incremented only by 1 because each time setCount
-  // recieves the old count value. Think about the count value as a closure:
+  // receives the old count value. Think about the count value as a closure:
   //   setCount(0 + 1);
   //   setCount(0 + 1);
   //   setCount(0 + 1);
@@ -161,8 +161,8 @@ The `useReducer` hook is a built-in React hook that provides an alternative to
 
 :::note[When to Use]
 
-It's particularly useful By using useReducer, you can manage state in a more
-declarative and predictable manner.
+By using useReducer, you can manage state in a more declarative and predictable
+manner.
 
 It can be useful when:
 
