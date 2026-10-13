@@ -22,7 +22,7 @@ export default function handler(req, res) {
 
 ## Server-Only Forms
 
-You need to create certain API-endpont to handle recieved data on the server.
+You need to create certain API endpoint to handle received data on the server.
 
 ```typescript title="api/submit.ts"
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -68,7 +68,7 @@ export default function Page() {
 
 ## Data Validation
 
-If you need to validate the data on client, you can use HTML attibutes like
+If you need to validate the data on client, you can use HTML attributes like
 `required` and `type=email`.
 
 For more complex data, you may consider validate them on server using schema
@@ -99,16 +99,16 @@ You can use React state to set an error message if form submission request
 fails.
 
 ```tsx
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 
 function RegisterForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [isSuccess, setSuccess] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setLoading(true);
+    setIsLoading(true);
     setError(null);
     setIsSuccess(false);
 
@@ -116,7 +116,6 @@ function RegisterForm() {
       const formData = new FormData(event.currentTarget);
       const response = await fetch('/api/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: formData,
       });
 
@@ -129,27 +128,17 @@ function RegisterForm() {
       setIsSuccess(true);
     } catch (error) {
       setError('Something went wrong');
+    } finally {
+      setIsLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
     <form onSubmit={handleSubmit}>
       {error && <p>{error}</p>}
       {isSuccess && <p>Registration successful!</p>}
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      />
+      <input type="email" name="email" placeholder="Email" />
+      <input type="password" name="password" placeholder="Password" />
       <button type="submit" disabled={isLoading}>
         Register
       </button>
