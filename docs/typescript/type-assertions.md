@@ -1,114 +1,108 @@
 ---
 sidebar_position: 3
+description:
+  The as syntax, as const, satisfies, non-null assertion and type guards
 ---
 
 # Type Assertions
 
-Type casting in TypeScript allows you to tell the compiler to treat a variable
-as a different type. This can be useful when you know more about the type of a
-variable than TypeScript does, such as when interacting with third-party
-libraries or when dealing with dynamic data.
+A **type assertion** (`value as Type`) tells the compiler to treat a value as a
+given type. It is **not a conversion**: nothing is checked or changed at
+runtime, so a wrong assertion moves the error from compile time to production.
+Use it when you really know more than the compiler (for example, the type of a
+DOM element). For external data, prefer **type guards** or validation.
 
-## Type Assertions
+## Details
 
-TypeScript provides two syntaxes for type assertions: Angle-bracket and
-As-syntax.
+### Syntax
+
+- `value as Type` is the main form.
+- `<Type>value` is the old form. It conflicts with JSX and is not allowed in
+  `.tsx` files.
+- An assertion is allowed only between related types. To force an unrelated one,
+  a double assertion is needed: `value as unknown as Type`. This switches the
+  checks off completely.
+
+### Related Operators
+
+- **`as const`** makes a literal read-only and keeps the narrowest type:
+  `['a', 'b'] as const` is `readonly ['a', 'b']`, not `string[]`.
+- **`satisfies`** checks that a value matches a type but keeps the inferred type
+  of the value. Unlike `as`, it can't hide an error.
+- **Non-null assertion `value!`** removes `null` and `undefined` from the type.
+  It is also unchecked.
+
+### Type Guards Instead of Assertions
+
+Narrowing is checked by the compiler and by the runtime:
+
+- `typeof value === 'string'`, `value instanceof Date`, `'id' in value`;
+- a custom guard: a function that returns `value is Type`;
+- a schema validator such as Zod for API responses.
+
+## Example
+
+Assertions and their safer relatives:
 
 ```typescript
-let someValue: any = 'this is a string';
-let strLength: number = (<string>someValue).length;
+const input = document.querySelector('#email') as HTMLInputElement;
+
+const sizes = ['s', 'm', 'l'] as const;
+type Size = (typeof sizes)[number]; // 's' | 'm' | 'l'
+
+type Theme = Record<string, string | number>;
+
+const theme = {
+  color: 'red',
+  gap: 8,
+} satisfies Theme;
+
+theme.gap.toFixed(); // OK: `gap` is still a number, not `string | number`
 ```
 
-```typescript
-let someValue: any = 'this is a string';
-let strLength: number = (someValue as string).length;
-```
-
-:::tip
-
-In `.tsx` files only the `as` syntax is available: the angle-bracket syntax
-conflicts with JSX and is not allowed there.
-
-:::
-
-:::warning
-
-type assertions do not perform any runtime type checking or data manipulation.
-They purely inform the TypeScript compiler of how you want it to treat the
-variable. Therefore, incorrect type assertions can lead to runtime errors if the
-actual data does not match the asserted type.
-
-:::
-
-## Type Casting with Classes and Interfaces
+A type guard for data from an API:
 
 ```typescript
 interface User {
   id: number;
   name: string;
-  email: string;
 }
 
-const employee = {} as User;
-employee.id = 123;
-employee.name = 'John Doe';
-employee.email = 'j.doe@example.com';
-```
-
-Here, we're asserting that `employee` is of type `User`, even though we're
-initializing it as an empty object and then assigning properties later.
-
-## Examples
-
-This example will illustrate how you might handle dynamic data fetched from an
-API and assert its type for further processing. Suppose you are fetching user
-data from an API, and you want to ensure that the data conforms to a specific
-interface once it's fetched.
-
-```typescript
-async function fetchUserData(userId: number): Promise<User | null> {
-  try {
-    const response = await fetch(`https://api.example.com/users/${userId}`);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const data = await response.json();
-
-    // Use a type assertion to tell TypeScript that 'data' is of type 'User'
-    const user = data as User;
-
-    // Optionally, you can add runtime checks to ensure 'data' has the expected structure
-    if (
-      typeof user.id === 'number' &&
-      typeof user.name === 'string' &&
-      typeof user.email === 'string'
-    ) {
-      return user;
-    } else {
-      console.error('Invalid user data structure:', data);
-      return null;
-    }
-  } catch (error) {
-    console.error('Fetching user data failed:', error);
-    return null;
-  }
+function isUser(value: unknown): value is User {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'id' in value &&
+    typeof value.id === 'number' &&
+    'name' in value &&
+    typeof value.name === 'string'
+  );
 }
 
-// Usage example
-fetchUserData(1).then((user) => {
-  if (user) {
-    console.log('User data:', user);
-  } else {
-    console.log('User data could not be fetched or was invalid.');
+async function fetchUser(id: number): Promise<User> {
+  const response = await fetch(`https://api.example.com/users/${id}`);
+  const data: unknown = await response.json();
+
+  if (!isUser(data)) {
+    throw new Error('Invalid user data');
   }
-});
+
+  return data; // narrowed to User
+}
 ```
 
-After parsing the JSON response, we use const `user = data as User`; to assert
-that data conforms to the User interface.
+## Follow-up Questions
 
-TypeScript type assertions don't perform runtime checks, that's why we add an
-optional runtime validation to ensure `user` has the expected structure. This
-helps avoid potential issues if the data format changes or if there's an error
-in the API response.
+- What is the difference between `as` and `satisfies`? `as` changes the type and
+  can hide a mistake; `satisfies` only checks and keeps the inferred type.
+- Why is `const user = {} as User` dangerous? The object has none of the
+  required fields, but the compiler believes it does.
+- When is an assertion justified? DOM queries, values checked in a way the
+  compiler can't see, and tests.
+
+## Common Mistakes
+
+- Calling it "type casting" and expecting a conversion:
+  `'5' as unknown as number` is still a string.
+- Asserting the result of `response.json()` and trusting it without validation.
+- Using `!` to silence the compiler instead of handling `null`.

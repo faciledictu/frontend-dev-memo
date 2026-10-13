@@ -1,8 +1,21 @@
 ---
 sidebar_position: 2
+description: Object shapes, type vs interface, optional and readonly properties
 ---
 
 # Objects and Interfaces
+
+The shape of an object is described with a **type alias** or an **interface**.
+TypeScript is **structurally typed**: a value fits a type if it has the required
+properties, regardless of how it was declared.
+
+`type` vs `interface`:
+
+- For object shapes they are almost interchangeable; pick one and be consistent.
+- Only an **interface** supports **declaration merging**: two declarations with
+  the same name are combined. It is extended with `extends`.
+- Only a **type alias** can name unions, tuples, primitives, and mapped or
+  conditional types. Object types are combined with `&`.
 
 ## `object` Type
 
@@ -22,14 +35,15 @@ obj = 42; // Error, 42 is a primitive type
 
 :::note
 
-Global `Object` type (with capital O) is another thing.
+The global `Object` type (with a capital O) is a different thing: it matches
+almost any value, including primitives, and should not be used.
 
 :::
 
 ## Shape of Objects
 
-Shapes of JavaScript objects can be defined in TypeScript by using one of those
-syntax.
+Shapes of JavaScript objects can be defined in TypeScript by using one of these
+syntaxes.
 
 ```typescript
 // Inline, anonymous
@@ -66,55 +80,50 @@ const person: Person = {
 };
 ```
 
-Interfaces can also be extended to create new interfaces that inherit properties
-from their parents.
+An interface can extend other interfaces. With type aliases the same is done
+with an intersection.
 
 ```typescript
-// Basic Animal interface
 interface Animal {
   species: string;
-  age: number;
 }
 
-// Extending Animal to create a Mammal interface
-interface Mammal extends Animal {
-  hasFur: boolean;
-}
-
-// Extending Mammal to create a Dog interface
-interface Dog extends Mammal {
+interface Dog extends Animal {
   breed: string;
   bark(): void;
 }
 
-// Creating an object of type Dog
-let myDog: Dog = {
+type Cat = Animal & { indoor: boolean };
+
+const myDog: Dog = {
   species: 'Canine',
-  age: 5,
-  hasFur: true,
   breed: 'Labrador',
   bark() {
-    console.log('Woof! Woof!');
+    console.log('Woof!');
   },
 };
-
-// Using the object
-console.log(myDog.species); // Output: Canine
-console.log(myDog.breed); // Output: Labrador
-myDog.bark(); // Output: Woof! Woof!
 ```
 
-:::note
+Declaration merging works only for interfaces. It is used to add fields to types
+from libraries and to globals such as `Window`.
 
-Unlike classes, interfaces do not provide implementations of methods.
+```typescript
+interface Settings {
+  theme: string;
+}
 
-:::
+interface Settings {
+  locale: string;
+}
+
+const settings: Settings = { theme: 'dark', locale: 'en' };
+```
 
 ## Property Modifiers
 
 - Optional properties: use a question mark `?` to denote optional properties.
-- Read-only properties: use the `readonly` modifier to make properties
-  immutable.
+- Read-only properties: use the `readonly` modifier to forbid reassignment. It
+  is a compile-time check only and it is shallow.
 
 ```typescript
 interface User {
@@ -139,7 +148,8 @@ bob.id = 3; // Error: Cannot assign to 'id' because it is a read-only property.
 
 ## Index Signatures
 
-You can define objects with properties whose names are not known ahead of time.
+An index signature describes objects whose property names are not known ahead of
+time. `Record<string, string>` is a shorter way to write the same type.
 
 ```typescript
 let dictionary: {

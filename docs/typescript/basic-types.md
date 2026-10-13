@@ -1,14 +1,32 @@
 ---
 sidebar_position: 1
+description:
+  Primitives, any, unknown, never, void, arrays, tuples, unions and literals
 ---
 
-# Basic Types and Usage
+# Basic Types
+
+TypeScript adds **static types** to JavaScript: they are checked at compile time
+and erased from the output. The basic set:
+
+- the seven **primitives** of JavaScript;
+- **`any`**, **`unknown`**, **`never`** and **`void`**;
+- **arrays** and **tuples**;
+- **unions** and **literal types**, usually named with a **type alias**.
+
+The most common question is the difference between the special types:
+
+| Type      | What can be assigned to it | What you can do with it                       |
+| --------- | -------------------------- | --------------------------------------------- |
+| `any`     | anything                   | anything, checks are off                      |
+| `unknown` | anything                   | nothing until it is narrowed                  |
+| `never`   | nothing                    | it never has a value                          |
+| `void`    | `undefined`                | the result of a function that returns nothing |
 
 ## Primitives
 
-There are seven primitives in TypeScript that reflect the same primitives in
-JavaScript: `boolean`, `number`, `bigint`, `string`, `null`, `undefined`,
-`symbol`.
+TypeScript has seven primitive types, matching the primitives in JavaScript:
+`boolean`, `number`, `bigint`, `string`, `null`, `undefined`, `symbol`.
 
 ```typescript
 let isDone: boolean = false;
@@ -32,7 +50,8 @@ let uniqueId: symbol = Symbol('id');
 
 ## Special Types
 
-- `any` represents any type. Opt-out of type checking.
+- `any` represents any type and opts out of type checking. It spreads: anything
+  derived from an `any` value is `any` too.
 
 ```typescript
 let notSure: any = 4;
@@ -40,7 +59,8 @@ notSure = 'may be a string';
 notSure = false;
 ```
 
-- `unknown` represents any value, but requires type checking before being used.
+- `unknown` represents any value, but requires a type check before use. It is
+  the safe replacement for `any`.
 
 ```typescript
 let value: unknown;
@@ -50,7 +70,7 @@ if (typeof value === 'string') {
 }
 ```
 
-- `void` is used for functions that do not return any value.
+- `void` is used for functions that return no value.
 
 ```typescript
 function warnUser(): void {
@@ -60,28 +80,42 @@ function warnUser(): void {
 
 :::note
 
-In TypeScript, when a function is expected to return `void`, it means that the
-function should not return a meaningful value. However, the function is still
-allowed to return `undefined` implicitly or any value that is ignored.[^1]
-
-This is a practical decision to accommodate common JavaScript patterns where the
-return value is often irrelevant.
+A callback typed as returning `void` may still return a value: it is simply
+ignored.[^1] This is why `items.forEach((item) => list.push(item))` compiles,
+although `push` returns a number.
 
 :::
 
-- `never` represents values that never occur. Used for functions that always
-  throw an error or never return.
+- `never` represents values that never occur: the result of a function that
+  always throws or never returns, and what is left of a union when every variant
+  has been handled (an exhaustive check).
 
 ```typescript
-function error(message: string): never {
+function fail(message: string): never {
   throw new Error(message);
+}
+
+type Shape = 'circle' | 'square';
+
+function area(shape: Shape): number {
+  switch (shape) {
+    case 'circle':
+      return 3.14;
+    case 'square':
+      return 1;
+    default: {
+      // A compile error appears here if a new variant is added to Shape
+      const unreachable: never = shape;
+      return unreachable;
+    }
+  }
 }
 ```
 
 ## Arrays
 
-To specify arrays that can keep any number of values, the syntax `type[]` or
-`Array<type>` is used, which work for any type.
+Arrays of any length are typed with `type[]` or `Array<type>`. Both work for any
+element type.
 
 ```typescript
 const list: number[] = [1, 2, 3];
@@ -90,8 +124,8 @@ const sameList: Array<number> = [1, 2, 3];
 
 ## Tuples
 
-Represents an array with a fixed number of elements, where each element can have
-a different type.
+A tuple represents an array with a fixed number of elements, where each element
+can have a different type.
 
 ```typescript
 const x: [string, number] = ['hello', 10];
@@ -99,7 +133,8 @@ const x: [string, number] = ['hello', 10];
 
 ## Union types
 
-Union types allow a variable to hold more than one type.
+A union type allows a value to be one of several types. Before using it, the
+type has to be narrowed, for example with `typeof`.
 
 ```typescript
 let value: number | string;
@@ -109,7 +144,7 @@ value = 'hello';
 
 ## Literal types
 
-Literal types let you specify exact values a string, number, or boolean must
+Literal types let you specify the exact value a string, number, or boolean must
 have.
 
 ```typescript
@@ -119,44 +154,28 @@ direction = 'up';
 
 ## Usage
 
-### Type Safety
-
-TypeScript enforces type safety by ensuring that variables are used according to
-their declared types. This helps catch errors at compile time, making the code
-more robust and maintainable.
-
-Trying to assign a value of the wrong type will result in a compilation error.
-
-```typescript
-let age: number = 30;
-age = 'thirty'; // Error: Type 'string' is not assignable to type 'number'.
-```
-
 ### Type Inference
 
-TypeScript can infer types based on the assigned values, which reduces the need
-for explicit type annotations in many cases:
+TypeScript infers types from the assigned values, so most local variables need
+no annotation. A `const` gets a literal type, a `let` gets the wider one.
 
 ```typescript
 let score = 100; // inferred as number
-let message = 'Welcome'; // inferred as string
+const max = 100; // inferred as 100
+
+score = 'high'; // Error: Type 'string' is not assignable to type 'number'.
 ```
 
 ### Type Aliases
 
-Type aliases in TypeScript allow you to create a new name for an existing type.
-This can help make your code more readable and manageable.
+A type alias gives a name to any type: a union, a tuple, a function or an object
+shape. For object shapes see [Objects and Interfaces](./objects.md).
 
 ```typescript
 type Direction = 'up' | 'down' | 'left' | 'right';
 
-let direction1: Direction = 'up';
-
-let direction2: Direction = 'left';
-
-direction1 = 'down';
-
-direction2 = 'up';
+let current: Direction = 'up';
+current = 'down';
 ```
 
 [^1]:
