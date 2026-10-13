@@ -1,7 +1,7 @@
 ---
 sidebar_position: 8
 description:
-  Creating and cloning objects, accessing properties, Object static methods
+  Cloning objects, accessing properties, iterating, Object static methods
 ---
 
 # Objects
@@ -12,199 +12,145 @@ copying a variable does not copy the object. A **shallow clone** copies only the
 top level (`{ ...obj }`, `Object.assign()`); a **deep clone** copies nested
 objects too (`structuredClone()`).
 
-## Creating
-
-- **Object Literal notation[^1].** It allows defining key-value pairs within
-  curly braces `{}`.
-- **`Object.create()` method[^2].** This method allows you to create a new
-  object using a prototype object passed as an argument.
-- **Constructor function and ES6 Classes[^3].** These approaches allow you to
-  create an object using the `new` keyword. See [Classes](./classes.md) and
-  [Prototypes](./prototypes.md).
-
-[^1]:
-    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer
-
-[^2]:
-    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create
-
-[^3]:
-    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects#using_a_constructor_function
-
 ## Cloning
 
-### Shallow Clone
+| Way                               | Depth   | Notes                                                  |
+| --------------------------------- | ------- | ------------------------------------------------------ |
+| `{ ...obj }`                      | shallow | nested objects are shared with the original            |
+| `Object.assign({}, obj)`          | shallow | the same; can also merge several sources into a target |
+| `structuredClone(obj)`            | deep    | handles `Date`, `Map`, `Set` and cyclic references     |
+| `JSON.parse(JSON.stringify(obj))` | deep    | JSON-compatible data only                              |
+| `cloneDeep(obj)` from lodash      | deep    | keeps prototypes; copies functions by reference        |
 
-A shallow clone copies the top-level properties. Nested objects and arrays are
-not copied: the clone and the original share them, so a change to a nested
-object in the clone affects the original.
+Limitations:
 
-#### Using `Object.assign()` static method
-
-`Object.assign()` copies all enumerable own properties from one or more source
-objects to a target object. It returns the target object.
-
-```javascript
-const original = { a: 1, b: 2 };
-const clone = Object.assign({}, original);
-console.log(clone); // { a: 1, b: 2 }
-```
-
-#### Using Spread Operator `...`
-
-Works in a similar way to `Object.assign()`, but uses another syntax.
-
-```javascript
-const original = { a: 1, b: 2 };
-const clone = { ...original };
-console.log(clone); // { a: 1, b: 2 }
-```
-
-### Deep Clone
-
-#### Using `structuredClone()` global function
-
-`structuredClone()` is a built-in JavaScript function that creates a deep clone
-of a given value, including objects, arrays, and other complex data types.
-
-```javascript
-const original = {
-  a: 1,
-  b: {
-    c: 2,
-  },
-  d: new Date(),
-};
-
-const clone = structuredClone(original);
-console.log(clone); // { a: 1, b: { c: 2 }, d: Date object }
-```
-
-It handles `Date`, `Map`, `Set`, typed arrays and cyclic references. Its
-limitations:
-
-- functions and DOM nodes can't be cloned (`DataCloneError`);
-- the prototype chain, getters and setters are not preserved, so class instances
+- **`structuredClone`** throws `DataCloneError` on functions and DOM nodes. The
+  prototype chain, getters and setters are not preserved, so class instances
   become plain objects.
+- **JSON** drops functions and `undefined` values, turns `Date` into a string
+  and `Map` / `Set` into empty objects, and throws on cyclic references.
 
-#### Using `JSON` methods
-
-An older approach that works only for JSON-compatible data: functions and
-`undefined` values are dropped, `Date` becomes a string, `Map` and `Set` become
-empty objects, and cyclic references throw.
+<details>
+<summary>Examples</summary>
 
 ```javascript
-const original = { a: 1, b: { c: 2 } };
-const stringified = JSON.stringify(original);
-const clone = JSON.parse(stringified);
+const original = { a: 1, nested: { b: 2 }, date: new Date() };
 
-console.log(clone); // { a: 1, b: { c: 2 } }
+const shallow = { ...original };
+shallow.nested.b = 3;
+console.log(original.nested.b); // 3: the nested object is shared
+
+const deep = structuredClone(original);
+deep.nested.b = 4;
+console.log(original.nested.b); // 3: the nested object was copied
+console.log(deep.date instanceof Date); // true
+
+const viaJson = JSON.parse(JSON.stringify(original));
+console.log(typeof viaJson.date); // 'string'
 ```
 
-#### Using Recursive Function or Libraries
+</details>
 
-Some libraries provide their own solutions for deep cloning. For example, lodash
-has a `cloneDeep()` function.
+## Accessing Properties
 
-## Accessing properties and methods
+| Syntax                      | What it does                                                                            |
+| --------------------------- | --------------------------------------------------------------------------------------- |
+| `obj.key`                   | dot notation, for known valid identifiers                                               |
+| `obj[key]`                  | bracket notation, for dynamic keys and keys that are not identifiers                    |
+| `obj?.key`                  | optional chaining: `undefined` instead of `TypeError` if `obj` is `null` or `undefined` |
+| `value ?? fallback`         | nullish coalescing: the fallback only for `null` and `undefined`                        |
+| `'key' in obj`              | checks own and inherited properties                                                     |
+| `Object.hasOwn(obj, 'key')` | checks own properties only                                                              |
+| `const { key } = obj`       | destructuring                                                                           |
 
-### Dot Notation
+`??` differs from `||`: `0`, `''` and `false` are kept, because they are not
+nullish.
 
-```javascript
-// Object
-const person = {
-  name: 'John',
-  age: 30,
-  city: 'New York',
-};
-
-console.log(person.name); // John
-console.log(person.age); // 30
-```
-
-#### The optional chaining operator
-
-The optional chaining operator `?.` allows you to access properties of an object
-without the fear of encountering _TypeError_ if the value before the operator is
-nullish (`null` or `undefined`). In that case the whole expression evaluates to
-`undefined`.
-
-It is often combined with the nullish coalescing operator `??`, which provides a
-fallback for a nullish value.
+<details>
+<summary>Examples</summary>
 
 ```javascript
-console.log(person.contacts?.email); // undefined
-console.log(person.contacts?.email ?? 'no email'); // 'no email'
-```
+const person = { name: 'John', age: 0 };
 
-### Bracket Notation
-
-You can use square brackets and put the property name as a string inside them.
-
-```javascript
-console.log(person['name']); // Output: John
+console.log(person.name); // 'John'
 
 const propName = 'age';
-console.log(person[propName]); // Output: 30
+console.log(person[propName]); // 0
+
+console.log(person.contacts?.email); // undefined
+console.log(person.contacts?.email ?? 'no email'); // 'no email'
+
+console.log(person.age || 18); // 18
+console.log(person.age ?? 18); // 0
+
+console.log('toString' in person); // true
+console.log(Object.hasOwn(person, 'toString')); // false
 ```
 
-### `for...in` Statement
+</details>
 
-Iterates over the enumerable string keys of an object, **including inherited
-ones**. To iterate over own keys only, use `Object.keys()` or
-`Object.entries()`. It is not meant for arrays.
+## Iterating
 
-```javascript
-const person = {
-  name: 'Alice',
-  age: 30,
-  gender: 'female',
-};
+| Way                   | What it goes over                               |
+| --------------------- | ----------------------------------------------- |
+| `for...in`            | enumerable string keys, **including inherited** |
+| `Object.keys(obj)`    | own enumerable keys                             |
+| `Object.values(obj)`  | own enumerable values                           |
+| `Object.entries(obj)` | own enumerable `[key, value]` pairs             |
 
-for (const key in person) {
-  console.log(`${key}: ${person[key]}`);
-}
-```
+Integer-like keys go first in ascending order, then string keys in the order
+they were added. `for...in` is not meant for arrays.
 
-## `Object` static methods
-
-`Object.hasOwn(obj, prop)` returns `true` if the object has the specified
-property as its own property, otherwise returns `false`. Introduced in
-ECMAScript 2022 (ES13), this method provides a more reliable and modern
-alternative to `Object.prototype.hasOwnProperty()`.
-
-```javascript
-const exampleObject = {
-  name: 'Alice',
-  age: 30,
-};
-
-console.log(Object.hasOwn(exampleObject, 'name')); // true
-console.log(Object.hasOwn(exampleObject, 'gender')); // false
-console.log(Object.hasOwn(exampleObject, 'toString')); // false
-
-// If the environment doesn't support Object.hasOwn() method
-console.log(exampleObject.hasOwnProperty('name')); // true
-```
-
-`Object.keys(obj)` returns an array of a given object's own enumerable property
-names.
-
-`Object.values(obj)` returns an array of a given object's own enumerable
-property values.
-
-`Object.entries(obj)` returns an array of a given object's own enumerable
-property `[key, value]` pairs.
+<details>
+<summary>Examples</summary>
 
 ```javascript
 const obj = { a: 1, b: 2, c: 3 };
 
-const keys = Object.keys(obj);
-console.log(keys); // ['a', 'b', 'c']
+console.log(Object.keys(obj)); // ['a', 'b', 'c']
+console.log(Object.values(obj)); // [1, 2, 3]
+console.log(Object.entries(obj)); // [['a', 1], ['b', 2], ['c', 3]]
 
-const values = Object.values(obj);
-console.log(values); // [1, 2, 3]
-
-const entries = Object.entries(obj);
-console.log(entries); // [['a', 1], ['b', 2], ['c', 3]]
+for (const [key, value] of Object.entries(obj)) {
+  console.log(`${key}: ${value}`);
+}
 ```
+
+</details>
+
+## `Object` Static Methods
+
+| Method                           | What it does                                           |
+| -------------------------------- | ------------------------------------------------------ |
+| `Object.keys / values / entries` | arrays of own enumerable keys, values or pairs         |
+| `Object.fromEntries(pairs)`      | builds an object from `[key, value]` pairs             |
+| `Object.assign(target, ...src)`  | copies own enumerable properties into `target`         |
+| `Object.hasOwn(obj, key)`        | own property check; replaces `hasOwnProperty` (ES2022) |
+| `Object.freeze(obj)`             | forbids any changes; shallow                           |
+| `Object.seal(obj)`               | forbids adding and deleting; values can be changed     |
+| `Object.create(proto)`           | new object with the given prototype                    |
+| `Object.getPrototypeOf(obj)`     | returns the prototype                                  |
+| `Object.groupBy(items, fn)`      | groups items into an object by key (ES2024)            |
+
+## Creating
+
+- **Object literal**: key-value pairs in curly braces `{}`.
+- **`Object.create(proto)`**: a new object with the given prototype.
+- **Constructor function or class** with `new`. See [Classes](./classes.md) and
+  [Prototypes](./prototypes.md).
+
+## Follow-up Questions
+
+- How do you compare two objects? `===` compares references. Compare the
+  contents field by field or with a deep-equal helper.
+- How do you make an object immutable? `Object.freeze()` is shallow; nested
+  objects have to be frozen separately.
+- When should `Map` be used instead of an object? For keys that are not strings,
+  frequent additions and removals, and when the size and insertion order matter.
+
+## Common Mistakes
+
+- "The spread operator makes a deep copy." Only the top level is copied.
+- Mixing up `?.` (optional chaining) and `??` (nullish coalescing).
+- Using `||` for defaults and losing `0` or an empty string.
+- "`const` makes an object immutable." See [Variables](./variables.md).

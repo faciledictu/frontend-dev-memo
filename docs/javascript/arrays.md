@@ -1,15 +1,14 @@
 ---
 sidebar_position: 7
-description:
-  Creating arrays, accessing elements, mutating and non-mutating methods
+description: Array methods by group, mutating and non-mutating, common pitfalls
 ---
 
 # Arrays
 
 An array is an **object** for storing an ordered collection: elements of any
-type are accessed by an index that starts from `0`, and `length` is always
-greater than the last index. The main thing to remember about array methods is
-which of them **mutate** the array and which **return a new one**.
+type are accessed by an index that starts from `0`, and `length` is the highest
+index plus one. The main thing to remember about array methods is which of them
+**mutate** the array and which **return a new one**.
 
 | Mutate the array                  | Return a new array or value                   |
 | --------------------------------- | --------------------------------------------- |
@@ -19,253 +18,185 @@ which of them **mutate** the array and which **return a new one**.
 | `fill`, `copyWithin`              | `map`, `filter`, `flat`, `flatMap`            |
 |                                   | `find`, `includes`, `some`, `every`, `reduce` |
 
-## Creating
-
-### Using array literal syntax
-
-The spread operator inside a literal copies the elements of another array or of
-any iterable (a string, a set). The copy is shallow.
-
-```javascript
-const birds = ['sparrow', 'crow', 'eagle'];
-const animals = ['cow', 'dog', ...birds];
-const copy = [...birds];
-```
-
-### Using the `Array` constructor
-
-A single numeric argument sets the length instead of becoming an element.
-
-```javascript
-const planets = new Array('Mercury', 'Venus', 'Earth');
-const empty = new Array(3); // [ <3 empty items> ]
-```
-
-### Using `Array.from()` static method
-
-It accepts an iterable or array-like object to convert to an array and an
-optional function that is applied to each element of the resulting array.
-
-```javascript
-const nodeList = document.querySelectorAll('div');
-const divArray = Array.from(nodeList); // Array of div elements
-
-const arr = Array.from([1, 2, 3], (x) => x + x); // [2, 4, 6]
-```
-
-## Accessing elements
-
-### Length Property
-
-Arrays and array-like objects have the `length` property, which is the highest
-index plus one.
-
-```javascript
-let numbers = [1, 10, 100];
-console.log(numbers.length); // 3
-```
-
-:::tip
-
-Here's an example of how you can create an array and initialize it with values
-using a mapping function.
-
-```javascript
-const length = 5;
-const filledArray = Array.from({ length }, (_, index) => index + 1);
-console.log(filledArray); // [1, 2, 3, 4, 5]
-```
-
-:::
-
-### Using Bracket Notation
-
-You can access an element in an array by using the index within square brackets.
-Indices start from `0`.
-
-```javascript
-let fruits = ['apple', 'banana', 'cherry'];
-
-// Access the first element
-console.log(fruits[0]); // 'apple'
-
-// Access the last element
-console.log(fruits[fruits.length - 1]); // 'cherry'
-```
-
-### Using `at()` Method
-
-Works the same way for positive indices, and also supports negative indices to
-access elements from the end of the array.
-
-```javascript
-// Access the first element
-console.log(fruits.at(0)); // 'apple'
-// Access the last element
-console.log(fruits.at(-1)); // 'cherry'
-```
-
-### Destructuring assignment
-
-This syntax is a convenient way to extract multiple values from arrays or
-objects and assign them to variables in a single statement.
-
-```javascript
-const array = [1, 2, 3, 4, 5];
-
-const [a, b] = array; // a = 1, b = 2
-const [c, , d] = array; // c = 1, d = 3
-
-// Rest element
-const [e, f, ...rest] = array; // e = 1, f = 2, rest = [3, 4, 5]
-
-// Default values
-const [g, h = 'a'] = [1]; // g = 1, h = 'a', the default is used because there is no second element
-```
-
-:::tip
-
-You can use destructuring assignment to swap the values of several variables in
-one line.
-
-```javascript
-let a = 1;
-let b = 2;
-[b, a] = [a, b];
-console.log(a, b); // 2 1
-```
-
-:::
-
 ## Methods
 
-### Adding and deleting elements
+### Adding and Removing
 
-`pop()` Removes the last element from an array and returns it.
+| Method                                 | What it does                            | Returns          |
+| -------------------------------------- | --------------------------------------- | ---------------- |
+| `push(...items)`                       | adds to the end                         | new length       |
+| `pop()`                                | removes the last element                | removed element  |
+| `unshift(...items)`                    | adds to the beginning                   | new length       |
+| `shift()`                              | removes the first element               | removed element  |
+| `splice(start, deleteCount, ...items)` | removes and inserts in place            | removed elements |
+| `slice(start, end)`                    | copies a part, `end` is not included    | new array        |
+| `concat(...arrays)`                    | joins arrays                            | new array        |
+| `with(index, value)`                   | replaces one element in a copy (ES2023) | new array        |
 
-`push()` Adds one or more elements to the end of an array.
+`splice` changes the array, `slice` does not.
 
-`shift()` Removes the first element from an array and returns it.
-
-`unshift()` Adds one or more elements to the beginning of an array.
-
-`splice(start, deleteCount, ...items)` Removes and/or inserts elements in place
-and returns the removed ones. Not to be confused with `slice(start, end)`, which
-returns a copy of a part of the array and does not change it.
+<details>
+<summary>Examples</summary>
 
 ```javascript
 const colors = ['red', 'green', 'blue'];
 
-colors.push('yellow');
-console.log(colors); // ['red', 'green', 'blue', 'yellow']
+colors.push('yellow'); // 4, colors: ['red', 'green', 'blue', 'yellow']
+colors.pop(); // 'yellow', colors: ['red', 'green', 'blue']
+colors.unshift('orange'); // 4, colors: ['orange', 'red', 'green', 'blue']
+colors.shift(); // 'orange', colors: ['red', 'green', 'blue']
 
-const lastColor = colors.pop();
-console.log(lastColor); // 'yellow'
-console.log(colors); // ['red', 'green', 'blue']
+// At index 1, remove 1 element and insert 'purple'
+colors.splice(1, 1, 'purple'); // ['green'], colors: ['red', 'purple', 'blue']
 
-colors.unshift('orange');
-console.log(colors); // ['orange', 'red', 'green', 'blue']
-
-const firstColor = colors.shift();
-console.log(firstColor); // 'orange'
-console.log(colors); // ['red', 'green', 'blue']
-
-colors.splice(1, 1, 'purple'); // At index 1, remove 1 element and add 'purple'
-console.log(colors); // ['red', 'purple', 'blue']
+colors.slice(0, 2); // ['red', 'purple'], colors is not changed
+colors.with(0, 'pink'); // ['pink', 'purple', 'blue'], colors is not changed
 ```
 
-### Checking values
+</details>
 
-- `includes()`<br />Determines whether an array includes a certain value.
+### Searching and Checking
 
-- `findIndex()`<br />Returns the index of the first element in the array that
-  satisfies the provided testing function.
+| Method                 | What it does                              | Returns                |
+| ---------------------- | ----------------------------------------- | ---------------------- |
+| `includes(value)`      | checks whether the value is in the array  | boolean                |
+| `indexOf(value)`       | finds the position of a value             | index or `-1`          |
+| `find(fn)`             | first element that passes the test        | element or `undefined` |
+| `findIndex(fn)`        | position of the first element that passes | index or `-1`          |
+| `findLast(fn)`         | the same as `find`, from the end          | element or `undefined` |
+| `some(fn)`             | at least one element passes the test      | boolean                |
+| `every(fn)`            | all elements pass the test                | boolean                |
+| `Array.isArray(value)` | checks whether the value is an array      | boolean                |
 
-- `find()`<br />Returns the value of the first element in the array that
-  satisfies the provided testing function.
+- `includes` finds `NaN`, `indexOf` does not.
+- On an empty array `every` returns `true` and `some` returns `false`.
 
-- `filter()`<br />Returns a new array with all elements that satisfy the
-  provided function.
+### Transforming
 
-- `some()`<br />Tests whether at least one element in the array passes the test
-  implemented by the provided function.
+| Method                     | What it does                                  | Returns      |
+| -------------------------- | --------------------------------------------- | ------------ |
+| `map(fn)`                  | converts every element                        | new array    |
+| `filter(fn)`               | keeps the elements that pass the test         | new array    |
+| `reduce(fn, initial)`      | folds the array into one value, left to right | single value |
+| `reduceRight(fn, initial)` | the same, right to left                       | single value |
+| `flat(depth)`              | flattens nested arrays, one level by default  | new array    |
+| `flatMap(fn)`              | `map` followed by `flat` of one level         | new array    |
+| `join(separator)`          | glues the elements into a string              | string       |
 
-- `every()`<br />Tests whether all elements in the array pass the test
-  implemented by the provided function.
+<details>
+<summary>Examples</summary>
 
-### Sorting
+```javascript
+const numbers = [1, 2, 3];
 
-- `sort()`<br /> Sorts the elements of an array in place (i.e., this method
-  mutates the array) and returns the sorted array. The method accepts an
-  optional comparison function. If no function is provided, the array elements
-  are converted to strings and sorted by comparing their sequences of UTF-16
-  code unit values.
+numbers.map((n) => n * 2); // [2, 4, 6]
+numbers.filter((n) => n > 1); // [2, 3]
+numbers.reduce((sum, n) => sum + n, 0); // 6
 
-  ```javascript
-  const arr = [1, 10, 2];
-  arr.sort();
-  console.log(arr); // [1, 10, 2], compared as strings
-  arr.sort((a, b) => a - b);
-  console.log(arr); // [1, 2, 10]
-  ```
+['a', 'b', 'c'].reduceRight((acc, letter) => acc + letter, ''); // 'cba'
 
-  To return a new array instead of mutating the original one, use `toSorted()`
-  (ES2023).
+[1, [2, [3]]].flat(); // [1, 2, [3]]
+['a b', 'c'].flatMap((s) => s.split(' ')); // ['a', 'b', 'c']
+numbers.join('-'); // '1-2-3'
+```
 
-- `reverse()`<br />Reverses the order of the elements in an array in place
-  (i.e., this method mutates the array).
+</details>
 
-  ```javascript
-  const arr = [1, 2, 3, 4];
-  arr.reverse();
-  console.log(arr); // [4, 3, 2, 1]
-  ```
+### Ordering
 
-  To return a new array instead of mutating the original one, use `toReversed()`
-  (ES2023).
+| Method                | What it does             | Returns        |
+| --------------------- | ------------------------ | -------------- |
+| `sort(compareFn)`     | sorts in place           | the same array |
+| `toSorted(compareFn)` | sorts a copy (ES2023)    | new array      |
+| `reverse()`           | reverses in place        | the same array |
+| `toReversed()`        | reverses a copy (ES2023) | new array      |
 
-### Iteration
+Without a comparison function `sort` converts the elements to **strings** and
+compares their UTF-16 code units, so numbers need a comparator:
 
-- `forEach()`<br /> Executes a provided function on every element. Doesn't
-  return a result.
+```javascript
+const arr = [1, 10, 2];
 
-  ```javascript
-  const cities = ['New York', 'Los Angeles', 'Chicago'];
+arr.sort(); // [1, 10, 2]
+arr.sort((a, b) => a - b); // [1, 2, 10]
+```
 
-  const result = cities.forEach((city) => console.log(city));
-  // New York, Los Angeles, Chicago
+### Iterating
 
-  console.log(result); // undefined, because forEach doesn't return anything
-  ```
+| Way           | What it does                                         |
+| ------------- | ---------------------------------------------------- |
+| `forEach(fn)` | calls `fn` for every element, returns `undefined`    |
+| `for...of`    | a loop over the values; supports `break` and `await` |
+| `entries()`   | an iterator of `[index, value]` pairs for `for...of` |
 
-- `map()`<br /> Returns a new array with the results of calling a provided
-  function on every element.
+`forEach` can't be stopped with `break` and does not wait for `async` callbacks.
 
-  ```javascript
-  const numbers = [1, 2, 3];
+### Creating
 
-  const doubled = numbers.map((n) => n * 2);
-  console.log(doubled); // [2, 4, 6]
-  ```
+| Way                           | What it does                                |
+| ----------------------------- | ------------------------------------------- |
+| `[1, 2, 3]`                   | array literal                               |
+| `[...iterable]`               | shallow copy of an array or any iterable    |
+| `Array.from(iterable, mapFn)` | array from an iterable or array-like object |
+| `Array.of(...items)`          | array of the given arguments                |
+| `new Array(3)`                | empty array with `length` 3, not `[3]`      |
 
-- `reduce()` and `reduceRight()`<br />Execute a reducer function on each element
-  of the array, resulting in a single output value. `reduce()` does it from the
-  first element to the last, while `reduceRight()` starts from the last and goes
-  to the first.
+<details>
+<summary>Examples</summary>
 
-  ```javascript
-  const letters = ['a', 'b', 'c'];
+```javascript
+const birds = ['sparrow', 'crow'];
+const animals = ['cow', ...birds]; // ['cow', 'sparrow', 'crow']
 
-  const word = letters.reduce((acc, letter) => acc + letter, '');
-  console.log(word); // 'abc'
+Array.from('abc'); // ['a', 'b', 'c']
+Array.from({ length: 3 }, (_, index) => index + 1); // [1, 2, 3]
+Array.from(document.querySelectorAll('div')); // array of elements
 
-  const reversedWord = letters.reduceRight((acc, letter) => acc + letter, '');
-  console.log(reversedWord); // 'cba'
-  ```
+new Array(3); // [ <3 empty items> ]
+```
 
-### Flatten
+</details>
 
-- `flat()`<br /> Flattens a nested array up to the specified depth.
+## Accessing Elements
 
-- `flatMap()`<br /> Maps each element using a mapping function, then flattens
-  the result into a new array.
+- `arr[0]` is the first element, `arr[arr.length - 1]` is the last one.
+- `arr.at(-1)` accepts negative indices and counts from the end.
+- A missing index gives `undefined`, not an error.
+- Destructuring extracts several elements at once.
+
+<details>
+<summary>Examples</summary>
+
+```javascript
+const array = [1, 2, 3, 4, 5];
+
+array.at(-1); // 5
+
+const [a, b] = array; // a = 1, b = 2
+const [c, , d] = array; // c = 1, d = 3
+const [e, ...rest] = array; // e = 1, rest = [2, 3, 4, 5]
+const [g, h = 'default'] = [1]; // g = 1, h = 'default'
+
+// Swapping two variables
+let x = 1;
+let y = 2;
+[x, y] = [y, x]; // x = 2, y = 1
+```
+
+</details>
+
+## Follow-up Questions
+
+- How do you copy an array? `[...arr]` or `arr.slice()` for a shallow copy,
+  `structuredClone(arr)` for a deep one. See [Objects](./objects.md).
+- How do you remove duplicates? `[...new Set(arr)]`.
+- What is the difference between `map` and `forEach`? `map` returns a new array,
+  `forEach` returns nothing and is used for side effects.
+
+## Common Mistakes
+
+- Sorting numbers with `sort()` without a comparator.
+- Mixing up `slice` and `splice`.
+- Expecting `sort` or `reverse` to return a copy: they change the original
+  array, which breaks React state.
+- Using `map` only for side effects instead of `forEach` or `for...of`.
