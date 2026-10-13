@@ -41,6 +41,8 @@ Common sources of microtasks include:
 
 - Promises (methods then, catch, finally, but Promise.constructor executes
   synchronously)
+- Code after `await` in async functions
+- `queueMicrotask()`
 - MutationObserver
 
 Microtasks are prioritized over macrotasks. After the execution of the current
@@ -53,10 +55,19 @@ They include:
 - setTimeout
 - setInterval
 - I/O operations
-- UI rendering
+- DOM events (clicks, key presses, etc.)
 
 After the execution of all microtasks, one macrotask is picked from the
 macrotask queue and executed.
+
+:::note
+
+Rendering is not a task. After a task and all its microtasks are done, the
+browser may update the rendering (style, layout, paint) and only then takes the
+next task. That's why a long task or an endless chain of microtasks freezes the
+page.
+
+:::
 
 #### `setTimeout()` and `setInterval()`
 
@@ -98,7 +109,7 @@ certain use cases, offering better control and performance.
 
 ##### Clearing Timers
 
-Both `setTimeout` and setzInterval return a timer ID, which can be used to
+Both `setTimeout` and `setInterval` return a timer ID, which can be used to
 cancel the scheduled execution using `clearTimeout` or `clearInterval`,
 respectively. This is important for managing resource usage and preventing
 memory leaks.
