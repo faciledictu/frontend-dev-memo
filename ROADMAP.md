@@ -39,7 +39,7 @@
 - [x] npm → pnpm: lock-файл, `packageManager`, `minimumReleaseAge`.
 - [x] Проверки: Prettier, markdownlint, скрипты `lint` / `format` / `typecheck`,
       GitHub Actions (lint + build), `onBrokenMarkdownLinks: 'throw'`.
-- [ ] Локальный поиск плагином. Для сценария «быстро найти ответ» это самый
+- [x] Локальный поиск плагином. Для сценария «быстро найти ответ» это самый
       важный пункт этапа.
 - [x] Мелочи: канонический `url` вместо `VERCEL_URL`, опечатка `desctiption` во
       frontmatter, README (название, команды).
