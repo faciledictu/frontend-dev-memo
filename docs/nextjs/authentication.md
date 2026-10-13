@@ -6,7 +6,9 @@ sidebar_position: 5
 
 ## Authentication Process
 
-Authentication is the process of verification of a user's identity.
+Authentication is the process of verification of a user's identity. For the
+general theory see
+[Authentication and Authorization](../web-platform/authentication.md).
 
 To implement authentication in Next.js, you can use various methods. Here is the
 basic email-password authentication system using a custom `signIn` function.
@@ -148,22 +150,6 @@ export default function Page() {
 The form uses `action={dispatch}`, meaning the `dispatch` function will be
 called when the form is submitted. errorMessage is used to display error
 messages returned from the authentication process.
-
-### Authentication Strategies
-
-Theere are various methods and protocols used to verify the identity of a user
-or system before granting access to resources or services. Here is a few of
-them.
-
-1. **Password-Based Authentication**. Users provide a username and password to
-   log in.
-2. **Multi-Factor Authentication (MFA)**. Requires two or more verification
-   methods. Combines something the user knows (password), something the user has
-   (security token), and/or something the user is (biometrics).
-3. **Passwordless Authentication**. Eliminates the need for passwords by using
-   alternative methods like magic links, biometrics, or one-time codes.
-4. **OAuth**. An authorization framework that allows third-party services to
-   exchange information without sharing passwords.
 
 ## Authorization
 

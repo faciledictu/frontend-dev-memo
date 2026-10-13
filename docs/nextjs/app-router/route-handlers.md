@@ -1,3 +1,7 @@
+---
+sidebar_position: 8
+---
+
 # Route Handlers
 
 In Next.js, Route Handlers are used to define custom logic for handling HTTP
