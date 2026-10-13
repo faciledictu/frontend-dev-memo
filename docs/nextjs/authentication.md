@@ -56,9 +56,11 @@ Provides a form for users to enter their credentials and submit them to the
 login API.
 
 ```jsx title="pages/auth/signin.js"
-import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const SignIn = () => {
+  const router = useRouter();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
@@ -127,7 +129,7 @@ export async function authenticate(_currentState: unknown, formData: FormData) {
 'use client';
 
 import { authenticate } from '@/app/lib/actions';
-import { useActionState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
 
 export default function Page() {
   const [errorMessage, dispatch] = useActionState(authenticate, null);
@@ -163,7 +165,7 @@ them.
 4. **OAuth**. An authorization framework that allows third-party services to
    exchange information without sharing passwords.
 
-## Authorizaton
+## Authorization
 
 This is the process of determining what an authenticated user is allowed to do.
 
@@ -172,7 +174,7 @@ This is the process of determining what an authenticated user is allowed to do.
 Routes accessible to all users, regardless of authentication status.
 
 These routes do not require any authentication checks and are typically used for
-pages like home, about, or contact pages​​.
+pages like home, about, or contact pages.
 
 All routes are public by default. Simply create pages without any authentication
 checks.
@@ -183,14 +185,14 @@ Private Routes are accessible only to authenticated users. These routes require
 users to be logged in before accessing the content. In Next.js, private routes
 can be implemented using middleware to check for authentication tokens before
 rendering the page. If the user is not authenticated, they are redirected to a
-login page​​​​.
+login page.
 
 :::info[Restricted Routes]
 
 Some of private routes can be restricted. Resticted routers are accessible by
 authenticated users but may restrict access based on user roles or permissions.
 For example, an admin dashboard might be a restricted route that only
-authenticated users with an admin role can access​​.
+authenticated users with an admin role can access.
 
 :::
 
@@ -299,7 +301,8 @@ To protect these actions, you can use logic within the server action itself.
 import { verifyJwtToken } from './auth';
 
 export async function authenticate(formData) {
-  const { email, password } = formData;
+  const email = formData.get('email');
+  const password = formData.get('password');
   // Authentication logic here
 
   // Example of token verification inside the action
@@ -311,9 +314,3 @@ export async function authenticate(formData) {
   // Proceed with the action if authenticated
 }
 ```
-
-## Authorization
-
-Authorization determines what parts of the application a user can access based
-on their role or permissions. It ensures that users only access resources they
-are allowed to, preventing unauthorized actions​​.
