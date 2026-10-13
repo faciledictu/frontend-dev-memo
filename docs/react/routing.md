@@ -8,48 +8,49 @@ React Router is a standard library for routing in React. It enables the
 navigation among views of various components in a React Application, allows
 changing the browser URL, and keeps the UI in sync with the URL.
 
+:::note
+
+The examples use the React Router v7 API. In v6 the API is the same, but the
+imports come from `react-router-dom`.
+
+:::
+
 ## Routers
 
-React Router provides several router components that serve different purposes
-based on the environment and use case. Here’s a breakdown of the main types of
-routers in React Router
+React Router provides several routers that serve different purposes based on the
+environment and use case.
 
-- `BrowserRouter`uses HTML5 history API, ideal for web apps.
-- `HashRouter`uses URL hash, ideal for older browsers or static file serving.
-- `MemoryRouter`keeps history in memory, suitable for testing or non-browser
+- `BrowserRouter` uses HTML5 history API, ideal for web apps.
+- `HashRouter` uses URL hash, ideal for static file serving without server
+  configuration.
+- `MemoryRouter` keeps history in memory, suitable for testing or non-browser
   environments.
-- `StaticRouter` used for server-side rendering, does not manage history.
-- `NativeRouter` designed for React Native applications.
+- `StaticRouter` is used for server-side rendering, does not manage history.
+- `createBrowserRouter` with `RouterProvider` creates a _data router_: routes
+  are described as objects and can load data before rendering (`loader`) and
+  handle mutations (`action`).
 
 ## Routes and Links
 
 - The `Route` component is used to define the mapping between the URL and the
-  corresponding component.
+  corresponding element.
 - The `Link` component is used to create links that navigate to different
   routes.
 
 ## Routes Wrapper
 
-The `Switch` or `Routes` component will only render the first child Route that
-matches the location.
+The `Routes` component looks through its child routes and renders the one that
+matches the current location best.
 
-:::info[What is the Difference]
-
-As of React Router v6, the `Switch` component has been replaced by the `Routes`
-component. The `Routes` component provides similar functionality with some
-enhancements and changes in the API.
-
-:::
-
-- The order of the Route components within the `Routes` determines the matching.
-  The `Routes` component stops checking further routes as soon as it finds a
-  match.
-- `exact` is used on the root route `/` to ensure that it only matches exactly
-  `/` and not any sub-paths.
+- The order of the `Route` components doesn't matter: `Routes` ranks all matches
+  and picks the most specific one.
+- Paths are matched exactly, so there is no `exact` prop. To match everything
+  below a path, add `/*` to the end of it.
+- A route with `path="*"` matches anything that other routes didn't, so it is
+  used for a "Not Found" page.
 
 ```jsx
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Link, Route, Routes } from 'react-router';
 import Home from './Home';
 import About from './About';
 import Contact from './Contact';
@@ -57,39 +58,52 @@ import NotFound from './NotFound';
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
+      <nav>
+        <Link to="/">Home</Link>
+        <Link to="/about">About</Link>
+      </nav>
       <Routes>
-        <Route exact path="/" component={Home} />
-        <Route path="/about" component={About} />
-        <Route path="/contact" component={Contact} />
-        <Route component={NotFound} />{' '}
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
         {/* This will render if none of the above routes match */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 
 export default App;
 ```
 
-:::note
+:::info[What Changed since v5]
 
-By rendering only the first matching route, it avoids rendering multiple
-components for a single path.
+In React Router v5 the wrapper was called `Switch`, it rendered the first route
+that matched in order, and routes received a component via the `component` prop
+and needed `exact`. `Redirect`, `useHistory` and `useRouteMatch` are also v5
+API: they were replaced by `Navigate`, `useNavigate` and `useMatch`.
 
 :::
 
 ### Nested Routes
 
+Child routes are declared inside the parent `Route`. The parent element renders
+the matched child in the place where it puts the `Outlet` component.
+
 ```jsx
+import { Outlet, Route, Routes } from 'react-router';
+
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/dashboard" component={Dashboard} />
-        <Route path="/settings" component={Settings} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/dashboard" element={<Dashboard />}>
+        <Route index element={<Overview />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="stats" element={<Stats />} />
+      </Route>
+      <Route path="/settings" element={<Settings />} />
+    </Routes>
   );
 }
 
@@ -97,61 +111,48 @@ function Dashboard() {
   return (
     <div>
       <h2>Dashboard</h2>
-      <Routes>
-        <Route path="/dashboard/profile" component={Profile} />
-        <Route path="/dashboard/stats" component={Stats} />
-      </Routes>
+      {/* Overview, Profile or Stats will be rendered here */}
+      <Outlet />
     </div>
   );
 }
 ```
 
-### Redirects and Default Routes
+### Redirects
 
-The `Redirect` component is used to navigate programmatically. As the last
-route, it is common to have a fallback "Not Found" page for unspecified routes.
+The `Navigate` component changes the location when it is rendered.
 
 ```jsx
+import { Navigate, Route, Routes } from 'react-router';
+
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/home" component={Home} />
-        <Route path="/about" component={About} />
-        <Route path="/contact" component={Contact} />
-        <Redirect from="/old-path" to="/new-path" />
-        <Route component={NotFound} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/home" element={<Home />} />
+      <Route path="/old-path" element={<Navigate to="/home" replace />} />
+    </Routes>
   );
 }
 ```
 
 ### Hooks
 
-#### `useHistory()`
+#### `useNavigate()`
 
-A hook that gives you access to the history instance that you can use to
-navigate.
-
-:::tip
-
-Typically, you access the history object via the useHistory hook or `withRouter`
-HOC.
-
-:::
+A hook that returns a function to navigate programmatically.
 
 ```jsx
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 function Home() {
-  let history = useHistory();
+  const navigate = useNavigate();
 
-  function handleClick() {
-    history.push('/new-path');
-  }
-
-  return <button onClick={handleClick}>Go to new path</button>;
+  return (
+    <>
+      <button onClick={() => navigate('/new-path')}>Go to new path</button>
+      <button onClick={() => navigate(-1)}>Go back</button>
+    </>
+  );
 }
 ```
 
@@ -160,15 +161,13 @@ function Home() {
 A hook that returns the location object that represents the current URL.
 
 ```jsx
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 function DisplayCurrentLocation() {
   const location = useLocation();
 
   return (
     <div>
-      <h2>Current Location</h2>
       <p>Pathname: {location.pathname}</p>
       <p>Search: {location.search}</p>
       <p>Hash: {location.hash}</p>
@@ -176,8 +175,6 @@ function DisplayCurrentLocation() {
     </div>
   );
 }
-
-export default DisplayCurrentLocation;
 ```
 
 - `pathname` represents the path of the URL.
@@ -191,110 +188,34 @@ export default DisplayCurrentLocation;
 It returns an object of key/value pairs of URL parameters.
 
 ```jsx
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 function UserProfile() {
-  let { userId } = useParams();
+  const { userId } = useParams();
   return <div>User ID: {userId}</div>;
 }
 
 // Route definition
-<Route path="/user/:userId" component={UserProfile} />;
+<Route path="/user/:userId" element={<UserProfile />} />;
 ```
 
-#### `useRouteMatch()`
+#### `useSearchParams()`
 
-It returns the match object, which contains properties like path, url, params,
-isExact, etc., providing detailed information about the route match.
+It works like `useState` for the query string: returns the current
+`URLSearchParams` and a function to update them.
 
 ```jsx
-import React from 'react';
-import { Route, Switch, Link, useRouteMatch } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 
-function UserProfile() {
-  const match = useRouteMatch();
+function Search() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('q') ?? '';
 
   return (
-    <div>
-      <h2>User Profile</h2>
-      <p>Matched Path: {match.path}</p>
-      <p>Matched URL: {match.url}</p>
-    </div>
+    <input
+      value={query}
+      onChange={(e) => setSearchParams({ q: e.target.value })}
+    />
   );
 }
-
-function App() {
-  return (
-    <Switch>
-      <Route path="/user/:userId" component={UserProfile} />
-      <Route path="/" exact>
-        <h2>Home Page</h2>
-        <Link to="/user/123">Go to User Profile</Link>
-      </Route>
-    </Switch>
-  );
-}
-
-export default App;
-```
-
-#### Custom Hook Example
-
-```jsx
-import { useHistory, useLocation, useParams } from 'react-router-dom';
-
-const useRouting = () => {
-  const history = useHistory();
-  const location = useLocation();
-  const params = useParams();
-
-  const navigateTo = (path) => {
-    history.push(path);
-  };
-
-  const goBack = () => {
-    history.goBack();
-  };
-
-  return {
-    location,
-    params,
-    navigateTo,
-    goBack,
-  };
-};
-
-export default useRouting;
-```
-
-- Inside the useRouting hook, we use `useHistory()` to get access to the history
-  object, which allows us to navigate programmatically (e.g., push to a new
-  route, go back).
-- `useLocation()` gives us access to the current location object, which contains
-  information about the current URL.
-- `useParams()` provides access to the parameters parsed from the URL.
-
-Usage
-
-```jsx
-import useRouting from './useRouting';
-
-const MyComponent = () => {
-  const { location, params, navigateTo, goBack } = useRouting();
-
-  const handleButtonClick = () => {
-    navigateTo('/some/other/path');
-  };
-
-  return (
-    <div>
-      <p>Current Location: {location.pathname}</p>
-      <p>Route Parameters: {JSON.stringify(params)}</p>
-      <button onClick={handleButtonClick}>Go to /some/other/path</button>
-      <button onClick={goBack}>Go Back</button>
-    </div>
-  );
-};
-
-export default MyComponent;
 ```
