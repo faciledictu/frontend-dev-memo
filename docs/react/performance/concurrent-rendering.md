@@ -1,8 +1,8 @@
 ---
-sidebar_position: 21
+sidebar_position: 3
 ---
 
-# Concurrent Mode
+# Concurrent Rendering
 
 :::info
 
@@ -29,7 +29,7 @@ APIs.
 Suspense is a React feature that lets components "wait" for something before
 they render. It’s typically used to handle asynchronous operations like data
 fetching or
-[loading code-split components](./bundle-optimization.md#splitting-code-into-chunks).
+[loading code-split components](../../web-platform/bundle-optimization.md#splitting-code-into-chunks).
 
 ```javascript
 import React, { useState, Suspense } from 'react';

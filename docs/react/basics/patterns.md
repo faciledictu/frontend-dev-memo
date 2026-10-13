@@ -1,5 +1,5 @@
 ---
-sidebar_position: 16
+sidebar_position: 7
 ---
 
 # Common Patterns
@@ -84,9 +84,9 @@ const AuthorizedComponent = withAuthorization(SomeComponent);
 
 :::info[See aslo]
 
-[Custom hooks](./hooks.mdx#custom-hooks) can be considered as a common pattern
-that can be used instead HOCs in functional components. They allow you to
-extract component logic into reusable functions.
+[Custom hooks](../hooks/hooks.mdx#custom-hooks) can be considered as a common
+pattern that can be used instead HOCs in functional components. They allow you
+to extract component logic into reusable functions.
 
 :::
 

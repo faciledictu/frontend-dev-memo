@@ -1,5 +1,5 @@
 ---
-sidebar_position: 20
+sidebar_position: 1
 ---
 
 # Redux Overview
@@ -133,3 +133,31 @@ middleware for unified telemetry.
 
 **Batched Updates:** React Redux v8 uses automatic batching, but for non-React
 async triggers, you may still need unstable_batchedUpdates from react-native.
+
+## Memoized Selectors: Reselect
+
+Reselect is a library for creating memoized "selector" functions in JavaScript.
+It is commonly used in applications with Redux to efficiently compute derived
+data from the Redux store.
+
+Reselect's selectors remember the arguments of the last function call and the
+result. If the same arguments are passed in again, the selector returns the
+cached result, avoiding unnecessary recalculations.
+
+```javascript
+import { createSelector } from 'reselect';
+
+// Input selectors
+const selectItems = (state) => state.items;
+const selectFilter = (state) => state.filter;
+
+// Memoized selector
+const selectFilteredItems = createSelector(
+  [selectItems, selectFilter],
+  (items, filter) => {
+    return items.filter((item) => item.includes(filter));
+  }
+);
+```
+
+`createSelector` is included in Redux Toolkit package.

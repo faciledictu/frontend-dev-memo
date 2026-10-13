@@ -1,8 +1,21 @@
 ---
-sidebar_position: 7
+sidebar_position: 9
 ---
 
-# Lifecycle Methods
+# Class Components and Lifecycle Methods
+
+Defined as ES6 classes extending React.Component. They must have `render` method
+to return React element.
+
+- Have a built-in state object and can manage state using `this.state` and
+  `this.setState()`.
+
+- Support all lifecycle methods including `componentDidCatch()`, which can't be
+  emulated using React Hooks.
+
+- Can’t use hooks.
+
+## Lifecycle Methods
 
 React components go through 3 stages during their lifecycle:
 
@@ -10,7 +23,7 @@ React components go through 3 stages during their lifecycle:
 - Updating
 - Unmounting
 
-## Mounting Stage
+### Mounting Stage
 
 Mounting is the stage when a component is being inserted into the DOM.
 
@@ -28,7 +41,7 @@ Mounting is the stage when a component is being inserted into the DOM.
 4. `componentDidMount()` is called immediately after a component is mounted.
    It's a good place to initiate network requests.
 
-## Updating Stage
+### Updating Stage
 
 Updating happens when a component's state or props change.
 
@@ -50,7 +63,7 @@ Updating happens when a component's state or props change.
 5. `componentDidUpdate(prevProps, prevState, snapshot)` is called immediately
    after updating.
 
-## Unmounting Stage
+### Unmounting Stage
 
 Unmounting is the phase when a component is being removed from the DOM.
 
@@ -58,6 +71,6 @@ Unmounting is the phase when a component is being removed from the DOM.
    unmounted and destroyed. It's used to clean up resources such as timers,
    network requests, or subscriptions created in `componentDidMount()`.
 
-## Links
+### Links
 
 [React Lifecycle Methods' Diagram](https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/)

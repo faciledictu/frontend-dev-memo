@@ -1,5 +1,5 @@
 ---
-sidebar_position: 25
+sidebar_position: 3
 ---
 
 # Testing
@@ -113,37 +113,7 @@ test('HOC enhances the component', () => {
 });
 ```
 
-## Libraries for E2E Testing
+## See Also
 
-E2E testing is an essential part of a comprehensive testing strategy, providing
-confidence that your application works correctly from the user's perspective.
-
-### Cypress
-
-Easy setup, real-time reloading, powerful debugging tools, automatic waiting.
-
-```javascript
-describe('My First Test', () => {
-  it('Visits the app', () => {
-    cy.visit('http://localhost:3000');
-    cy.contains('Welcome to My App');
-  });
-});
-```
-
-### Playwright
-
-Supports multiple browsers (Chromium, Firefox, WebKit), cross-browser testing,
-advanced features like network interception.
-
-```javascript
-const { chromium } = require('playwright');
-
-(async () => {
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
-  await page.goto('http://localhost:3000');
-  await page.screenshot({ path: 'screenshot.png' });
-  await browser.close();
-})();
-```
+- [Testing](../../tooling/testing.md) — types of tests, patterns, libraries for
+  E2E testing.

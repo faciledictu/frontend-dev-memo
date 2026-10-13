@@ -1,5 +1,5 @@
 ---
-sidebar_position: 17
+sidebar_position: 1
 ---
 
 # Optimisation of React Components
@@ -38,6 +38,18 @@ const MyComponent = React.memo((props) => {
 });
 ```
 
+You can also pass a custom comparison function to `memo` if you need more
+control over the re-rendering behavior.
+
+```jsx
+const areEqual = (prevProps, nextProps) => {
+  // Custom comparison logic
+  return prevProps.name === nextProps.name;
+};
+
+export default memo(MyFunctionalComponent, areEqual);
+```
+
 ### Hooks
 
 Passing new anonymous functions or objects to a child component causes
@@ -67,6 +79,16 @@ class MyComponent extends React.PureComponent {
   // Component code
 }
 ```
+
+:::tip
+
+Use PureComponent just like Component, where `shouldComponentUpdate` has the
+shallow props comparison logic by default.
+
+It is not suitable for complex or nested data structures where a deep comparison
+is necessary.
+
+:::
 
 Alternatively, implement shouldComponentUpdate to manually control updates.
 

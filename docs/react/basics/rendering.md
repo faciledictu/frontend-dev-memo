@@ -1,14 +1,32 @@
 ---
-sidebar_position: 4
+sidebar_position: 8
 ---
 
-# React Fiber
+# Rendering and Reconciliation
+
+## Virtual DOM
+
+Operations on the real DOM can be slow and resource-intensive. So libraries like
+React use the Virtual DOM which is a lightweight copy of the real DOM one.
+
+It acts as an intermediary, allowing efficient updates to the user interface.
+When a change occurs in the application's state, the Virtual DOM updates first.
+The framework then compares the new Virtual DOM with the previous version to
+identify what has changed.
+
+After identifying the differences, the framework updates the real DOM only in
+the places where changes have occurred.
+
+This approach enhances performance, simplifies development, and ensures
+cross-browser compatibility.
+
+## React Fiber
 
 Fiber is a new version of the React core algorithm, introduced in React 16. The
 primary goal of Fiber is to improve the rendering performance and responsiveness
 of React applications.
 
-## Key Features of Fiber
+### Key Features of Fiber
 
 **Incremental Rendering**: Fiber breaks down the rendering work into units that
 can be spread out over multiple frames, allowing for smoother updates and better
@@ -21,7 +39,7 @@ more quickly than less critical updates.
 **Concurrency**: Fiber allows React to pause and resume work, making it possible
 to handle high-priority updates in between lower-priority tasks.
 
-## Work process
+### Work process
 
 Fiber uses a work loop that schedules and prioritizes work.
 
@@ -32,7 +50,7 @@ Fiber introduces a sophisticated scheduling mechanism that prioritizes tasks
 based on their urgency. Tasks are assigned expiration times, and React processes
 them accordingly, ensuring that more critical updates are handled first.
 
-### Render Phase (Reconciliation)
+#### Render Phase (Reconciliation)
 
 In this phase, Fiber creates a tree of work units, called _fiber nodes_,
 representing parts of the UI. Each fiber node corresponds to a React component
@@ -41,15 +59,15 @@ traverses this tree, calculating changes and determining what needs to be
 updated. The work done in this phase _can be interrupted and resumed_, allowing
 React to manage rendering in a non-blocking manner.
 
-### Commit Phase
+#### Commit Phase
 
 Once the render phase is complete and all changes are calculated, the commit
 phase applies these changes to the DOM. This phase is synchronous and _must
 complete without interruption_ to ensure the UI is updated consistently.
 
-## Concepts and Terms
+### Concepts and Terms
 
-### Fiber Nodes
+#### Fiber Nodes
 
 Each fiber node represents a unit of work. It keeps track of the component’s
 state, effects, and context. Fiber nodes form a tree structure, mirroring the
@@ -73,7 +91,7 @@ const fiberNode = {
 };
 ```
 
-### Work Loop
+#### Work Loop
 
 The work loop in Fiber is responsible for scheduling and performing the work. It
 continuously checks for available work and processes it based on priority. The
