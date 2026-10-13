@@ -26,18 +26,21 @@ git tag -a v1.0 -m "Version 1.0 release"
 ## Pushing
 
 ```sh
-git tag -d my-tag
+git push origin my-tag
+
+# Push all tags at once
+git push origin --tags
 ```
 
 ## Deletion
 
-### Deleting from local branch
+### Deleting a local tag
 
 ```sh
 git tag -d my-tag
 ```
 
-### Deleting after pushing
+### Deleting a remote tag
 
 ```sh
 git push origin --delete my-tag
