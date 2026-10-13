@@ -12,7 +12,7 @@ the application without the need for an external API server.
 
 Here's a basic overview of Route Handlers in Next.js:
 
-File Structure: Route Handlers are defined within the /`app` directory and hawe
+File Structure: Route Handlers are defined within the /`app` directory and have
 `route.js` or ``route.js` name.
 
 HTTP Methods: You can define specific handlers for different HTTP methods. For

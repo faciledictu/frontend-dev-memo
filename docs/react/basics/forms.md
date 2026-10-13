@@ -85,7 +85,7 @@ export default UncontrolledComponent;
 #### Uncontrolled
 
 - Data is managed by the DOM.
-- Less code, but if you need immediate validation you shoud add event listener
+- Less code, but if you need immediate validation you should add event listener
   using DOM refs instead of react event handlers.
 - Harder to debug and test.
 

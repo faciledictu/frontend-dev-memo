@@ -102,7 +102,7 @@ response. Use temporary state and rollback logic if needed.
 
 ## Advanced Tips & Good-to-Know
 
-I**mmutable Updates:** RTK uses Immer under the hood, but be mindful of
+**Immutable Updates:** RTK uses Immer under the hood, but be mindful of
 accidentally mutating external objects or API responses.
 
 **DevTools Setup:** You can configure Redux DevTools to limit action history and

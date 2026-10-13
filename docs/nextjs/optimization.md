@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# Optimisation Tools
+# Optimization Tools
 
 ## Code Splitting
 
@@ -64,7 +64,7 @@ const ComponentC = dynamic(() => import('../components/C'), { ssr: false });
 External libraries can be loaded on demand using the import() function.
 
 In this
-[exapmle](https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading#loading-external-libraries),
+[example](https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading#loading-external-libraries),
 the module `fuse.js` is only loaded on the client after the user types in the
 search input.
 
@@ -103,12 +103,12 @@ export default function Page() {
 The `next/image` module automatically optimizes images on demand, providing
 features like lazy loading, resizing, and serving modern formats like WebP.
 
-- `src` contains the link to the image file. The image source can be eiter a
+- `src` contains the link to the image file. The image source can be either a
   local file (statically imported) or a remote resource (URL). The module
   supports `.jpg`, `.png`, and `.webp` formats.
 
 - `width` and `height` properties allows a browser to allocate the necessary
-  space in the layout before the image loads. Next.js can determite properties
+  space in the layout before the image loads. Next.js can determine properties
   automatically for statically imported images. For remote images you need to
   specify them explicitly, because Next.js does not have access to them.
 
@@ -212,12 +212,12 @@ export default function HomePage() {
 ### Strategies
 
 Strategy next/script loads third-party scripts on any page or layout by default.
-However, you can customise its behaviour via the strategy property:
+However, you can customize its behavior via the strategy property:
 
 - `beforeInteractive`: Loads the script before any Next.js code and before any
   page hydration occurs.
 
-- `afterInteractive`: (default) Loads the script earlier, but after some some
+- `afterInteractive`: (default) Loads the script earlier, but after some
   hydration on the page occurs.
 
 - `lazyOnload`: Loads the script later while the browser is idle.

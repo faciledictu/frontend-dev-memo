@@ -4,9 +4,9 @@ sidebar_position: 3
 
 # Props
 
-Props (short for properties) are are used to pass data from from a parent
-component to a child component. This makes components reusable and helps
-maintain a clear data flow in your application.
+Props (short for properties) are used to pass data from a parent component to a
+child component. This makes components reusable and helps maintain a clear data
+flow in your application.
 
 ```javascript
 function Greeting(props) {

@@ -34,9 +34,9 @@ modifying its source code.
 ## Liskov Substitution Principle (LSP)
 
 Objects of a superclass should be replaceable with objects of its subclasses
-without without breaking behavior. In simpler terms, any object should be able
-to be substituted with an object of its subtype without altering the behavior of
-the program.
+without breaking behavior. In simpler terms, any object should be able to be
+substituted with an object of its subtype without altering the behavior of the
+program.
 
 If a subclass throws or disables base class functionality, you’re likely
 breaking LSP.

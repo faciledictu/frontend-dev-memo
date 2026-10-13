@@ -31,7 +31,7 @@ is declared without an initializer, it is automatically assigned the value
 
 When a `var` variable is declared at the top level of code (outside any
 function), it’s considered a global variable and is accessible to any code at
-any level. If the code is runnin in a module mode it becames module-scoped.
+any level. If the code is running in a module mode it becomes module-scoped.
 
 Variable of this type can also be local, which occurs when they are declared
 within a function body. In such cases, they are only accessible within that
@@ -54,7 +54,7 @@ Introduced in ES6, `let` and `const` allow you to declare variables that can be
 not only global or local but also block-scoped. A block is to a portion of code
 delimited by a pair of curly braces. If the `const` or `let` variable are
 declared within any block (e.g., inside `if` or `for` statement), they are only
-avaliable inside this block.
+available inside this block.
 
 For `let` variables, an initializer is optional, similar for `var`.
 

@@ -116,7 +116,7 @@ of active touches.
 onPanResponderMove: (event, gestureState) => {};
 ```
 
-### Exapmle[^1]
+### Example[^1]
 
 ```javascript
 const ExampleComponent = () => {
@@ -145,7 +145,7 @@ const ExampleComponent = () => {
       },
       onPanResponderTerminate: (evt, gestureState) => {
         // Another component has become the responder, so this gesture
-        // should be cancelled
+        // should be canceled
       },
       onShouldBlockNativeResponder: (evt, gestureState) => {
         // Returns whether this component should block native components from becoming the JS

@@ -95,7 +95,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   navigate between routes. Any props you send to Component will be received by
   the page.
 - `pageProps` is an object with the initial props that were preloaded for your
-  page by using on of the fetching mehtods. Otherwise, it's an empty object.
+  page by using one of the fetching methods. Otherwise, it's an empty object.
 
 `/_document.js` file customizes the HTML document that Next.js uses to render
 pages. It is only rendered on the server side and is used to augment the

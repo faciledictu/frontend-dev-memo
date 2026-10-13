@@ -96,7 +96,7 @@ packages.
 npm install next@latest react@latest react-dom@latest
 ```
 
-And then, add necessacry scripts to `package.json`
+And then, add necessary scripts to `package.json`
 
 ```json
 {

@@ -63,7 +63,7 @@ test('myUtility returns the correct value', () => {
 });
 ```
 
-### Componets
+### Components
 
 Test components by rendering them and asserting on their output. Use React
 Testing Library for rendering and querying elements, and Jest for assertions.

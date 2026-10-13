@@ -111,7 +111,7 @@ export default GestureResponderExample;
 
 ## Gesture Event Propagation
 
-### Bubblig Phase Handlers
+### Bubbling Phase Handlers
 
 `onStartShouldSetResponder` and `onMoveShouldSetResponder` are indeed triggered
 in the bubbling phase, which means that the deepest child component (the one

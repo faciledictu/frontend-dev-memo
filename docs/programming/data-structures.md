@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# Alogrithms and Data Structures
+# Algorithms and Data Structures
 
 ## Algorithms
 

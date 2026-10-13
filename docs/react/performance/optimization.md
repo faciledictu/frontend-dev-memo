@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Optimisation of React Components
+# Optimization of React Components
 
 ## The `key` Prop
 
@@ -21,7 +21,7 @@ const listItems = items.map((item) => <li key={item.id}>{item.name}</li>);
 
 Ensure that the key remains stable and unique over time. So using array indexes
 as keys isn't a best practice, especially if the list can change. Using
-non-unique keys or keys that change can lead to unpredictable behaviour.
+non-unique keys or keys that change can lead to unpredictable behavior.
 
 :::
 
@@ -56,7 +56,7 @@ Passing new anonymous functions or objects to a child component causes
 re-rendering because they are generated each time the parent component renders.
 Use `useCallback` for functions and `useMemo` for objects and pass an array of
 dependencies as the second argument. These hooks don't create objects from
-scratch on every re-render, but return the same refenrences when none of the
+scratch on every re-render, but return the same references when none of the
 dependencies changes.
 
 ```jsx

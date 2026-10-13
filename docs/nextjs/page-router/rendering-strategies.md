@@ -105,7 +105,7 @@ There are two ways to implement client-side rendering in Page Router:
 - Use the `useEffect()` and `useEffect()` hook instead of the server-side
   rendering methods (`getStaticProps` and `getServerSideProps`).
 - Use a data fetching library like SWR or TanStack Query to fetch data on the
-  client (recomended).
+  client (recommended).
 
 For more details see
 [Client-Side Fetching](./data-fetching.mdx#client-side-fetching)

@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Common Commands
 
-## Reseting and reverting changes
+## Resetting and reverting changes
 
 `git reset` modifies the commit history by moving the HEAD to a different state,
 while `git revert` creates a new commit to undo the changes introduced by a
@@ -13,9 +13,9 @@ specific commit.
 The choice between them depends on whether you want to alter the commit history
 or maintain it intact.
 
-### Reseting Modes
+### Resetting Modes
 
-There are different modes of reseting work tree using `git reset`:
+There are different modes of resetting work tree using `git reset`:
 
 - `--soft`: Moves the HEAD to the specified commit but leaves the changes
   staged.

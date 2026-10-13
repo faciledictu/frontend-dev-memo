@@ -74,7 +74,7 @@ A many-to-many relationship occurs when multiple rows in Table A can be related
 to multiple rows in Table B. This requires a junction table (or associative
 table) to manage the relationships.
 
-Organisation: Create a junction table with foreign keys referencing the primary
+Organization: Create a junction table with foreign keys referencing the primary
 keys of the two tables to manage the relationships.
 
 ```sql

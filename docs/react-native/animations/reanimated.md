@@ -121,7 +121,7 @@ ensure integration without significant changes to the codebase.
 - Ensure compatibility by configuring the build environment appropriately.
 - Use polyfills for certain platform-specific APIs.
 
-## Optimisation Tips
+## Optimization Tips
 
 - Minimize the number of properties being animated simultaneously.
 - Leverage the `useNativeDriver` for purely transform/opacity animations,

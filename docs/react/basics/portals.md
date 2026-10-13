@@ -20,7 +20,7 @@ Portals are particularly handy in scenarios such as:
 ## Creating
 
 To create a portal in React, you use the ReactDOM.createPortal function and pass
-children nodes as the first argumen and HTML element as the second.
+children nodes as the first argument and HTML element as the second.
 
 `ReactDOM.createPortal(child, container);`
 

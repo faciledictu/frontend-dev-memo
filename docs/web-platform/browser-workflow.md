@@ -34,7 +34,7 @@ algorithms and a TLS handshake occurs to establish a secure connection.
 
 The browser sends an HTTP (Hypertext Transfer Protocol) or HTTPS (HTTP Secure)
 request to the server. The request includes details such as the HTTP method,
-headers, cookies, and other relevant information. If other data needes (such as
+headers, cookies, and other relevant information. If other data needs (such as
 images, scripts etc.), the browser sends additional requests later.
 
 ### How Server Responses

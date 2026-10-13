@@ -187,7 +187,7 @@ const result = Maybe.of(10)
 
 console.log(result); // Output: Maybe { value: null }
 
-// Antoher example
+// Another example
 const getUser = (id) =>
   id === 1
     ? Maybe.of({ id, name: 'John Doe', address: '123 Main St' })

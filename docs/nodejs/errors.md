@@ -13,7 +13,7 @@ execution of your code. Errors can originate from different sources, such as:
 
 ## Types of Errors
 
-- **Commont JavaScript Errors**:
+- **Common JavaScript Errors**:
 
   Standard JavaScript errors like TypeError, SyntaxError, etc.
 

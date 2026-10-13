@@ -20,7 +20,7 @@ information.
 
 ### Status Codes
 
-HTTP status codes are standardised responses given by web servers. Status codes
+HTTP status codes are standardized responses given by web servers. Status codes
 has 3 digits and they are divided into five groups according to the first one.
 
 - **1xx** _Informational_. Request received, continuing process (e.g., 100

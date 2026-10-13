@@ -45,13 +45,13 @@ console.log(regex.exec('abcdef')); // ["abc"]
 
 ## Basic syntax[^1]
 
-### Characrer Classes
+### Character Classes
 
 `[ ]` Match any one of the specified characters.
 
 ```javascript
 const regex = /[abc]/; // Matches 'a', 'b', or 'c'
-const regex = /[a-z]/; // Matches all charachters from 'a' to 'z'
+const regex = /[a-z]/; // Matches all characters from 'a' to 'z'
 ```
 
 ### Metacharacters

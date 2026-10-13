@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Overwiev
+# Overview
 
 Node.js is an open-source runtime environment that allows you to run JavaScript
 code on the server side, outside of a web browser.

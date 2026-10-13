@@ -24,7 +24,7 @@ JavaScript includes 8 data types.
 
 :::note[Note]
 
-`typeof null` will return `object` instead of `null`. This behaviour has some
+`typeof null` will return `object` instead of `null`. This behavior has some
 historical reasons.
 
 :::
@@ -75,10 +75,10 @@ or symbols, and values can be of any data type, including other objects.[^3]
 [^3]:
     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#objects
 
-## Type converson
+## Type conversion
 
 JavaScript is a weakly typed language, so values can be converted to another
-type when needed. This called **impicit type conversion** or **type coercion**.
+type when needed. This called **implicit type conversion** or **type coercion**.
 For example, when we use logical negation operator `!` followed value is coerced
 to boolean. Invoking `console.log()` with any non-string argument triggers
 string coercion.

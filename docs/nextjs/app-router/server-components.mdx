@@ -112,7 +112,7 @@ headers (`cookies()` and `headers()` functions), or search parameters
 
 #### Instant Loading State
 
-:::info[How Does Serves-Side Rendering Work]
+:::info[How Does Server-Side Rendering Work]
 
 With SSR, there's a series of steps that need to be completed before a user can
 see and interact with a page:
@@ -142,7 +142,7 @@ The file `loading.js` will be nested inside `layout.js`. It will automatically
 wrap the `page.js` file and any children below in a `<Suspense>` boundary. It
 can be represented this way:
 
-```palintext title="Component Hierarchy"
+```plaintext title="Component Hierarchy"
   <Layout>                            <- export from layout.js
     <Header />
     <SideNav />
@@ -158,7 +158,7 @@ the fetches in the `page.js` have been performed on the server.
 ### Streaming
 
 Streaming allows you to progressive output the page by components. The whole
-work is splitted into chunks and streamed to the client as it is ready.
+work is split into chunks and streamed to the client as it is ready.
 
 Streaming is built into the Next.js App Router by default.
 

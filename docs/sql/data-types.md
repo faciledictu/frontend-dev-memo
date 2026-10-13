@@ -49,9 +49,9 @@ similar across platforms.
 - `TIMESTAMP`: The number of seconds since the Unix epoch (_1970-01-01 00:00:00
   UTC_). Format: _YYYY-MM-DD HH:MM:SS_.
 
-Here is the dirrefence between data types in MySQL
+Here is the difference between data types in MySQL
 
-| Format    | Desctiption | Bytes | Min                 | Max                 |
+| Format    | Description | Bytes | Min                 | Max                 |
 | --------- | ----------- | ----- | ------------------- | ------------------- |
 | DATE      | Date only   | 3     | 1000-01-01          | 9999-12-31          |
 | DATETIME  | Date + time | 8     | 1000-01-01 00:00:00 | 9999-12-31 23:59:59 |

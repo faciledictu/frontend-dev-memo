@@ -68,7 +68,7 @@ Types of provisioning profiles:
 | Development | Run and debug apps on real devices via Xcode | Yes                    |
 | Ad Hoc      | Distribute to testers outside the App Store  | Yes (max 100 devices)  |
 | App Store   | Submit app to App Store                      | No (open to public)    |
-| Enterprise  | Internal distribution within an organisation | No                     |
+| Enterprise  | Internal distribution within an organization | No                     |
 
 :::info[Do Android Apps Have an Equivalent?]
 

@@ -16,7 +16,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint:md": "markdownlint-cli2 \"docs/**/*.{md,mdx}\" \"*.md\"",
-    "lint": "pnpm format:check && pnpm lint:md"
+    "lint:spell": "cspell --no-progress",
+    "lint": "pnpm format:check && pnpm lint:md && pnpm lint:spell"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.2",
@@ -35,6 +36,7 @@
     "@docusaurus/module-type-aliases": "^3.10.2",
     "@docusaurus/tsconfig": "^3.10.2",
     "@docusaurus/types": "^3.10.2",
+    "cspell": "^10.3.6",
     "markdownlint-cli2": "^0.23.3",
     "prettier": "^3.9.0",
     "typescript": "^5.9.3"

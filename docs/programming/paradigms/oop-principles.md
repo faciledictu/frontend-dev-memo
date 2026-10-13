@@ -12,7 +12,7 @@ exposes a controlled interface.
 - Helps maintain clear boundaries between modules.
 - Prevents unintended access or modification of internal data.
 
-**Realisation In Typescript**
+**Realization In Typescript**
 
 - use private/protected class members to hide internal logic
 - use getters/setters to control access to properties
@@ -42,7 +42,7 @@ In modern React, where functional components are more common, we can create a
 base component and then extend it with specific functionality by creating a new
 component on top of it.
 
-**Realisation In Typescript**
+**Realization In Typescript**
 
 ```tsx
 const BaseButton = ({ children }) => {
@@ -69,7 +69,7 @@ interface, enabling interchangeable use.
 - Facilitates mocking and testing.
 - Enables writing generic, flexible functions.
 
-**Realisation In Typescript**
+**Realization In Typescript**
 
 Use with interfaces for injecting dependencies (e.g., mock vs real services).
 
@@ -104,7 +104,7 @@ complexity.
   implementation.
 - Useful when building platform-agnostic services (e.g., storage, network).
 
-**Realisation In Typescript**
+**Realization In Typescript**
 
 ```typescript
 interface INotificationService {

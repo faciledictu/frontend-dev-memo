@@ -82,7 +82,7 @@ function withAuthorization(WrappedComponent) {
 const AuthorizedComponent = withAuthorization(SomeComponent);
 ```
 
-:::info[See aslo]
+:::info[See also]
 
 [Custom hooks](../hooks/hooks.mdx#custom-hooks) can be considered as a common
 pattern that can be used instead HOCs in functional components. They allow you

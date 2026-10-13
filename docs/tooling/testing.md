@@ -69,7 +69,7 @@ F.I.R.S.T is an acronym that describes the properties of good unit tests.
 
 5. Timely: Should be written early enough to influence the code design.
 
-In addition, tests should have a clear strucure and be easy to understand and
+In addition, tests should have a clear structure and be easy to understand and
 maintain.
 
 :::
@@ -205,7 +205,7 @@ These scenarios are typically written in a **Given-When-Then** format:
 
 #### Example: Writing Scenarios in Gherkin Syntax
 
-Write your test scenarios in Gherkin syntax (or recieve them). These scenarios
+Write your test scenarios in Gherkin syntax (or receive them). These scenarios
 describe the desired behavior of your application in a human-readable format.
 
 ```gherkin

@@ -2,7 +2,7 @@
 sidebar_position: 7
 ---
 
-# Bundle Optimisaton
+# Bundle Optimization
 
 When you import a module or a library into your JavaScript application, it
 contributes to the overall size of your bundle. The term "import cost" refers to

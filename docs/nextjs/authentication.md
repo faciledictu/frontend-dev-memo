@@ -175,7 +175,7 @@ login page.
 
 :::info[Restricted Routes]
 
-Some of private routes can be restricted. Resticted routers are accessible by
+Some of private routes can be restricted. Restricted routers are accessible by
 authenticated users but may restrict access based on user roles or permissions.
 For example, an admin dashboard might be a restricted route that only
 authenticated users with an admin role can access.

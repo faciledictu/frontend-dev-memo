@@ -77,9 +77,9 @@ document.getElementById('parent').addEventListener('click', function (event) {
 });
 ```
 
-This technique is useful for dynamically added elements. Additionaly, it reduces
-memory usage and improves performance, especially in applications with many
-dynamic elements.
+This technique is useful for dynamically added elements. Additionally, it
+reduces memory usage and improves performance, especially in applications with
+many dynamic elements.
 
 ## Preventing Event Handling
 

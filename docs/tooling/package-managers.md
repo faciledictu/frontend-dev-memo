@@ -74,5 +74,5 @@ _package-lock.json_.
 For modules that will be published, _npm-shrinkwrap.json_ is recommended to
 ensure consumers get the exact dependency tree.
 
-`npm shrinkwrap`<br /> _npm-shrinkwrap.json_ doesn't created automaticallt, it
+`npm shrinkwrap`<br /> _npm-shrinkwrap.json_ doesn't created automatically, it
 needs to be manually created by running the command above.

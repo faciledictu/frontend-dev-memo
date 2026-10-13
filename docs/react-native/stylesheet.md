@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
 });
 ```
 
-## Dimenstions API
+## Dimensions API
 
 Use the Dimensions API to create responsive designs that adapt to different
 screen sizes. This is particularly useful for defining dynamic styles based on
