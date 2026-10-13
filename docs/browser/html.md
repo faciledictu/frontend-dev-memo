@@ -9,16 +9,17 @@ sidebar_position: 4
 HTML, or Hypertext Markup Language, is the standard language used to create web
 pages. An HTML document typically starts with a `<!DOCTYPE html>` declaration,
 which defines the document type and version of HTML. This is followed by the
-`<html>` tag, which encloses the entire document. Inside the`<html>`tag, there
+`<html>` tag, which encloses the entire document. Inside the `<html>` tag, there
 are two main sections: the `<head>` and the `<body>`.
 
-- `<!DOCTYPE html>` Declares the document type and version. -`<html>`: Root
-  element of the HTML document.
+- `<!DOCTYPE html>` Declares the document type and version.
+- `<html>` Root element of the HTML document.
 - `<head>` Contains meta-information about the document, such as the title,
   character set, styles, and links to external resources.
 - `<body>` Contains the content of the HTML document, including text, images,
-  links, tables, forms, etc. Here’s an example of a basic HTML document
-  structure:
+  links, tables, forms, etc.
+
+Here’s an example of a basic HTML document structure:
 
 ```html
 <!DOCTYPE html>
@@ -34,8 +35,8 @@ are two main sections: the `<head>` and the `<body>`.
 </html>
 ```
 
-To to display reserved characters or special symbols in an HTML document,
-character entities are used. For example:
+To display reserved characters or special symbols in an HTML document, character
+entities are used. For example:
 
 - `&lt;` represents &lt;
 - `&gt;` represents &gt;
@@ -45,10 +46,13 @@ character entities are used. For example:
 
 ## Text Formatting and Paragraphs
 
--`<p>`: Defines a paragraph. -`<br>`: Inserts a line break. -`<strong>`: Makes
-text bold. -`<em>`: Emphasizes text (usually italic). -`<u>`: Underlines
-text. -`<h1>` to `<h6>`: Define headings from level 1 to 6. -`<span>`: Used for
-inline formatting without adding any block-level semantics.
+- `<p>` Defines a paragraph.
+- `<br>` Inserts a line break.
+- `<strong>` Marks text as important (bold by default).
+- `<em>` Emphasizes text (italic by default).
+- `<u>` Marks text with a non-textual annotation (underlined by default).
+- `<h1>` to `<h6>` Define headings from level 1 to 6.
+- `<span>` Used for inline formatting without adding any semantics.
 
 ```html
 <p>
@@ -83,8 +87,10 @@ Links are created using the `<a>` tag.
 
 Tables are used to display tabular data. Key elements include:
 
-`<table>` Defines the table. `<tr>` Defines a table row. `<td>` Defines a table
-cell. `<th>` Defines a table header cell.
+- `<table>` Defines the table.
+- `<tr>` Defines a table row.
+- `<td>` Defines a table cell.
+- `<th>` Defines a table header cell.
 
 ```html
 <table>
@@ -104,27 +110,36 @@ cell. `<th>` Defines a table header cell.
 HTML forms can contain various input types, each suited for different kinds of
 data entry:
 
--`<input type="text">` Single-line text input. -`<input type="password">`
-Password input. -`<input type="email">` Email input. -`<input type="number">`
-Numeric input. -`<input type="date">` Date input. -`<input type="radio">` Radio
-button. -`<input type="checkbox">` Checkbox. -`<input type="file">` File upload.
+- `<input type="text">` Single-line text input.
+- `<input type="password">` Password input.
+- `<input type="email">` Email input.
+- `<input type="number">` Numeric input.
+- `<input type="date">` Date input.
+- `<input type="radio">` Radio button.
+- `<input type="checkbox">` Checkbox.
+- `<input type="file">` File upload.
 
-````html
+```html
 <form>
   <label for="name">Name:</label>
   <input type="text" id="name" name="name" />
   <input type="submit" value="Submit" />
 </form>
+```
 
-### Types of Buttons Buttons are used to trigger actions, typically within
-forms: -`<input type="submit" />` A submit button that sends form data to a
-server. -`<input type="reset" />` A reset button that resets form fields to
-their default values. -`<button type="button">
-  ` A button that can be programmed with JavaScript to perform custom actions.
-  ```html
-  <button type="button" onclick="alert('Button clicked!')">Click Me</button>
-</button>
-````
+### Types of Buttons
+
+Buttons are used to trigger actions, typically within forms:
+
+- `<input type="submit" />` A submit button that sends form data to a server.
+- `<input type="reset" />` A reset button that resets form fields to their
+  default values.
+- `<button type="button">` A button that can be programmed with JavaScript to
+  perform custom actions.
+
+```html
+<button type="button" onclick="alert('Button clicked!')">Click Me</button>
+```
 
 ### Working with Forms
 
