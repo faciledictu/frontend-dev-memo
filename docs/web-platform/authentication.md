@@ -12,7 +12,7 @@ allowed to do.
 ## Authentication Strategies
 
 There are various methods and protocols used to verify the identity of a user or
-system before granting access to resources or services. Here is a few of them.
+system before granting access to resources or services. Here are a few of them.
 
 1. **Password-Based Authentication**. Users provide a username and password to
    log in.

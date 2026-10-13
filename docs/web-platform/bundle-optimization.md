@@ -19,7 +19,7 @@ performance issues, it is essential to test a minified final (production) build.
 ## Bundle Analyzers
 
 Bundle analyzer tools help you identify which modules are contributing the most
-to the size of your bundle. Webpack Bundle Analyzer plugin generates an
+to the size of your bundle. The Webpack Bundle Analyzer plugin generates an
 interactive treemap visualization of the contents of all bundles.
 
 ```javascript

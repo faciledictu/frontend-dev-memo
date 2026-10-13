@@ -21,7 +21,7 @@ information.
 ### Status Codes
 
 HTTP status codes are standardized responses given by web servers. Status codes
-has 3 digits and they are divided into five groups according to the first one.
+have 3 digits and are divided into five groups according to the first digit.
 
 - **1xx** _Informational_. Request received, continuing process (e.g., 100
   Continue).
@@ -90,10 +90,10 @@ dynamic web pages. It allows web applications to send and receive data
 asynchronously from a server in the background without interfering with the
 display and behavior of the existing page.
 
-## Performing requests using JavaScript
+## Performing Requests Using JavaScript
 
-Requests can be sent using standard browser API or using an external library,
-such as Axios.
+Requests can be sent using the standard browser API or using an external
+library, such as Axios.
 
 When working with server responses, you typically get and parse the JSON data.
 
@@ -158,7 +158,7 @@ this policy. The server tells the browser which origins are allowed to read its
 responses using the `Access-Control-Allow-Origin` header (and other
 `Access-Control-*` headers).
 
-For requests that are not "simple" (e.g. with a JSON body or custom headers),
+For requests that are not "simple" (e.g., with a JSON body or custom headers),
 the browser first sends a _preflight_ `OPTIONS` request to check that the actual
 request is allowed.
 

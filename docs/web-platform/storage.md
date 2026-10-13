@@ -37,7 +37,7 @@ document.cookie = 'username=JohnDoe; path=/'; // Expires when the browser is clo
 
 :::
 
-To retrieve a cookie, you can read the document.cookie property, which returns
+To retrieve a cookie, you can read the `document.cookie` property, which returns
 all cookies in a single string, separated by semicolons.
 
 ```javascript
@@ -56,4 +56,4 @@ console.log(username); // Output will be the value of 'username' cookie if it ex
 ``new RegExp(`(^| )${name}=([^;]+)`)`` creates a regular expression to find the
 cookie by name. It looks for the cookie name at the start of the string or
 preceded by a space `(^| )${name}=`, followed by the cookie value until the next
-semicolon`([^;]+)`.
+semicolon `([^;]+)`.

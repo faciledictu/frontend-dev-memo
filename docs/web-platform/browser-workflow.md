@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# How Browser Works
+# How the Browser Works
 
 When a user enters a domain name in the browser input, the following sequence of
 events typically occurs.
@@ -10,9 +10,9 @@ events typically occurs.
 ## 1. DNS Lookup
 
 The browser first checks its cache to see if it has the IP address for the
-domain. If not, it sends a DNS (Domain Name System) server to resolve the domain
-name (e.g., www.example.com) into an IP address, which identifies the server
-hosting the website.
+domain. If not, it sends a request to a DNS (Domain Name System) server to
+resolve the domain name (e.g., www.example.com) into an IP address, which
+identifies the server hosting the website.
 
 ## 2. TCP/IP Connection
 
@@ -34,17 +34,17 @@ algorithms and a TLS handshake occurs to establish a secure connection.
 
 The browser sends an HTTP (Hypertext Transfer Protocol) or HTTPS (HTTP Secure)
 request to the server. The request includes details such as the HTTP method,
-headers, cookies, and other relevant information. If other data needs (such as
-images, scripts etc.), the browser sends additional requests later.
+headers, cookies, and other relevant information. If other data is needed (such
+as images, scripts, etc.), the browser sends additional requests later.
 
-### How Server Responses
+### How the Server Responds
 
 #### Processing
 
 The server processes the request, fetching the requested resource (e.g., an HTML
 page, image, or data) from its storage.
 
-### Response Sending
+#### Response Sending
 
 The server sends an HTTP response back to the browser. The response includes a
 status code (e.g., 200 OK, 404 Not Found), headers, and the requested content

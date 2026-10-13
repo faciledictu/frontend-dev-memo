@@ -9,7 +9,7 @@ sidebar_position: 8
 Logging to web browser console isn’s a powerful tool, although it can be used
 for debugging JavaScript code.
 
-- `console.log()` is used to print messages to the web console
+- `console.log()` is used to print messages to the web console.
 
 - `console.table()` displays tabular data as a table.
 
@@ -23,7 +23,7 @@ console.table([
 - `console.group()` / `console.groupEnd()` groups related log messages together.
 
 - `console.count()` logs the number of times that this particular call to
-  console.count() has been called.
+  `console.count()` has been called.
 
 - `console.time()` / `console.timeEnd()` starts a timer you can use to track how
   long an operation takes.
@@ -54,21 +54,21 @@ specified condition is met.
 
 - **Line-of-code breakpoints**. Standard breakpoints set on specific lines.
 
-- **Function Breakpoints**: Rather than breaking on a specific line, these
+- **Function breakpoints**. Rather than breaking on a specific line, these
   breakpoints pause execution whenever a particular function is called.
 
 - **Conditional breakpoints**. Breakpoints that activate when a specified
   condition is true. Reduces the need for manually stepping through irrelevant
   code.
 
-- **DOM Event Breakpoints**. Breakpoints that pause execution when an event
+- **DOM event breakpoints**. Breakpoints that pause execution when an event
   occurs, such as a mouse click or a keypress.
 
 ## DevTools and Extensions
 
 ### Network Tab
 
-It helps monitoring network activity, including HTTP requests and responses,
+It helps monitor network activity, including HTTP requests and responses,
 WebSocket connections, and resource loading times. Provides details like status
 codes, request/response headers, payload, and timing information.
 
@@ -88,7 +88,7 @@ Used for:
 
 React DevTools is a powerful browser extension that allows you to inspect the
 React component hierarchy, check props and state, and debug performance issues.
-Here’s how to use it effectively:
+Here's how to use it effectively:
 
 #### Inspecting Components
 
@@ -97,13 +97,13 @@ Here’s how to use it effectively:
 - Select a component to inspect its props, state, and hooks in the right-hand
   pane.
 
-- Component Debugging
+#### Component Debugging
 
 Use the "Highlight Updates" feature to see which components re-render. Check the
 "Profiler" tab to record and analyze render performance. Use the "Context" panel
 to inspect React Context values.
 
-- Editing State and Props
+#### Editing State and Props
 
 Directly edit state and props from the DevTools panel to test different
 scenarios. This can help you simulate different states and debug issues without
@@ -116,13 +116,13 @@ inspect every action and state change.
 
 #### Inspecting Actions and State
 
-- Open the Redux DevTools from the browser’s extension icon.
+- Open the Redux DevTools from the browser's extension icon.
 - You will see a timeline of actions on the left, the state tree in the center,
   and the action details on the right.
 - Click on an action to see the state before and after it was dispatched.
 
 Used for:
 
-- State Inspection
-- Action History
-- Time Travel Debugging
+- State inspection.
+- Action history.
+- Time-travel debugging.
