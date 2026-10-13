@@ -74,11 +74,11 @@ import * as http from 'http';
 
 const server = http.createServer(
   (req: http.IncomingMessage, res: http.ServerResponse) => {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-
     if (req.url === '/') {
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.end('Home Page\n');
     } else if (req.url === '/about') {
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.end('About Page\n');
     } else {
       res.writeHead(404, { 'Content-Type': 'text/plain' });
@@ -92,7 +92,7 @@ server.listen(3000, () => {
 });
 ```
 
-### Making HTTP Requests in
+### Making HTTP Requests
 
 You can also use the http module to make HTTP requests to other servers.
 
