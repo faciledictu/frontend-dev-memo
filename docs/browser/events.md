@@ -38,7 +38,7 @@ button.addEventListener('click', handleClick);
 
 ### Removing Event Handlers
 
-`element.addEventListener(eventType, eventHandler, [options])`
+`element.removeEventListener(eventType, eventHandler, [options])`
 
 ```javascript
 element.removeEventListener('click', handleClick);
