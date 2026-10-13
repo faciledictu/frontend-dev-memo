@@ -4,11 +4,11 @@ sidebar_position: 4
 
 # Client Components
 
-By default, components are server components, but ou can split your application
+By default, components are server components, but you can split your application
 into interactive (client) and non-interactive (server) parts.
 
-Client Components are designed to run entirely in the browser, allowing for
-interactive user experiences.
+Client Components are pre-rendered to HTML on the server and then hydrated in
+the browser, where they can use state, effects, event handlers and browser APIs.
 
 - **Interactivity.** Client Components can include interactive JavaScript logic,
   such as event handlers and dynamic state changes.
