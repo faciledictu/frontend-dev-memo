@@ -85,7 +85,7 @@ To specify arrays that can keep any number of values, the syntax `type[]` or
 
 ```typescript
 const list: number[] = [1, 2, 3];
-const list: Array<number> = [1, 2, 3];
+const sameList: Array<number> = [1, 2, 3];
 ```
 
 ## Tuples
@@ -107,7 +107,7 @@ value = 42;
 value = 'hello';
 ```
 
-## Litteral types
+## Literal types
 
 Literal types let you specify exact values a string, number, or boolean must
 have.
@@ -148,15 +148,15 @@ Type aliases in TypeScript allow you to create a new name for an existing type.
 This can help make your code more readable and manageable.
 
 ```typescript
-type Direction: 'up' | 'down' | 'left' | 'right';
+type Direction = 'up' | 'down' | 'left' | 'right';
 
-let direction1: Dicrection = 'up';
+let direction1: Direction = 'up';
 
-let direction2: Dicrection = 'left';
+let direction2: Direction = 'left';
 
-direction1 = 'down'
+direction1 = 'down';
 
-direction2 = 'up'
+direction2 = 'up';
 ```
 
 [^1]:
