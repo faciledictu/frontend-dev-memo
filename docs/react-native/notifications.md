@@ -14,7 +14,8 @@ Service (APNs) for iOS or Firebase Cloud Messaging (FCM) for Android).
 
    - The app asks for the user’s permission to send push notifications.
    - On iOS, this is required by the operating system.
-   - On Android, permissions are usually granted during app installation.
+   - On Android 13 and later, the `POST_NOTIFICATIONS` runtime permission is
+     required as well. On older versions it is granted during app installation.
 
 2. Device Registration:
 
@@ -73,7 +74,7 @@ Service (APNs) for iOS or Firebase Cloud Messaging (FCM) for Android).
        ```typescript
        import messaging from '@react-native-firebase/messaging';
 
-       const async requestUserPermission = () => {
+       const requestUserPermission = async () => {
          const authStatus = await messaging().requestPermission();
          const enabled =
            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -82,7 +83,7 @@ Service (APNs) for iOS or Firebase Cloud Messaging (FCM) for Android).
          if (enabled) {
            console.log('Notification permission granted');
          }
-       }
+       };
        ```
 
 3. Get the FCM token
