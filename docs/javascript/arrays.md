@@ -57,8 +57,8 @@ const arr = Array.from([1, 2, 3], (x) => x + x); // [2, 4, 6]
 
 ### Length Property
 
-Arrays and array-like objects have the `length` property, which contains the
-number of elements.
+Arrays and array-like objects have the `length` property, which is the highest
+index plus one.
 
 ```javascript
 let numbers = [1, 10, 100];
@@ -116,11 +116,11 @@ const array = [1, 2, 3, 4, 5];
 const [a, b] = array; // a = 1, b = 2
 const [c, , d] = array; // c = 1, d = 3
 
-// Rest property
+// Rest element
 const [e, f, ...rest] = array; // e = 1, f = 2, rest = [3, 4, 5]
 
 // Default values
-const [g, h = 'a'] = [1]; // g = 1, h = 'a', because default value will be assigned
+const [g, h = 'a'] = [1]; // g = 1, h = 'a', the default is used because there is no second element
 ```
 
 :::tip
@@ -132,7 +132,7 @@ one line.
 let a = 1;
 let b = 2;
 [b, a] = [a, b];
-console.log(a, b); // 2, 1
+console.log(a, b); // 2 1
 ```
 
 :::
@@ -198,8 +198,8 @@ console.log(colors); // ['red', 'purple', 'blue']
 - `sort()`<br /> Sorts the elements of an array in place (i.e., this method
   mutates the array) and returns the sorted array. The method accepts an
   optional comparison function. If no function is provided, the array elements
-  are converted to strings and sorted by comparing their sequences of Unicode
-  code point values.
+  are converted to strings and sorted by comparing their sequences of UTF-16
+  code unit values.
 
   ```javascript
   const arr = [1, 10, 2];

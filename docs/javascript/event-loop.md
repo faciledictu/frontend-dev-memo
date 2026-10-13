@@ -57,10 +57,12 @@ work should be split into several tasks or moved to a Web Worker.
 
 - The delay of `setTimeout` is the **minimum** time, not a guarantee: the
   callback waits until the stack and the microtask queue are empty.
-- `setInterval` does not wait for the previous callback to finish. For work that
-  may take longer than the interval, use a recursive `setTimeout`.
-- Both return an ID for `clearTimeout` / `clearInterval`. A timer that is not
-  cleared keeps its callback in memory.
+- `setInterval` schedules calls regardless of how long the callback takes, so
+  slow callbacks run back to back. For work that may take longer than the
+  interval, use a recursive `setTimeout`.
+- Both return an ID for `clearTimeout` / `clearInterval`. An interval that is
+  never cleared keeps its callback, and everything the callback references, in
+  memory.
 
 ## Example
 

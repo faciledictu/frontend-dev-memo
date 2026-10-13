@@ -29,7 +29,7 @@ mistake is reachable, so it is never freed.
 
 ### Typical Memory Leaks
 
-- Timers and intervals that are never cleared.
+- Intervals that are never cleared.
 - Event listeners that are not removed, especially on `window` and `document`.
 - Closures that hold large objects. See [Closures](./closures.md).
 - Detached DOM nodes: removed from the page but still referenced from code.
@@ -38,8 +38,8 @@ mistake is reachable, so it is never freed.
 
 ### Weak References
 
-`WeakMap` and `WeakSet` hold their keys weakly: an entry does not keep the key
-object alive. `WeakRef` does the same for a single object. They are used for
+`WeakMap` holds its keys weakly and `WeakSet` its values: an entry does not keep
+the object alive. `WeakRef` does the same for a single object. They are used for
 caches and metadata attached to objects.
 
 ## Example

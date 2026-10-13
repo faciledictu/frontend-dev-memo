@@ -19,8 +19,8 @@ of it.
 - **`[[Prototype]]`** is the internal link that every object has. Read it with
   `Object.getPrototypeOf(obj)`, change it with
   `Object.setPrototypeOf(obj, proto)`.
-- **`__proto__`** is a legacy accessor for the same link (Annex B of the
-  specification). It works, but the methods above are preferred.
+- **`__proto__`** is a legacy accessor for the same link. It works, but the
+  methods above are preferred.
 - **`prototype`** is a regular property of constructor functions and classes.
   The object stored there becomes the `[[Prototype]]` of every instance created
   with `new`. Shared methods are defined on it.
@@ -35,8 +35,9 @@ of it.
 ### Reading and Writing
 
 - **Reading** a property walks the chain.
-- **Writing** always creates or changes an own property of the object and never
-  touches the prototype.
+- **Writing** creates or changes an own property of the object and does not
+  modify the prototype. Exceptions: an inherited setter is called instead, and
+  an inherited read-only property makes the write fail.
 - `Object.hasOwn(obj, key)` checks only own properties; the `in` operator checks
   the whole chain.
 

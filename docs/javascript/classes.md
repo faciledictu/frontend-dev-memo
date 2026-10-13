@@ -71,8 +71,8 @@ dog1.speak(); // Rex barks.
 ## Private and Protected Properties and Methods
 
 ECMAScript 2022 introduced support for private fields and methods using the `#`
-prefix. Private fields and methods are only accessible within the class they are
-defined.
+prefix. Private fields and methods are only accessible within the class where
+they are defined.
 
 ```javascript
 class Car {

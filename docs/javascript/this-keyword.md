@@ -1,6 +1,6 @@
 ---
 sidebar_position: 5
-description: What the ’this’ keyword refers to in JavaScript
+description: What the ‘this’ keyword refers to in JavaScript
 ---
 
 # The ‘this’ Keyword
