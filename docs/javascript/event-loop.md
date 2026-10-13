@@ -1,123 +1,110 @@
 ---
 sidebar_position: 12
+description: Call stack, tasks and microtasks, and the order of execution
 ---
 
 # Event Loop
 
-## Related Concepts
+JavaScript runs on **one thread**. The **event loop** is what lets it handle
+asynchronous work. It repeats the same cycle:
 
-**Call Stack** is a data structure that keeps track of the execution context of
-your JavaScript code. When a function is invoked, it's pushed onto the stack,
-and when the function execution is completed, it’s popped off the stack. The
-entries of the stack are called _frames_.
+1. take **one task** from the task queue and run it until the call stack is
+   empty;
+2. run **all microtasks**, including those added along the way;
+3. let the browser **render** if needed;
+4. take the next task.
 
-**Callback Queue**. This queue holds _messages_ (tasks) that are ready to be
-processed. These tasks are added from asynchronous events like timers, network
-requests, or DOM events.
+So the order is: synchronous code → microtasks → rendering → the next task.
 
-**Web APIs**. These are browser-provided APIs (like setTimeout, fetch, DOM
-events) that handle asynchronous operations. When these operations complete,
-they push their callbacks to the appropriate queue (microtask or macrotask).
+## Details
 
-## Event Loop Model
+### Parts of the Model
 
-The event loop is a process that continuously monitors the call stack and the
-callback queue. Its primary role is to execute tasks from the call stack and
-manage asynchronous events.
-
-The event loop constantly checks the call stack to see if it's empty. If the
-call stack is empty, the event loop checks the callback queue and pushes the
-first callback onto the call stack for execution.
-
-## Prioritizing Messages (Tasks)
-
-JavaScript classifies tasks into two categories: microtasks and macrotasks.
-Understanding the difference between these is crucial for understanding how
-JavaScript handles asynchronous operations.
+- **Call stack**: the functions that are being executed right now. See
+  [Execution Context](./execution-context.md).
+- **Web APIs**: timers, network, DOM events. They are provided by the browser
+  and work outside the JavaScript thread. When an operation completes, its
+  callback is put into a queue.
+- **Task queue** (macrotasks) and **microtask queue**: callbacks waiting for the
+  call stack to become empty.
 
 ### Microtasks
-
-Common sources of microtasks include:
 
 - Promise callbacks (`then`, `catch`, `finally`); the `Promise` constructor
   itself executes synchronously
 - Code after `await` in async functions
 - `queueMicrotask()`
-- MutationObserver
+- `MutationObserver`
 
-Microtasks are prioritized over macrotasks. After the execution of the current
-task, all microtasks in the queue are executed before any macrotask.
+### Tasks (Macrotasks)
 
-### Macrotasks
-
-They include:
-
-- setTimeout
-- setInterval
-- I/O operations
+- `setTimeout`, `setInterval`
 - DOM events (clicks, key presses, etc.)
+- I/O and network callbacks
+- `MessageChannel`, `postMessage`
 
-After the execution of all microtasks, one macrotask is picked from the
-macrotask queue and executed.
-
-:::note
+### Rendering
 
 Rendering is not a task. After a task and all its microtasks are done, the
 browser may update the rendering (style, layout, paint) and only then takes the
-next task. That's why a long task or an endless chain of microtasks freezes the
-page.
+next task. `requestAnimationFrame` callbacks run in this step, right before the
+paint.
 
-:::
+That's why a long task or an endless chain of microtasks freezes the page. Heavy
+work should be split into several tasks or moved to a Web Worker.
 
-#### `setTimeout()` and `setInterval()`
+### Timers
 
-The `setTimeout` function is used to schedule the execution of a callback after
-a specified delay (in milliseconds). It takes two parameters: a function to
-execute and a delay time.
+- The delay of `setTimeout` is the **minimum** time, not a guarantee: the
+  callback waits until the stack and the microtask queue are empty.
+- `setInterval` does not wait for the previous callback to finish. For work that
+  may take longer than the interval, use a recursive `setTimeout`.
+- Both return an ID for `clearTimeout` / `clearInterval`. A timer that is not
+  cleared keeps its callback in memory.
 
-```javascript
-setTimeout(() => {
-  console.log('Delayed execution after 2000 milliseconds');
-}, 2000);
-```
-
-The `setInterval` function is used to repeatedly execute a function or a piece
-of code at specified intervals (in milliseconds). It takes two parameters: a
-function to execute and the interval time.
+## Example
 
 ```javascript
-setInterval(() => {
-  console.log('Repeated execution every 1000 milliseconds');
-}, 1000);
+console.log(1);
+
+setTimeout(() => console.log(2), 0);
+
+Promise.resolve().then(() => console.log(3));
+
+queueMicrotask(() => console.log(4));
+
+(async () => {
+  console.log(5);
+  await null;
+  console.log(6);
+})();
+
+console.log(7);
+
+// 1 5 7 3 4 6 2
 ```
 
-:::caution[Use with Caution]
+- `1`, `5`, `7`: synchronous code, including the async function up to the first
+  `await`.
+- `3`, `4`, `6`: microtasks in the order they were queued.
+- `2`: a task, so it runs after all microtasks.
 
-Avoid using setInterval for short intervals or operations that may take longer
-than the interval to complete, as this can lead to overlapping executions and
-unintended behavior.
+## Follow-up Questions
 
-:::
+- Is the event loop the same in Node.js? No, it has phases and
+  `process.nextTick`. See [Event Loop in Node.js](../nodejs/event-loop.md).
+- What happens if a microtask keeps scheduling new microtasks? The loop never
+  reaches rendering and the next task: the page freezes.
+- How do you run heavy calculations without blocking the page? Split them into
+  chunks with `setTimeout` or `scheduler.postTask`, or move them to a Web
+  Worker.
 
-:::note[Consider Alternatives]
+## Common Mistakes
 
-In modern JavaScript development, alternatives such as requestAnimationFrame or
-asynchronous patterns using Promises or async/await may be more suitable for
-certain use cases, offering better control and performance.
-
-:::
-
-##### Clearing Timers
-
-Both `setTimeout` and `setInterval` return a timer ID, which can be used to
-cancel the scheduled execution using `clearTimeout` or `clearInterval`,
-respectively. This is important for managing resource usage and preventing
-memory leaks.
-
-## Blocking Code
-
-To ensure smooth performance and responsiveness, it's essential to avoid
-long-running synchronous operations in JavaScript, especially within the main
-thread. Instead, asynchronous operations should be used whenever possible to
-delegate time-consuming tasks to background threads (Web Workers) or offload
-them to the browser's APIs.
+- "`setTimeout(fn, 0)` runs immediately." It runs after the current code and all
+  microtasks.
+- "Promises are executed in parallel." Their callbacks run on the same thread,
+  one by one.
+- "`async` functions run asynchronously from the first line." The code before
+  the first `await` is synchronous.
+- "Rendering is a macrotask." It is a separate step of the loop.

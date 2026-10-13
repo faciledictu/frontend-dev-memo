@@ -66,6 +66,7 @@
     "treemap",
     "ttfb",
     "udids",
+    "unhandledrejection",
     "unpipe",
     "unshift",
     "unstages",

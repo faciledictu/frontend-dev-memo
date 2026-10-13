@@ -1,39 +1,44 @@
 ---
 sidebar_position: 7
-description: Storing and managing ordered collections of data in JS
+description:
+  Creating arrays, accessing elements, mutating and non-mutating methods
 ---
 
 # Arrays
 
-Arrays in JavaScript are objects optimized for storing and managing ordered
-collections of data. An array can contain multiple elements of any data type.
-Array elements are accessed using their index, which starts from 0.
+An array is an **object** for storing an ordered collection: elements of any
+type are accessed by an index that starts from `0`, and `length` is always
+greater than the last index. The main thing to remember about array methods is
+which of them **mutate** the array and which **return a new one**.
+
+| Mutate the array                  | Return a new array or value                   |
+| --------------------------------- | --------------------------------------------- |
+| `push`, `pop`, `shift`, `unshift` | `concat`, `slice`, spread `[...arr]`          |
+| `splice`                          | `toSpliced`, `with` (ES2023)                  |
+| `sort`, `reverse`                 | `toSorted`, `toReversed` (ES2023)             |
+| `fill`, `copyWithin`              | `map`, `filter`, `flat`, `flatMap`            |
+|                                   | `find`, `includes`, `some`, `every`, `reduce` |
 
 ## Creating
 
-:::tip
-
-Normally, there is no need to use `let` to declare a variable that refers to an
-array. Using `const`, you cannot reassign the reference to the array stored in
-the variable, but the contents of the array can still be modified.
-
-:::
-
 ### Using array literal syntax
 
-You can also use the spread operator to create a shallow copy of an array. The
-spread operator can convert any iterable object (such as a string or a set) into
-an array.
+The spread operator inside a literal copies the elements of another array or of
+any iterable (a string, a set). The copy is shallow.
 
 ```javascript
 const birds = ['sparrow', 'crow', 'eagle'];
-const animals = ['cow', 'dog', ...birds]; // Using the spread operator
+const animals = ['cow', 'dog', ...birds];
+const copy = [...birds];
 ```
 
 ### Using the `Array` constructor
 
+A single numeric argument sets the length instead of becoming an element.
+
 ```javascript
-let planets = new Array('Mercury', 'Venus', 'Earth');
+const planets = new Array('Mercury', 'Venus', 'Earth');
+const empty = new Array(3); // [ <3 empty items> ]
 ```
 
 ### Using `Array.from()` static method
@@ -144,7 +149,9 @@ console.log(a, b); // 2, 1
 
 `unshift()` Adds one or more elements to the beginning of an array.
 
-`splice()` Adds or removes elements from an array.
+`splice(start, deleteCount, ...items)` Removes and/or inserts elements in place
+and returns the removed ones. Not to be confused with `slice(start, end)`, which
+returns a copy of a part of the array and does not change it.
 
 ```javascript
 const colors = ['red', 'green', 'blue'];
@@ -195,9 +202,11 @@ console.log(colors); // ['red', 'purple', 'blue']
   code point values.
 
   ```javascript
-  const arr = [1, 4, 3, 2];
+  const arr = [1, 10, 2];
   arr.sort();
-  console.log(arr); // [1, 2, 3, 4]
+  console.log(arr); // [1, 10, 2], compared as strings
+  arr.sort((a, b) => a - b);
+  console.log(arr); // [1, 2, 10]
   ```
 
   To return a new array instead of mutating the original one, use `toSorted()`

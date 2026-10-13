@@ -3,36 +3,31 @@ sidebar_position: 6
 description: bind(), call(), apply()
 ---
 
-# Function.prototype Methods
+# bind, call and apply
 
-These are methods of the `Function` prototype. They allow invoking a function
-with explicitly bound `this` and applied arguments.
+Three methods of `Function.prototype` that set `this` explicitly:
 
-## `bind`
+- **`call(thisArg, a, b)`** calls the function immediately, arguments are passed
+  **one by one**.
+- **`apply(thisArg, [a, b])`** calls the function immediately, arguments are
+  passed as **an array**.
+- **`bind(thisArg, a, b)`** does not call the function. It returns a **new
+  function** with `this` and the first arguments fixed.
 
-The `bind` method returns a bound function. This is a new function with the same
-body as the original, but with its `this` keyword set to the provided value.
-Additionally, it allows you to specify a sequence of arguments, which will
-precede any provided when the new function is called. This method can be used
-for creating partially applied functions.
+## Details
 
-```javascript
-function showThisAndArgs(...args) {
-  console.log(this, ...args);
-}
+- `bind` can fix arguments as well as `this`. This is partial application.
+- A bound function can't be rebound: a second `bind` and `call`/`apply` do not
+  change its `this`.
+- Arrow functions ignore the `this` argument of all three methods.
+- In non-strict mode `null` and `undefined` passed as `this` are replaced with
+  the global object.
+- With spread syntax, `fn.apply(obj, args)` and `fn.call(obj, ...args)` are
+  interchangeable.
 
-const bound = showThisAndArgs.bind({}, 'a', 'b');
+See [`this`](./this-keyword.md).
 
-bound('c'); // {} a b c
-```
-
-## `call` and `apply`
-
-Unlike `bind`, these methods are used to invoke a function immediately. They
-both accept `this` value as the first argument. The difference between these
-methods lies in how they take arguments for the function being called. The
-`call` method receives arguments provided individually, while the `apply` method
-accepts arguments provided as an array.
+## Example
 
 ```javascript
 function showThisAndArgs(...args) {
@@ -41,4 +36,32 @@ function showThisAndArgs(...args) {
 
 showThisAndArgs.call({}, 'a', 'b'); // {} a b
 showThisAndArgs.apply({}, ['a', 'b']); // {} a b
+
+const bound = showThisAndArgs.bind({}, 'a', 'b');
+
+bound('c'); // {} a b c
+bound.call({ x: 1 }, 'c'); // {} a b c
 ```
+
+## Follow-up Questions
+
+Write your own `bind`:
+
+```javascript
+function bind(fn, thisArg, ...boundArgs) {
+  return function (...args) {
+    return fn.apply(thisArg, [...boundArgs, ...args]);
+  };
+}
+```
+
+- Where is `bind` used in practice? To keep the context of a method passed as a
+  callback and to fix the first arguments of a function.
+- What does `bind` do when the bound function is called with `new`? The bound
+  `this` is ignored and a new object is created; the fixed arguments are kept.
+
+## Common Mistakes
+
+- Mixing up `call` and `apply`. A mnemonic: `apply` and "array" both start with
+  "a".
+- "`bind` calls the function." It only returns a new one.

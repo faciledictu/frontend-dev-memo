@@ -1,49 +1,52 @@
 ---
 sidebar_position: 10
+description: The prototype chain, __proto__ vs prototype, what new does
 ---
 
 # Prototypes and Inheritance
 
-Prototypal inheritance is a fundamental concept in JavaScript, where objects can
-inherit properties and methods from other objects.
+Every object has a hidden link `[[Prototype]]` to another object, its
+**prototype**. When a property is not found on the object itself, JavaScript
+looks for it in the prototype, then in the prototype's prototype, and so on.
+This is the **prototype chain**. It ends at `Object.prototype`, whose prototype
+is `null`. This is how inheritance works in JavaScript; `class` is syntax on top
+of it.
 
-When you try to access a property or method on an object, JavaScript will first
-look for it on the object itself. If the property or method is not found on the
-object itself, the search will proceed to the object's prototype. If the
-property or method is not found there, the search will continue up the prototype
-chain until it reaches the property or method or reaches the end of the chain.
+## Details
 
-The end of the chain is `Object.prototype`, whose prototype is `null`.
+### `[[Prototype]]` and `prototype`
 
-`Object.create(proto, [propertiesObject])` creates a new object with the
-specified prototype object and properties.
+- **`[[Prototype]]`** is the internal link that every object has. Read it with
+  `Object.getPrototypeOf(obj)`, change it with
+  `Object.setPrototypeOf(obj, proto)`.
+- **`__proto__`** is a legacy accessor for the same link (Annex B of the
+  specification). It works, but the methods above are preferred.
+- **`prototype`** is a regular property of constructor functions and classes.
+  The object stored there becomes the `[[Prototype]]` of every instance created
+  with `new`. Shared methods are defined on it.
 
-```javascript
-const proto = {
-  greet: function () {
-    console.log('Hello!');
-  },
-};
+### What `new` Does
 
-const obj = Object.create(proto);
-obj.greet(); // Hello!
-```
+1. Creates an empty object.
+2. Sets its `[[Prototype]]` to the constructor's `prototype`.
+3. Calls the constructor with `this` pointing to the new object.
+4. Returns the object, unless the constructor returns another object.
 
-## How to access an object's prototype
+### Reading and Writing
 
-Every object in JS has a `[[Prototype]]` internal property that contains a link
-to the object's prototype. This property is not directly accessible in the same
-way as regular properties. However, there is a standard way to access or modify
-it using methods like `Object.getPrototypeOf(obj)` and
-`Object.setPrototypeOf(obj, proto)`.
+- **Reading** a property walks the chain.
+- **Writing** always creates or changes an own property of the object and never
+  touches the prototype.
+- `Object.hasOwn(obj, key)` checks only own properties; the `in` operator checks
+  the whole chain.
 
-:::tip[The common way to access object prototype]
+### Creating an Object With a Given Prototype
 
-Most environments expose an object's prototype via the `__proto__` property.
-This is a common way of accessing it, although it's a legacy feature (Annex B of
-the specification).
+`Object.create(proto)` creates a new object with the specified prototype.
+`Object.create(null)` creates an object without a prototype: it has no
+`toString` and other inherited methods and is used as a clean dictionary.
 
-:::
+## Example
 
 ```javascript
 function Dog(name) {
@@ -51,62 +54,41 @@ function Dog(name) {
 }
 
 Dog.prototype.bark = function () {
-  console.log('Woof!');
+  console.log(`${this.name}: Woof!`);
 };
 
 const rex = new Dog('Rex');
 
-rex.bark(); // Woof!
+rex.bark(); // Rex: Woof!
 
-// Getting prototype
 console.log(Object.getPrototypeOf(rex) === Dog.prototype); // true
-// Using __proto__
 console.log(rex.__proto__ === Dog.prototype); // true
+console.log(Object.getPrototypeOf(Dog.prototype) === Object.prototype); // true
+console.log(Object.getPrototypeOf(Object.prototype)); // null
 
-// Setting prototype
-Object.setPrototypeOf(rex, Object.prototype);
-// The same thing using __proto__
-rex.__proto__ = Object.prototype;
+console.log(Object.hasOwn(rex, 'name')); // true
+console.log(Object.hasOwn(rex, 'bark')); // false
+console.log('bark' in rex); // true
 
-rex.bark(); // TypeError: rex.bark is not a function
+const dictionary = Object.create(null);
+dictionary.toString(); // TypeError: dictionary.toString is not a function
 ```
 
-:::note[No prototype]
+## Follow-up Questions
 
-An object with a null prototype does not inherit any properties or methods.
+- How are classes related to prototypes? Methods of a class are stored in
+  `ClassName.prototype`, and `extends` links two prototypes. See
+  [Classes](./classes.md).
+- How does `instanceof` work? It checks whether `Constructor.prototype` is
+  somewhere in the prototype chain of the object.
+- Why is it a bad idea to extend built-in prototypes such as `Array.prototype`?
+  The change is global and can conflict with other code and future versions of
+  the language.
 
-```javascript
-const strangeObject = Object.create(null);
+## Common Mistakes
 
-strangeObject.toString(); // TypeError: strangeObject.toString is not a function
-strangeObject.__proto__; // 'undefined' (not 'null', because __proto__ property doesn't exist)
-```
-
-:::
-
-## `prototype` property
-
-`prototype` is a regular property of constructor functions. It is an object that
-will become the prototype of all instances created by that constructor. This
-property is used to define properties and methods that should be shared by all
-instances of a particular constructor function.
-
-When you create a new object using a constructor function with the `new`
-keyword, the object's prototype ([[Prototype]] or `__proto__` property) is set
-to the constructor's `prototype` property.
-
-For example, `Person.prototype` defines a method `sayHello` that is available to
-all instances of `Person`.
-
-```javascript
-function Person(name) {
-  this.name = name;
-}
-
-Person.prototype.sayHello = function () {
-  console.log(`Hello, my name is ${this.name}`);
-};
-
-const alice = new Person('Alice');
-alice.sayHello(); // Output: "Hello, my name is Alice"
-```
+- Mixing up `prototype` and `__proto__`: `prototype` belongs to the constructor,
+  `__proto__` to the instance.
+- "The chain ends at `Object`." It ends at `Object.prototype`, then `null`.
+- "Methods are copied into every instance." Instances share them through the
+  prototype.

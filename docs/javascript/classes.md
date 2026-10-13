@@ -1,17 +1,23 @@
 ---
 sidebar_position: 11
+description: Class syntax, inheritance, private fields and static methods
 ---
 
 # Classes
 
-Classes in JavaScript are a blueprint for creating objects with predefined
-properties and methods. They were introduced in ECMAScript 6 (ES6) and provide a
-more convenient and clearer syntax for object-oriented programming compared to
-traditional prototype-based inheritance.
+A class is a template for creating objects with the same properties and methods.
+Classes appeared in ES6 and are **syntax over prototypes**: methods are stored
+in `ClassName.prototype`, and `extends` links the prototypes of two classes. See
+[Prototypes](./prototypes.md).
+
+Unlike constructor functions, classes:
+
+- can be called only with `new`;
+- are not available before the declaration (temporal dead zone);
+- always run in strict mode;
+- have non-enumerable methods.
 
 ## Basic Syntax
-
-Here's the basic syntax for defining a class in JavaScript:
 
 ```javascript
 class Person {
@@ -33,9 +39,8 @@ person1.greet(); // Output: Hello, my name is John and I am 30 years old.
 
 ## Inheritance
 
-JavaScript allows one class to extend another, enabling the creation of a
-hierarchy of classes that share common functionality. The `extends` keyword is
-used to create a subclass.
+The `extends` keyword creates a subclass. A subclass constructor must call
+`super()` before using `this`.
 
 ```javascript
 class Animal {
@@ -96,10 +101,9 @@ car1.startEngine(); // Engine started
 car1.status(); // The engine is running
 ```
 
-JavaScript does not have a built-in concept of **protected** properties (that
-are accessible within the class and its subclasses but not outside). However,
-you can simulate protected properties using naming conventions (such as a
-leading underscore) and by controlling access through getters and setters.
+JavaScript has no **protected** members (accessible in the class and its
+subclasses only). A leading underscore (`_name`) is just a naming convention:
+the property stays public.
 
 ## `instanceof` Operator
 
@@ -116,8 +120,8 @@ console.log(dog1 instanceof Car); // false
 
 ## Static Methods
 
-Static methods are defined on the class itself, not on instances of the class.
-They are often used for utility functions related to the class.
+Static methods and fields are defined on the class itself, not on instances.
+They are used for utility functions and factories.
 
 ```javascript
 class MathUtilities {

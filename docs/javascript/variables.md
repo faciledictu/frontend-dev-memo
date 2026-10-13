@@ -1,82 +1,98 @@
 ---
 sidebar_position: 2
+description: var, let and const, hoisting and the temporal dead zone
 ---
 
 # Variables
 
-In JavaScript, there are three keywords used to declare variables: `var`, `let`,
-and `const`. A keyword is followed by an identifier name and optionally by a
-value.
+Variables are declared with `var`, `let` or `const`. They differ in **scope**,
+**reassignment** and behavior **before the declaration**.
+
+|                        | `var`       | `let`            | `const`          |
+| ---------------------- | ----------- | ---------------- | ---------------- |
+| Scope                  | function    | block            | block            |
+| Reassignment           | yes         | yes              | no               |
+| Redeclaration          | yes         | no               | no               |
+| Initializer            | optional    | optional         | required         |
+| Access before the line | `undefined` | `ReferenceError` | `ReferenceError` |
+| Global object property | yes         | no               | no               |
+
+Use `const` by default, `let` when the variable is reassigned, and avoid `var`.
+
+## Details
+
+### Declaration and Initializer
 
 ```javascript
 var myVariable = 10;
 // `var myVariable` is the declaration, `= 10` is the initializer
 ```
 
-**A declaration** consists of a keyword followed by an identifier name. **An
-initializer** includes an equal sign followed by an initial value.
+Identifier names:
 
-Identifier names must follow certain rules:
+- can include letters, digits, `_` and `$`;
+- can't begin with a digit;
+- are case-sensitive (`myVar` and `MyVar` are different variables);
+- are written in camelCase by convention.
 
-- They can include letters, digits, `_` (underscore) and `$` (dollar sign).
-- They can’t begin with a digit.
-- They are case-sensitive (`myVar` and `MyVar` are different variables).
-- The standard convention is to use camelCase identifiers in JS code.
+### `var`[^1]
 
-## Keyword `var`[^1]
+- Scoped to the **function**, or global when declared outside any function.
+  Blocks (`if`, `for`) do not limit it.
+- Without an initializer the value is `undefined`.
+- At the top level of a script it adds a property to the global object. In a
+  module it is module-scoped.
 
-`var` is used to declare a variable with an optional initializer. If a variable
-is declared without an initializer, it is automatically assigned the value
-`undefined`.
+### `let` and `const`[^2]
 
-When a `var` variable is declared at the top level of code (outside any
-function), it’s considered a global variable and is accessible to any code at
-any level. In module mode, it becomes module-scoped.
+- Scoped to the **block**: a pair of curly braces, including `if` and `for`.
+- `const` can't be reassigned, so the initializer is required.
+- `const` does not make the value immutable. The variable holds a reference to
+  the object, and the object itself can still be changed.
 
-Such variables can also be local, when declared within a function body. In such
-cases, they are only accessible within that function.
+### Hoisting and the Temporal Dead Zone
 
-`var` variables are hoisted (however, it's not an official term)[^3], which
-means declarations are lifted, and any code located above the declaration can
-access them. Only declarations are hoisted, not initial values.
+- All declarations are registered when the scope is created, before any code
+  runs. This is called hoisting[^3].
+- `var` is hoisted with the value `undefined`. The assignment stays in place.
+- `let` and `const` are hoisted too, but can't be read until the declaration is
+  executed. This period is the **temporal dead zone (TDZ)**.
+- The TDZ depends on the order of **execution**, not on the position in the
+  file. A function may use a variable declared below it if it is called after
+  the declaration.
 
-:::note[Note]
+See [Execution Context](./execution-context.md).
 
-Unlike `let` or `const`, `var` variables can be redeclared in the same scope. If
-`var` is declared as a global variable, it adds a property to the global object.
+## Example
 
-:::
+```javascript
+function show() {
+  console.log(value);
+}
 
-## Keywords `let` and `const`[^2]
+// show(); // ReferenceError: Cannot access 'value' before initialization
+const value = 1;
+show(); // 1
 
-Introduced in ES6, `let` and `const` allow you to declare variables that can be
-not only global or local but also block-scoped. A block is a portion of code
-delimited by a pair of curly braces. If a `const` or `let` variable is declared
-within any block (e.g., inside `if` or `for` statement), they are only available
-inside this block.
+const user = { name: 'Ann' };
+user.name = 'Bob'; // OK: the same object is mutated
+user = {}; // TypeError: Assignment to constant variable.
+```
 
-For `let` variables, an initializer is optional, similar to `var`.
+## Follow-up Questions
 
-Keyword `const` declares a constant whose value can’t be reassigned after its
-creation. So an initializer is required. It's worth noting that objects
-(including arrays) stored in `const` variables still can be mutated. This
-happens because the variable holds only a reference to the object, and while the
-reference remains constant, the object's properties can be changed or new ones
-can be created.
+- What does a loop with `var` and `setTimeout` print? See
+  [Closures](./closures.md).
+- How do you make an object immutable? `Object.freeze()`, which is shallow.
+- What happens when you assign to an undeclared variable? In strict mode it is a
+  `ReferenceError`; otherwise a global variable is created.
 
-Variables declared with `let` and `const` can only be accessed after their
-declaration.
+## Common Mistakes
 
-:::note[Note]
-
-We can say `const` and `let` are in temporal dead zone from the start of the
-block to the place where they are declared. They can be accessed by code that is
-located before the declaration in the file but executed after it. For example, a
-function is declared before a variable that is used in this function. If we call
-the function before the variable declaration, the function will have access to
-the variable. So only the order of execution matters.
-
-:::
+- "`const` makes the value constant." Only the binding is constant.
+- "`let` and `const` are not hoisted." They are, but they stay in the TDZ.
+- "`var` is block-scoped." It ignores blocks and is visible in the whole
+  function.
 
 [^1]:
     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/var

@@ -1,9 +1,16 @@
 ---
 sidebar_position: 8
-description: Working with objects in JavaScript
+description:
+  Creating and cloning objects, accessing properties, Object static methods
 ---
 
 # Objects
+
+An object is a collection of **key-value pairs**. Keys are strings or symbols,
+values can be of any type. Objects are stored and compared **by reference**, so
+copying a variable does not copy the object. A **shallow clone** copies only the
+top level (`{ ...obj }`, `Object.assign()`); a **deep clone** copies nested
+objects too (`structuredClone()`).
 
 ## Creating
 
@@ -12,10 +19,8 @@ description: Working with objects in JavaScript
 - **`Object.create()` method[^2].** This method allows you to create a new
   object using a prototype object passed as an argument.
 - **Constructor function and ES6 Classes[^3].** These approaches allow you to
-  create an object using the `new` keyword. JavaScript offers various built-in
-  constructors for creating different objects, and it's also possible to define
-  custom ones. While both constructor functions and ES6 classes can be used,
-  classes provide a more organized and structured way to create objects.
+  create an object using the `new` keyword. See [Classes](./classes.md) and
+  [Prototypes](./prototypes.md).
 
 [^1]:
     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer
@@ -30,10 +35,9 @@ description: Working with objects in JavaScript
 
 ### Shallow Clone
 
-A shallow clone in JavaScript refers to a copy of an object where the top-level
-properties are duplicated, but nested objects or arrays are not deeply copied.
-Instead, the references to the nested objects or arrays are copied. Changes to
-nested objects or arrays in the clone will affect the original object.
+A shallow clone copies the top-level properties. Nested objects and arrays are
+not copied: the clone and the original share them, so a change to a nested
+object in the clone affects the original.
 
 #### Using `Object.assign()` static method
 
@@ -76,14 +80,18 @@ const clone = structuredClone(original);
 console.log(clone); // { a: 1, b: { c: 2 }, d: Date object }
 ```
 
-This function is supported in modern browsers and Node.js. However, in some
-environments `structuredClone` is not available.
+It handles `Date`, `Map`, `Set`, typed arrays and cyclic references. Its
+limitations:
+
+- functions and DOM nodes can't be cloned (`DataCloneError`);
+- the prototype chain, getters and setters are not preserved, so class instances
+  become plain objects.
 
 #### Using `JSON` methods
 
-This method works well for simple objects but has limitations with functions,
-`Date`, `Set`, `Map` and other complex objects, as well as `undefined` values,
-because of limitations of JSON format itself.
+An older approach that works only for JSON-compatible data: functions and
+`undefined` values are dropped, `Date` becomes a string, `Map` and `Set` become
+empty objects, and cyclic references throw.
 
 ```javascript
 const original = { a: 1, b: { c: 2 } };
@@ -142,10 +150,9 @@ console.log(person[propName]); // Output: 30
 
 ### `for...in` Statement
 
-This loop statement is used for iterating over the enumerable properties of an
-object. It allows you to iterate over the keys (property names) of an object,
-including inherited ones, but it's not suitable for iterating over arrays or
-other iterable objects.
+Iterates over the enumerable string keys of an object, **including inherited
+ones**. To iterate over own keys only, use `Object.keys()` or
+`Object.entries()`. It is not meant for arrays.
 
 ```javascript
 const person = {

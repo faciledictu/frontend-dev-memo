@@ -1,10 +1,15 @@
 ---
 sidebar_position: 15
+description: Creating regular expressions, methods and basic syntax
 ---
 
 # Regular Expressions
 
-RegEx is a powerful tool used for matching patterns within strings.
+A regular expression is a **pattern for searching and replacing text**. In
+JavaScript it is a `RegExp` object, created with a literal (`/abc/i`) or with
+the constructor when the pattern is built dynamically. It is used through
+`regex.test(str)` and the string methods `match`, `matchAll`, `replace` and
+`split`.
 
 ## Creating RegExp object
 

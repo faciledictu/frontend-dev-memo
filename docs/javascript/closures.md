@@ -1,70 +1,82 @@
 ---
 sidebar_position: 9
+description:
+  A function that remembers the variables of the scope it was created in
 ---
 
 # Closures
 
-A closure is a function bundled together with its lexical environment, meaning
-it retains access to variables from its parent scope even after the parent
-function has finished executing.
+A **closure** is a function together with the **lexical environment** it was
+created in. The function keeps access to the variables of its outer scope even
+after the outer function has finished. Every function in JavaScript is a
+closure; the term matters when the function **outlives** its outer scope.
 
-Closures solve the problem of maintaining state in JavaScript, particularly in
-scenarios like callbacks, event handlers, and asynchronous code. They allow
-functions to 'remember' and access the variables from their enclosing scope,
-even when they're invoked outside of that scope. This makes closures invaluable
-for tasks like data privacy, encapsulation, and creating modular code
-structures.
+## Details
 
-```javascript
-const outerFunction = () => {
-  let message = 'First message';
+### Where Closures Are Used
 
-  const inner = (newMessage) => {
-    console.log('Previous:', message);
-    message = newMessage;
-    console.log('New:', message);
-  };
+- **Private state**: variables that can be changed only through the returned
+  functions.
+- **Function factories** and helpers such as `once`, `memoize`, `debounce`.
+- **Callbacks**: event handlers, timers and promise callbacks that use variables
+  of the surrounding code.
 
-  // Return the inner function, which maintains a reference to message
-  return inner;
-};
+### What to Watch For
 
-// Invoke outerFunction and assign its return value to closureExample
-const closureExample = outerFunction();
+- **The closure sees the variable, not a copy of its value.** It reads the value
+  that the variable has at the time of the call.
+- **Memory.** Everything the closure references stays in memory while the
+  closure itself is reachable. A forgotten handler or timer that references a
+  large object is a typical leak. See
+  [Garbage Collection](./garbage-collection.md).
 
-closureExample('New message');
-// Previous: First message
-// New: New message
-
-closureExample('Another message');
-// Previous: New message
-// New: Another message
-```
-
-## Potential problems
-
-Code with closures can be complex and hard to read.
-
-**Long-lived state:** The outer variable persists across multiple calls and its
-lifecycle is tied to the closure, not the function itself.
-
-**Memory leaks:** If closures retain references to large objects or variables
-that are no longer needed, they can prevent those objects from being
-garbage-collected. For example:
+## Example
 
 ```javascript
-function createClosure() {
-  const bigData = new Array(1000000).fill('x'); // A large array
+function createCounter() {
+  let count = 0;
 
-  return function () {
-    console.log(bigData.length);
+  return {
+    increment: () => ++count,
+    reset: () => {
+      count = 0;
+    },
   };
 }
 
-const leakyClosure = createClosure();
-// The closure still retains a reference to bigData
+const counter = createCounter();
 
-leakyClosure();
-// Even after this call, bigData remains in memory
-// because it's referenced by the closure
+console.log(counter.increment()); // 1
+console.log(counter.increment()); // 2
+console.log(counter.count); // undefined: the variable is private
 ```
+
+## Follow-up Questions
+
+What does this code print and how do you fix it?
+
+```javascript
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i));
+}
+// 3 3 3
+```
+
+- `var` creates one variable for the whole loop. All three callbacks close over
+  it and run after the loop has ended.
+- Fix: `let i` creates a new variable for every iteration, so the output is
+  `0 1 2`.
+
+Other questions:
+
+- Why does a closure work at all? A function keeps a reference to the
+  environment where it was defined. See
+  [Execution Context](./execution-context.md).
+- Write `once(fn)` or `memoize(fn)`. Both keep their state in a closure.
+
+## Common Mistakes
+
+- "A closure stores a snapshot of the values." It stores a reference to the
+  variables.
+- "A closure is a function inside a function." Nesting is not required; what
+  matters is the access to outer variables.
