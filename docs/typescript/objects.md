@@ -112,25 +112,26 @@ Unlike classes, interfaces do not provide implementations of methods.
 
 ## Property Modifiers
 
-Optional Properties: use a question mark `?` to denote optional properties.
-Read-only Properties: use the `readonly` modifier to make properties immutable.
+- Optional properties: use a question mark `?` to denote optional properties.
+- Read-only properties: use the `readonly` modifier to make properties
+  immutable.
 
 ```typescript
-interface User: {
-    readonly id: number;
-    age?: number; // age is optional
-    name: string;
-};
+interface User {
+  readonly id: number;
+  age?: number; // age is optional
+  name: string;
+}
 
 const bob: User = {
   id: 1,
-  name: "Bob",
-  age: 30
+  name: 'Bob',
+  age: 30,
 };
 
 const alice: User = {
   id: 2,
-  name: "Alice"
+  name: 'Alice',
 };
 
 bob.id = 3; // Error: Cannot assign to 'id' because it is a read-only property.
@@ -138,7 +139,7 @@ bob.id = 3; // Error: Cannot assign to 'id' because it is a read-only property.
 
 ## Index Signatures
 
-Ypu can define objects with properties whose names are not known ahead of time.
+You can define objects with properties whose names are not known ahead of time.
 
 ```typescript
 let dictionary: {
