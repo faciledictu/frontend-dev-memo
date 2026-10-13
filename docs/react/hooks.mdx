@@ -19,15 +19,16 @@ cleaner and more readable code in functional components.
 
 ## Rules of Hooks
 
-**Consistent Call Order.** Hooks should always be called in the same order each
-time a component renders. This allows React to correctly preserve the state of
-hooks between multiple calls and ensures predictable behavior.
+**Only call hooks at the top level.** Don't call hooks inside conditions, loops,
+nested functions or after an early return. React matches each hook with its
+state by the order of calls, so the order must be the same on every render.
 
-**Top-Level Only.** Hooks must be called at the top level of a React functional
-component or in custom hooks (which are functions that use hooks). This ensures
-that React can maintain the order of hooks calls between renders.
+**Only call hooks from React functions.** Hooks can be called from functional
+components and from custom hooks (which are functions that use hooks), but not
+from regular JavaScript functions or class components.
 
-These rules mean that you can't use hooks in conditions. Here is a bad example
+The first rule means that you can't use hooks in conditions. Here is a bad
+example
 
 ```javascript
 function InvalidComponent() {
@@ -141,11 +142,13 @@ function useToggle(initialValue = false) {
   const [value, setValue] = useState(initialValue);
 
   const toggle = () => {
-    setValue(!value);
+    setValue((prevValue) => !prevValue);
   };
 
   return [value, toggle];
 }
+
+export default useToggle;
 ```
 
 </TabItem>
