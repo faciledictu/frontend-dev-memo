@@ -20,7 +20,7 @@ modified.
 
 :::
 
-### Using array litteral syntax
+### Using array literal syntax
 
 You can also use the spread operator to destructure an array and create a
 shallow copy of it. The spread operator can convert any iterable object (such as
@@ -53,7 +53,7 @@ const arr = Array.from([1, 2, 3], (x) => x + x); // [2, 4, 6]
 
 ### Length Property
 
-Arrays and array-like objects have the `lenght` property contains the number of
+Arrays and array-like objects have the `length` property contains the number of
 array elements.
 
 ```javascript
@@ -63,7 +63,7 @@ console.log(numbers.length); // 3
 
 :::tip
 
-Here's and examole how you can create an array and initialize it with values
+Here's an example of how you can create an array and initialize it with values
 using a mapping function.
 
 ```javascript
@@ -128,7 +128,7 @@ one line.
 let a = 1;
 let b = 2;
 [b, a] = [a, b];
-conslole.log(a, b); // 2, 1
+console.log(a, b); // 2, 1
 ```
 
 :::
@@ -191,8 +191,8 @@ console.log(colors); // ['red', 'purple', 'blue']
 
 - `sort()`<br /> Sorts the elements of an array in place (i. e. this method
   mutates an array) and returns the sorted array. The method accepts optional
-  function for compairing elements. If no function provided, the array elements
-  are converted to strings and sorted by compairing their sequences of Unicode
+  function for comparing elements. If no function provided, the array elements
+  are converted to strings and sorted by comparing their sequences of Unicode
   code point values.
 
   ```javascript
@@ -241,7 +241,7 @@ console.log(colors); // ['red', 'purple', 'blue']
 
 - `reduce()` and `reduceRight`<br />Execute a reducer function on each element
   of the array, resulting in a single output value. `reduce` do it from the
-  first element to the last, while `reduceRight() starts from the last and goes
+  first element to the last, while `reduceRight()` starts from the last and goes
   to the first.
 
   ```javascript
@@ -251,7 +251,7 @@ console.log(colors); // ['red', 'purple', 'blue']
   console.log(word); // 'abc'
 
   const reversedWord = letters.reduceRight((acc, letter) => acc + letter, '');
-  console.log(word); // 'cba'
+  console.log(reversedWord); // 'cba'
   ```
 
 ### Flatten
