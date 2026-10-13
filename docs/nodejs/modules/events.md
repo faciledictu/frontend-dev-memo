@@ -13,9 +13,9 @@ listens for and responds to events as they occur.
 
 :::info[Key Characteristics]
 
-1. Asynchronous Handling: Events are processed asynchronously, allowing the
-   program to handle multiple events concurrently without blocking the main
-   execution thread.
+1. Synchronous Dispatch: `emit()` calls all listeners synchronously, in the
+   order they were registered. Asynchrony comes from the place where `emit()` is
+   called (e.g. an I/O callback), not from the emitter itself.
 2. Event Emitters and Listeners: An event emitter generates and dispatches
    events, while listeners (or event handlers) respond to these events.
 3. Decoupling: This approach decouples the event producer (emitter) from the
@@ -24,17 +24,19 @@ listens for and responds to events as they occur.
 
 :::
 
-## Methods and Expamples
+## Methods and Examples
 
-The events module provides a way to handle asynchronous events.
+The events module provides a way to emit and handle named events.
 
-1. Creating and Event Emitter instance
+1. Creating an Event Emitter instance
 
    ```typescript
+   import { EventEmitter } from 'events';
+
    const myEmitter = new EventEmitter();
    ```
 
-2. Setting up and event listener
+2. Setting up an event listener
 
    ```typescript
    myEmitter.on('greet', () => {
