@@ -6,7 +6,7 @@ sidebar_position: 2
 
 ## Functional Components
 
-Defined as JavaScript functions (regular or arrow) that return React element.
+Defined as JavaScript functions (regular or arrow) that return a React element.
 
 - Simpler and more concise than class components. They involve less boilerplate
   code and can be easier to understand.
@@ -23,7 +23,7 @@ Defined as JavaScript functions (regular or arrow) that return React element.
   makes unit testing simpler and more straightforward.
 
 - Functional components don't have lifecycle methods. To replace some of them
-  you can use useEffect hook.
+  you can use the `useEffect` hook.
 
 ## Class Components
 
@@ -34,7 +34,7 @@ Legacy way to define components. See
 
 Each React component should return only one element. If you need to return
 multiple elements, you can use a single wrapper element (like a `<div>`) or
-React Fragments, that let you group elements without a wrapper element.
+React Fragments, which let you group elements without a wrapper element.
 
 :::tip
 
@@ -48,7 +48,7 @@ each element.
 
 React Fragments can be used in two ways: using the `<></>` syntax or explicitly.
 
-```javascript
+```jsx
 return (
   <>
     <ChildA />
@@ -58,9 +58,9 @@ return (
 ```
 
 Fragments declared with the explicit `<Fragment>` syntax may have keys (for
-rendering a list of Fragments)
+rendering a list of Fragments).
 
-```javascript
+```jsx
 function Blog() {
   return posts.map((post) => (
     <Fragment key={post.id}>

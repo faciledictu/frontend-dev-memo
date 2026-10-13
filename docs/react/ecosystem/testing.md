@@ -35,7 +35,7 @@ A library for testing React components that encourages good testing practices by
 focusing on how the user interacts with your components. It promotes testing
 from the user's perspective rather than the implementation details.
 
-```javascript
+```jsx
 test('increments counter', () => {
   // Arrange
   render(<Counter />);

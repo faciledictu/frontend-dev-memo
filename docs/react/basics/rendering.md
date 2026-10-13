@@ -7,7 +7,7 @@ sidebar_position: 8
 ## Virtual DOM
 
 Operations on the real DOM can be slow and resource-intensive. So libraries like
-React use the Virtual DOM which is a lightweight copy of the real DOM one.
+React use the Virtual DOM, which is a lightweight copy of the real DOM.
 
 It acts as an intermediary, allowing efficient updates to the user interface.
 When a change occurs in the application's state, the Virtual DOM updates first.
@@ -39,7 +39,7 @@ more quickly than less critical updates.
 **Concurrency**: Fiber allows React to pause and resume work, making it possible
 to handle high-priority updates in between lower-priority tasks.
 
-### Work process
+### Work Process
 
 Fiber uses a work loop that schedules and prioritizes work.
 
@@ -69,10 +69,10 @@ complete without interruption_ to ensure the UI is updated consistently.
 
 #### Fiber Nodes
 
-Each fiber node represents a unit of work. It keeps track of the component’s
+Each fiber node represents a unit of work. It keeps track of the component's
 state, effects, and context. Fiber nodes form a tree structure, mirroring the
-component tree, at the same time they contain links like they are element of
-linked list.
+component tree. At the same time, they contain links to each other, like
+elements of a linked list.
 
 ```javascript
 // An example of a fiber node

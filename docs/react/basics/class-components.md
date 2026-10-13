@@ -4,8 +4,8 @@ sidebar_position: 9
 
 # Class Components and Lifecycle Methods
 
-Defined as ES6 classes extending React.Component. They must have `render` method
-to return React element.
+Defined as ES6 classes extending `React.Component`. They must have a `render`
+method that returns a React element.
 
 - Have a built-in state object and can manage state using `this.state` and
   `this.setState()`.
@@ -13,7 +13,7 @@ to return React element.
 - Support all lifecycle methods including `componentDidCatch()`, which can't be
   emulated using React Hooks.
 
-- Can’t use hooks.
+- Can't use hooks.
 
 ## Lifecycle Methods
 
@@ -27,7 +27,7 @@ React components go through 3 stages during their lifecycle:
 
 Mounting is the stage when a component is being inserted into the DOM.
 
-**Render Phase**
+#### Render Phase
 
 1. `constructor(props)` is called before the component is mounted. It's used for
    initializing state and binding event handlers.
@@ -36,31 +36,31 @@ Mounting is the stage when a component is being inserted into the DOM.
 3. `render()` is the only required method in a class component. It returns the
    JSX that represents the component UI.
 
-**Commit phase**
+#### Commit Phase
 
-4. `componentDidMount()` is called immediately after a component is mounted.
+1. `componentDidMount()` is called immediately after a component is mounted.
    It's a good place to initiate network requests.
 
 ### Updating Stage
 
 Updating happens when a component's state or props change.
 
-**Render Phase**
+#### Render Phase
 
 1. `static getDerivedStateFromProps(props, state)`
 2. `shouldComponentUpdate(nextProps, nextState)` determines whether the
    component should re-render.
 3. `render()`
 
-**Precommit Phase**
+#### Precommit Phase
 
-4. `getSnapshotBeforeUpdate(prevProps, prevState)` is called right before the
+1. `getSnapshotBeforeUpdate(prevProps, prevState)` is called right before the
    DOM updates. It allows capturing information from the DOM (e.g., scroll
    position) before it changes.
 
-**Commit phase**
+#### Commit Phase
 
-5. `componentDidUpdate(prevProps, prevState, snapshot)` is called immediately
+1. `componentDidUpdate(prevProps, prevState, snapshot)` is called immediately
    after updating.
 
 ### Unmounting Stage

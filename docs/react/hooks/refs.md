@@ -10,14 +10,14 @@ when updated.
 
 Although refs can keep any data, they are commonly used to directly access and
 manipulate DOM nodes: for managing focus, text selection, triggering animations,
-or integrating with third-party libraries. In this case you need to attach it to
-React element via the `ref` attribute.
+or integrating with third-party libraries. In this case, you need to attach it
+to a React element via the `ref` attribute.
 
 ## Creating Refs
 
 ### Class Components
 
-```javascript
+```jsx
 import { Component } from 'react';
 
 class MyComponent extends Component {
@@ -34,7 +34,7 @@ class MyComponent extends Component {
 
 Refs can also be created using callback functions.
 
-```javascript
+```jsx
 class MyComponent extends Component {
   setRef = (node) => {
     this.myRef = node;
@@ -48,7 +48,7 @@ class MyComponent extends Component {
 
 ### Functional Components
 
-```javascript
+```jsx
 import { useRef, useEffect } from 'react';
 
 const MyFunctionalComponent = () => {
@@ -65,12 +65,12 @@ const MyFunctionalComponent = () => {
 ## Forwarding Refs
 
 In many scenarios, you may have a parent component that needs to interact with a
-DOM element of a child component. But React components doesn't have the `ref`
-prop by default. Refs can be forwarded to child components by wrapping your
-functional component with `React.forwardRef`, and it returns a new component
-that forwards the ref.
+DOM element of a child component. But React components don't have the `ref` prop
+by default. Refs can be forwarded to child components by wrapping your
+functional component with `React.forwardRef`, which returns a new component that
+forwards the ref.
 
-```javascript
+```jsx
 import { forwardRef, useRef } from 'react';
 
 const FancyButton = forwardRef((props, ref) => (
@@ -88,7 +88,7 @@ const App = () => {
 
 ## Using Ref for Keeping Data
 
-```javascript
+```jsx
 import { useRef, useEffect, useState } from 'react';
 
 const PreviousValue = () => {
@@ -113,20 +113,20 @@ const PreviousValue = () => {
 
 By default, refs point to a DOM node or a React element. However, sometimes you
 need to expose certain functions or values from a child component to its parent.
-useImperativeHandle allows you to define what the ref in the parent component
+`useImperativeHandle` allows you to define what the ref in the parent component
 can access and interact with.
 
-The useImperativeHandle hook takes three arguments:
+The `useImperativeHandle` hook takes three arguments:
 
 1. `ref`: the ref object forwarded from the parent component.
 2. `createHandle`: a function that returns the object to be exposed.
 3. `[deps]`: an optional array of dependencies that, when changed, will
    re-create the handle.
 
-```javascript
+```jsx
 import { useRef, useImperativeHandle, forwardRef } from 'react';
 
-// Define a functional component that uses useImperativeHandle
+// Define a functional component that uses `useImperativeHandle`
 const MyInput = forwardRef((props, ref) => {
   const inputRef = useRef();
 

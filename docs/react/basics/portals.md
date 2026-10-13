@@ -19,14 +19,14 @@ Portals are particularly handy in scenarios such as:
 
 ## Creating
 
-To create a portal in React, you use the ReactDOM.createPortal function and pass
-children nodes as the first argument and HTML element as the second.
+To create a portal in React, you use the `ReactDOM.createPortal` function and
+pass children nodes as the first argument and an HTML element as the second.
 
 `ReactDOM.createPortal(child, container);`
 
 Below is a simple example of how to use a portal to render a modal:
 
-```javascript
+```jsx
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -83,7 +83,7 @@ tree.
 Events originating from elements inside a portal will propagate to ancestors in
 the React tree as if the portal content were a direct child of those ancestors.
 
-```javascript
+```jsx
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 

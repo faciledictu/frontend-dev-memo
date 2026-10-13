@@ -15,7 +15,7 @@ themes, or any other data that needs to be accessible throughout your app.
 
 ### Create Context
 
-Use `React.createContext` API.
+Use the `React.createContext` API.
 
 ```javascript
 import { createContext } from 'react';
@@ -28,7 +28,7 @@ export const MyContext = createContext();
 Wrap your component tree with the `MyContext.Provider` and pass the context
 value.
 
-```javascript
+```jsx
 const MyProvider = ({ children }) => {
   const value = {/* your context value */};
 
@@ -38,11 +38,11 @@ const MyProvider = ({ children }) => {
 
 ### Consume Context
 
-There are a few ways to consume context: `useContext` hook (for functional
-components), `Context.Consumer` high order component (for both functional and
+There are a few ways to consume context: the `useContext` hook (for functional
+components), `Context.Consumer` higher-order component (for both functional and
 class components), or `static contextType` (for class components).
 
-```javascript
+```jsx
 import { useContext } from 'react';
 
 const MyComponent = () => {
@@ -52,7 +52,7 @@ const MyComponent = () => {
 };
 ```
 
-```javascript
+```jsx
 const MyComponent = () => (
   <MyContext.Consumer>
     {(context) => <div>{/* Use context value */}</div>}
@@ -60,7 +60,7 @@ const MyComponent = () => (
 );
 ```
 
-```javascript
+```jsx
 class MyComponent extends React.Component {
   static contextType = MyContext;
 
@@ -75,7 +75,7 @@ class MyComponent extends React.Component {
 
 If the context value updates frequently, it might cause performance issues
 because any component that consumes the context will re-render whenever the
-context value changes
+context value changes.
 
 :::
 
@@ -84,7 +84,7 @@ context value changes
 Use `useMemo` to memoize context values if they depend on expensive
 computations.
 
-```javascript
+```jsx
 const MyProvider = ({ children }) => {
   const value = useMemo(
     () => ({/* your context value */}),

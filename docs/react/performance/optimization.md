@@ -7,7 +7,7 @@ sidebar_position: 1
 ## The `key` Prop
 
 Ensure that you provide a stable key for each item in a list. This helps React
-identify which items have changed, added, or removed.
+identify which items have changed, been added, or been removed.
 
 In React, "keys" are special attributes you need to include when creating lists
 of elements. Each key must be unique among its siblings. Commonly, you can use
@@ -57,7 +57,7 @@ re-rendering because they are generated each time the parent component renders.
 Use `useCallback` for functions and `useMemo` for objects and pass an array of
 dependencies as the second argument. These hooks don't create objects from
 scratch on every re-render, but return the same references when none of the
-dependencies changes.
+dependencies change.
 
 ```jsx
 const handleClick = useCallback(() => {
@@ -71,7 +71,7 @@ return <MyComponent onClick={handleClick} config={memoizedValue} />;
 
 ## Optimization of Class Components
 
-Extend PureComponent instead of Component to automatically perform a shallow
+Extend `PureComponent` instead of `Component` to automatically perform a shallow
 comparison of props and state.
 
 ```jsx
@@ -82,7 +82,7 @@ class MyComponent extends React.PureComponent {
 
 :::tip
 
-Use PureComponent just like Component, where `shouldComponentUpdate` has the
+Use `PureComponent` just like `Component`, where `shouldComponentUpdate` has the
 shallow props comparison logic by default.
 
 It is not suitable for complex or nested data structures where a deep comparison
@@ -90,7 +90,7 @@ is necessary.
 
 :::
 
-Alternatively, implement shouldComponentUpdate to manually control updates.
+Alternatively, implement `shouldComponentUpdate` to manually control updates.
 
 ```javascript
 class MyComponent extends React.Component {
@@ -111,12 +111,12 @@ complexity and performance issues of its own.
 **Identify Performance Bottlenecks.** Only apply memoization to components that
 are confirmed to cause performance issues.
 
-**Measure Performance.** Use React's Profiler or other performance measurement
+**Measure Performance.** Use the React Profiler or other performance measurement
 tools to identify components that benefit from memoization.
 
-**Compute-Intensive Functions.** Wrap only those functions or values in useMemo
-and useCallback that are computationally intensive or cause significant
-re-renders.
+**Compute-Intensive Functions.** Wrap only those functions or values in
+`useMemo` and `useCallback` that are computationally intensive or cause
+significant re-renders.
 
-**Avoid Premature Optimization.** Don’t memoize everything by default. Assess
+**Avoid Premature Optimization.** Don't memoize everything by default. Assess
 the performance impact first.

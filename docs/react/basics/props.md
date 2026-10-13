@@ -8,7 +8,7 @@ Props (short for properties) are used to pass data from a parent component to a
 child component. This makes components reusable and helps maintain a clear data
 flow in your application.
 
-```javascript
+```jsx
 function Greeting(props) {
   return <h1>Hello, {props.name}!</h1>;
 }
@@ -26,9 +26,9 @@ the state and data flow.
 ## Default Props
 
 You can define default values for your props if they are not provided by the
-parent component by using `defaultProps` property.
+parent component by using the `defaultProps` property.
 
-```javascript
+```jsx
 function Greeting(props) {
   return <h1>Hello, {props.name}!</h1>;
 }
@@ -52,7 +52,7 @@ correctly.
 For runtime typing, React provides a library called `prop-types` to define these
 types.
 
-```javascript
+```jsx
 import PropTypes from 'prop-types';
 
 function Greeting(props) {
@@ -88,7 +88,7 @@ has a larger community and broader support.
 
 TypeScript typing:
 
-```typescript
+```tsx
 type GreetingProps = {
   name: string;
 };
@@ -112,7 +112,7 @@ via props.
 3. In the child component, invoke the callback function (e.g., in response to
    user input or other events).
 
-```javascript
+```jsx
 function ParentComponent() {
   const [data, setData] = React.useState('');
 

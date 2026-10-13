@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # Working with Forms
 
-In React, handling forms involves managing state and handling user input
+In React, handling forms involves managing state and handling user input.
 
 ## Controlled Components
 
@@ -13,9 +13,9 @@ text inputs, textareas, and select boxes) is controlled by the React state, and
 any change to the input value is handled by an event handler that updates the
 state.
 
-Controlled components should use `value` prop.
+Controlled components should use the `value` prop.
 
-```javascript
+```jsx
 import { useState } from 'react';
 
 const ControlledComponent = () => {
@@ -43,13 +43,13 @@ export default ControlledComponent;
 
 ## Uncontrolled Components
 
-Uncontrolled form elements, on the other hand, use DOM to manage form data.
-Instead of updating the state on every change, the value is directly from the
-DOM using a ref.
+Uncontrolled form elements, on the other hand, use the DOM to manage form data.
+Instead of updating the state on every change, the value is read directly from
+the DOM using a ref.
 
-Uncontrolled components don't use `value` prop.
+Uncontrolled components don't use the `value` prop.
 
-```javascript
+```jsx
 import { useRef } from 'react';
 
 const UncontrolledComponent = () => {
@@ -85,22 +85,22 @@ export default UncontrolledComponent;
 #### Uncontrolled
 
 - Data is managed by the DOM.
-- Less code, but if you need immediate validation you should add event listener
-  using DOM refs instead of react event handlers.
+- Less code, but if you need immediate validation, you should add an event
+  listener using DOM refs instead of React event handlers.
 - Harder to debug and test.
 
 ## Working with Uncontrolled Components
 
-Access to components values using refs:
+Access the values of components using refs:
 
 - Create a ref using `useRef()` or `createRef()`.
-- Attach the ref to the input element using the ref attribute.
-- Access the input value using ref.current.value.
+- Attach the ref to the input element using the `ref` attribute.
+- Access the input value using `ref.current.value`.
 
-Instead using `value` prop you can set initial value by using `defaultValue`
-prop
+Instead of using the `value` prop, you can set the initial value by using the
+`defaultValue` prop.
 
-```javascript
+```jsx
 <input type="text" defaultValue="Initial Value" ref={this.inputRef} />
 ```
 
@@ -123,8 +123,8 @@ resetForm = () => {
 3. **User Input.** Users interact with the form, triggering events like
    `onChange` and `onSubmit`.
 
-4. **Validation.** Form data is validated, either on the client-side or
-   server-side.
+4. **Validation.** Form data is validated, either on the client side or the
+   server side.
 
 5. **Submission.** Form data is submitted, often via an API call.
 
@@ -199,7 +199,7 @@ form state. It's known for its minimal re-renders and better performance.
 
 - **Performance.** Minimal re-renders due to uncontrolled components.
 - **Simple API.** Uses React hooks for form management.
-- **Integration.** Easy to integrate with UI libraries like Material-UI, Ant
+- **Integration.** Easy to integrate with UI libraries like Material UI or Ant
   Design.
 - **Lightweight.** Small bundle size compared to other libraries.
 - **Validation.** Built-in support for schema validation with libraries like

@@ -28,9 +28,9 @@ components and from custom hooks (which are functions that use hooks), but not
 from regular JavaScript functions or class components.
 
 The first rule means that you can't use hooks in conditions. Here is a bad
-example
+example.
 
-```javascript
+```jsx
 function InvalidComponent() {
   if (condition) {
     useEffect(() => {
@@ -41,10 +41,10 @@ function InvalidComponent() {
 }
 ```
 
-However, there are ways to achieve similar effect. Here are an example where the
-component state updates conditionally.
+However, there are ways to achieve a similar effect. Here is an example where
+the component state updates conditionally.
 
-```javascript
+```jsx
 function ValidComponent() {
   useEffect(() => {
     if (condition) {
@@ -56,7 +56,7 @@ function ValidComponent() {
 }
 ```
 
-```javascript
+```jsx
 import { useState, useEffect } from 'react';
 
 function ConditionalEffectComponent() {
@@ -104,17 +104,17 @@ components.
 
 When you create custom hooks, their names must start with the prefix "use". This
 convention helps distinguish hooks from regular functions and indicates that
-they may use React state or effects
+they may use React state or effects.
 
 :::
 
-Once you have defined a custom hook, you can use it in any functional component
+Once you have defined a custom hook, you can use it in any functional component.
 
 <Tabs>
 
   <TabItem value="ToggleComponent.jsx" label="ToggleComponent.jsx" default>
 
-```javascript
+```jsx
 import useToggle from './useToggle';
 
 function ToggleComponent() {

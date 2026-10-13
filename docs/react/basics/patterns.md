@@ -9,7 +9,7 @@ sidebar_position: 7
 Depending on the state of your application, you can render different components
 or elements.
 
-```javascript
+```jsx
 function Greeting({ isLoggedIn }) {
   if (isLoggedIn) {
     return <h1>Welcome back!</h1>;
@@ -25,7 +25,7 @@ Render props is a technique for sharing code between React components using a
 prop whose value is a function. This function returns a React element and allows
 the parent component to control what is rendered by a child component.
 
-```javascript
+```jsx
 function MouseTracker({ render }) {
   const [position, setPosition] = React.useState({ x: 0, y: 0 });
 
@@ -50,9 +50,9 @@ function MouseTracker({ render }) {
 />;
 ```
 
-Some libraries provide components that using render props such as
+Some libraries provide components that use render props, such as
 [Controller](https://react-hook-form.com/docs/usecontroller/controller) from
-react-hook-form.
+`react-hook-form`.
 
 ## Higher-Order Components (HOCs)[^1]
 
@@ -65,7 +65,7 @@ Higher-order components are not commonly used in modern React code.
 
 :::
 
-```javascript
+```jsx
 function withAuthorization(WrappedComponent) {
   return class extends React.Component {
     render() {
@@ -85,19 +85,19 @@ const AuthorizedComponent = withAuthorization(SomeComponent);
 :::info[See also]
 
 [Custom hooks](../hooks/hooks.mdx#custom-hooks) can be considered as a common
-pattern that can be used instead HOCs in functional components. They allow you
-to extract component logic into reusable functions.
+pattern that can be used instead of HOCs in functional components. They allow
+you to extract component logic into reusable functions.
 
 :::
 
 ## Error Boundaries
 
 There is no option to catch errors using functional components. By wrapping your
-functional components into one class component you can catch JavaScript errors
+functional components in a class component you can catch JavaScript errors
 anywhere in their child component tree, log those errors, and display a
 fallback.
 
-```javascript
+```jsx
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
