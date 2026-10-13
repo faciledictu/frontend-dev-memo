@@ -44,16 +44,16 @@ component on top of it.
 
 **Realisation In Typescript**
 
-```typescript
+```tsx
 const BaseButton = ({ children }) => {
-  return <button>Base Button</button>;
+  return <button>{children}</button>;
 };
 
-const ButtonWithIcon = ({ children, icon = Icon }) => {
+const ButtonWithIcon = ({ children, icon: Icon }) => {
   return (
     <BaseButton>
       <Icon />
-      {title}
+      {children}
     </BaseButton>
   );
 };
