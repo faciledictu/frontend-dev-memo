@@ -1,8 +1,9 @@
 # Аудит страниц
 
-Результат этапа 1 из [ROADMAP.md](ROADMAP.md). Текст страниц не менялся. Таблица
-одна по смыслу (колонки везде одинаковые), но разбита по разделам, чтобы её
-можно было читать.
+Результат этапа 1 из [ROADMAP.md](ROADMAP.md). Пути страниц — на момент аудита;
+после этапа 2 см. раздел «После этапа 2». Текст страниц не менялся. Таблица одна
+по смыслу (колонки везде одинаковые), но разбита по разделам, чтобы её можно
+было читать.
 
 ## Как читать
 
@@ -146,6 +147,65 @@ prototypes, `typescript/type-casting` → type assertions, `react/concurrent-mod
 - раздел TypeScript — самый слабый относительно своей важности: 5 страниц, из
   них 2 заглушки и 3 с некомпилируемыми примерами. В порядке этапа 3 он стоит
   третьим; есть смысл поднять его перед React.
+
+### После этапа 2
+
+Этап 2 выполнен. Таблицы разделов ниже описывают страницы по старым путям; где
+они теперь:
+
+| Было                                                                | Стало                                                |
+| ------------------------------------------------------------------- | ---------------------------------------------------- |
+| `common/best-practices/*`                                           | `programming/best-practices.md`                      |
+| `common/paradigms`, `fp`, `oop/*`                                   | `programming/paradigms/*` (`paradigms` → `overview`) |
+| `common/patterns`, `data-structures`                                | `programming/`                                       |
+| `common/testing` + общая часть `react/testing` + RN `other/testing` | `tooling/testing.md`                                 |
+| `common/ci-cd` + RN `other/ci-cd`                                   | `tooling/ci-cd.md`                                   |
+| `common/code-review`, `dev-methodologies`                           | `tooling/`                                           |
+| `nodejs/npm`                                                        | `tooling/package-managers.md`                        |
+| `common/gc`                                                         | `javascript/garbage-collection.md`                   |
+| `common/debugging` + `react/devtools`                               | `web-platform/debugging.md`                          |
+| `browser/*`                                                         | `web-platform/*` (`cookies` → `storage`)             |
+| `react/bundle-optimization`                                         | `web-platform/bundle-optimization.md`                |
+| теория из `nextjs/authentication`                                   | `web-platform/authentication.md`                     |
+| `nextjs/styling` + `react-native/styled-components`                 | `css/styling-approaches.md`                          |
+| `git/tag` + `git/reset`                                             | `git/commands.md`                                    |
+| `javascript/inheritance`                                            | `javascript/prototypes.md`                           |
+| `typescript/type-casting`                                           | `typescript/type-assertions.md`                      |
+| `react/virtual-dom` + `fiber`                                       | `react/basics/rendering.md`                          |
+| классы из `react/components` + `lifecycle`                          | `react/basics/class-components.md`                   |
+| `react/react-fragment`                                              | `react/basics/components.md`                         |
+| `react/memoization`                                                 | `react/performance/optimisation.md`                  |
+| `react/reselect`                                                    | `react/ecosystem/redux.md`                           |
+| `react/concurrent-mode`                                             | `react/performance/concurrent-rendering.md`          |
+| остальные `react/*`                                                 | `react/basics`, `hooks`, `performance`, `ecosystem`  |
+| `app-router/navigation` + `redirecting`                             | `app-router/navigation.md`                           |
+| `app-router/rendering-strategies`                                   | `app-router/server-components.mdx`                   |
+| `app-router/forms`                                                  | `app-router/server-actions.mdx`                      |
+| `page-router/navigation`, `redirecting`                             | `page-router/overview.md`                            |
+| `page-router/ssg`, `ssr`, `csr`                                     | `page-router/rendering-strategies.md`                |
+| `react-native/scroll-view`                                          | `react-native/lists.md`                              |
+| `react-native/fonts`                                                | `react-native/stylesheet.md`                         |
+| `react-native/timers`                                               | `react-native/animations/animated.md`                |
+| `react-native/native-libraries`                                     | `react-native/rn-architecture.md`                    |
+| `react-native/code-splitting`                                       | `react-native/platform-specific-code.md`             |
+| `react-native/other/*`, `distribution`                              | `react-native/release/*`                             |
+| `nodejs/modules/timer`                                              | `nodejs/event-loop.md`                               |
+| `sql/crud`                                                          | `sql/commands.mdx`                                   |
+
+Удалены: `react/recompose`, `nextjs/other`, `nextjs/app-router/other`,
+`react-native/setting-up`.
+
+Отступления от списка выше:
+
+- `react/testing` остался в `react/ecosystem`: в `tooling/testing.md` уехал
+  только раздел про E2E-библиотеки, остальное специфично для React.
+- Из `page-router/ssr` при слиянии выброшен подраздел «Page-level SSR»: он
+  утверждал, что страницы по умолчанию SSR, и противоречил соседнему разделу про
+  SSG на той же странице.
+- Из `react-native/native-libraries` перенесён только раздел про линковку:
+  Bridge и JSI в `rn-architecture.md` уже описаны.
+- Из `app-router/navigation` не перенесён пример с `redirect` в серверном
+  компоненте: дубль примера из `redirecting` с синхронным `params`.
 
 ### Входные данные для этапа 4
 
