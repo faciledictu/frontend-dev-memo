@@ -11,7 +11,11 @@ import CategoryNodejs from '@site/static/img/category-nodejs.svg';
 import CategoryReact from '@site/static/img/category-react.svg';
 import CategorySql from '@site/static/img/category-sql.svg';
 import CategoryTypescript from '@site/static/img/category-typescript.svg';
-import categories from '../../categories';
+import {
+  generalCategories,
+  mainCategories,
+  relatedCategories,
+} from '../../categories';
 import styles from './index.module.css';
 
 type Icon = React.ComponentType<React.ComponentProps<'svg'>>;
@@ -25,10 +29,10 @@ type CategoryLink = {
 };
 
 const icons: Record<string, Icon> = {
-  'common': CategoryCommon,
+  'programming': CategoryCommon,
   'git': CategoryGit,
   'javascript': CategoryJavascript,
-  'browser': CategoryBrowser,
+  'web-platform': CategoryBrowser,
   'react': CategoryReact,
   'react-native': CategoryReact,
   'nextjs': CategoryNextjs,
@@ -37,17 +41,22 @@ const icons: Record<string, Icon> = {
   'sql': CategorySql,
 };
 
-const getIcon = (id: string) => icons[id] ?? icons.common;
+const getIcon = (id: string) => icons[id] ?? CategoryCommon;
 
-const categoryLinks: CategoryLink[] = categories.map(
-  ({ id, label, description }) => ({
-    id,
-    label,
-    Icon: getIcon(id),
-    link: `/${id}`,
-    description: <>{description}</>,
-  })
-);
+const toCategoryLink = ({
+  id,
+  label,
+  description,
+}: (typeof mainCategories)[number]): CategoryLink => ({
+  id,
+  label,
+  Icon: getIcon(id),
+  link: `/${id}`,
+  description: <>{description}</>,
+});
+
+const mainLinks = [...mainCategories, ...generalCategories].map(toCategoryLink);
+const relatedLinks = relatedCategories.map(toCategoryLink);
 
 function CategoryLink({ label, Icon, link, description }: CategoryLink) {
   return (
@@ -66,7 +75,15 @@ export default function HomepageLinks(): ReactNode {
     <section>
       <div className="container">
         <div className={clsx('row', styles.stretch)}>
-          {categoryLinks.map((props) => (
+          {mainLinks.map((props) => (
+            <CategoryLink key={props.id} {...props} />
+          ))}
+        </div>
+        <Heading as="h2" className="margin-bottom--md">
+          Related
+        </Heading>
+        <div className={clsx('row', styles.stretch)}>
+          {relatedLinks.map((props) => (
             <CategoryLink key={props.id} {...props} />
           ))}
         </div>

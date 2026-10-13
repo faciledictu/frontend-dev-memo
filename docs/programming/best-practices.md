@@ -1,11 +1,60 @@
 ---
-sidebar_position: 3
-description: The main principles according the book of Robert C. Martin
+sidebar_position: 1
+description: Naming, DRY / KISS / YAGNI and the main ideas of Clean Code
 ---
 
-# Clean code
+# Best Practices
 
-## Best Practices
+## Naming
+
+### Common Principles
+
+- Choose names that clearly describe the purpose. Names should be as short as
+  possible but long enough to convey meaning.
+
+- Use full words instead of abbreviations.
+
+- Avoid reserved words as names.
+
+- Stick to a consistent naming convention throughout your codebase. For JS they
+  are _camelCase_ and _PascalCase_.
+
+### Variables
+
+- Use nouns for variables.
+
+- Use Plurals for arrays and collections.
+
+- Except for loop indices, avoid using single character names.
+
+- Use named constants instead of hard-coding values directly in your code.
+
+### Functions
+
+- Use verbs for functions (because functions are actions).
+
+- If the function is predicate the name is often starting with _is_, _has_,
+  _can_, or _should_.
+
+- Function names should clearly indicate if they have side effects.
+
+## DRY, KISS, YAGNI
+
+**DRY** stands for _Don't Repeat Yourself_, which means you shouldn't write the
+same code over and over again. Instead, you should try to reuse code as much as
+possible to keep things efficient.
+
+**KISS** stands for _Keep It Simple, Stupid_. It means you should try to keep
+your code simple and easy to understand. Don't overcomplicate things if you
+don't need to.
+
+**YAGNI** stands for _You Ain't Gonna Need It_. This principle suggests that you
+shouldn't add functionality to your code unless you actually need it. So, don't
+waste time and effort on features that might not be necessary.
+
+## Clean code
+
+### Best Practices
 
 The main principles of Robert C. Martin's "Clean Code".
 
@@ -42,7 +91,7 @@ The main principles of Robert C. Martin's "Clean Code".
 These principles aim to make code more readable, maintainable, and efficient,
 leading to higher-quality software and a smoother development process.
 
-## Antipatterns
+### Antipatterns
 
 These antipatterns are addressed throughout "Clean Code" with the goal of
 encouraging practices that lead to more maintainable, understandable, and robust

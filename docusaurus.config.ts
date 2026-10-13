@@ -2,7 +2,11 @@ import type * as Preset from '@docusaurus/preset-classic';
 import type { Config } from '@docusaurus/types';
 import type { PluginOptions as SearchLocalOptions } from '@easyops-cn/docusaurus-search-local';
 import { themes as prismThemes } from 'prism-react-renderer';
-import categories from './src/categories';
+import {
+  generalCategories,
+  mainCategories,
+  relatedCategories,
+} from './src/categories';
 
 const REPO_URL = `https://github.com/faciledictu/frontend-dev-memo`;
 const SITE_URL = 'https://frontend-dev-memo.vercel.app';
@@ -15,12 +19,23 @@ type CustomNavbarItem = {
   position: 'left';
 };
 
-const navbarItems = categories.map(({ id, navbarLabel }): CustomNavbarItem => ({
+const toNavbarItem = ({
+  id,
+  navbarLabel,
+}: (typeof mainCategories)[number]): CustomNavbarItem => ({
   type: 'docSidebar',
   sidebarId: id,
   label: navbarLabel,
   position: 'left',
-}));
+});
+
+const navbarItems = mainCategories.map(toNavbarItem);
+
+const toDropdownItem = ({ id, label }: (typeof mainCategories)[number]) => ({
+  type: 'docSidebar',
+  sidebarId: id,
+  label,
+});
 
 const config: Config = {
   title: SITE_NAME,
@@ -81,6 +96,18 @@ const config: Config = {
       },
       items: [
         ...navbarItems,
+        {
+          type: 'dropdown',
+          label: 'General',
+          position: 'left',
+          items: generalCategories.map(toDropdownItem),
+        },
+        {
+          type: 'dropdown',
+          label: 'Related',
+          position: 'left',
+          items: relatedCategories.map(toDropdownItem),
+        },
         {
           href: REPO_URL,
           label: 'GitHub',

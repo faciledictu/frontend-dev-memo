@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 1
 ---
 
 # Testing
@@ -249,3 +249,71 @@ Then('a welcome message should be displayed', async function () {
   expect(welcomeMessage).to.equal('Welcome, validUser!');
 });
 ```
+
+## Libraries for E2E Testing
+
+E2E testing is an essential part of a comprehensive testing strategy, providing
+confidence that your application works correctly from the user's perspective.
+
+### Cypress
+
+Easy setup, real-time reloading, powerful debugging tools, automatic waiting.
+
+```javascript
+describe('My First Test', () => {
+  it('Visits the app', () => {
+    cy.visit('http://localhost:3000');
+    cy.contains('Welcome to My App');
+  });
+});
+```
+
+### Playwright
+
+Supports multiple browsers (Chromium, Firefox, WebKit), cross-browser testing,
+advanced features like network interception.
+
+```javascript
+const { chromium } = require('playwright');
+
+(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  await page.goto('http://localhost:3000');
+  await page.screenshot({ path: 'screenshot.png' });
+  await browser.close();
+})();
+```
+
+## Testing React Native Apps
+
+1. **Static analysis**: Use ESLint (included in RN templates) and TypeScript.
+   Linting catches common code errors and enforces style. The checks should run
+   in CI on every PR.
+
+2. **Unit tests**: The React Native template includes Jest by default. Write
+   fast unit tests for business logic and pure functions. Keep tests small. For
+   component logic (without rendering), use Jest’s describe and mocks as needed.
+
+3. **Component/Integration tests**: Use React Native Testing Library (built on
+   top of React Testing Library) to render components in a headless environment.
+   Test that components render expected output given props/state, and simulate
+   user interactions (fire events, use act(), etc.). Snapshot tests can catch UI
+   regressions, but use sparingly (prefer explicit assertions).
+
+4. **End-to-End (E2E) tests**: These run on devices or emulators and simulate
+   real user behavior. Build your app in release mode and use a framework like
+   Detox (very popular for RN) or Appium/Maestro to script interactions (tapping
+   buttons, entering text) and verify screens. E2E tests give high confidence
+   for critical flows (login, checkout, etc.), though they are slower and more
+   fragile. Aim to cover the most important flows. In CI, you can run a subset
+   of E2E tests on emulators or real device cloud services.
+
+:::tip[Coverage and Automation]
+
+Track code coverage to measure test sufficiency. Run all tests (unit +
+integration) on each CI build. E.g., in GitHub Actions you might have a job
+run-tests that executes npm test and then an E2E job with Detox. Failing any
+test should block merging or deployment.
+
+:::

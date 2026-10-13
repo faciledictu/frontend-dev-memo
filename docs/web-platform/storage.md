@@ -1,15 +1,17 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 ---
 
-# Cookies
+# Browser Storage
+
+## Cookies
 
 Cookies are small pieces of data that websites store on a clients's device to
 keep track of their activity and preferences. Each cookie consists of a name,
 value, and several attributes like domain, path, expiration date, and flags
 (e.g., secure, HttpOnly).
 
-## Working with Cookies
+### Working with Cookies
 
 To work wiht a cookie in JavaScript, you can use the `document.cookie` property.
 
