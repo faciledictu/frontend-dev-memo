@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Type Casting
+# Type Assertions
 
 Type casting in TypeScript allows you to tell the compiler to treat a variable
 as a different type. This can be useful when you know more about the type of a

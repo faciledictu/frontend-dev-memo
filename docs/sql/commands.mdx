@@ -14,9 +14,21 @@ functionality: **DML**, **DCL**, **TCL**, and **DDL**.
 
 These commands are used for managing data within schema objects.
 
+:::info
+
+CRUD is an acronym that stands for Create, Read, Update, and Delete, which are
+the four basic operations that can be performed on data in a database. Each
+operation maps to a DML statement: `INSERT`, `SELECT`, `UPDATE`, and `DELETE`.
+
+:::
+
 ### SELECT
 
 Retrieves data from a database.
+
+```sql
+SELECT first_name, last_name FROM employees WHERE department = 'Sales';
+```
 
 ### INSERT
 

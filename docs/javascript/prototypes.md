@@ -2,7 +2,7 @@
 sidebar_position: 9
 ---
 
-# Inheritance
+# Prototypes and Inheritance
 
 Prototypal inheritance is a fundamental concept in JavaScript, where objects can
 inherit properties and methods from other objects.
