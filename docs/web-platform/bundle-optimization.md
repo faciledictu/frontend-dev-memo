@@ -30,24 +30,25 @@ executed. The main techniques:
   can see what is used. CommonJS (`require`) cannot be analyzed reliably.
 - It works in production builds of webpack, Rollup, Vite and esbuild.
 - A library helps the bundler with `"sideEffects": false` in its `package.json`:
-  a module that nothing is imported from can then be dropped entirely. Files
-  with side effects (CSS, polyfills) are listed as exceptions.
+  a module that is imported or re-exported, but whose exports are not used, can
+  then be dropped entirely. Files with side effects (CSS, polyfills) are listed
+  as exceptions.
 
 How the import style affects the bundle, with Lodash as an example:
 
-| Import                                   | What gets into the bundle                  |
-| ---------------------------------------- | ------------------------------------------ |
-| `import _ from 'lodash'`                 | the whole library                          |
-| `import { debounce } from 'lodash'`      | the whole library: `lodash` is CommonJS    |
-| `import debounce from 'lodash/debounce'` | only `debounce` and what it depends on     |
-| `import { debounce } from 'lodash-es'`   | only `debounce`: `lodash-es` is ES modules |
+| Import                                   | What gets into the bundle                                         |
+| ---------------------------------------- | ----------------------------------------------------------------- |
+| `import _ from 'lodash'`                 | the whole library                                                 |
+| `import { debounce } from 'lodash'`      | the whole library: `lodash` is CommonJS                           |
+| `import debounce from 'lodash/debounce'` | only `debounce` and what it depends on                            |
+| `import { debounce } from 'lodash-es'`   | only `debounce` and what it depends on: `lodash-es` is ES modules |
 
 ### Code Splitting
 
 - A dynamic `import('./module.js')` returns a promise, and the bundler puts the
   module into a separate chunk. It works in every modern bundler.
-- Split **by route** first, then heavy components that are rarely needed: modal
-  windows, editors, charts.
+- Split **by route** first, then heavy components that are rarely needed:
+  modals, editors, charts.
 - In React, `lazy` together with `Suspense` loads a component on first render.
   Routers can load routes lazily, see [Routing](../react/ecosystem/routing.md).
 - Dependencies that rarely change can go into a separate **vendor chunk**

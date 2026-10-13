@@ -38,7 +38,7 @@ shows the current state, not the state at the time of logging.
 | Line           | at a line; set by a click on the line number in the Sources panel |
 | Conditional    | at a line, only if the expression is true                         |
 | Logpoint       | does not pause: logs an expression without changing the code      |
-| DOM            | when a node, its attributes or its subtree change                 |
+| DOM            | when a node is removed, or its attributes or subtree change       |
 | XHR / fetch    | when a request is sent to a URL that contains a given string      |
 | Event listener | when an event of a given type is handled                          |
 | Exceptions     | when an error is thrown, caught or uncaught                       |
@@ -63,13 +63,18 @@ shows the current state, not the state at the time of logging.
 
 ### React DevTools
 
-A browser extension that adds two tabs to DevTools:
+A browser extension that adds its own tabs to DevTools:
 
 - **Components**: the component tree. For the selected component it shows props,
   state and hooks, including context values, and lets you edit them in place.
 - **Profiler**: records renders and shows which components rendered in each
-  commit, how long it took and why. The setting "Highlight updates when
-  components render" outlines re-rendering components on the page.
+  commit and how long it took; with the setting "Record why each component
+  rendered while profiling", also why.
+- **Suspense** (since version 8): the Suspense boundaries and what made a
+  component suspend.
+
+The general setting "Highlight updates when components render" outlines
+re-rendering components on the page.
 
 ### Redux DevTools
 
@@ -113,7 +118,8 @@ function findUser(name) {
 
 - Trusting an expanded object in the console: it shows the current state. Log a
   copy or a primitive value instead.
-- Leaving `debugger` and `console.log` in the code; a linter rule catches both.
+- Leaving `debugger` and `console.log` in the code; linter rules catch both
+  (`no-debugger`, `no-console`).
 
 ## See Also
 

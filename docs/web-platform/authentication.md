@@ -32,11 +32,11 @@ recognized on every request either by a **server session** or by a signed
 
 ### Where to Keep the Token in the Browser
 
-| Place             | XSS                              | CSRF                                                 |
-| ----------------- | -------------------------------- | ---------------------------------------------------- |
-| `HttpOnly` cookie | the script cannot read the token | sent automatically; needs `SameSite` or a CSRF token |
-| `localStorage`    | any script can read the token    | not affected: the header is added by code            |
-| Memory (variable) | harder to steal, lost on reload  | not affected                                         |
+| Place             | XSS                                                                       | CSRF                                                 |
+| ----------------- | ------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `HttpOnly` cookie | the script cannot read the token, but can still send requests as the user | sent automatically; needs `SameSite` or a CSRF token |
+| `localStorage`    | any script can read the token                                             | not affected: the header is added by code            |
+| Memory (variable) | harder to steal, lost on reload                                           | not affected                                         |
 
 The usual recommendation is an `HttpOnly; Secure; SameSite` cookie. See
 [Browser Storage](./storage.md#cookie-attributes).
@@ -49,7 +49,7 @@ The usual recommendation is an `HttpOnly; Secure; SameSite` cookie. See
   has (a phone, a security key), is (biometrics).
 - **Passwordless.** Magic links, one-time codes, passkeys (WebAuthn).
 - **Single sign-on and social login.** Identity is confirmed by another service
-  through OpenID Connect.
+  usually through OpenID Connect (or SAML in corporate SSO).
 
 ### OAuth 2.0 and OpenID Connect
 
@@ -74,7 +74,7 @@ The usual recommendation is an `HttpOnly; Secure; SameSite` cookie. See
 - How do you log a user out with JWT? Delete the token on the client and revoke
   the refresh token on the server; the access token lives until it expires.
 - What is the difference between `401` and `403`? `401`: not authenticated.
-  `403`: authenticated, but has no rights.
+  `403`: authenticated, but not allowed.
 - Why is `localStorage` a risky place for a token? Any script on the page can
   read it, so one XSS hole gives away the session.
 

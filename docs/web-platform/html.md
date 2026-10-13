@@ -7,8 +7,8 @@ description:
 
 # HTML
 
-HTML describes the **structure and meaning** of content, not its look. What is
-usually asked:
+HTML describes the **structure and meaning** of content, not its appearance.
+What is usually asked:
 
 - **Semantic markup**: elements are chosen by meaning (`<nav>`, `<main>`,
   `<button>`), not by appearance.
@@ -74,6 +74,8 @@ elements come with keyboard support and focus for free.
 
 - `inline-block` flows in a line but respects `width`, `height` and vertical
   margins.
+- Replaced inline elements (`<img>`, `<input>`, `<video>`) are an exception:
+  they respect `width`, `height` and vertical margins.
 - This is the CSS `display` property and can be changed. What HTML itself
   defines is which elements may be nested: a `<p>` cannot contain a `<div>`, the
   parser closes the paragraph before it.
@@ -110,7 +112,8 @@ elements come with keyboard support and focus for free.
 | `pattern`                           | the whole value matches the regular expression |
 
 - Validation runs on submit. If a field is invalid, the form is not sent, the
-  `submit` event does not fire and the browser shows a message.
+  `submit` event does not fire and the browser shows a message. `form.submit()`
+  called from a script skips validation; `form.requestSubmit()` does not.
 - `novalidate` on the form or `formnovalidate` on a button turns it off.
 - CSS: `:valid`, `:invalid`, and `:user-invalid`, which applies only after the
   user has interacted with the field.

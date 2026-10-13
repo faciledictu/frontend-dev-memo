@@ -35,7 +35,8 @@ is why CSRF attacks are possible.
   `Access-Control-Allow-Origin`. The server has already processed the request by
   then. A request is simple when:
   - the method is `GET`, `HEAD` or `POST`;
-  - there are no custom headers;
+  - there are no headers beyond the safelisted ones (`Accept`,
+    `Accept-Language`, `Content-Language`, `Content-Type`);
   - `Content-Type` is `text/plain`, `multipart/form-data` or
     `application/x-www-form-urlencoded`.
 - Any other request (`PUT`, `PATCH`, `DELETE`, a JSON body, an `Authorization`
@@ -98,7 +99,7 @@ Access-Control-Max-Age: 600
 
 - Why is there no CORS error in Postman or `curl`? The policy is enforced only
   by browsers.
-- Why is a preflight needed? Old servers were written when a page could send
+- Why is a preflight needed? Old servers were written when a page could send to
   another origin only what a form can send. The preflight makes sure that the
   server knows about CORS before it gets anything else.
 - Are `https://example.com` and `https://api.example.com` the same? They are
@@ -107,8 +108,8 @@ Access-Control-Max-Age: 600
 
 ## Common Mistakes
 
-- "CORS blocks cross-origin requests." The Same-Origin Policy blocks, CORS
-  allows.
+- "CORS blocks cross-origin requests." The Same-Origin Policy blocks; CORS is
+  how the server lifts the block.
 - "An origin is a domain." It is scheme, host and port together.
 - "The request did not reach the server." A simple request is processed by the
   server; the browser only hides the response.

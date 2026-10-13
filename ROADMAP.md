@@ -142,7 +142,7 @@
 - [x] 1. JavaScript.
 - [x] 2. TypeScript (поднят перед React по итогам аудита).
 - [x] 3. React.
-- [ ] 4. Web Platform.
+- [x] 4. Web Platform (`http` разделена на `http` и `cors`).
 - [ ] 5. Next.js.
 - [ ] 6. React Native.
 - [ ] 7. `programming`, `tooling`, `git`, `css`.

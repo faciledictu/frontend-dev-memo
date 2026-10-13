@@ -17,15 +17,15 @@ encrypted and the server proves its identity with a certificate.
 
 ### Methods
 
-| Method    | Typical use                               | Safe | Idempotent |
-| --------- | ----------------------------------------- | ---- | ---------- |
-| `GET`     | read a resource                           | yes  | yes        |
-| `HEAD`    | the same as `GET`, but without the body   | yes  | yes        |
-| `OPTIONS` | ask what is allowed; CORS preflight       | yes  | yes        |
-| `POST`    | create a resource, run an action          | no   | no         |
-| `PUT`     | replace a resource, or create it by a URL | no   | yes        |
-| `PATCH`   | update a part of a resource               | no   | no         |
-| `DELETE`  | delete a resource                         | no   | yes        |
+| Method    | Typical use                                     | Safe | Idempotent |
+| --------- | ----------------------------------------------- | ---- | ---------- |
+| `GET`     | read a resource                                 | yes  | yes        |
+| `HEAD`    | the same as `GET`, but without the body         | yes  | yes        |
+| `OPTIONS` | ask what is allowed; CORS preflight             | yes  | yes        |
+| `POST`    | create a resource, run an action                | no   | no         |
+| `PUT`     | replace a resource, or create it at a known URL | no   | yes        |
+| `PATCH`   | update a part of a resource                     | no   | no         |
+| `DELETE`  | delete a resource                               | no   | yes        |
 
 - **Safe**: the request does not change the state of the server.
 - **Idempotent**: several identical requests leave the server in the same state
@@ -37,23 +37,23 @@ encrypted and the server proves its identity with a certificate.
 
 ### Status Codes
 
-| Group | Meaning      | Codes worth remembering                                                                                          |
-| ----- | ------------ | ---------------------------------------------------------------------------------------------------------------- |
-| `1xx` | Information  | `101 Switching Protocols` (WebSocket)                                                                            |
-| `2xx` | Success      | `200 OK`, `201 Created`, `204 No Content`                                                                        |
-| `3xx` | Redirection  | `301 Moved Permanently`, `302 Found`, `304 Not Modified`                                                         |
-| `4xx` | Client error | `400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, `404 Not Found`, `409 Conflict`, `429 Too Many Requests` |
-| `5xx` | Server error | `500 Internal Server Error`, `502 Bad Gateway`, `503 Service Unavailable`, `504 Gateway Timeout`                 |
+| Group | Meaning       | Codes worth remembering                                                                                          |
+| ----- | ------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `1xx` | Informational | `101 Switching Protocols` (WebSocket)                                                                            |
+| `2xx` | Success       | `200 OK`, `201 Created`, `204 No Content`                                                                        |
+| `3xx` | Redirection   | `301 Moved Permanently`, `302 Found`, `304 Not Modified`                                                         |
+| `4xx` | Client error  | `400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, `404 Not Found`, `409 Conflict`, `429 Too Many Requests` |
+| `5xx` | Server error  | `500 Internal Server Error`, `502 Bad Gateway`, `503 Service Unavailable`, `504 Gateway Timeout`                 |
 
 - `401` means "not authenticated": no credentials or they are invalid. `403`
   means "authenticated, but not allowed".
 - `301` and `302` allow the client to change `POST` to `GET`; `308` and `307`
-  are their versions that keep the method.
+  are their counterparts that keep the method.
 - `304` has no body: the client uses its cached copy.
 
 ### Caching
 
-- `Cache-Control` tells who may store the response and for how long:
+- `Cache-Control` says who may store the response and for how long:
   - `max-age=3600`: the response is fresh for an hour and is used without a
     request;
   - `no-cache`: may be stored, but must be revalidated with the server before
@@ -68,11 +68,11 @@ encrypted and the server proves its identity with a certificate.
 
 ### HTTP Versions
 
-| Version  | Transport     | What is different                                                                                    |
-| -------- | ------------- | ---------------------------------------------------------------------------------------------------- |
-| HTTP/1.1 | TCP           | Text format. One request at a time per connection, so browsers open up to 6 connections per host     |
-| HTTP/2   | TCP           | Binary frames. Many parallel streams over one connection (multiplexing), header compression          |
-| HTTP/3   | QUIC over UDP | A lost packet delays only its own stream, not all of them. TLS 1.3 is built in, connection is faster |
+| Version  | Transport     | What is different                                                                                          |
+| -------- | ------------- | ---------------------------------------------------------------------------------------------------------- |
+| HTTP/1.1 | TCP           | Text format. One request at a time per connection, so browsers open up to 6 connections per host           |
+| HTTP/2   | TCP           | Binary frames. Many parallel streams over one connection (multiplexing), header compression                |
+| HTTP/3   | QUIC over UDP | A lost packet delays only its own stream, not all of them. TLS 1.3 is built in, connection setup is faster |
 
 Methods, status codes and headers are the same in all versions; only the way
 they are transferred changes.
@@ -89,8 +89,8 @@ and `DELETE`.
 
 - **`fetch`** is the standard promise-based API.
   - The promise is rejected only when there is no response at all: a network
-    failure, a [CORS](./cors.md) error or an abort. `404` and `500` are
-    fulfilled responses, so `response.ok` must be checked.
+    failure, a [CORS](./cors.md) error or an abort. with `404` and `500` the
+    promise is fulfilled, so `response.ok` must be checked.
   - `AbortController` cancels a request; `AbortSignal.timeout(ms)` sets a
     timeout.
   - Cookies are sent to the same origin only, unless `credentials: 'include'` is

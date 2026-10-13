@@ -34,6 +34,10 @@ button.removeEventListener('click', handleClick, options);
 | `passive` | the handler promises not to call `preventDefault()`, so scrolling does not wait for it |
 | `signal`  | an `AbortSignal`; `controller.abort()` removes the handler                             |
 
+`touchstart`, `touchmove` and `wheel` listeners on `window`, `document` and
+`<body>` are passive by default; to call `preventDefault()` in them, pass
+`{ passive: false }`.
+
 ### Propagation
 
 - `event.target` is the element where the event happened; `event.currentTarget`
@@ -64,8 +68,8 @@ button.removeEventListener('click', handleClick, options);
 | Page     | `DOMContentLoaded`, `load`, `resize`, `scroll`, `visibilitychange`, `pagehide`    |
 
 Deprecated: `keypress` (use `keydown`, or `input` for text) and `unload` (it is
-unreliable on mobile and disables the back/forward cache; use `visibilitychange`
-or `pagehide`).
+unreliable on mobile, disables the back/forward cache, and Chrome is phasing it
+out; use `visibilitychange` or `pagehide`).
 
 ## Example
 
@@ -95,7 +99,7 @@ menu.addEventListener('click', (event) => {
 ## Follow-up Questions
 
 - Why use delegation? There is one handler instead of many, and it works for
-  elements added after the handler was set.
+  elements added after the handler was attached.
 - How do you remove several handlers at once? Pass the same `signal` to all of
   them and call `controller.abort()`.
 - How does React attach handlers? It delegates: one listener per event type on

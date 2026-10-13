@@ -37,8 +37,9 @@ A cookie is set by the server with the `Set-Cookie` header or by a script.
 `SameSite` values:
 
 - `Strict`: only requests from the same site.
-- `Lax`: the same, plus top-level navigation from another site, such as a click
-  on a link. Chromium browsers use it when the attribute is missing.
+- `Lax`: the same, plus top-level navigation from another site with a safe
+  method (`GET`), such as a click on a link. A cross-site `POST` form does not
+  get the cookie. Chromium browsers use it when the attribute is missing.
 - `None`: all requests, including those from other sites. Requires `Secure`.
 
 A **site** is broader than an origin: it is the scheme and the registrable
@@ -48,7 +49,8 @@ same site.
 **Third-party cookies** belong to a domain other than the one in the address
 bar, for example cookies of an embedded widget or an ad network. They need
 `SameSite=None; Secure`. Safari blocks them and Firefox isolates them per site
-by default.
+by default. Chrome dropped its plan to remove them and still allows them, except
+in Incognito.
 
 ### Web Storage
 
@@ -58,8 +60,9 @@ by default.
   `JSON.parse`.
 - The API is **synchronous** and blocks the main thread, so it is not for large
   data.
-- `sessionStorage` survives a reload of the tab, but a new tab gets its own
-  empty storage.
+- `sessionStorage` survives a reload of the tab, but a tab opened separately
+  gets its own empty storage. A tab opened from the page or duplicated starts
+  with a copy.
 - When `localStorage` changes, the `storage` event fires in the **other** tabs
   of the same origin. This is a simple way to sync tabs.
 - Any script on the page can read it, including one injected by XSS.
@@ -121,14 +124,17 @@ window.addEventListener('storage', (event) => {
 
 ## Follow-up Questions
 
-- Where should an auth token be stored? An `HttpOnly` cookie cannot be stolen by
-  XSS, but is sent automatically, so it needs CSRF protection (`SameSite`).
-  `localStorage` has no CSRF problem, but any script can read it. See
+- Where should an auth token be stored? An `HttpOnly` cookie cannot be read by
+  an injected script (which can still send requests as the user), but is sent
+  automatically, so it needs CSRF protection (`SameSite`). `localStorage` has no
+  CSRF problem, but any script can read it. See
   [Authentication](./authentication.md).
-- What does `HttpOnly` protect from, and what does `SameSite`? `HttpOnly`: theft
-  of the cookie by a script. `SameSite`: requests forged from another site.
+- What do `HttpOnly` and `SameSite` each protect against? `HttpOnly`: theft of
+  the cookie by a script. `SameSite`: requests forged from another site.
 - Are cookies sent with a cross-origin `fetch`? Only with
-  `credentials: 'include'` and matching [CORS](./cors.md#credentials) headers.
+  `credentials: 'include'`, and a cross-site request also needs
+  `SameSite=None; Secure` on the cookie. Whether the script can read the
+  response is decided by the [CORS](./cors.md#credentials) headers.
 
 ## Common Mistakes
 

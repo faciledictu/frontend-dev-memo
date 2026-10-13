@@ -56,18 +56,18 @@ What happens after a user enters a URL:
 
 After the first render, a change reruns the pipeline from the step it affects:
 
-| What changes                                                       | What reruns                |
-| ------------------------------------------------------------------ | -------------------------- |
-| Geometry: `width`, `margin`, `font-size`, adding or removing nodes | layout → paint → composite |
-| Appearance: `color`, `background`, `box-shadow`                    | paint → composite          |
-| `transform`, `opacity`                                             | composite only             |
+| What changes                                                       | What reruns                                      |
+| ------------------------------------------------------------------ | ------------------------------------------------ |
+| Geometry: `width`, `margin`, `font-size`, adding or removing nodes | layout → paint → composite                       |
+| Appearance: `color`, `background`, `box-shadow`                    | paint → composite                                |
+| `transform`, `opacity`                                             | composite only, if the element has its own layer |
 
 - That is why animations should use `transform` and `opacity` instead of `top` /
   `left` or `width` / `height`.
-- **Layout thrashing.** The browser postpones layout until the end of the frame.
-  Reading a layout property (`offsetWidth`, `getBoundingClientRect()`) after a
-  style change forces it to run immediately. Doing it in a loop means a layout
-  per iteration. Fix: read everything first, then write.
+- **Layout thrashing.** The browser postpones layout until the next frame is
+  rendered. Reading a layout property (`offsetWidth`, `getBoundingClientRect()`)
+  after a style change forces it to run immediately. Doing it in a loop means a
+  layout per iteration. Fix: read everything first, then write.
 
 ## Example
 
@@ -91,7 +91,7 @@ for (const item of items) {
   That is why scripts get `defer` and critical CSS is kept small.
 - What is the difference between `display: none` and `visibility: hidden`? The
   first removes the element from the render tree; the second keeps its place in
-  the layout and only does not paint it.
+  the layout, but it is not painted.
 - How does JavaScript fit into rendering? Rendering happens between tasks, so a
   long task delays the next frame. See
   [Event Loop](../javascript/event-loop.md).
