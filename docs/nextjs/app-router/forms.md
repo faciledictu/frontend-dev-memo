@@ -59,8 +59,10 @@ user.
 
 ```jsx
 // app/page.js
+'use client';
+
+import { useRef, useState } from 'react';
 import { submitForm } from './actions';
-import { useState } from 'react';
 
 export default function HomePage() {
   const [formData, setFormData] = useState({ name: '', email: '' });
@@ -77,7 +79,7 @@ export default function HomePage() {
   };
 
   return (
-    <form ref={formRef} action={submitForm} method="post">
+    <form ref={formRef} action={submitForm}>
       <input
         type="text"
         name="name"
