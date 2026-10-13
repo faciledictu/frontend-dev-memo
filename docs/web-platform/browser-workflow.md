@@ -1,89 +1,110 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
+description:
+  From a URL to pixels - DNS, connection, parsing, the rendering pipeline
 ---
 
 # How the Browser Works
 
-When a user enters a domain name in the browser input, the following sequence of
-events typically occurs.
+What happens after a user enters a URL:
 
-## 1. DNS Lookup
+1. **DNS lookup**: the domain name is resolved to an IP address.
+2. **Connection**: a TCP handshake, then a TLS handshake for HTTPS.
+3. **Request and response**: the browser sends an HTTP request and gets HTML.
+4. **Parsing**: HTML becomes the **DOM**, CSS becomes the **CSSOM**; scripts are
+   executed along the way and can block the parser.
+5. **Rendering**: style → **layout** → **paint** → **composite**.
 
-The browser first checks its cache to see if it has the IP address for the
-domain. If not, it sends a request to a DNS (Domain Name System) server to
-resolve the domain name (e.g., www.example.com) into an IP address, which
-identifies the server hosting the website.
+## Details
 
-## 2. TCP/IP Connection
+### Network
 
-The browser establishes a TCP (Transmission Control Protocol) connection with
-the server using the IP address. This involves a three-way handshake process to
-ensure a reliable connection.
+- **DNS.** The browser checks its own cache, then the cache of the operating
+  system, and only then asks a DNS resolver.
+- **TCP and TLS.** TCP sets up a reliable connection with a three-way handshake.
+  For HTTPS, a TLS handshake follows: the server presents its certificate and
+  both sides agree on encryption keys. HTTP/3 uses QUIC, which combines both
+  handshakes.
+- **HTTP.** The request contains the method, the path, headers and cookies. The
+  response contains a status code, headers and the body. See [HTTP](./http.md).
+- Every other resource found in the HTML (styles, scripts, images, fonts) is a
+  separate request.
 
-:::info
+### Rendering Pipeline
 
-The browser can request a secure connection and the server can provide its
-SSL/TLS certificate.
+1. **Parse HTML → DOM.** The parser works incrementally, while the bytes are
+   still arriving.
+2. **Parse CSS → CSSOM.** CSS is **render-blocking**: nothing is painted until
+   the styles found so far are loaded and parsed.
+3. **Run scripts.** A `<script>` without attributes is **parser-blocking**: the
+   parser stops until the script is downloaded and executed, and the script
+   itself waits for the stylesheets above it. `defer`, `async` and
+   `type="module"` scripts are downloaded without blocking the parser. See
+   [HTML](./html.md#loading-scripts).
+4. **Style.** The DOM and the CSSOM are combined into the **render tree**: only
+   the nodes that take part in rendering, with their computed styles.
+   `display: none` elements are not in it.
+5. **Layout** (reflow). The size and position of every box are calculated.
+6. **Paint.** The boxes are drawn into layers: text, colors, borders, shadows.
+7. **Composite.** The layers are put together on the screen, usually on the GPU
+   and off the main thread.
 
-If the certificate is valid, the browser and server agree on encryption
-algorithms and a TLS handshake occurs to establish a secure connection.
+`DOMContentLoaded` fires when the HTML is parsed and deferred scripts have run;
+`load` fires when all resources, including images, are loaded.
 
-:::
+### Reflow and Repaint
 
-## 3. HTTP/HTTPS Request
+After the first render, a change reruns the pipeline from the step it affects:
 
-The browser sends an HTTP (Hypertext Transfer Protocol) or HTTPS (HTTP Secure)
-request to the server. The request includes details such as the HTTP method,
-headers, cookies, and other relevant information. If other data is needed (such
-as images, scripts, etc.), the browser sends additional requests later.
+| What changes                                                       | What reruns                |
+| ------------------------------------------------------------------ | -------------------------- |
+| Geometry: `width`, `margin`, `font-size`, adding or removing nodes | layout → paint → composite |
+| Appearance: `color`, `background`, `box-shadow`                    | paint → composite          |
+| `transform`, `opacity`                                             | composite only             |
 
-### How the Server Responds
+- That is why animations should use `transform` and `opacity` instead of `top` /
+  `left` or `width` / `height`.
+- **Layout thrashing.** The browser postpones layout until the end of the frame.
+  Reading a layout property (`offsetWidth`, `getBoundingClientRect()`) after a
+  style change forces it to run immediately. Doing it in a loop means a layout
+  per iteration. Fix: read everything first, then write.
 
-#### Processing
+## Example
 
-The server processes the request, fetching the requested resource (e.g., an HTML
-page, image, or data) from its storage.
+```javascript
+// Bad: reads after a write, so every iteration forces a layout
+for (const item of items) {
+  item.style.width = `${container.offsetWidth / 2}px`;
+}
 
-#### Response Sending
+// Good: one read, then only writes
+const width = container.offsetWidth / 2;
 
-The server sends an HTTP response back to the browser. The response includes a
-status code (e.g., 200 OK, 404 Not Found), headers, and the requested content
-(e.g., HTML, CSS, JavaScript, images).
+for (const item of items) {
+  item.style.width = `${width}px`;
+}
+```
 
-## 4. Rendering the Page
+## Follow-up Questions
 
-The browser receives the response and begins to render the page. This involves
-several steps:
+- What blocks the first render? CSS in `<head>` and parser-blocking scripts.
+  That is why scripts get `defer` and critical CSS is kept small.
+- What is the difference between `display: none` and `visibility: hidden`? The
+  first removes the element from the render tree; the second keeps its place in
+  the layout and only does not paint it.
+- How does JavaScript fit into rendering? Rendering happens between tasks, so a
+  long task delays the next frame. See
+  [Event Loop](../javascript/event-loop.md).
 
-- **Parsing HTML.** The browser parses the HTML to construct the DOM (Document
-  Object Model) tree.
+## Common Mistakes
 
-- **Parsing CSS.** CSS files are fetched and parsed to construct the CSSOM (CSS
-  Object Model) tree.
+- "The browser builds the whole DOM and then runs JavaScript." Scripts run
+  during parsing and block it unless they are `defer`, `async` or modules.
+- "Any style change causes a reflow." Changes of `transform` and `opacity` can
+  be handled by the compositor alone.
 
-- **Combining DOM and CSSOM.** The DOM and CSSOM are combined to create the
-  render tree, which represents the structure and styles of the page.
+## See Also
 
-- **JavaScript Execution.** JavaScript files are fetched and executed.
-  JavaScript can manipulate the DOM and CSSOM, dynamically updating the content
-  and styles of the page.
-
-- **Layout.** The browser calculates the layout of each element based on the
-  render tree.
-
-- **Painting.** The browser paints the pixels to the screen, rendering the final
-  visual representation of the page.
-
-## Additional Resources
-
-If the HTML includes references to additional resources (e.g., images, videos,
-fonts), the browser makes additional requests to fetch these resources and
-incorporates them into the page.
-
-## User Interaction
-
-Once the page is rendered, the browser handles user interactions (e.g., clicks,
-form submissions) and updates the page accordingly.
-
-If JavaScript or other actions modify the layout or style, the browser may need
-to reflow (recalculate layout) and repaint (update the display).
+- [HTTP](./http.md)
+- [HTML](./html.md)
+- [Rendering in React](../react/basics/rendering.md)

@@ -1,81 +1,100 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
+description: Bundle analysis, tree shaking, code splitting and lighter imports
 ---
 
 # Bundle Optimization
 
-When you import a module or a library into your JavaScript application, it
-contributes to the overall size of your bundle. The term "import cost" refers to
-the amount of data (in bytes) that this module will add to your final JavaScript
-bundle.
+The less JavaScript a page ships, the faster it is downloaded, parsed and
+executed. The main techniques:
 
-:::tip
+- **Measure** the production build with a bundle analyzer.
+- **Tree shaking**: the bundler drops exports that nothing imports.
+- **Code splitting**: dynamic `import()` moves code into chunks that are loaded
+  on demand.
+- **Minification and compression**, and **lighter dependencies**.
 
-If you are testing the performance of your React application or encountering
-performance issues, it is essential to test a minified final (production) build.
+## Details
 
-:::
+### Measuring
 
-## Bundle Analyzers
+- Always look at the **production** build: a development build is not minified
+  and contains extra code.
+- An analyzer shows a treemap of what the bundle consists of:
+  `webpack-bundle-analyzer` for webpack, `rollup-plugin-visualizer` for Vite and
+  Rollup, `source-map-explorer` for any bundler that emits source maps.
 
-Bundle analyzer tools help you identify which modules are contributing the most
-to the size of your bundle. The Webpack Bundle Analyzer plugin generates an
-interactive treemap visualization of the contents of all bundles.
+### Tree Shaking
 
-```javascript
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+- It relies on **ES modules**: `import` and `export` are static, so the bundler
+  can see what is used. CommonJS (`require`) cannot be analyzed reliably.
+- It works in production builds of webpack, Rollup, Vite and esbuild.
+- A library helps the bundler with `"sideEffects": false` in its `package.json`:
+  a module that nothing is imported from can then be dropped entirely. Files
+  with side effects (CSS, polyfills) are listed as exceptions.
 
-module.exports = {
-  plugins: [new BundleAnalyzerPlugin()],
-};
-```
+How the import style affects the bundle, with Lodash as an example:
 
-## Tree Shaking
+| Import                                   | What gets into the bundle                  |
+| ---------------------------------------- | ------------------------------------------ |
+| `import _ from 'lodash'`                 | the whole library                          |
+| `import { debounce } from 'lodash'`      | the whole library: `lodash` is CommonJS    |
+| `import debounce from 'lodash/debounce'` | only `debounce` and what it depends on     |
+| `import { debounce } from 'lodash-es'`   | only `debounce`: `lodash-es` is ES modules |
 
-Tree shaking is a form of dead code elimination. It ensures that unused modules
-are not included in the final bundle.
+### Code Splitting
 
-- Use ES6 import/export syntax. This allows bundlers like Webpack to analyze and
-  remove unused code.
+- A dynamic `import('./module.js')` returns a promise, and the bundler puts the
+  module into a separate chunk. It works in every modern bundler.
+- Split **by route** first, then heavy components that are rarely needed: modal
+  windows, editors, charts.
+- In React, `lazy` together with `Suspense` loads a component on first render.
+  Routers can load routes lazily, see [Routing](../react/ecosystem/routing.md).
+- Dependencies that rarely change can go into a separate **vendor chunk**
+  (`splitChunks` in webpack, `manualChunks` in Rollup), so that the browser
+  keeps it cached between releases. See [HTTP caching](./http.md#caching).
 
-- Ensure that dependencies are tree-shakable. Prefer modern libraries that use
-  ES6 modules.
+### Other Techniques
 
-Consider importing a large utility library like Lodash.
+- **Minification** (Terser, esbuild, SWC) is done by the bundler;
+  **compression** (Brotli, gzip) is done by the server or the CDN.
+- **Lighter dependencies**: `date-fns` or `Intl` instead of Moment.js, native
+  methods instead of utility libraries.
+- **Fewer polyfills**: a `browserslist` config that matches the real audience.
 
-```javascript
-import _ from 'lodash';
-```
-
-If your application only uses a few functions from Lodash, importing the entire
-library adds unnecessary bulk to your bundle. Instead, you can import only the
-specific functions you need.
-
-```javascript
-import { debounce, map } from 'lodash';
-```
-
-## Splitting Code into Chunks
-
-By splitting your code into smaller chunks and loading them on demand, you can
-significantly improve the initial loading time of your web application.
-
-You can use `React.lazy` and dynamic `import()` syntax to load components as
-needed for code splitting at the component level. It works with Suspense to show
-a fallback UI while loading the split code.
+## Example
 
 ```jsx
 import { Suspense, lazy } from 'react';
 
-const OtherComponent = lazy(() => import('./OtherComponent'));
+// The chart code is loaded only when <Dashboard> is rendered
+const Chart = lazy(() => import('./Chart'));
 
-function MyComponent() {
+function Dashboard() {
   return (
-    <div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <OtherComponent />
-      </Suspense>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Chart />
+    </Suspense>
   );
 }
 ```
+
+## Follow-up Questions
+
+- Why does tree shaking not work for a library? It is published as CommonJS, or
+  its modules have side effects and it does not declare `sideEffects`.
+- What is the downside of code splitting? More requests and a delay when a chunk
+  is needed for the first time. Chunks for likely navigation can be preloaded.
+- How do you find out what made the bundle bigger? Compare analyzer reports
+  before and after the change.
+
+## Common Mistakes
+
+- "Named imports are always tree-shaken." Only from ES modules;
+  `import { debounce } from 'lodash'` pulls in the whole library.
+- Measuring performance or bundle size on a development build.
+
+## See Also
+
+- [Optimization in React](../react/performance/optimization.md)
+- [How the Browser Works](./browser-workflow.md)

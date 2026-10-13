@@ -1,191 +1,182 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
+description:
+  Semantic markup, script loading, block vs inline, data attributes, viewport,
+  form validation
 ---
 
-# HTML Markup
+# HTML
 
-## Basic Structure of an HTML Document
+HTML describes the **structure and meaning** of content, not its look. What is
+usually asked:
 
-HTML, or Hypertext Markup Language, is the standard language used to create web
-pages. An HTML document typically starts with a `<!DOCTYPE html>` declaration,
-which defines the document type and version of HTML. This is followed by the
-`<html>` tag, which encloses the entire document. Inside the `<html>` tag, there
-are two main sections: the `<head>` and the `<body>`.
+- **Semantic markup**: elements are chosen by meaning (`<nav>`, `<main>`,
+  `<button>`), not by appearance.
+- **Script loading**: a plain `<script>` blocks the parser; `defer`, `async` and
+  `type="module"` do not.
+- **Block vs inline**, **`data-*` attributes**, the **viewport meta tag** and
+  built-in **form validation**.
 
-- `<!DOCTYPE html>` Declares the document type and version.
-- `<html>` Root element of the HTML document.
-- `<head>` Contains meta-information about the document, such as the title,
-  character set, styles, and links to external resources.
-- `<body>` Contains the content of the HTML document, including text, images,
-  links, tables, forms, etc.
+## Details
 
-Here’s an example of a basic HTML document structure:
+### Semantic Markup
+
+Semantic elements tell the browser, screen readers and search engines what the
+content is. They give landmarks and a heading outline for navigation, and native
+elements come with keyboard support and focus for free.
+
+| Element                | Meaning                                                     |
+| ---------------------- | ----------------------------------------------------------- |
+| `<header>`, `<footer>` | introduction and closing part of a page or a section        |
+| `<nav>`                | a block of navigation links                                 |
+| `<main>`               | the main content, one per page                              |
+| `<article>`            | a self-contained piece: a post, a card, a comment           |
+| `<section>`            | a thematic group, usually with a heading                    |
+| `<aside>`              | content related only indirectly: a sidebar, a note          |
+| `<h1>`–`<h6>`          | headings; levels should not be skipped                      |
+| `<button>`             | an action on the page                                       |
+| `<a href>`             | navigation to another URL                                   |
+| `<strong>`, `<em>`     | strong importance and stress emphasis                       |
+| `<b>`, `<i>`           | text set apart without extra importance (a keyword, a term) |
+| `<div>`, `<span>`      | no meaning; containers for styling                          |
+
+- `<strong>` is not "bold" and `<em>` is not "italic": that is only the default
+  style. For a purely visual effect use CSS.
+- `<u>` marks a non-textual annotation, such as a misspelled word. For
+  underlining use CSS `text-decoration`.
+
+### Loading Scripts
+
+| Script                   | Blocks the parser  | Runs                                     | Order          |
+| ------------------------ | ------------------ | ---------------------------------------- | -------------- |
+| `<script>`               | yes                | right away, where it is in the document  | document order |
+| `<script async>`         | only while it runs | as soon as it is downloaded              | not guaranteed |
+| `<script defer>`         | no                 | after parsing, before `DOMContentLoaded` | document order |
+| `<script type="module">` | no                 | like `defer`                             | document order |
+
+- `async` suits independent scripts such as analytics; `defer` suits application
+  code that needs the DOM or depends on other scripts.
+- `defer` and `async` work only with `src`; on an inline classic script they are
+  ignored.
+- Modules run in strict mode with their own scope, support `import` / `export`,
+  and are executed once even when included several times.
+- A script added with `document.createElement('script')` behaves as `async`.
+
+### Block vs Inline
+
+|                    | Block                                       | Inline                              |
+| ------------------ | ------------------------------------------- | ----------------------------------- |
+| Position           | starts on a new line                        | flows inside a line of text         |
+| Width              | all available width                         | the width of its content            |
+| `width` / `height` | applied                                     | ignored                             |
+| Vertical margin    | applied                                     | ignored                             |
+| Default for        | `<div>`, `<p>`, `<h1>`, `<ul>`, `<section>` | `<span>`, `<a>`, `<strong>`, `<em>` |
+
+- `inline-block` flows in a line but respects `width`, `height` and vertical
+  margins.
+- This is the CSS `display` property and can be changed. What HTML itself
+  defines is which elements may be nested: a `<p>` cannot contain a `<div>`, the
+  parser closes the paragraph before it.
+
+### `data-*` Attributes
+
+- Custom attributes for the page's own data: `<li data-user-id="42">`.
+- In JavaScript they are read through `dataset`, with the name in camelCase:
+  `element.dataset.userId`. The value is always a string.
+- In CSS they are available in selectors: `[data-state='open']`.
+- Not a place for content that users must see or for sensitive data.
+
+### Viewport Meta Tag
 
 ```html
-<!DOCTYPE html>
-<html>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+```
+
+- Without it, a mobile browser lays the page out on a virtual viewport about
+  980px wide and zooms out, so media queries for narrow screens do not apply.
+- `width=device-width` makes the layout viewport equal to the device width;
+  `initial-scale=1` sets the initial zoom to 100%.
+- `user-scalable=no` and `maximum-scale=1` should not be used: they take away
+  zoom from users who need it.
+
+### Form Validation
+
+| Attribute                           | Checks                                         |
+| ----------------------------------- | ---------------------------------------------- |
+| `required`                          | the field is filled in                         |
+| `type="email"`, `"url"`, `"number"` | the value has this format                      |
+| `min`, `max`, `step`                | range of a number or a date                    |
+| `minlength`, `maxlength`            | length of the text                             |
+| `pattern`                           | the whole value matches the regular expression |
+
+- Validation runs on submit. If a field is invalid, the form is not sent, the
+  `submit` event does not fire and the browser shows a message.
+- `novalidate` on the form or `formnovalidate` on a button turns it off.
+- CSS: `:valid`, `:invalid`, and `:user-invalid`, which applies only after the
+  user has interacted with the field.
+- JavaScript (Constraint Validation API): `checkValidity()`, `reportValidity()`,
+  `setCustomValidity(message)` and the `validity` object.
+- Validation in the browser is for convenience only. The server must validate
+  the data again.
+
+## Example
+
+```html
+<!doctype html>
+<html lang="en">
   <head>
-    <title>Sample Page</title>
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign Up</title>
+    <script src="app.js" defer></script>
   </head>
   <body>
-    <h1>Hello, World!</h1>
-    <p>This is a sample HTML document.</p>
+    <header>
+      <nav><a href="/">Home</a></nav>
+    </header>
+    <main>
+      <h1>Sign Up</h1>
+      <form action="/signup" method="post" data-form-id="signup">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required />
+
+        <label for="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          required
+          minlength="8"
+        />
+
+        <button>Create account</button>
+      </form>
+    </main>
   </body>
 </html>
 ```
 
-To display reserved characters or special symbols in an HTML document, character
-entities are used. For example:
+## Follow-up Questions
 
-- `&lt;` represents &lt;
-- `&gt;` represents &gt;
-- `&amp;` represents &
-- `&quot;` represents "
-- `&apos;` represents '
+- Why is `<!doctype html>` needed? Without it the browser renders the page in
+  quirks mode, which emulates the behavior of old browsers.
+- What is the default `type` of a `<button>` inside a form? `submit`. A button
+  that must not send the form needs `type="button"`.
+- Why does an input need a `<label>`? It gives the field a name for screen
+  readers, and a click on the label focuses the field.
+- What is `alt` for? It is the text alternative of an image. A decorative image
+  gets an empty `alt=""`, so that screen readers skip it.
 
-## Text Formatting and Paragraphs
+## Common Mistakes
 
-- `<p>` Defines a paragraph.
-- `<br>` Inserts a line break.
-- `<strong>` Marks text as important (bold by default).
-- `<em>` Emphasizes text (italic by default).
-- `<u>` Marks text with a non-textual annotation (underlined by default).
-- `<h1>` to `<h6>` Define headings from level 1 to 6.
-- `<span>` Used for inline formatting without adding any semantics.
+- A `<div>` with a click handler instead of a `<button>`: it cannot be focused
+  or activated from the keyboard, and screen readers do not announce it as a
+  button.
+- "`<strong>` makes text bold." It marks importance; bold is the default style.
+- `defer` on an inline script: it has no effect.
+- Choosing a heading level by font size instead of the document structure.
 
-```html
-<p>
-  This is a <strong>bold</strong> paragraph with an <em>emphasized</em> word.
-</p>
-```
+## See Also
 
-### HTML Links
-
-Links are created using the `<a>` tag.
-
-- `href` attribute specifies the URL of the linked page.
-
-- `target` attribute specifies where to open the linked document.
-  - `_self` Default. Opens in the same window/tab.
-  - `_blank` Opens in a new window/tab.
-  - `_parent` Opens in the parent frame.
-  - `_top` Opens in the full body of the window.
-
-  **Security Note**: When using `target="_blank"`, it is highly recommended to
-  add `rel="noopener noreferrer"` to prevent a security vulnerability known as
-  Reverse Tabnabbing, where the newly opened page can maliciously redirect the
-  original page.
-
-```html
-<a href="https://www.example.com" target="_blank" rel="noopener noreferrer"
-  >Visit Example</a
->
-```
-
-### HTML Tables
-
-Tables are used to display tabular data. Key elements include:
-
-- `<table>` Defines the table.
-- `<tr>` Defines a table row.
-- `<td>` Defines a table cell.
-- `<th>` Defines a table header cell.
-
-```html
-<table>
-  <tr>
-    <th>Header 1</th>
-    <th>Header 2</th>
-  </tr>
-  <tr>
-    <td>Data 1</td>
-    <td>Data 2</td>
-  </tr>
-</table>
-```
-
-### Types of Inputs
-
-HTML forms can contain various input types, each suited for different kinds of
-data entry:
-
-- `<input type="text">` Single-line text input.
-- `<input type="password">` Password input.
-- `<input type="email">` Email input.
-- `<input type="number">` Numeric input.
-- `<input type="date">` Date input.
-- `<input type="radio">` Radio button.
-- `<input type="checkbox">` Checkbox.
-- `<input type="file">` File upload.
-
-```html
-<form>
-  <label for="name">Name:</label>
-  <input type="text" id="name" name="name" />
-  <input type="submit" value="Submit" />
-</form>
-```
-
-### Types of Buttons
-
-Buttons are used to trigger actions, typically within forms:
-
-- `<input type="submit" />` A submit button that sends form data to a server.
-- `<input type="reset" />` A reset button that resets form fields to their
-  default values.
-- `<button type="button">` A button that can be programmed with JavaScript to
-  perform custom actions.
-
-```html
-<button type="button" onclick="alert('Button clicked!')">Click Me</button>
-```
-
-### Working with Forms
-
-Forms are used to collect user input and submit it to a server.
-
-- `action` attribute specifies where to send the form data.
-- `method` attribute specifies the HTTP method (GET or POST) to use when sending
-  form data.
-
-```html
-<form action="/submit" method="post">
-  <label for="email">Email:</label>
-  <input type="email" id="email" name="email" />
-  <button type="submit">Submit</button>
-</form>
-```
-
-### Adding Scripts
-
-Scripts, typically JavaScript, can be added to HTML documents to enhance
-interactivity and functionality.
-
-`src` attribute can be used to include an external script file.
-
-```html
-<script>
-  function showAlert() {
-    alert('Hello, World!');
-  }
-</script>
-<button type="button" onclick="showAlert()">Show Alert</button>
-```
-
-### Media Elements
-
-Media elements in HTML include `images`, `audio`, and `video`, which are used to
-embed media content into web pages.
-
-```html
-<img src="image.jpg" alt="Sample Image" />
-<audio controls>
-  <source src="audio.mp3" type="audio/mpeg" />
-  Your browser does not support the audio element.
-</audio>
-<video controls>
-  <source src="video.mp4" type="video/mp4" />
-  Your browser does not support the video element.
-</video>
-```
+- [How the Browser Works](./browser-workflow.md)
+- [DOM Events](./events.md)
