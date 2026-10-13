@@ -143,7 +143,7 @@ return (
 );
 ```
 
-:::info Automatic Batching
+:::info[Automatic Batching]
 
 In earlier versions of React, when `setState` is called inside an asynchronous
 function (of promises, `setTimeout`, native event handlers), each call will
@@ -159,7 +159,7 @@ functions, making it more comprehensive.
 The `useReducer` hook is a built-in React hook that provides an alternative to
 `useState` for managing state in functional components.
 
-:::note When to Use
+:::note[When to Use]
 
 It's particularly useful By using useReducer, you can manage state in a more
 declarative and predictable manner.

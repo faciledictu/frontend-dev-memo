@@ -80,7 +80,7 @@ setInterval(() => {
 }, 1000);
 ```
 
-:::caution Use with Caution
+:::caution[Use with Caution]
 
 Avoid using setInterval for short intervals or operations that may take longer
 than the interval to complete, as this can lead to overlapping executions and
@@ -88,7 +88,7 @@ unintended behavior.
 
 :::
 
-:::note Consider Alternatives
+:::note[Consider Alternatives]
 
 In modern JavaScript development, alternatives such as requestAnimationFrame or
 asynchronous patterns using Promises or async/await may be more suitable for

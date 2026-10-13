@@ -4,7 +4,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 import categories from './src/categories';
 
 const REPO_URL = `https://github.com/faciledictu/frontend-dev-memo`;
-const SITE_URL = `https://${process.env.VERCEL_URL}`;
+const SITE_URL = 'https://frontend-dev-memo.vercel.app';
 const SITE_NAME = 'Frontend Developer Memo';
 
 type CustomNavbarItem = {
@@ -14,14 +14,12 @@ type CustomNavbarItem = {
   position: 'left';
 };
 
-const navbarItems = categories.map(
-  ({ id, navbarLabel }): CustomNavbarItem => ({
-    type: 'docSidebar',
-    sidebarId: id,
-    label: navbarLabel,
-    position: 'left',
-  })
-);
+const navbarItems = categories.map(({ id, navbarLabel }): CustomNavbarItem => ({
+  type: 'docSidebar',
+  sidebarId: id,
+  label: navbarLabel,
+  position: 'left',
+}));
 
 const config: Config = {
   title: SITE_NAME,
@@ -36,7 +34,7 @@ const config: Config = {
   onBrokenLinks: 'throw',
 
   future: {
-    experimental_faster: true,
+    faster: true,
     v4: true,
   },
 
@@ -116,7 +114,7 @@ const config: Config = {
   markdown: {
     mermaid: true,
     hooks: {
-      onBrokenMarkdownLinks: 'warn',
+      onBrokenMarkdownLinks: 'throw',
     },
   },
   themes: ['@docusaurus/theme-mermaid'],

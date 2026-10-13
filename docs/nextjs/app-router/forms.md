@@ -33,18 +33,18 @@ hook returns the status for a specific `<form>` and must be defined as a child
 of the `<form>` element.
 
 ```tsx
-'use client'
- 
-import { useFormStatus } from 'react-dom'
- 
+'use client';
+
+import { useFormStatus } from 'react-dom';
+
 export function SubmitButton() {
-  const { pending } = useFormStatus()
- 
+  const { pending } = useFormStatus();
+
   return (
     <button type="submit" disabled={pending}>
       Add
     </button>
-  )
+  );
 }
 ```
 

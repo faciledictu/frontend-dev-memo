@@ -8,10 +8,9 @@ In JavaScript, there are three keywords used to declare variables: `var`, `let`,
 and `const`. A keyword is followed by an identifier name and optionally by a
 value.
 
-<!-- prettier-ignore -->
 ```javascript
-// declaration     // initializer
-var myVariable     = 10;
+var myVariable = 10;
+// `var myVariable` is the declaration, `= 10` is the initializer
 ```
 
 **A declaration** consist of keyword followed by an identifier name is called .
@@ -42,7 +41,7 @@ function.
 declarations are lifted, and any code located above the declaration can access
 them. Although only declarations are hoisted, not initial values.
 
-:::note Note
+:::note[Note]
 
 Unlike `let` or `const`, `var` variables can be redeclared in the same scope. If
 `var` is declared as a global variable, it adds a property of global object.
@@ -69,7 +68,7 @@ created.
 Variables declared with `let` and `const` can only be accessed after their
 declaration.
 
-:::note Note
+:::note[Note]
 
 We can say `const` and `let` are in temporal dead zone from the start of the
 block to the place where they are declared. They can be accessed by the code,

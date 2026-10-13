@@ -45,7 +45,7 @@ or trigger another effect that depends on that layout.
 It can be considered as an replacement to
 `static getSnapshotBeforeUpdate(prevProps, prevState)` lifecycle method
 
-:::tip When to Use
+:::tip[When to Use]
 
 Use `useEffect` for most side effects that don't need to block the browser
 painting. Use `useLayoutEffect` if you need to make changes that impact layout,

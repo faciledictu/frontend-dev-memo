@@ -27,19 +27,20 @@ are to ways to achieve this:
 ```jsx
 import dynamic from 'next/dynamic';
 
-const DynamicComponent = dynamic(() =>
-  import('../components/DynamicComponent')
+const DynamicComponent = dynamic(
+  () => import('../components/DynamicComponent')
 );
 
-const AdditionalComponent = dynamic(() =>
-  import('../components/ConditionalComponent')
+const AdditionalComponent = dynamic(
+  () => import('../components/ConditionalComponent')
 );
 
 export default function Componets({ showMore }) {
   return (
     <>
       {/* Load immediately, but in a separate client bundle */}
-      <DynamicComponent />;{/* Load on demand, only if `showMore` prop is true */}
+      <DynamicComponent />;
+      {/* Load on demand, only if `showMore` prop is true */}
       {showMore && <AdditionalComponent />}
     </>
   );

@@ -91,7 +91,7 @@ rendering. The main components are:
 - Reduced memory usage and startup time (lazy loading).
 - Seamless synchronous execution—critical for UI/UX responsiveness.
 
-:::info Threading Model
+:::info[Threading Model]
 
 Legacy React Native had three threads: JS thread (running JS code), main/UI
 thread (native UI), and a native bridge thread (processing queued calls).

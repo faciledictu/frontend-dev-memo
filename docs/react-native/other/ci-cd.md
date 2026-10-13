@@ -37,7 +37,7 @@ build servers that handle signing certificates and keystore files automatically.
 If you use GitHub Actions, include build artifacts (signed binaries) as pipeline
 outputs or uploads to a distribution service.
 
-:::tip Automated Deployment
+:::tip[Automated Deployment]
 
 Configure your pipeline to optionally deploy to beta or production stores. For
 example, with Fastlane’s `deliver` (iOS) and `supply` (Android) actions, you can

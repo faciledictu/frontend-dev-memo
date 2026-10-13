@@ -13,16 +13,16 @@ instead of fetching it again from the server.
 
 ### Time-based Revalidation
 
-You can use the `next.revalidate` option with the `fetch` function to specify the
-cache lifetime of a resource, ensuring that data is revalidated at a timed
+You can use the `next.revalidate` option with the `fetch` function to specify
+the cache lifetime of a resource, ensuring that data is revalidated at a timed
 interval.
 
 ```jsx
 export async function getData() {
   const res = await fetch('https://api.example.com/data', {
     next: {
-      revalidate: 60 // Cache the response and revalidate every 60 seconds
-    }
+      revalidate: 60, // Cache the response and revalidate every 60 seconds
+    },
   });
 
   if (!res.ok) {
@@ -36,13 +36,13 @@ export async function getData() {
 
 ### On-Demand Revalidation
 
-`revalidatePath` function allows you to manually trigger a revalidation of
-a specific path. This is useful when you know the underlying data has changed
-and you want to update the cached content immediately.
+`revalidatePath` function allows you to manually trigger a revalidation of a
+specific path. This is useful when you know the underlying data has changed and
+you want to update the cached content immediately.
 
-`revalidateTag` function enables you to revalidate specific tags
-associated with your data, providing a more granular control over which parts of
-your cache to update.
+`revalidateTag` function enables you to revalidate specific tags associated with
+your data, providing a more granular control over which parts of your cache to
+update.
 
 ```jsx
 import { revalidatePath } from 'next/cache';

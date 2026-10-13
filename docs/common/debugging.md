@@ -86,4 +86,4 @@ Used for:
 
 ### React and Redux debugging tools
 
-See [here](/docs/react/devtools.md)
+See [React DevTools](/docs/react/devtools.md).

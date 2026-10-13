@@ -16,20 +16,21 @@ There are two ways to implement client-side rendering in Page Router:
 - Use a data fetching library like SWR or TanStack Query to fetch data on the
   client (recomended).
 
-For more details see [Client-Side Fetching](/docs/nextjs/page-router/data-fetching.mdx#client-side-fetching)
+For more details see
+[Client-Side Fetching](/docs/nextjs/page-router/data-fetching.mdx#client-side-fetching)
 
 ## Considerations for CSR
 
 ### Benefits
 
-- **Rich Interactivity**. Since the rendering happens on the client side, it allows
-  for a more interactive and dynamic user experience.
+- **Rich Interactivity**. Since the rendering happens on the client side, it
+  allows for a more interactive and dynamic user experience.
 
-- **Reduced Server Load**. The server provides a basic HTML shell, reducing the load
-  on the server.
-  
-- **Seamless Transitions**. Navigation between pages can be smooth and fast without
-  full-page reloads.
+- **Reduced Server Load**. The server provides a basic HTML shell, reducing the
+  load on the server.
+
+- **Seamless Transitions**. Navigation between pages can be smooth and fast
+  without full-page reloads.
 
 ### Limitations
 

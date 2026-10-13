@@ -22,14 +22,14 @@ JavaScript includes 8 data types.
 
   - **Object**
 
-:::note Note
+:::note[Note]
 
 `typeof null` will return `object` instead of `null`. This behaviour has some
 historical reasons.
 
 :::
 
-:::note Note
+:::note[Note]
 
 `-Infinity`, `+Infinity` and even `NaN` (not a number) are a special values of
 the number data type. And `NaN` it's also the only value in JavaScript that
@@ -71,6 +71,7 @@ or symbols, and values can be of any data type, including other objects.[^3]
     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#data_structures_and_types
 
 [^2]: https://developer.mozilla.org/en-US/docs/Glossary/Mutable
+
 [^3]:
     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#objects
 

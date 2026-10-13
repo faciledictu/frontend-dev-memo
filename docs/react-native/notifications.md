@@ -181,7 +181,7 @@ const fcmToken = await messaging().getToken();
 }
 ```
 
-:::note APN token and Firebase
+:::note[APN token and Firebase]
 
 If you don’t use Firebase and want the raw APNs token directly, you’d need to
 write native code or use a library like react-native-push-notification, but

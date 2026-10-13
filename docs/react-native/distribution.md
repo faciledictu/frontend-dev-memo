@@ -70,7 +70,7 @@ Types of provisioning profiles:
 | App Store   | Submit app to App Store                      | No (open to public)    |
 | Enterprise  | Internal distribution within an organisation | No                     |
 
-:::info Do Android Apps Have an Equivalent?
+:::info[Do Android Apps Have an Equivalent?]
 
 Not directly. Android apps don’t use provisioning profiles, but they do require:
 
@@ -146,7 +146,7 @@ Developer Account.
 
 5. Once approved, publish your app or roll out in phases (via staged rollout).
 
-## Tools for Simplifying Distribution:
+## Tools for Simplifying Distribution
 
 1. **Expo:** If using Expo Managed Workflow, you can use expo build and eas
    submit for app creation and submission.

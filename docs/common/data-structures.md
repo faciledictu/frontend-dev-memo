@@ -6,7 +6,7 @@ sidebar_position: 4
 
 ## Algorithms
 
-:::info Algorithm
+:::info[Algorithm]
 
 Algorithm is a sequence of well-defined instructions designed to solve a problem
 efficiently. Algorithms can range from simple to complex, and they are essential

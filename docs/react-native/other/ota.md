@@ -21,7 +21,7 @@ Publish an update with:
 eas update --branch production
 ```
 
-:::tip Best Practices
+:::tip[Best Practices]
 
 In emergencies, an OTA release can fix a critical bug within minutes, bypassing
 store review delays.

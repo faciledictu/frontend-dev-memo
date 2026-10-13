@@ -16,7 +16,7 @@ data from a database.
 
 :::
 
-:::note Key Concepts
+:::note[Key Concepts]
 
 **Chunks.** Streams process data in chunks, which are small pieces of data.
 
@@ -128,11 +128,13 @@ writableStream.end();
 
 ## Methods
 
-:::note Flow Modes
+:::note[Flow Modes]
 
-**Flowing mode**: Data is read from the stream automatically and provided to the application via events as soon as it is available.
+**Flowing mode**: Data is read from the stream automatically and provided to the
+application via events as soon as it is available.
 
-**Paused mode**: Data must be explicitly read from the stream using methods like `read()`.
+**Paused mode**: Data must be explicitly read from the stream using methods like
+`read()`.
 
 :::
 
@@ -142,20 +144,24 @@ writableStream.end();
 
 `readableStream.resume()`<br/>Resumes the flowing of data.
 
-`writableStream.write(chunk, [encoding], [callback])`<br/>Writes data to the stream.
+`writableStream.write(chunk, [encoding], [callback])`<br/>Writes data to the
+stream.
 
-`writableStream.end([chunk], [encoding], [callback])`<br/>Signals that no more data
-will be written to the stream.
+`writableStream.end([chunk], [encoding], [callback])`<br/>Signals that no more
+data will be written to the stream.
 
-`readableStream.pipe(writable)`<br/>Used to pass data from a readable stream to a
-writable stream. This simplifies the process of reading from one stream and
+`readableStream.pipe(writable)`<br/>Used to pass data from a readable stream to
+a writable stream. This simplifies the process of reading from one stream and
 writing to another.
 
 ## Backpressure
 
-Streams handle backpressure, which occurs when the writable stream cannot handle the amount of data being written to it as quickly as it is being produced by the readable stream.
+Streams handle backpressure, which occurs when the writable stream cannot handle
+the amount of data being written to it as quickly as it is being produced by the
+readable stream.
 
-Node.js streams manage this using the `highWaterMark` option and the `drain` event.
+Node.js streams manage this using the `highWaterMark` option and the `drain`
+event.
 
 ## Usage
 

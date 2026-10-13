@@ -54,7 +54,7 @@ throughout the development process.
 **Strengths**: Flexible, adaptive to changes, continuous feedback and
 improvement, early detection of issues through iterative cycles.
 
-:::info Concept of Shift-Left Testing
+:::info[Concept of Shift-Left Testing]
 
 Shift-left testing involves integrating testing activities earlier in the SDLC.
 It aims to identify and address defects sooner, improving quality and reducing
@@ -93,7 +93,7 @@ Accurate **effort estimating** helps in planning sprints and allocating
 resources effectively. In Scrum, story points or hours might be used to estimate
 the effort for user stories in the backlog.
 
-:::tip What is the Difference
+:::tip[What is the Difference]
 
 Agile is a broad philosophy with various methodologies like Scrum and Kanban.
 
