@@ -1,0 +1,8 @@
+{
+  "label": "Build and Release",
+  "position": 11,
+  "link": {
+    "type": "generated-index",
+    "description": "Building, configuring, distributing and updating React Native apps"
+  }
+}

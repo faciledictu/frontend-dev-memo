@@ -1,5 +1,5 @@
 ---
-sidebar_position: 15
+sidebar_position: 2
 ---
 
 # Bridge vs. Bridgeless Architecture
@@ -104,3 +104,35 @@ can handle work simultaneously. For example, React 18’s scheduler can slice wo
 on the JS side while background layout threads prepare UI.
 
 :::
+
+## Native Libraries and Linking
+
+In React Native, the `react-native link` command was historically used to link
+native dependencies to your project. However, with the introduction of
+autolinking in React Native 0.60 and later, the need for `react-native link` has
+largely been reduced
+
+**Link the Library**: After installing the library, run:
+
+```bash
+npx react-native link <library-name>
+```
+
+If you omit library-name, it will try to link all installed dependencies that
+require linking.
+
+**Rebuild Your App**: Once linked, rebuild your app:
+
+**Conflict with Autolinking**: If you’re using React Native 0.60+, avoid using
+react-native link unless absolutely necessary, as it can cause conflicts.
+
+**Manual Linking**: For libraries that don’t support autolinking, you may need
+to link them manually by modifying your native configuration files
+(`android/settings.gradle`, `android/app/build.gradle`, or `ios/Podfile`).
+
+**Unlinking Libraries**: If a library is linked incorrectly, you can unlink it
+using:
+
+```bash
+npx react-native unlink <library-name>
+```
