@@ -21,13 +21,13 @@ that uses them.
 
 Function expressions define functions as part of an expression, allowing them to
 be assigned to variables. They can be anonymous (without a name) or named. After
-declaration they can be invoked by variable name.
+that, they can be invoked by the variable name.
 
 ## Arrow Functions
 
-Arrow functions use another syntax with the arrow `=>` symbol. They are always
-anonymous, meaning they can only be assigned to a variable or used to declare
-callbacks in-place. Unlike regular functions, arrow functions don't have their
-own `this` keyword. Instead, they inherit it from the outer lexical environment.
-This is why they can't be used as constructors. Additionally, arrow functions
-don't have their own `arguments` array-like object.
+Arrow functions use a different syntax with the arrow `=>` symbol. They are
+always anonymous, meaning they can only be assigned to a variable or used to
+declare callbacks in-place. Unlike regular functions, arrow functions don't have
+their own `this` keyword. Instead, they inherit it from the outer lexical
+environment. This is why they can't be used as constructors. Additionally, arrow
+functions don't have their own `arguments` array-like object.

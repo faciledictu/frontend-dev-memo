@@ -1,22 +1,23 @@
 ---
-sidebar_position: 12
-description: What is Garbage collector (GC) and what is used for
+sidebar_position: 13
+description: What a garbage collector (GC) is and what it is used for
 ---
 
 # Garbage collector
 
 A garbage collector (GC) is a form of automatic memory management. The primary
 purpose is to find and reclaim memory that is no longer in use by the program,
-thus preventing memory leaks and optimizing memory usage. In essence, the
-garbage collector monitors objects in a program, determines which objects are no
-longer reachable (meaning they cannot be accessed or used by the program
-anymore), and then frees the memory allocated to those objects for future use.
+thus reducing memory leaks and optimizing memory usage. In essence, the garbage
+collector monitors objects in a program, determines which objects are no longer
+reachable (meaning they cannot be accessed or used by the program anymore), and
+then frees the memory allocated to those objects for future use.
 
 ## Purposes
 
-- Prevents Memory Leaks: By automatically cleaning up unused memory, it helps
+- Reduces Memory Leaks: By automatically cleaning up unused memory, it helps
   prevent your program from using more and more memory over time, which could
-  slow it down or cause crashes.
+  slow it down or cause crashes. It cannot free memory that is still referenced,
+  so leaks through live references are still possible.
 - Improves Developer Productivity: Developers can focus on writing code without
   worrying about memory management.
 

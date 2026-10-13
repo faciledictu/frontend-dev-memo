@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 11
 ---
 
 # Classes
@@ -8,9 +8,6 @@ Classes in JavaScript are a blueprint for creating objects with predefined
 properties and methods. They were introduced in ECMAScript 6 (ES6) and provide a
 more convenient and clearer syntax for object-oriented programming compared to
 traditional prototype-based inheritance.
-
-Class syntax enables the creation of OOP-like, modular, reusable, and
-maintainable code in modern JavaScript.
 
 ## Basic Syntax
 
@@ -37,7 +34,7 @@ person1.greet(); // Output: Hello, my name is John and I am 30 years old.
 ## Inheritance
 
 JavaScript allows one class to extend another, enabling the creation of a
-hierarchy of classes that share common functionality. The extends keyword is
+hierarchy of classes that share common functionality. The `extends` keyword is
 used to create a subclass.
 
 ```javascript
@@ -68,7 +65,7 @@ dog1.speak(); // Rex barks.
 
 ## Private and Protected Properties and Methods
 
-ECMAScript 2022 introduced supports private fields and methods using the `#`
+ECMAScript 2022 introduced support for private fields and methods using the `#`
 prefix. Private fields and methods are only accessible within the class they are
 defined.
 
@@ -106,7 +103,7 @@ leading underscore) and by controlling access through getters and setters.
 
 ## `instanceof` Operator
 
-Used to check if an object is an instance of a specific class or constructor
+It checks whether an object is an instance of a specific class or constructor
 function.
 
 ```javascript

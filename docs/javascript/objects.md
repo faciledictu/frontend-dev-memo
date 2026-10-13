@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
 description: Working with objects in JavaScript
 ---
 
@@ -7,23 +7,23 @@ description: Working with objects in JavaScript
 
 ## Creating
 
-- **Object Literal notation[^11].** It allows defining key-value pairs within
+- **Object Literal notation[^1].** It allows defining key-value pairs within
   curly braces `{}`.
-- **`Object.create()` method[^12].** This method allows you to create a new
+- **`Object.create()` method[^2].** This method allows you to create a new
   object using a prototype object passed as an argument.
-- **Constructor function and ES6 Classes[^13].** These approaches allows you to
+- **Constructor function and ES6 Classes[^3].** These approaches allow you to
   create an object using the `new` keyword. JavaScript offers various built-in
   constructors for creating different objects, and it's also possible to define
   custom ones. While both constructor functions and ES6 classes can be used,
   classes provide a more organized and structured way to create objects.
 
-[^11]:
+[^1]:
     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer
 
-[^12]:
+[^2]:
     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create
 
-[^13]:
+[^3]:
     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects#using_a_constructor_function
 
 ## Cloning
@@ -38,7 +38,7 @@ nested objects or arrays in the clone will affect the original object.
 #### Using `Object.assign()` static method
 
 `Object.assign()` copies all enumerable own properties from one or more source
-objects to a target object. It returns the target object
+objects to a target object. It returns the target object.
 
 ```javascript
 const original = { a: 1, b: 2 };
@@ -48,7 +48,7 @@ console.log(clone); // { a: 1, b: 2 }
 
 #### Using Spread Operator `...`
 
-Works the similar way as `Object.assign()`, but uses another syntax.
+Works in a similar way to `Object.assign()`, but uses another syntax.
 
 ```javascript
 const original = { a: 1, b: 2 };
@@ -82,7 +82,7 @@ environments `structuredClone` is not available.
 #### Using `JSON` methods
 
 This method works well for simple objects but has limitations with functions,
-`Date`, `Set`, `Map` and more complex object as well as `undefined` values,
+`Date`, `Set`, `Map` and other complex objects, as well as `undefined` values,
 because of limitations of JSON format itself.
 
 ```javascript
@@ -96,7 +96,7 @@ console.log(clone); // { a: 1, b: { c: 2 } }
 #### Using Recursive Function or Libraries
 
 Some libraries provide their own solutions for deep cloning. For example, lodash
-has `cloneDeep()` function.
+has a `cloneDeep()` function.
 
 ## Accessing properties and methods
 
@@ -128,10 +128,6 @@ fallback for a nullish value.
 console.log(person.contacts?.email); // undefined
 console.log(person.contacts?.email ?? 'no email'); // 'no email'
 ```
-
-This operator simplifies code and makes it more readable, especially in
-scenarios where you need to access nested properties and handle potential null
-or undefined values gracefully.
 
 ### Bracket Notation
 
@@ -166,9 +162,9 @@ for (const key in person) {
 ## `Object` static methods
 
 `Object.hasOwn(obj, prop)` returns `true` if the object has the specified
-property as its own property, otherwise returns false. Introduced in ECMAScript
-2022 (ES13), this method provides a more reliable and modern alternative to
-`Object.prototype.hasOwnProperty()`.
+property as its own property, otherwise returns `false`. Introduced in
+ECMAScript 2022 (ES13), this method provides a more reliable and modern
+alternative to `Object.prototype.hasOwnProperty()`.
 
 ```javascript
 const exampleObject = {

@@ -1,16 +1,16 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 description: bind(), call(), apply()
 ---
 
 # Function.prototype Methods
 
-There are methods of `Function` prototype, they allow invoking a function with
-explicitly bound `this` and applied arguments.
+These are methods of the `Function` prototype. They allow invoking a function
+with explicitly bound `this` and applied arguments.
 
 ## `bind`
 
-The bind method returns a bound function. This is a new function with the same
+The `bind` method returns a bound function. This is a new function with the same
 body as the original, but with its `this` keyword set to the provided value.
 Additionally, it allows you to specify a sequence of arguments, which will
 precede any provided when the new function is called. This method can be used
@@ -21,9 +21,9 @@ function showThisAndArgs(...args) {
   console.log(this, ...args);
 }
 
-const binded = showThisAndArgs.bind({}, 'a', 'b');
+const bound = showThisAndArgs.bind({}, 'a', 'b');
 
-binded('c'); // {} a b c
+bound('c'); // {} a b c
 ```
 
 ## `call` and `apply`

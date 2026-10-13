@@ -1,34 +1,33 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 description: Storing and managing ordered collections of data in JS
 ---
 
 # Arrays
 
-Arrays in JavaScript are objects that optimized for storing and managing ordered
-collections of data. Array can contain multiple element of any data type. Array
-elements are accessed using their index, which starts from 0.
+Arrays in JavaScript are objects optimized for storing and managing ordered
+collections of data. An array can contain multiple elements of any data type.
+Array elements are accessed using their index, which starts from 0.
 
 ## Creating
 
 :::tip
 
-Normally, it is not necessary to use the `let` keyword to declare a variable
-that refers to an array. Using `const`, you cannot reassign the reference to the
-array stored in the variable, but the contents of the array can still be
-modified.
+Normally, there is no need to use `let` to declare a variable that refers to an
+array. Using `const`, you cannot reassign the reference to the array stored in
+the variable, but the contents of the array can still be modified.
 
 :::
 
 ### Using array literal syntax
 
-You can also use the spread operator to destructure an array and create a
-shallow copy of it. The spread operator can convert any iterable object (such as
-a string or a set) into an array.
+You can also use the spread operator to create a shallow copy of an array. The
+spread operator can convert any iterable object (such as a string or a set) into
+an array.
 
 ```javascript
 const birds = ['sparrow', 'crow', 'eagle'];
-const animals = ['cow', 'dog', ...birds]; // Using of spread-operator
+const animals = ['cow', 'dog', ...birds]; // Using the spread operator
 ```
 
 ### Using the `Array` constructor
@@ -53,8 +52,8 @@ const arr = Array.from([1, 2, 3], (x) => x + x); // [2, 4, 6]
 
 ### Length Property
 
-Arrays and array-like objects have the `length` property contains the number of
-array elements.
+Arrays and array-like objects have the `length` property, which contains the
+number of elements.
 
 ```javascript
 let numbers = [1, 10, 100];
@@ -76,8 +75,8 @@ console.log(filledArray); // [1, 2, 3, 4, 5]
 
 ### Using Bracket Notation
 
-You can access an element in an array is by using the index within square
-brackets. Indices start from `0`.
+You can access an element in an array by using the index within square brackets.
+Indices start from `0`.
 
 ```javascript
 let fruits = ['apple', 'banana', 'cherry'];
@@ -91,8 +90,8 @@ console.log(fruits[fruits.length - 1]); // 'cherry'
 
 ### Using `at()` Method
 
-Works the same way when accepts positive values, and support for negative
-indices to access elements from the end of the array.
+Works the same way for positive indices, and also supports negative indices to
+access elements from the end of the array.
 
 ```javascript
 // Access the first element
@@ -189,9 +188,9 @@ console.log(colors); // ['red', 'purple', 'blue']
 
 ### Sorting
 
-- `sort()`<br /> Sorts the elements of an array in place (i. e. this method
-  mutates an array) and returns the sorted array. The method accepts optional
-  function for comparing elements. If no function provided, the array elements
+- `sort()`<br /> Sorts the elements of an array in place (i.e., this method
+  mutates the array) and returns the sorted array. The method accepts an
+  optional comparison function. If no function is provided, the array elements
   are converted to strings and sorted by comparing their sequences of Unicode
   code point values.
 
@@ -201,11 +200,11 @@ console.log(colors); // ['red', 'purple', 'blue']
   console.log(arr); // [1, 2, 3, 4]
   ```
 
-  To return new array instead mutating original one, you can use the method
-  `toSorted()`, introduced in ES2023.
+  To return a new array instead of mutating the original one, use `toSorted()`
+  (ES2023).
 
-- `reverse()`<br />Reverses the order of the elements in an array in place (i.
-  e. this method mutates an array).
+- `reverse()`<br />Reverses the order of the elements in an array in place
+  (i.e., this method mutates the array).
 
   ```javascript
   const arr = [1, 2, 3, 4];
@@ -213,7 +212,8 @@ console.log(colors); // ['red', 'purple', 'blue']
   console.log(arr); // [4, 3, 2, 1]
   ```
 
-  To return new array instead mutating original one, use `toReversed()` (ES2023)
+  To return a new array instead of mutating the original one, use `toReversed()`
+  (ES2023).
 
 ### Iteration
 
@@ -239,8 +239,8 @@ console.log(colors); // ['red', 'purple', 'blue']
   console.log(doubled); // [2, 4, 6]
   ```
 
-- `reduce()` and `reduceRight`<br />Execute a reducer function on each element
-  of the array, resulting in a single output value. `reduce` do it from the
+- `reduce()` and `reduceRight()`<br />Execute a reducer function on each element
+  of the array, resulting in a single output value. `reduce()` does it from the
   first element to the last, while `reduceRight()` starts from the last and goes
   to the first.
 

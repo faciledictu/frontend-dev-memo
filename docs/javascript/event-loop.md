@@ -1,5 +1,5 @@
 ---
-sidebar_position: 11
+sidebar_position: 12
 ---
 
 # Event Loop
@@ -9,7 +9,7 @@ sidebar_position: 11
 **Call Stack** is a data structure that keeps track of the execution context of
 your JavaScript code. When a function is invoked, it's pushed onto the stack,
 and when the function execution is completed, it’s popped off the stack. The
-pieces of stack are called _frames_.
+entries of the stack are called _frames_.
 
 **Callback Queue**. This queue holds _messages_ (tasks) that are ready to be
 processed. These tasks are added from asynchronous events like timers, network
@@ -29,7 +29,7 @@ The event loop constantly checks the call stack to see if it's empty. If the
 call stack is empty, the event loop checks the callback queue and pushes the
 first callback onto the call stack for execution.
 
-## Prioritizing of Messages (Tasks)
+## Prioritizing Messages (Tasks)
 
 JavaScript classifies tasks into two categories: microtasks and macrotasks.
 Understanding the difference between these is crucial for understanding how
@@ -39,8 +39,8 @@ JavaScript handles asynchronous operations.
 
 Common sources of microtasks include:
 
-- Promises (methods then, catch, finally, but Promise.constructor executes
-  synchronously)
+- Promise callbacks (`then`, `catch`, `finally`); the `Promise` constructor
+  itself executes synchronously
 - Code after `await` in async functions
 - `queueMicrotask()`
 - MutationObserver
@@ -119,5 +119,5 @@ memory leaks.
 To ensure smooth performance and responsiveness, it's essential to avoid
 long-running synchronous operations in JavaScript, especially within the main
 thread. Instead, asynchronous operations should be used whenever possible to
-delegate time-consuming tasks to background threads or offload them to the
-browser's APIs.
+delegate time-consuming tasks to background threads (Web Workers) or offload
+them to the browser's APIs.

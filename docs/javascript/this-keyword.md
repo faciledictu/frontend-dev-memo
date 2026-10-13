@@ -1,19 +1,19 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 description: What is ’this’ keyword used for in JavaScript
 ---
 
 # The ‘this’ Keyword
 
 The `this` keyword in JavaScript is a special identifier that references the
-context in which the code is executing[^8].
+context in which the code is executing[^1].
 
 Its behavior can vary depending on whether the code is running in strict mode or
-not[^9].
+not[^2].
 
-1. In non-strict mode this always should refer to an object. If this is
-   `undefined` or `null`, `this` gets substituted with `globalThis`.
-2. If this points to any other primitive value, that value will be wrapped in
+1. In non-strict mode, `this` always refers to an object. If `this` is
+   `undefined` or `null`, it gets substituted with `globalThis`.
+2. If `this` points to any other primitive value, that value will be wrapped in
    the corresponding object.
 
 ## Global This
@@ -21,7 +21,7 @@ not[^9].
 Outside of any function, at the top level of a script, `this` refers to the
 global object (`globalThis`) in both strict and non-strict mode. At the top
 level of a module `this` is always `undefined` (modules also always run in
-strict mode[^10]).
+strict mode[^3]).
 
 ## Inside regular functions
 
@@ -40,7 +40,7 @@ function showThis() {
 showThis(); // undefined
 ```
 
-- **For calling as a method** `this` points to the related object (i.e. the
+- **For calling as a method** `this` points to the related object (i.e., the
   object preceding the dot)
 
 ```javascript
@@ -57,8 +57,8 @@ obj1.showThis(); // { a: 1, showThis: [Function: showThis] }
 obj1['showThis'](); // Different syntax, same result
 ```
 
-- **When a function is calling as a callback** this can refers to `undefined` or
-  other value, depends of the API. For example, when a callback passed to
+- **When a function is called as a callback**, `this` can be `undefined` or
+  another value, depending on the API. For example, when a callback passed to
   `addEventListener()` is invoked, `this` usually refers to the DOM element that
   triggered the event.
 
@@ -68,14 +68,14 @@ function showThis() {
 }
 
 setTimeout(showThis);
-// Depends on the Host. E. g.:
+// Depends on the host. E.g.:
 // in browser: Window object
 // in node: Timeout object
 ```
 
-- **In constructors**, if function is invoked with the `new` keyword, `this`
-  will refer to newly created object. Its internal [[Prototype]] property set to
-  the `prototype` property of the constructor function.
+- **In constructors**, if a function is invoked with the `new` keyword, `this`
+  refers to the newly created object. Its internal [[Prototype]] property is set
+  to the `prototype` property of the constructor function.
 
 ```javascript
 function ShowThis() {
@@ -86,8 +86,8 @@ function ShowThis() {
 new ShowThis(); // ShowThis {a: 1}
 ```
 
-- **When using the methods `.bind()`, `.apply()` and `.call()`.**, these can
-  explicitly redefine `this` by passing its value as an argument.
+- **When using the methods `.bind()`, `.apply()` and `.call()`**, `this` can be
+  explicitly redefined by passing its value as an argument.
 
 ```javascript
 'use strict';
@@ -100,9 +100,8 @@ showThis.apply(1); // 1
 
 ## Inside arrow functions
 
-Arrow functions don't have their own this. They inherit it from that lexical
-environment, where they were defined (not called!). It works the same way as
-closure.
+Arrow functions don't have their own `this`. They inherit it from the lexical
+environment where they were defined (not called!), the same way closures do.
 
 ```javascript
 'use strict';
@@ -118,10 +117,10 @@ const obj1 = {
 obj1.showThis(); // undefined
 ```
 
-[^8]:
+[^1]:
     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this
 
-[^9]:
+[^2]:
     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode#securing_javascript
 
-[^10]: https://tc39.es/ecma262/#sec-strict-mode-code
+[^3]: https://tc39.es/ecma262/#sec-strict-mode-code

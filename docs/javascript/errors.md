@@ -1,5 +1,5 @@
 ---
-sidebar_position: 19
+sidebar_position: 14
 ---
 
 # Error Handling
@@ -11,7 +11,7 @@ When an exception is thrown, the normal flow of the program is interrupted, and
 control is transferred to the nearest enclosing `try...catch` block that can
 handle the exception.
 
-JavaScript exceptions can be divided to 2 categories: built-in exceptions
+JavaScript exceptions can be divided into 2 categories: built-in exceptions
 (Error, TypeError, ReferenceError, SyntaxError etc.) and custom exceptions, that
 are created by extending the `Error` class. Both are thrown using the `throw`
 statement.

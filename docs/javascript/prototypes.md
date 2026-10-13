@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 10
 ---
 
 # Prototypes and Inheritance
@@ -13,7 +13,7 @@ object itself, the search will proceed to the object's prototype. If the
 property or method is not found there, the search will continue up the prototype
 chain until it reaches the property or method or reaches the end of the chain.
 
-The end of the chain is the prototype of `Object`, which is `null`.
+The end of the chain is `Object.prototype`, whose prototype is `null`.
 
 `Object.create(proto, [propertiesObject])` creates a new object with the
 specified prototype object and properties.
@@ -29,21 +29,19 @@ const obj = Object.create(proto);
 obj.greet(); // Hello!
 ```
 
-Prototypal inheritance is a powerful feature of JavaScript that allows for code
-reuse and object-oriented programming paradigms.
+## How to access an object's prototype
 
-## How to access to object's prototype
-
-Every object in JS has `[[Prototype]]` internal property that contains a link to
-the object's prototype. This property is not directly accessible in the same way
-as regular properties. However there is a standard way to access or modify it
-using certain like `Object.getPrototypeOf(obj)` and
-`Object.setPrototypeOf(obj)`.
+Every object in JS has a `[[Prototype]]` internal property that contains a link
+to the object's prototype. This property is not directly accessible in the same
+way as regular properties. However, there is a standard way to access or modify
+it using methods like `Object.getPrototypeOf(obj)` and
+`Object.setPrototypeOf(obj, proto)`.
 
 :::tip[The common way to access object prototype]
 
-Most of environment exposes objects' prototypes via the `__proto__` property.
-This is a common way of accessing it, although it's not standard.
+Most environments expose an object's prototype via the `__proto__` property.
+This is a common way of accessing it, although it's a legacy feature (Annex B of
+the specification).
 
 :::
 
@@ -65,9 +63,9 @@ console.log(Object.getPrototypeOf(rex) === Dog.prototype); // true
 // Using __proto__
 console.log(rex.__proto__ === Dog.prototype); // true
 
-/// Setting prototype
+// Setting prototype
 Object.setPrototypeOf(rex, Object.prototype);
-/// The same thing using __proto__
+// The same thing using __proto__
 rex.__proto__ = Object.prototype;
 
 rex.bark(); // TypeError: rex.bark is not a function

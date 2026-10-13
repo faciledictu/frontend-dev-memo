@@ -1,5 +1,5 @@
 ---
-sidebar_position: 20
+sidebar_position: 15
 ---
 
 # Regular Expressions
@@ -8,7 +8,7 @@ RegEx is a powerful tool used for matching patterns within strings.
 
 ## Creating RegExp object
 
-There are two primary ways to create a RegExp object in JavaScript
+There are two primary ways to create a RegExp object in JavaScript:
 
 ### Literal notation
 
@@ -26,7 +26,7 @@ const regex = new RegExp('abc', 'i'); // 'abc' pattern, case-insensitive
 
 ### `test()`
 
-Tests for a match in a string and returns true or false.
+Tests for a match in a string and returns `true` or `false`.
 
 ```javascript
 const regex = /abc/;
@@ -36,7 +36,7 @@ console.log(regex.test('abcdef')); // true
 ### `exec()`
 
 Executes a search for a match in a string and returns an array of results or
-null.
+`null`.
 
 ```javascript
 const regex = /abc/;
@@ -51,7 +51,7 @@ console.log(regex.exec('abcdef')); // ["abc"]
 
 ```javascript
 const regex = /[abc]/; // Matches 'a', 'b', or 'c'
-const regex = /[a-z]/; // Matches all characters from 'a' to 'z'
+const regexRange = /[a-z]/; // Matches all characters from 'a' to 'z'
 ```
 
 ### Metacharacters
@@ -71,8 +71,8 @@ const regex = /\d+/; // Matches one or more digits
 
 ### Quantifiers: Specify the number of occurrences
 
-- - `*` 0 or more times.
-- - `+` 1 or more times.
+- `*` 0 or more times.
+- `+` 1 or more times.
 - `?` 0 or 1 time.
 - `{n}` Exactly n times.
 - `{n,}` n or more times.
