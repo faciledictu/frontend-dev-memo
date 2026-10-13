@@ -1,6 +1,6 @@
 ---
 sidebar_position: 6
-desctiption: Storing and managing ordered collections of data in JS
+description: Storing and managing ordered collections of data in JS
 ---
 
 # Arrays

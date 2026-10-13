@@ -1,4 +1,4 @@
-# React Developer Memo
+# Frontend Developer Memo
 
 [frontend-dev-memo.vercel.app](https://frontend-dev-memo.vercel.app)
 
@@ -12,13 +12,13 @@ you might be asked in a job interview.
 ## Installation
 
 ```sh
-npm ci
+pnpm install
 ```
 
 ## Local Development
 
 ```sh
-npm start
+pnpm start
 ```
 
 This command starts a local development server and opens up a browser window.
@@ -27,11 +27,20 @@ Most changes are reflected live without having to restart the server.
 ## Build
 
 ```sh
-npm build
+pnpm build
 ```
 
 This command generates static content into the `build` directory and can be
 served using any static contents hosting service.
+
+## Checks
+
+```sh
+pnpm lint
+pnpm typecheck
+```
+
+`pnpm format` fixes formatting issues automatically.
 
 [Docusaurus-badge]:
   https://img.shields.io/badge/Docusaurus-222?style=for-the-badge&logo=docusaurus

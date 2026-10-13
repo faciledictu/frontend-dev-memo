@@ -19,5 +19,5 @@
 
 .stretch {
   display: flex;
-  align-items: stretch
+  align-items: stretch;
 }

@@ -44,7 +44,7 @@ eavesdropping and tampering.
 CRUD stands for Create, Read, Update, and Delete, which map to the following
 HTTP methods.
 
-:::info Idempotency
+:::info[Idempotency]
 
 Idempotent methods are those that can be called many times without different
 outcomes.
@@ -134,7 +134,7 @@ fetch('https://api.example.com/data', {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
-    Authorization: 'Bearer your-token',
+    'Authorization': 'Bearer your-token',
   },
 })
   .then((response) => response.json())

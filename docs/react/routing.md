@@ -33,7 +33,7 @@ routers in React Router
 The `Switch` or `Routes` component will only render the first child Route that
 matches the location.
 
-:::info What is the Difference
+:::info[What is the Difference]
 
 As of React Router v6, the `Switch` component has been replaced by the `Routes`
 component. The `Routes` component provides similar functionality with some
@@ -62,7 +62,8 @@ function App() {
         <Route exact path="/" component={Home} />
         <Route path="/about" component={About} />
         <Route path="/contact" component={Contact} />
-        <Route component={NotFound} /> {/* This will render if none of the above routes match */}
+        <Route component={NotFound} />{' '}
+        {/* This will render if none of the above routes match */}
       </Routes>
     </Router>
   );

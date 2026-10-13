@@ -18,8 +18,8 @@ uses HTML, CSS, and JavaScript to render web components in the browser.
 Android. It uses native components instead of web components, rendering UI
 elements that compile into native code.
 
-- **Rendering:** React renders HTML/CSS in the browser; React Native renders native
-  mobile UI components.
+- **Rendering:** React renders HTML/CSS in the browser; React Native renders
+  native mobile UI components.
 
 - **Styling:** React uses CSS; React Native uses a StyleSheet object.
 

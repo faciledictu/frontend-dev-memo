@@ -1,0 +1,7 @@
+# Wait a week before installing freshly published versions
+minimumReleaseAge: 10080
+
+# Neither postinstall script is needed for the build
+allowBuilds:
+  '@swc/core': false
+  'core-js': false

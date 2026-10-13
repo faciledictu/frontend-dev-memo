@@ -36,7 +36,8 @@ feature branches are merged into `develop`, not directly into `main`.
 ## Supporting Branches
 
 Gitflow uses several types of supporting branches to aid parallel development
-and to organize feature integration and release management. Here are some examples.
+and to organize feature integration and release management. Here are some
+examples.
 
 ### Feature Branches
 

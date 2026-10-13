@@ -75,8 +75,7 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
 
 #### Install Android Studio
 
-Download and install Android Studio from
-[here](https://developer.android.com/studio).
+Download and install [Android Studio](https://developer.android.com/studio).
 
 You need to check these options:
 

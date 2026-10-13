@@ -4,7 +4,7 @@ sidebar_position: 13
 
 # Timers and requestAnimationFrame
 
-:::tip When to Use
+:::tip[When to Use]
 
 - Use `requestAnimationFrame` for animations, UI transitions, and tasks tied to
   the rendering lifecycle.

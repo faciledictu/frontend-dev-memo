@@ -1,7 +1,9 @@
 .heroBg {
-  background: linear-gradient(0deg,
-        rgba(0, 0, 0, 0) 75%,
-        var(--ifm-color-primary) 200%);
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0) 75%,
+    var(--ifm-color-primary) 200%
+  );
 }
 
 .title {
@@ -16,7 +18,7 @@
   .title {
     font-size: 4rem;
   }
-.subtitle {
-  font-size: 1.5rem;
-}
+  .subtitle {
+    font-size: 1.5rem;
+  }
 }

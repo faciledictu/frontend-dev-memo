@@ -8,14 +8,13 @@ Generics provide a way to create reusable components
 
 ```typescript
 function identity<T>(arg: T): T {
-    return arg;
+  return arg;
 }
 ```
 
 ```typescript
 class GenericNumber<T> {
-    zeroValue: T;
-    add: (x: T, y: T) => T;
+  zeroValue: T;
+  add: (x: T, y: T) => T;
 }
-
 ```

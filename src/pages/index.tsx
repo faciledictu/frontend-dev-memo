@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import HomepageLinks from '@site/src/components/HomepageLinks';
 import Heading from '@theme/Heading';
@@ -31,7 +32,7 @@ function HomepageHeader() {
   );
 }
 
-export default function Home(): JSX.Element {
+export default function Home(): ReactNode {
   const { siteConfig } = useDocusaurusContext();
   return (
     <Layout title={siteConfig.title} description={siteConfig.tagline}>

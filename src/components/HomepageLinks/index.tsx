@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import Link from '@docusaurus/Link';
 import Heading from '@theme/Heading';
 import clsx from 'clsx';
@@ -19,7 +20,7 @@ type CategoryLink = {
   id: string;
   label: string;
   Icon: Icon;
-  description: JSX.Element;
+  description: ReactNode;
   link: string;
 };
 
@@ -60,7 +61,7 @@ function CategoryLink({ label, Icon, link, description }: CategoryLink) {
   );
 }
 
-export default function HomepageLinks(): JSX.Element {
+export default function HomepageLinks(): ReactNode {
   return (
     <section>
       <div className="container">

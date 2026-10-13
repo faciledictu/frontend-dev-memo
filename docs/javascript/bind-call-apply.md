@@ -1,6 +1,6 @@
 ---
 sidebar_position: 5
-desctiption: bind(), call(), apply()
+description: bind(), call(), apply()
 ---
 
 # Function.prototype Methods

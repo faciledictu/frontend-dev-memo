@@ -118,6 +118,10 @@ const obj1 = {
 obj1.showThis(); // undefined
 ```
 
-[^8]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this
-[^9]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode#securing_javascript
+[^8]:
+    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this
+
+[^9]:
+    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode#securing_javascript
+
 [^10]: https://tc39.es/ecma262/#sec-strict-mode-code

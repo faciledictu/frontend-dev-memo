@@ -9,7 +9,7 @@ processes (workers) that share the same server port. It is especially useful for
 taking advantage of multi-core systems to handle a high number of requests more
 efficiently.
 
-:::info Why Use the Cluster Module?
+:::info[Why Use the Cluster Module?]
 
 Node.js is single-threaded, meaning it runs on a single core by default. This
 can be a limitation when you want to scale your application to handle more

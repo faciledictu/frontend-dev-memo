@@ -89,12 +89,8 @@ computations.
 ```javascript
 const MyProvider = ({ children }) => {
   const value = useMemo(
-    () => ({
-      /* your context value */
-    }),
-    [
-      /* dependencies */
-    ]
+    () => ({/* your context value */}),
+    [/* dependencies */]
   );
 
   return <MyContext.Provider value={value}>{children}</MyContext.Provider>;

@@ -87,7 +87,7 @@ Would you like to customize the default import alias (@/*)? No / Yes
 What import alias would you like configured? @/*
 ```
 
-:::tip Manual Installation
+:::tip[Manual Installation]
 
 To manually create a new Next.js app in existing project, install the required
 packages.

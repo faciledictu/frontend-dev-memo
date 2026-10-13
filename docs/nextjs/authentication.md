@@ -185,7 +185,7 @@ can be implemented using middleware to check for authentication tokens before
 rendering the page. If the user is not authenticated, they are redirected to a
 login page​​​​.
 
-:::info Restricted Routes
+:::info[Restricted Routes]
 
 Some of private routes can be restricted. Resticted routers are accessible by
 authenticated users but may restrict access based on user roles or permissions.
@@ -236,7 +236,8 @@ export default withAuth(Dashboard);
 
 :::tip
 
-If the authentication check takes time, ensure a loading state is managed to prevent flashing of unauthorized content.
+If the authentication check takes time, ensure a loading state is managed to
+prevent flashing of unauthorized content.
 
 :::
 

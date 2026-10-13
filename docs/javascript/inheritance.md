@@ -40,7 +40,7 @@ as regular properties. However there is a standard way to access or modify it
 using certain like `Object.getPrototypeOf(obj)` and
 `Object.setPrototypeOf(obj)`.
 
-:::tip The common way to access object prototype
+:::tip[The common way to access object prototype]
 
 Most of environment exposes objects' prototypes via the `__proto__` property.
 This is a common way of accessing it, although it's not standard.
@@ -73,7 +73,7 @@ rex.__proto__ = Object.prototype;
 rex.bark(); // TypeError: rex.bark is not a function
 ```
 
-:::note No prototype
+:::note[No prototype]
 
 An object with a null prototype does not inherit any properties or methods.
 

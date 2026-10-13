@@ -6,7 +6,7 @@ sidebar_position: 7
 
 ## Basic Concepts
 
-:::info Test Plan
+:::info[Test Plan]
 
 **Test Plan** is a document detailing the approach, resources, and schedule of
 intended testing activities. It defines the scope, objectives, and focus of the
@@ -14,14 +14,14 @@ testing effort.
 
 :::
 
-:::info Test Suite
+:::info[Test Suite]
 
 **Test Suite** is a collection of test cases intended to test a specific aspect
 of a software application.
 
 :::
 
-:::info Test Case
+:::info[Test Case]
 
 **Test Case** is set of conditions and variables under which a tester will
 determine whether a system under test satisfies requirements and functions
@@ -50,7 +50,7 @@ correctly.
 - **Benefits** Fast execution, easy to write, and maintain. Provides confidence
   in small, isolated pieces of code.
 
-:::tip Properties of a Good Unit Test
+:::tip[Properties of a Good Unit Test]
 
 Unit tests should test a single part of the code without dependencies on
 external systems or other tests.
@@ -133,7 +133,7 @@ test('adds two numbers', () => {
 });
 ```
 
-:::tip Benefits of AAA Pattern
+:::tip[Benefits of AAA Pattern]
 
 - **Clarity.** It clearly separates the different stages of a test, making the
   test easier to read and understand.
@@ -179,11 +179,11 @@ By using TDD, you write tests before writing the corresponding code. It follows
 a simple three-step process, often referred to as the **Red-Green-Refactor**
 cycle.
 
-1. *Red:* write a failing test.
+1. _Red:_ write a failing test.
 
-2. *Green:* write the minimum code required to pass the test.
+2. _Green:_ write the minimum code required to pass the test.
 
-3. *Refactor:* clean up the code while keeping the test passing.
+3. _Refactor:_ clean up the code while keeping the test passing.
 
 ### Behavior-Driven Development (BDD)
 
@@ -197,11 +197,11 @@ That's why tests are written in a natural-like, human-readable language.
 
 These scenarios are typically written in a **Given-When-Then** format:
 
-1. *Given:* the initial context or state of the system.
+1. _Given:_ the initial context or state of the system.
 
-2. *When:* the action or event that triggers the behavior.
+2. _When:_ the action or event that triggers the behavior.
 
-3. *Then:* the expected outcome or result.
+3. _Then:_ the expected outcome or result.
 
 #### Example: Writing Scenarios in Gherkin Syntax
 

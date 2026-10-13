@@ -59,7 +59,7 @@ lane :release_android do
 end
 ```
 
-:::tip Advantages
+:::tip[Advantages]
 
 - **Repeatable:** Makes the release process predictable across teams.
 - **Reliable:** Cuts down on human error in releases.

@@ -59,10 +59,10 @@ Here is the dirrefence between data types in MySQL
 | YEAR      | Year only   | 1     | 1901                | 2155                |
 | TIME      | Time only   | 3     | -838:59:59          | 838:59:59           |
 
-:::info TIMESTAMP in MySQL
+:::info[TIMESTAMP in MySQL]
 
-Internally it keeps the value as UTC timezone and converts it to
-server time on each request[^1].
+Internally it keeps the value as UTC timezone and converts it to server time on
+each request[^1].
 
   <details>
   <summary>Examples</summary>

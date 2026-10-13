@@ -106,7 +106,7 @@ ELSE
 
 ## Transaction Isolation Levels
 
-:::info Definitions
+:::info[Definitions]
 
 **Dirty Read:** Reading uncommitted changes made by another transaction.
 

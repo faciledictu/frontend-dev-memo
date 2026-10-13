@@ -120,7 +120,8 @@ The useImperativeHandle hook takes three arguments:
 
 1. `ref`: the ref object forwarded from the parent component.
 2. `createHandle`: a function that returns the object to be exposed.
-3. `[deps]`: an optional array of dependencies that, when changed, will re-create the handle.
+3. `[deps]`: an optional array of dependencies that, when changed, will
+   re-create the handle.
 
 ```javascript
 import { useRef, useImperativeHandle, forwardRef } from 'react';

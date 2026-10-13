@@ -65,7 +65,7 @@ AWS Secrets Manager). For build-time secrets (like certificate passwords), use
 Gradle/Mac Keychain for Android and Xcode build settings for iOS (again from CI
 secrets or keychain) to avoid exposing them in source.
 
-:::tip Inject only one config per build.
+:::tip[Inject only one config per build.]
 
 Avoid bundling multiple environments into one binary. Use separate .env or
 configuration files per build target, and configure your build scripts (Fastlane
