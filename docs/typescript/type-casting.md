@@ -26,13 +26,8 @@ let strLength: number = (someValue as string).length;
 
 :::tip
 
-The as syntax is preferred in JSX contexts (like with React), where the
-angle-bracket syntax conflicts with the JSX syntax. In JSX you can still use
-angle-bracket syntax but you need to add a comma after the type:
-
-```typescript
-<string,>someValue
-```
+In `.tsx` files only the `as` syntax is available: the angle-bracket syntax
+conflicts with JSX and is not allowed there.
 
 :::
 
@@ -60,7 +55,7 @@ employee.name = 'John Doe';
 employee.email = 'j.doe@example.com';
 ```
 
-Here, we're asserting that employee is of type Employee, even though we're
+Here, we're asserting that `employee` is of type `User`, even though we're
 initializing it as an empty object and then assigning properties later.
 
 ## Examples
