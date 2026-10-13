@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# Optimisaton Tools
+# Optimisation Tools
 
 ## Code Splitting
 
@@ -35,11 +35,11 @@ const AdditionalComponent = dynamic(
   () => import('../components/ConditionalComponent')
 );
 
-export default function Componets({ showMore }) {
+export default function Components({ showMore }) {
   return (
     <>
       {/* Load immediately, but in a separate client bundle */}
-      <DynamicComponent />;
+      <DynamicComponent />
       {/* Load on demand, only if `showMore` prop is true */}
       {showMore && <AdditionalComponent />}
     </>
@@ -120,7 +120,7 @@ features like lazy loading, resizing, and serving modern formats like WebP.
   - When `empty`, the image container will be empty
   - When `blur`, the container will be filled by blurred image. If the image is
     statically imported, the blurred version will be generated automatically.
-    Otherwise, you should provide it using `blurDataUrl` property.
+    Otherwise, you should provide it using `blurDataURL` property.
   - When `data:image/...`, the provided `Data URL` will be user as the
     placeholder.
 
@@ -173,12 +173,12 @@ stored on your server, and the browser requests them from the same domain as
 your deployment, rather than from external services such as Google Fonts.
 
 ```jsx
-import { GoogleFont } from 'next/font/google';
+import { Roboto } from 'next/font/google';
 
-const roboto = GoogleFont({
-  name: 'Roboto',
-  weights: ['400', '700'],
-  styles: ['normal', 'italic'],
+const roboto = Roboto({
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
 });
 
 export default function HomePage() {
