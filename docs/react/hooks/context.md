@@ -1,96 +1,123 @@
 ---
 sidebar_position: 4
+description:
+  createContext, providers, useContext and use, re-renders of consumers
 ---
 
 # React Context
 
-React Context is a way to manage state globally in an application. It allows you
-to share values between components without having to explicitly pass props
-through every level of the component tree.
+**Context** passes a value to components at any depth without handing it through
+props at every level: `createContext`, a provider and `useContext` (or `use`).
+It is a **delivery mechanism**, not state management: the state itself lives in
+`useState` or `useReducer` of the component that renders the provider. When the
+value changes, **every component that reads the context re-renders**.
 
-This can be very useful for managing things like user authentication status,
-themes, or any other data that needs to be accessible throughout your app.
+Applies to: React 19.
 
-## How to Use
+## Details
 
-### Create Context
+### API
 
-Use the `React.createContext` API.
+| Step    | React 19                       | Before / legacy                                                            |
+| ------- | ------------------------------ | -------------------------------------------------------------------------- |
+| Create  | `createContext(defaultValue)`  | The same                                                                   |
+| Provide | `<ThemeContext value={theme}>` | `<ThemeContext.Provider value={theme}>` (still works)                      |
+| Read    | `useContext(ThemeContext)`     | `<ThemeContext.Consumer>` (a render prop), `static contextType` in classes |
+| Read    | `use(ThemeContext)`            | —                                                                          |
 
-```javascript
-import { createContext } from 'react';
+- A component reads the value of the **nearest provider above** it. Providers
+  can be nested to override the value for a subtree.
+- `defaultValue` is used only when there is **no provider** above.
+- `use(Context)` can be called in a condition or after an early return;
+  `useContext` can't.
 
-export const MyContext = createContext();
-```
+### Re-renders
 
-### Provide Context
+- Consumers re-render when the value changes by `Object.is`. `memo` does not
+  stop it.
+- There are no selectors: a component that needs one field re-renders when any
+  field of the value changes.
+- An object created in the provider's render (`value={{ user, logout }}`) is new
+  every time, so every consumer re-renders whenever the provider's parent does.
+  The value is wrapped in `useMemo` to keep **the same reference**, not because
+  it is expensive to compute.
+- **Split contexts**: one for the state and one for the functions that change
+  it; one for rarely changing data and one for frequently changing data.
 
-Wrap your component tree with the `MyContext.Provider` and pass the context
-value.
+### Context and a Store
 
-```jsx
-const MyProvider = ({ children }) => {
-  const value = {/* your context value */};
+- Context fits values that change rarely: theme, locale, the current user,
+  dependency injection.
+- For shared state that changes often and is read in parts, a store with
+  selectors ([Redux](../ecosystem/redux.md), Zustand) re-renders only the
+  components whose data changed.
+- Before reaching for context, check if
+  [composition](../basics/patterns.md#composition) solves the prop drilling.
 
-  return <MyContext.Provider value={value}>{children}</MyContext.Provider>;
-};
-```
-
-### Consume Context
-
-There are a few ways to consume context: the `useContext` hook (for functional
-components), `Context.Consumer` higher-order component (for both functional and
-class components), or `static contextType` (for class components).
-
-```jsx
-import { useContext } from 'react';
-
-const MyComponent = () => {
-  const context = useContext(MyContext);
-
-  return <div>{/* Use context value */}</div>;
-};
-```
-
-```jsx
-const MyComponent = () => (
-  <MyContext.Consumer>
-    {(context) => <div>{/* Use context value */}</div>}
-  </MyContext.Consumer>
-);
-```
+## Example
 
 ```jsx
-class MyComponent extends React.Component {
-  static contextType = MyContext;
+import { createContext, use, useCallback, useMemo, useState } from 'react';
 
-  render() {
-    const context = this.context;
-    return <div>{/* Use context value */}</div>;
+const ThemeContext = createContext(null);
+
+export function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  }, []);
+
+  // The same object until `theme` changes
+  const value = useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme]);
+
+  return <ThemeContext value={value}>{children}</ThemeContext>;
+}
+
+export function useTheme() {
+  const context = use(ThemeContext);
+
+  if (context === null) {
+    throw new Error('useTheme must be used inside ThemeProvider');
   }
+
+  return context;
+}
+
+function ThemeButton() {
+  const { theme, toggleTheme } = useTheme();
+  return <button onClick={toggleTheme}>Theme: {theme}</button>;
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <ThemeButton />
+    </ThemeProvider>
+  );
 }
 ```
 
-:::warning
+## Follow-up Questions
 
-If the context value updates frequently, it might cause performance issues
-because any component that consumes the context will re-render whenever the
-context value changes.
+- Does context replace Redux? It replaces passing props. It has no selectors,
+  middleware or DevTools; with frequently changing state it re-renders too much.
+- Why wrap the value in `useMemo`? To keep the reference stable so consumers
+  don't re-render when the provider's parent re-renders for another reason.
+- How to avoid re-rendering all consumers? Split the context, keep the provider
+  as low as possible, or move the state to a store.
+- What does a component get without a provider? The default value from
+  `createContext`.
 
-:::
+## Common Mistakes
 
-## Memoization
+- Calling context "a state manager".
+- Passing a new object as the value on every render.
+- One large context for the whole app state.
+- Forgetting the provider and silently working with the default value. A custom
+  hook that throws, as in the example, catches it.
 
-Use `useMemo` to memoize context values if they depend on expensive
-computations.
+## See Also
 
-```jsx
-const MyProvider = ({ children }) => {
-  const value = useMemo(
-    () => ({/* your context value */}),
-    [/* dependencies */]
-  );
-
-  return <MyContext.Provider value={value}>{children}</MyContext.Provider>;
-};
-```
+- [Props: prop drilling](../basics/props.md#prop-drilling)
+- [Hooks](./hooks.mdx)

@@ -1,67 +1,81 @@
 ---
 sidebar_position: 2
+description: Components, elements and JSX, purity, fragments
 ---
 
 # Components
 
-## Functional Components
+A **component** is a function that takes **props** and returns a description of
+the UI: **React elements**, usually written in **JSX**. Components are
+independent and reusable, and they are composed into a tree. During rendering a
+component must be **pure**: the same props, state and context give the same
+output, with no side effects.
 
-Defined as JavaScript functions (regular or arrow) that return a React element.
+## Details
 
-- Simpler and more concise than class components. They involve less boilerplate
-  code and can be easier to understand.
+### Component, Element, JSX
 
-- They were traditionally stateless, but with the introduction of React Hooks,
-  they can now manage state and side effects.
+| Term      | What it is                                                                                                          |
+| --------- | ------------------------------------------------------------------------------------------------------------------- |
+| Component | A function (or a class) such as `Button`. Its name starts with a capital letter                                     |
+| Element   | A plain immutable object `{ type, props, key }` that describes what to render. Cheap to create                      |
+| JSX       | Syntax sugar for creating elements: `<Button size="l" />` compiles to `jsx(Button, { size: 'l' })`                  |
+| Instance  | What React keeps for a component at a position in the tree: its state and effects (a [fiber](./rendering.md#fiber)) |
 
-- Better performance compared to class components in certain scenarios. Since
-  they are just functions, they have a smaller memory footprint and can be
-  optimized more easily by the JavaScript engine.
+A lowercase tag (`<div>`) is an HTML element; a capitalized one (`<Button>`) is
+a component.
 
-- Easier to test because they are just JavaScript functions. You can test them
-  like any other function by passing input props and asserting the output. This
-  makes unit testing simpler and more straightforward.
+### What a Component Can Return
 
-- Functional components don't have lifecycle methods. To replace some of them
-  you can use the `useEffect` hook.
+- A React element or a fragment.
+- A string or a number (rendered as text).
+- An array of these (each item needs a `key`).
+- `null`, `undefined`, `true` or `false`: nothing is rendered.
+- A [portal](./portals.md).
 
-## Class Components
+### Purity
 
-Legacy way to define components. See
-[Class Components and Lifecycle Methods](./class-components.md).
+- Rendering must not change anything that existed before it: props, state,
+  variables outside the component, the DOM.
+- Requests, timers and subscriptions go to event handlers or
+  [effects](../hooks/side-effects.md).
+- The reason: React can call a component several times, pause a render or throw
+  its result away (`StrictMode`,
+  [concurrent rendering](../performance/concurrent-rendering.md)).
+- Local mutation is fine: creating an array during render and pushing into it.
 
-## Fragments
+### Fragments
 
-Each React component should return only one element. If you need to return
-multiple elements, you can use a single wrapper element (like a `<div>`) or
-React Fragments, which let you group elements without a wrapper element.
+- JSX needs a single root. A **fragment** (`<>…</>`) groups elements without an
+  extra DOM node.
+- The short syntax takes no props. A fragment in a list needs the explicit form:
+  `<Fragment key={id}>`.
 
-:::tip
+### Function and Class Components
 
-This is useful when you need to return multiple elements from a component's
-return (or render method) but don't want to create unnecessary wrapper elements,
-which can clutter the DOM and affect styling and performance. Another way is
-returning an array of components, although you will need to add a `key` prop for
-each element.
+Function components with hooks are the standard. Classes are legacy; the only
+thing that still needs one is an
+[error boundary](./patterns.md#error-boundaries). See
+[Class Components](./class-components.md).
 
-:::
-
-React Fragments can be used in two ways: using the `<></>` syntax or explicitly.
+## Example
 
 ```jsx
-return (
-  <>
-    <ChildA />
-    <ChildB />
-  </>
-);
-```
+import { Fragment } from 'react';
 
-Fragments declared with the explicit `<Fragment>` syntax may have keys (for
-rendering a list of Fragments).
+function PostTitle({ title }) {
+  return <h2>{title}</h2>;
+}
 
-```jsx
-function Blog() {
+function PostBody({ body }) {
+  return <p>{body}</p>;
+}
+
+export default function Blog({ posts }) {
+  if (posts.length === 0) {
+    return null;
+  }
+
   return posts.map((post) => (
     <Fragment key={post.id}>
       <PostTitle title={post.title} />
@@ -70,3 +84,29 @@ function Blog() {
   ));
 }
 ```
+
+## Follow-up Questions
+
+- What is the difference between a component and an element? A component is a
+  function; an element is the object it returns. `<Button />` creates an
+  element, it does not call `Button`.
+- Why must component names be capitalized? JSX treats lowercase tags as HTML
+  elements.
+- Why are function components preferred over classes? Less code, no `this`,
+  logic is reused with [custom hooks](../hooks/hooks.mdx#custom-hooks), and new
+  features are built for hooks.
+
+## Common Mistakes
+
+- Defining a component inside another component: it is a new function on every
+  render, so React remounts it and its state is lost.
+- Calling a component as a function (`Button()`) instead of `<Button />`: its
+  hooks become hooks of the caller.
+- Mutating props or outer variables during render.
+- `{items.length && <List />}` renders `0`, see
+  [Conditional Rendering](./patterns.md#conditional-rendering).
+
+## See Also
+
+- [Props](./props.md)
+- [Rendering and Reconciliation](./rendering.md)

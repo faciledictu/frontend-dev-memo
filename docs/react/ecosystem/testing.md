@@ -1,117 +1,167 @@
 ---
 sidebar_position: 3
+description:
+  React Testing Library queries, user-event, async tests, hooks and E2E with
+  Playwright
 ---
 
-# Testing
+# Testing React Components
 
-Testing in React applications involves verifying that components, utilities, and
-other parts of your application work as expected.
+Components are tested **the way a user uses them**: render the component, find
+elements by role or label, interact, check what is on the screen. The standard
+set is **React Testing Library** (RTL) with **user-event** on top of **Vitest**
+or **Jest** in a simulated DOM. State, instances and other implementation
+details are not tested. End-to-end tests run in a real browser with
+**Playwright**.
 
-## Testing Tools
+Applies to: React Testing Library 16, user-event 14.
 
-### Jest
+## Details
 
-A JavaScript testing framework designed to ensure the correctness of any
-JavaScript codebase. It's often used with React due to its simplicity and
-powerful features like snapshot testing, mocking, and a built-in test runner.
+### Tools
 
-### Enzyme
+| Tool                          | Role                                                               |
+| ----------------------------- | ------------------------------------------------------------------ |
+| Vitest, Jest                  | Test runner, assertions, mocks                                     |
+| jsdom, happy-dom              | A DOM implementation for Node.js                                   |
+| `@testing-library/react`      | `render`, `screen`, queries, `renderHook`                          |
+| `@testing-library/user-event` | Realistic user interactions                                        |
+| `@testing-library/jest-dom`   | Matchers: `toBeInTheDocument`, `toBeDisabled`, `toHaveTextContent` |
+| MSW                           | Mocks the network at the request level instead of mocking `fetch`  |
+| `@playwright/test`            | E2E tests in real browsers                                         |
 
-A testing utility for React that makes it easier to assert, manipulate, and
-traverse your React components' output. It provides a shallow rendering API,
-which is useful for testing components in isolation.
+Enzyme, which tested component internals, has no official adapter for React 17
+and later.
 
-:::note
+### Queries
 
-Enzyme is outdated and does not have official support for React 18. The
-community has moved towards React Testing Library due to better support and an
-actively maintained ecosystem.
+| Query      | No match                | Use for                                 |
+| ---------- | ----------------------- | --------------------------------------- |
+| `getBy…`   | Throws                  | Elements that must be there             |
+| `queryBy…` | Returns `null`          | Asserting that an element is **absent** |
+| `findBy…`  | Rejects after a timeout | Elements that appear **asynchronously** |
 
-:::
+- Each has an `…AllBy…` version that returns an array.
+- Priority: `getByRole` (with `name`) → `getByLabelText` → `getByText` →
+  `getByTestId` as the last resort. A query by role also checks accessibility.
 
-### React Testing Library
+### `userEvent` and `fireEvent`
 
-A library for testing React components that encourages good testing practices by
-focusing on how the user interacts with your components. It promotes testing
-from the user's perspective rather than the implementation details.
+- `fireEvent.click` dispatches one DOM event.
+- `user.click` reproduces the whole interaction: pointer events, focus, click;
+  `user.type` presses keys one by one. It also refuses to click a disabled or
+  hidden element.
+- `userEvent` methods are async: `const user = userEvent.setup()` and
+  `await user.click(…)`.
 
-```jsx
-test('increments counter', () => {
-  // Arrange
-  render(<Counter />);
-  const button = screen.getByText(/increment/i);
+### Async Code and Hooks
 
-  // Act
-  fireEvent.click(button);
+- Wait with `await screen.findBy…` or `await waitFor(() => expect(…))`, not with
+  timeouts.
+- RTL wraps `render` and events in `act`, so it is not called manually.
+- A custom hook is tested with **`renderHook`**; state changes are wrapped in
+  `act`. A hook used by one component is better tested through that component.
 
-  // Assert
-  expect(screen.getByText(/count: 1/i)).toBeInTheDocument();
-});
-```
+### What to Test
 
-## Testing Approaches
+- What the user sees and can do: text, roles, enabled state, the result of an
+  interaction, calls to callback props.
+- Not the internal state, not the names of child components, not CSS classes.
+- Snapshots of large trees break on any change and are rarely read.
 
-### Utilities
+## Example
 
-Test utility functions by importing them and writing unit tests.
-
-```javascript
-import { myUtility } from './utils';
-
-test('myUtility returns the correct value', () => {
-  expect(myUtility('input')).toBe('expected output');
-});
-```
-
-### Components
-
-Test components by rendering them and asserting on their output. Use React
-Testing Library for rendering and querying elements, and Jest for assertions.
+A component test:
 
 ```jsx
 import { render, screen } from '@testing-library/react';
-import MyComponent from './MyComponent';
+import userEvent from '@testing-library/user-event';
+import { expect, test } from 'vitest';
+import Counter from './Counter';
 
-test('renders MyComponent with the correct text', () => {
-  render(<MyComponent />);
-  const linkElement = screen.getByText(/correct text/i);
-  expect(linkElement).toBeInTheDocument();
+test('increments the counter', async () => {
+  // Arrange
+  const user = userEvent.setup();
+  render(<Counter />);
+
+  // Act
+  await user.click(screen.getByRole('button', { name: /increment/i }));
+
+  // Assert
+  expect(screen.getByText('Count: 1')).toBeInTheDocument();
 });
 ```
 
-#### Modals
-
-Test modals by asserting their open/close behavior and content rendering.
+Asynchronous content and an absent element:
 
 ```jsx
-import { render, screen, fireEvent } from '@testing-library/react';
-import MyModal from './MyModal';
+import { render, screen } from '@testing-library/react';
+import { expect, test, vi } from 'vitest';
+import UserName from './UserName';
 
-test('opens and closes the modal', () => {
-  render(<MyModal />);
-  fireEvent.click(screen.getByText(/open modal/i));
-  expect(screen.getByText(/modal content/i)).toBeInTheDocument();
-  fireEvent.click(screen.getByText(/close modal/i));
-  expect(screen.queryByText(/modal content/i)).toBeNull();
+test('shows the user name after loading', async () => {
+  const loadUser = vi.fn().mockResolvedValue({ name: 'Alice' });
+  render(<UserName loadUser={loadUser} />);
+
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(await screen.findByRole('heading', { name: 'Alice' })).toBeVisible();
+  expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
 });
 ```
 
-#### Higher-Order Components
+A custom hook:
 
-Test HOCs by wrapping a dummy component and asserting its behavior.
+```javascript
+import { act, renderHook } from '@testing-library/react';
+import { expect, test } from 'vitest';
+import useToggle from './useToggle';
 
-```jsx
-import { render } from '@testing-library/react';
-import withHOC from './withHOC';
+test('toggles the value', () => {
+  const { result } = renderHook(() => useToggle(false));
 
-const DummyComponent = () => <div>Dummy</div>;
-const WrappedComponent = withHOC(DummyComponent);
+  act(() => {
+    result.current[1]();
+  });
 
-test('HOC enhances the component', () => {
-  const { getByText } = render(<WrappedComponent />);
-  expect(getByText('Dummy')).toBeInTheDocument();
+  expect(result.current[0]).toBe(true);
 });
 ```
+
+An E2E test with Playwright:
+
+```typescript
+import { expect, test } from '@playwright/test';
+
+test('adds a todo', async ({ page }) => {
+  await page.goto('/');
+
+  await page.getByRole('textbox', { name: 'New todo' }).fill('Buy milk');
+  await page.getByRole('button', { name: 'Add' }).click();
+
+  await expect(page.getByRole('listitem')).toHaveText(['Buy milk']);
+});
+```
+
+## Follow-up Questions
+
+- Why `getByRole` and not `getByTestId`? It finds elements the way assistive
+  technology does, so the test fails when the markup stops being accessible.
+- What is the difference between `getBy`, `queryBy` and `findBy`? Throws,
+  returns `null`, waits.
+- How to test a component that fetches data? Mock the network with MSW (or pass
+  the loader as a prop) and wait for the result with `findBy…`.
+- How to test a component that needs a router, a store or a context? Render it
+  inside the real providers with a helper: `MemoryRouter`, a store from
+  `configureStore`.
+
+## Common Mistakes
+
+- Testing implementation details: the test breaks on a refactoring that changes
+  nothing for the user.
+- `fireEvent` where `userEvent` is available.
+- `getBy…` to assert absence: it throws before the assertion.
+- Forgetting `await` before `user.click` or `findBy…`.
+- Wrapping everything in `act` by hand.
 
 ## See Also
 

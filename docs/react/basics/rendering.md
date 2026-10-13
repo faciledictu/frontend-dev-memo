@@ -1,103 +1,154 @@
 ---
 sidebar_position: 8
+description: Render and commit phases, virtual DOM, diffing heuristics and Fiber
 ---
 
 # Rendering and Reconciliation
 
-## Virtual DOM
+**Rendering** is React calling components to get a tree of elements (the
+"virtual DOM"). **Reconciliation** is comparing this tree with the previous one
+to find the minimal set of DOM changes. An update has two phases: **render**
+(compute what changed; pure, can be interrupted) and **commit** (apply it to the
+DOM; synchronous). A re-render of a component does not mean that the DOM was
+touched.
 
-Operations on the real DOM can be slow and resource-intensive. So libraries like
-React use the Virtual DOM, which is a lightweight copy of the real DOM.
+## Details
 
-It acts as an intermediary, allowing efficient updates to the user interface.
-When a change occurs in the application's state, the Virtual DOM updates first.
-The framework then compares the new Virtual DOM with the previous version to
-identify what has changed.
+### Render and Commit
 
-After identifying the differences, the framework updates the real DOM only in
-the places where changes have occurred.
+1. **Trigger**: the initial render or a state update.
+2. **Render phase**: React calls the component and, recursively, its children,
+   and compares the result with the previous tree. Nothing is changed in the
+   DOM. This work can be paused or thrown away.
+3. **Commit phase**: React applies the DOM changes, sets refs and runs layout
+   effects, all in one synchronous pass. After the browser paints, `useEffect`
+   callbacks run.
 
-This approach enhances performance, simplifies development, and ensures
-cross-browser compatibility.
+A component re-renders when:
 
-## React Fiber
+- its state changed;
+- its parent re-rendered (whether or not the props changed, unless it is wrapped
+  in [`memo`](../performance/optimization.md#memoization));
+- a context it reads changed.
 
-Fiber is a new version of the React core algorithm, introduced in React 16. The
-primary goal of Fiber is to improve the rendering performance and responsiveness
-of React applications.
+### Virtual DOM
 
-### Key Features of Fiber
+- It is the tree of React elements: plain JavaScript objects that describe the
+  UI.
+- "The DOM is slow, the virtual DOM is fast" is a myth. A DOM operation is
+  cheap; what costs is unnecessary layout and paint, and keeping the DOM in sync
+  with the state by hand.
+- What it gives: the UI is written as a function of state, and React works out
+  the DOM updates. It also makes other renderers possible (React Native).
+- It is not free: diffing takes time. Svelte and Solid work without a virtual
+  DOM.
 
-**Incremental Rendering**: Fiber breaks down the rendering work into units that
-can be spread out over multiple frames, allowing for smoother updates and better
-user experiences, especially on slower devices.
+### Diffing Heuristics
 
-**Prioritization**: Fiber can assign different priorities to different updates,
-ensuring that higher-priority updates, such as user interactions, are handled
-more quickly than less critical updates.
+Comparing two arbitrary trees is O(n³). React does it in O(n) with two
+assumptions:
 
-**Concurrency**: Fiber allows React to pause and resume work, making it possible
-to handle high-priority updates in between lower-priority tasks.
+1. **Elements of different types produce different trees.** If the type at a
+   position changed (`<div>` → `<span>`, `<A>` → `<B>`), the old subtree is
+   destroyed with its state and a new one is built.
+2. **`key` identifies a child among its siblings.** With keys React matches list
+   items by key and moves them; without keys it matches them by index.
 
-### Work Process
+Consequences:
 
-Fiber uses a work loop that schedules and prioritizes work.
+- The same type at the same position keeps the DOM node and the component state;
+  only the changed attributes and props are updated.
+- An index as a `key` breaks when the list is reordered, filtered or prepended:
+  state and DOM (input values, focus) stay with the position, not with the item.
+  A key must be stable and unique among siblings, such as an ID from the data.
+- Changing the `key` on purpose resets a component.
+- Trees are compared level by level: a subtree moved to another parent is
+  recreated.
 
-The rendering work is divided into two phases: the "Render" phase and the
-"Commit" phase.
+### Fiber
 
-Fiber introduces a sophisticated scheduling mechanism that prioritizes tasks
-based on their urgency. Tasks are assigned expiration times, and React processes
-them accordingly, ensuring that more critical updates are handled first.
+**Fiber** is the reconciler that React has used since version 16 (2017). A
+**fiber** is an object that React keeps for every component instance and DOM
+node: one unit of work.
 
-#### Render Phase (Reconciliation)
+| Field                        | Holds                                                                      |
+| ---------------------------- | -------------------------------------------------------------------------- |
+| `type`, `key`                | What to render, as in the element                                          |
+| `child`, `sibling`, `return` | Links to the first child, the next sibling and the parent                  |
+| `memoizedState`              | The state: for a function component, the linked list of its hooks          |
+| `alternate`                  | The same fiber in the other tree (current ↔ work in progress)              |
+| `lanes`                      | Priority of the pending updates. Lanes replaced the older expiration times |
+| `flags`                      | What to do in the commit phase: insert, update, delete                     |
 
-In this phase, Fiber creates a tree of work units, called _fiber nodes_,
-representing parts of the UI. Each fiber node corresponds to a React component
-and contains information about what to render and how to handle updates. Fiber
-traverses this tree, calculating changes and determining what needs to be
-updated. The work done in this phase _can be interrupted and resumed_, allowing
-React to manage rendering in a non-blocking manner.
+- The links form a linked list, so React walks the tree in a loop instead of
+  recursion and can stop after any fiber and continue later.
+- React builds a **work-in-progress** tree next to the **current** one and swaps
+  them at commit.
+- This is the base for
+  [concurrent rendering](../performance/concurrent-rendering.md), `Suspense` and
+  error boundaries.
 
-#### Commit Phase
+## Example
 
-Once the render phase is complete and all changes are calculated, the commit
-phase applies these changes to the DOM. This phase is synchronous and _must
-complete without interruption_ to ensure the UI is updated consistently.
+The type, the position and the `key` decide whether state is kept:
 
-### Concepts and Terms
+```jsx
+import { useState } from 'react';
 
-#### Fiber Nodes
+function Field({ label }) {
+  const [text, setText] = useState('');
 
-Each fiber node represents a unit of work. It keeps track of the component's
-state, effects, and context. Fiber nodes form a tree structure, mirroring the
-component tree. At the same time, they contain links to each other, like
-elements of a linked list.
+  return (
+    <label>
+      {label}
+      <input value={text} onChange={(e) => setText(e.target.value)} />
+    </label>
+  );
+}
 
-```javascript
-// An example of a fiber node
-const fiberNode = {
-  type: 'div',
-  key: 'myDiv',
-  props: {
-    children: [{ type: 'p', props: { children: 'Hello, world!' } }],
-  },
-  // Additional fields used by React Fiber
-  priority: 1,
-  previousOutput: null,
-  parent: null,
-  sibling: null,
-  child: null,
-};
+export default function Form() {
+  const [isCompany, setIsCompany] = useState(false);
+
+  return (
+    <>
+      <button onClick={() => setIsCompany(!isCompany)}>Switch</button>
+
+      {/* Same type, same position: the text survives the switch */}
+      {isCompany ? <Field label="Company" /> : <Field label="Name" />}
+
+      {/* Different keys: the field is remounted and the text is reset */}
+      {isCompany ? (
+        <Field key="company" label="Company" />
+      ) : (
+        <Field key="name" label="Name" />
+      )}
+    </>
+  );
+}
 ```
 
-#### Work Loop
+## Follow-up Questions
 
-The work loop in Fiber is responsible for scheduling and performing the work. It
-continuously checks for available work and processes it based on priority. The
-loop ensures that higher-priority tasks preempt lower-priority ones, enabling a
-responsive and efficient update mechanism.
+- Does a re-render always update the DOM? No. If the render output is the same,
+  the commit phase changes nothing.
+- Why is the commit phase synchronous? A partially applied update would show an
+  inconsistent UI.
+- Why is an index a bad `key`? See the consequences above; it is acceptable only
+  for a static list that is never reordered.
+- What is the difference between the virtual DOM and Fiber? The virtual DOM is
+  the idea of describing the UI with objects; Fiber is the implementation of the
+  reconciler that processes them.
 
-## Links
+## Common Mistakes
 
-https://github.com/acdlite/react-fiber-architecture
+- "The virtual DOM is faster than the real DOM."
+- "A component re-renders when its props change": it re-renders when the parent
+  does.
+- Defining a component inside another component: a new type on every render, so
+  the subtree is remounted.
+- `key={Math.random()}` or `key={index}` for a dynamic list.
+
+## See Also
+
+- [Optimization of React Components](../performance/optimization.md)
+- [React Fiber Architecture](https://github.com/acdlite/react-fiber-architecture)

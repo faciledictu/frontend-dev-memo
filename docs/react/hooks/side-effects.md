@@ -1,54 +1,163 @@
 ---
 sidebar_position: 2
+description:
+  useEffect dependencies, cleanup order, StrictMode, race conditions and
+  useLayoutEffect
 ---
 
-# Side Effects in React Components
+# Side Effects
 
-Side effects can include data fetching, subscriptions, or manually changing the
-DOM in React components.
+A **side effect** is anything that reaches outside of rendering: a network
+request, a subscription, a timer, a manual DOM change. An effect caused by a
+user action belongs in an **event handler**. **`useEffect`** is for
+synchronizing a component with an external system for as long as it is on
+screen. It runs **after** React has updated the DOM, runs again when its
+**dependencies** change, and its **cleanup** function runs before the next run
+and on unmount.
 
-To perform side effects in class components, you can use methods such as
-`componentDidMount`, `componentDidUpdate`, and `componentWillUnmount`.
+Applies to: React 19.
 
-To perform side effects in functional components the `useEffect` hook is used.
+## Details
 
-## `useEffect`
+### Dependencies
 
-This hook runs asynchronously after rendering.
+| Call                    | The effect runs                                         |
+| ----------------------- | ------------------------------------------------------- |
+| `useEffect(fn)`         | After every render                                      |
+| `useEffect(fn, [])`     | Once after mount; the cleanup runs on unmount           |
+| `useEffect(fn, [a, b])` | After mount and after a render where `a` or `b` changed |
 
-The first argument to `useEffect` is a function that contains the code for the
-side effect.
+- Dependencies are compared with `Object.is`.
+- The array is not a choice: it must list every **reactive value** (props, state
+  and what is computed from them) that the effect reads. The lint rule
+  `react-hooks/exhaustive-deps` checks it.
+- An object or a function created during render is new every time, so the effect
+  runs after every render. Create it inside the effect, move it out of the
+  component or memoize it.
+- To read the latest value **without** re-running the effect, wrap that part in
+  **`useEffectEvent`** (React 19.2).
 
-The return value of the effect function can optionally be a cleanup function.
-This cleanup function runs when the component unmounts or before running the
-effect next time.
+### Order
 
-The second argument is an optional array of dependencies. If provided, the
-effect will only re-run if any of the dependencies change between renders.
+1. React renders the component and updates the DOM.
+2. `useLayoutEffect` callbacks run; the browser paints.
+3. `useEffect` callbacks run.
 
-```javascript
-useEffect(() => {
-  // Side effect code here
-  return () => {
-    // Cleanup code here
-  };
-}, [dependencies]);
+- On an update, the **cleanup of the previous effect** runs first, with the
+  props and state of the previous render, then the new setup.
+- On unmount, only the cleanup runs.
+- Effects of children run before the effects of the parent.
+
+### `StrictMode`
+
+In development `StrictMode` mounts every component, runs **setup → cleanup →
+setup** and only then continues. A correct effect does not notice it: the
+cleanup must undo everything the setup did. If something happens twice (two
+connections, two listeners), the cleanup is missing. Removing `StrictMode` or
+adding a "did run" ref hides the bug.
+
+### Data Fetching and Race Conditions
+
+- Responses can arrive in any order. If `userId` changes from 1 to 2 quickly,
+  the response for 1 can come last and overwrite the correct data.
+- Fix: ignore outdated responses with a flag set in the cleanup, or cancel the
+  request with `AbortController`.
+- An effect can't be `async`: it would return a promise instead of a cleanup.
+  Declare an async function inside and call it.
+- In real projects fetching is done by a library (TanStack Query, RTK Query) or
+  by the framework: they add caching, deduplication and race handling.
+
+### `useLayoutEffect`
+
+- The same API, but it runs synchronously after the DOM is updated and **before
+  the browser paints**. In time it matches `componentDidMount` and
+  `componentDidUpdate`.
+- Use it to measure layout and correct the DOM before the user sees it (position
+  of a tooltip). It blocks painting, so `useEffect` is the default.
+
+### You Might Not Need an Effect
+
+| Task                             | Instead of an effect                          |
+| -------------------------------- | --------------------------------------------- |
+| Compute data from props or state | Compute during render, `useMemo` if expensive |
+| Reset state when a prop changes  | Pass a different `key`                        |
+| React to a click or a submit     | Do it in the event handler                    |
+| Notify the parent about a change | Call the callback in the same event handler   |
+| Subscribe to an external store   | `useSyncExternalStore`                        |
+
+## Example
+
+A subscription with a cleanup:
+
+```jsx
+import { useEffect, useState } from 'react';
+
+export default function WindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return <p>Width: {width}</p>;
+}
 ```
 
-## `useLayoutEffect`
+Fetching without a race condition:
 
-`useLayoutEffect` has the same signature as `useEffect`, but it fires
-synchronously immediately after DOM mutations. This can be useful in situations
-where you need to read layout from the DOM and then immediately set some state
-or trigger another effect that depends on that layout.
+```jsx
+import { useEffect, useState } from 'react';
 
-It can be considered a replacement for the
-`static getSnapshotBeforeUpdate(prevProps, prevState)` lifecycle method.
+export default function Profile({ userId }) {
+  const [user, setUser] = useState(null);
 
-:::tip[When to Use]
+  useEffect(() => {
+    let ignore = false;
 
-Use `useEffect` for most side effects that don't need to block the browser
-painting. Use `useLayoutEffect` if you need to make changes that impact layout,
-such as measuring DOM nodes or modifying the DOM directly after a render.
+    async function load() {
+      const response = await fetch(`/api/users/${userId}`);
+      const data = await response.json();
 
-:::
+      // The cleanup has already run if `userId` changed or the component unmounted
+      if (!ignore) {
+        setUser(data);
+      }
+    }
+
+    load();
+
+    return () => {
+      ignore = true;
+    };
+  }, [userId]);
+
+  return <p>{user ? user.name : 'Loading...'}</p>;
+}
+```
+
+## Follow-up Questions
+
+- What is the difference between `useEffect` and `useLayoutEffect`?
+  `useLayoutEffect` runs before the paint and blocks it; `useEffect` does not.
+- Why does an effect run twice in development? `StrictMode` checks that the
+  cleanup works.
+- How to run code only on mount? `useEffect(fn, [])`, as long as the effect
+  really reads no reactive values.
+- When does the cleanup run? Before every re-run of the effect and on unmount.
+
+## Common Mistakes
+
+- Omitting a dependency to "run once": the effect works with stale values.
+- No cleanup for a subscription, a timer or a connection.
+- An `async` effect callback.
+- Updating state in an effect to store what could be computed during render: an
+  extra render and a flash of stale UI.
+- An object or an inline function in the dependency array.
+
+## See Also
+
+- [React in the Browser: `StrictMode`](../basics/react-in-browser.md#strictmode)
+- [You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect)

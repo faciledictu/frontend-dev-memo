@@ -1,159 +1,181 @@
 ---
 sidebar_position: 3
+description:
+  useRef, DOM refs, callback refs, ref as a prop and useImperativeHandle
 ---
 
-# Using Refs in React
+# Refs
 
-Refs can be used to hold any mutable value that doesn't trigger a re-render when
-it changes. This is useful for storing state that should not cause a re-render
-when updated.
+A **ref** is a mutable object `{ current }` that lives as long as the component.
+Changing `ref.current` **does not cause a re-render**. Refs have two uses:
+access to a **DOM node** (focus, scroll, measuring) and storing a value that is
+**not needed for rendering** (a timer ID, an instance of a third-party library).
+`ref.current` should not be read or written during rendering, only in event
+handlers and effects.
 
-Although refs can keep any data, they are commonly used to directly access and
-manipulate DOM nodes: for managing focus, text selection, triggering animations,
-or integrating with third-party libraries. In this case, you need to attach it
-to a React element via the `ref` attribute.
+Applies to: React 19.
 
-## Creating Refs
+## Details
 
-### Class Components
+### Ref and State
 
-```jsx
-import { Component } from 'react';
+|                    | Ref                                 | State                      |
+| ------------------ | ----------------------------------- | -------------------------- |
+| Change             | `ref.current = value`, mutable      | Setter, immutable          |
+| Causes a re-render | No                                  | Yes                        |
+| Update is visible  | Immediately                         | On the next render         |
+| Use for            | DOM nodes, timers, external objects | Everything shown in the UI |
 
-class MyComponent extends Component {
-  constructor(props) {
-    super(props);
-    this.myRef = React.createRef();
-  }
+### DOM Refs
 
-  render() {
-    return <div ref={this.myRef}>Hello, world!</div>;
-  }
-}
-```
+- `const inputRef = useRef(null)` and `<input ref={inputRef} />`.
+- React sets `current` during the commit phase, so the node is available in
+  effects and event handlers, not during the first render. On unmount it becomes
+  `null` again.
+- A ref is an escape hatch: use it for what React does not manage (focus,
+  scroll, selection, measuring). Don't change the DOM structure that React
+  renders.
 
-Refs can also be created using callback functions.
+### Callback Refs
 
-```jsx
-class MyComponent extends Component {
-  setRef = (node) => {
-    this.myRef = node;
-  };
+- `ref` also accepts a function: `<div ref={(node) => { … }} />`. React calls it
+  with the node when the element is attached.
+- Since React 19 it can return a **cleanup function**, like an effect. Without
+  one, React calls the callback again with `null` on detach.
+- Use it to measure a node, to attach an observer or to keep refs for a list of
+  items.
+- An inline callback is a new function on every render, so it is called again
+  every time. Wrap it in `useCallback` if that matters.
 
-  render() {
-    return <div ref={this.setRef}>Hello, world!</div>;
-  }
-}
-```
+### `ref` as a Prop
 
-### Functional Components
+- Since React 19 a function component receives `ref` as a **regular prop** and
+  passes it to a DOM node.
+- Before React 19 it had to be wrapped in **`forwardRef((props, ref) => …)`**.
+  It still works but is no longer needed and will be deprecated.
+- A ref to a **class component** points to its instance.
 
-```jsx
-import { useRef, useEffect } from 'react';
+### `useImperativeHandle`
 
-const MyFunctionalComponent = () => {
-  const myRef = useRef(null);
+`useImperativeHandle(ref, createHandle, deps?)` replaces what the parent gets
+through the ref: a small object with chosen methods instead of the whole DOM
+node.
 
-  useEffect(() => {
-    console.log(myRef.current); // Logs the DOM node
-  }, []);
+## Example
 
-  return <div ref={myRef}>Hello, world!</div>;
-};
-```
-
-## Forwarding Refs
-
-In many scenarios, you may have a parent component that needs to interact with a
-DOM element of a child component. But React components don't have the `ref` prop
-by default. Refs can be forwarded to child components by wrapping your
-functional component with `React.forwardRef`, which returns a new component that
-forwards the ref.
+A ref passed as a prop, with a limited handle:
 
 ```jsx
-import { forwardRef, useRef } from 'react';
+import { useImperativeHandle, useRef } from 'react';
 
-const FancyButton = forwardRef((props, ref) => (
-  <button ref={ref} className="FancyButton">
-    {props.children}
-  </button>
-));
+function SearchInput({ ref, ...props }) {
+  const inputRef = useRef(null);
 
-const App = () => {
-  const ref = useRef(null);
-
-  return <FancyButton ref={ref}>Click me!</FancyButton>;
-};
-```
-
-## Using Ref for Keeping Data
-
-```jsx
-import { useRef, useEffect, useState } from 'react';
-
-const PreviousValue = () => {
-  const [value, setValue] = useState('');
-  const previousValueRef = useRef('');
-
-  useEffect(() => {
-    previousValueRef.current = value;
-  }, [value]);
-
-  return (
-    <div>
-      <input value={value} onChange={(e) => setValue(e.target.value)} />
-      <p>Current: {value}</p>
-      <p>Previous: {previousValueRef.current}</p>
-    </div>
-  );
-};
-```
-
-## `useImperativeHandle`
-
-By default, refs point to a DOM node or a React element. However, sometimes you
-need to expose certain functions or values from a child component to its parent.
-`useImperativeHandle` allows you to define what the ref in the parent component
-can access and interact with.
-
-The `useImperativeHandle` hook takes three arguments:
-
-1. `ref`: the ref object forwarded from the parent component.
-2. `createHandle`: a function that returns the object to be exposed.
-3. `[deps]`: an optional array of dependencies that, when changed, will
-   re-create the handle.
-
-```jsx
-import { useRef, useImperativeHandle, forwardRef } from 'react';
-
-// Define a functional component that uses `useImperativeHandle`
-const MyInput = forwardRef((props, ref) => {
-  const inputRef = useRef();
-
+  // The parent gets only `focus`, not the DOM node
   useImperativeHandle(ref, () => ({
-    focus: () => {
+    focus() {
       inputRef.current.focus();
     },
-    blur: () => {
-      inputRef.current.blur();
-    },
-    // Add any other methods or properties you want to expose
   }));
 
   return <input ref={inputRef} {...props} />;
-});
+}
 
-function ParentComponent() {
-  const inputRef = useRef();
+export default function Page() {
+  const searchRef = useRef(null);
 
   return (
-    <div>
-      <MyInput ref={inputRef} />
-      <button onClick={() => inputRef.current.focus()}>Focus Input</button>
-      <button onClick={() => inputRef.current.blur()}>Blur Input</button>
+    <>
+      <SearchInput ref={searchRef} placeholder="Search" />
+      <button onClick={() => searchRef.current.focus()}>Focus</button>
+    </>
+  );
+}
+```
+
+A value that is not rendered:
+
+```jsx
+import { useEffect, useRef, useState } from 'react';
+
+export default function Stopwatch() {
+  const [seconds, setSeconds] = useState(0);
+  const intervalRef = useRef(null);
+
+  const start = () => {
+    if (intervalRef.current !== null) {
+      return;
+    }
+
+    intervalRef.current = setInterval(() => setSeconds((s) => s + 1), 1000);
+  };
+
+  const stop = () => {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  };
+
+  useEffect(() => stop, []);
+
+  return (
+    <>
+      <p>{seconds}s</p>
+      <button onClick={start}>Start</button>
+      <button onClick={stop}>Stop</button>
+    </>
+  );
+}
+```
+
+A callback ref with a cleanup:
+
+```jsx
+import { useCallback, useState } from 'react';
+
+export default function Measured({ children }) {
+  const [height, setHeight] = useState(0);
+
+  const measureRef = useCallback((node) => {
+    const observer = new ResizeObserver(([entry]) => {
+      setHeight(entry.contentRect.height);
+    });
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={measureRef}>
+      {children}
+      <p>Height: {height}px</p>
     </div>
   );
 }
-
-export default ParentComponent;
 ```
+
+## Follow-up Questions
+
+- Why not use a regular variable instead of a ref? A variable inside the
+  component is recreated on every render; a variable outside is shared by all
+  instances.
+- How is `useRef` different from `createRef`? `createRef` creates a new object
+  on every call and is meant for class components; `useRef` returns the same
+  object on every render.
+- When is `forwardRef` needed? Only before React 19.
+- How to get refs for a list of items? A callback ref that stores nodes in a
+  `Map` kept in a ref.
+
+## Common Mistakes
+
+- Reading or writing `ref.current` during render: the result depends on when the
+  render happened.
+- Expecting a re-render after changing `ref.current`.
+- Using `ref.current` in a dependency array: its change does not trigger a
+  render, so the effect does not run.
+- Reaching for a ref where state or a prop does the job (showing or hiding an
+  element, changing a class).
+
+## See Also
+
+- [Forms: uncontrolled inputs](../basics/forms.md#controlled-and-uncontrolled)
+- [State](../basics/state.md)

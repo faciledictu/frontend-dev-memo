@@ -1,163 +1,246 @@
 ---
 sidebar_position: 1
+description:
+  Store, actions and reducers, Redux Toolkit slices, React Redux hooks and
+  memoized selectors
 ---
 
-# Redux Overview
+# Redux
 
-## What is Redux and Why Use It in React Native?
+**Redux** keeps the app-wide state in a single **store**. The state is
+read-only: the UI **dispatches actions** (plain objects that describe what
+happened), pure functions called **reducers** compute the next state, and
+subscribed components re-render with the data they select. Modern Redux is
+written with **Redux Toolkit** (RTK): `configureStore`, `createSlice` and RTK
+Query for server data.
 
-Redux is a predictable state container for JavaScript applications. In React
-Native, Redux is used to manage application state in a centralized store,
-enabling consistent behavior, time-travel debugging, and easier testing.
+Applies to: Redux Toolkit 2, React Redux 9, Reselect 5.
 
-## How Redux Works
+## Details
 
-- **Store**: Holds the application state.
-- **Actions**: Plain objects describing what happened.
-- **Reducers**: Functions that specify how the state changes in response to
-  actions.
-- **Dispatch**: Sends actions to the store.
-- **Subscribe**: Listens for state changes.
+### Data Flow
 
-## Core Principles
+1. An event handler calls `dispatch(action)`.
+2. **Middleware** can intercept the action: thunks, listeners, RTK Query,
+   logging.
+3. The root **reducer** returns the next state without mutating the previous
+   one.
+4. The store notifies subscribers. Every `useSelector` runs its selector again
+   and re-renders the component if the result changed by `===`.
 
-- **Single Source of Truth**
-- **State is Read-Only**
-- **Changes via Pure Functions**
+### Three Principles
 
-## Redux vs Context API
+- **Single source of truth**: one store with one state tree.
+- **State is read-only**: the only way to change it is to dispatch an action.
+- **Changes are made with pure functions**: a reducer is
+  `(state, action) => newState` with no side effects.
 
-- Context API is suitable for light state needs (e.g., theme, locale).
-- Redux excels at large-scale apps with complex state logic, devtools support,
-  middleware, and performance optimizations.
+### Redux Toolkit
 
-## Selectors
+| API                        | What it does                                                                                        |
+| -------------------------- | --------------------------------------------------------------------------------------------------- |
+| `configureStore`           | Creates the store with DevTools, thunk middleware and development checks for mutations              |
+| `createSlice`              | Generates a reducer and action creators from one object. "Mutating" code is safe thanks to Immer    |
+| `createAsyncThunk`         | Wraps an async function and dispatches `pending`, `fulfilled` and `rejected` actions                |
+| `createSelector`           | A memoized selector, re-exported from Reselect                                                      |
+| `createEntityAdapter`      | Normalized state (`ids` + `entities`) with ready CRUD reducers and selectors                        |
+| `createListenerMiddleware` | Reactions to actions: a lighter replacement for sagas                                               |
+| `createApi` (RTK Query)    | Data fetching and caching: generated hooks such as `useGetPostsQuery`, cache invalidation with tags |
 
-Selectors are functions used to extract and compute derived data from the store.
-Using libraries like Reselect helps memoize selectors and avoid unnecessary
-re-renders.
+### React Redux
 
-## Async Logic: Thunks vs Sagas
+- `<Provider store={store}>` makes the store available to the tree.
+- `useSelector(selector)` reads a piece of state and subscribes to it.
+- `useDispatch()` returns `dispatch`.
+- In TypeScript, typed versions are created once:
+  `useSelector.withTypes<RootState>()`.
 
-- **redux-thunk**: Allows writing action creators that return a function.
-  Simpler and widely used.
-- **redux-saga**: Uses generator functions for side effects. Better for complex
-  flows, retry logic, and cancellation.
+### Selectors and Reselect
 
-## Middleware
+- A selector is a function `(state) => value`. Components do not depend on the
+  state shape, and derived data is not stored.
+- `useSelector` compares the result by reference. A selector that returns a new
+  array or object (`filter`, `map`, `{ ...}`) causes a re-render after **every**
+  action.
+- `createSelector(inputSelectors, resultFn)` fixes it: `resultFn` runs again
+  only when one of the input results changes, otherwise the cached reference is
+  returned.
+- Since Reselect 5 the default cache is `weakMapMemoize`: it keeps a result for
+  every set of arguments, so one selector works for `selectById(state, 1)` and
+  `selectById(state, 2)`. Before v5 the cache held only the last call (now
+  `lruMemoize`).
+- An alternative for small objects: `useSelector(selector, shallowEqual)`.
 
-Middleware intercepts dispatched actions before they reach the reducer. Use it
-for logging, async processing, crash reporting, etc.
+### Async Logic
 
-## Persisting State
+| Tool                | Use it for                                                     |
+| ------------------- | -------------------------------------------------------------- |
+| RTK Query           | Server data: fetching, caching, refetching. The default choice |
+| Thunks              | Imperative logic with access to `dispatch` and `getState`      |
+| Listener middleware | Reacting to actions: debounce, analytics, cancellation         |
+| `redux-saga`        | Legacy code bases; generator-based flows                       |
 
-Use libraries like `redux-persist` to save parts of the Redux store to local
-storage or AsyncStorage in React Native.
+### Redux and Alternatives
 
-## Scalability Patterns
+| Tool                           | Fits                                                                                             |
+| ------------------------------ | ------------------------------------------------------------------------------------------------ |
+| Component state                | State used by one component or a small subtree                                                   |
+| [Context](../hooks/context.md) | Rarely changing values (theme, locale, user). No selectors: every consumer re-renders            |
+| Redux                          | A lot of shared client state with complex update logic; DevTools with action history, middleware |
+| Zustand                        | A shared store with selectors and almost no boilerplate, no provider                             |
+| TanStack Query, RTK Query      | Server state: caching, deduplication, background refetching                                      |
 
-- Feature-based folder structure
-- `ducks` pattern or Redux Toolkit slices
-- Normalize large nested state (e.g., with normalizr)
-- Use selectors and RTK Query for derived and remote state
+Redux is not needed when the state is local or when most of it is a cache of
+server data.
 
-## Optimistic Updates
+## Example
 
-Update the UI immediately after a user action, then reconcile with server
-response. Use temporary state and rollback logic if needed.
+A slice with reducers and selectors:
 
-## Redux Toolkit (RTK)
+```typescript
+// todosSlice.ts
+import {
+  createSelector,
+  createSlice,
+  type PayloadAction,
+} from '@reduxjs/toolkit';
+import type { RootState } from './store';
 
-- Reduces boilerplate with `createSlice`, `createAsyncThunk`, and
-  `configureStore`
-- Encourages best practices by default (immutable updates with Immer)
-- Includes RTK Query for API management
+interface Todo {
+  id: string;
+  title: string;
+  done: boolean;
+}
 
-## RTK Query
+const initialState: { items: Todo[] } = { items: [] };
 
-- Handles caching, data fetching, and mutations
-- Auto-generates hooks like `useGetPostsQuery`
-- Simplifies error handling and cache invalidation
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState,
+  reducers: {
+    todoAdded(state, action: PayloadAction<Todo>) {
+      // Immer turns this "mutation" into an immutable update
+      state.items.push(action.payload);
+    },
+    todoToggled(state, action: PayloadAction<string>) {
+      const todo = state.items.find((item) => item.id === action.payload);
+      if (todo) {
+        todo.done = !todo.done;
+      }
+    },
+  },
+});
 
-## Testing Redux Logic
+export const { todoAdded, todoToggled } = todosSlice.actions;
+export default todosSlice.reducer;
 
-- **Reducers**: Unit test with inputs and expected state outputs
-- **Thunks/Sagas**: Use `redux-mock-store` or saga test utils
-- **Components**: Use `Provider` and mock store for integration testing
+export const selectTodos = (state: RootState) => state.todos.items;
 
-## Best Practices
-
-- Use Redux Toolkit for all new code
-- Co-locate logic in feature slices
-- Use middleware sparingly and purposefully
-- Memoize selectors
-- Avoid large monolithic reducers
-- Use RTK Query or services layer for API handling
-
-## When Not to Use Redux
-
-- Simple apps or local state only
-- When Context API or component state is sufficient
-- For highly decoupled UI states with no global dependency
-
-## Advanced Tips & Good-to-Know
-
-**Immutable Updates:** RTK uses Immer under the hood, but be mindful of
-accidentally mutating external objects or API responses.
-
-**DevTools Setup:** You can configure Redux DevTools to limit action history and
-disable it in production.
-
-**Selective Persist:** Avoid persisting volatile or sensitive data; use
-transforms to filter persisted state.
-
-**Hydration Conflicts:** When using redux-persist, ensure hydration race
-conditions are handled gracefully (e.g., show splash screen until rehydration
-completes).
-
-**Serializability:** Redux Toolkit warns about non-serializable values. If
-needed (e.g., for Dates or custom classes), configure
-serializableCheck.ignoreActions.
-
-**Custom Middleware:** You can chain multiple middlewares for tasks like
-analytics, offline queuing, or conditional dispatching.
-
-**Store Enhancers:** Use enhancers sparingly; prefer RTK’s default setup unless
-integrating with legacy tooling.
-
-**Dynamic Reducers:** For large apps with code-splitting, dynamically inject
-reducers using store.replaceReducer().
-
-**Error Boundaries + Redux:** Catch errors at UI level, but log them via Redux
-middleware for unified telemetry.
-
-**Batched Updates:** React Redux v8 uses automatic batching, but for non-React
-async triggers, you may still need unstable_batchedUpdates from react-native.
-
-## Memoized Selectors: Reselect
-
-Reselect is a library for creating memoized "selector" functions in JavaScript.
-It is commonly used in applications with Redux to efficiently compute derived
-data from the Redux store.
-
-Reselect's selectors remember the arguments of the last function call and the
-result. If the same arguments are passed in again, the selector returns the
-cached result, avoiding unnecessary recalculations.
-
-```javascript
-import { createSelector } from 'reselect';
-
-// Input selectors
-const selectItems = (state) => state.items;
-const selectFilter = (state) => state.filter;
-
-// Memoized selector
-const selectFilteredItems = createSelector(
-  [selectItems, selectFilter],
-  (items, filter) => {
-    return items.filter((item) => item.includes(filter));
-  }
+// `filter` runs again only when `items` changes
+export const selectDoneTodos = createSelector([selectTodos], (items) =>
+  items.filter((item) => item.done)
 );
 ```
 
-`createSelector` is included in Redux Toolkit package.
+The store and typed hooks:
+
+```typescript
+// store.ts
+import { configureStore } from '@reduxjs/toolkit';
+import { useDispatch, useSelector } from 'react-redux';
+import todosReducer from './todosSlice';
+
+export const store = configureStore({
+  reducer: { todos: todosReducer },
+});
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+export const useAppSelector = useSelector.withTypes<RootState>();
+```
+
+A component:
+
+```tsx
+// App.tsx
+import { Provider } from 'react-redux';
+import { store, useAppDispatch, useAppSelector } from './store';
+import {
+  selectDoneTodos,
+  selectTodos,
+  todoAdded,
+  todoToggled,
+} from './todosSlice';
+
+function Todos() {
+  const todos = useAppSelector(selectTodos);
+  const doneCount = useAppSelector(selectDoneTodos).length;
+  const dispatch = useAppDispatch();
+
+  const handleAdd = () => {
+    dispatch(
+      todoAdded({ id: crypto.randomUUID(), title: 'New todo', done: false })
+    );
+  };
+
+  return (
+    <>
+      <button onClick={handleAdd}>Add</button>
+      <p>Done: {doneCount}</p>
+      <ul>
+        {todos.map((todo) => (
+          <li key={todo.id} onClick={() => dispatch(todoToggled(todo.id))}>
+            {todo.done ? <s>{todo.title}</s> : todo.title}
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <Provider store={store}>
+      <Todos />
+    </Provider>
+  );
+}
+```
+
+## Follow-up Questions
+
+- Why must reducers be pure and the state immutable? Changes are detected by
+  reference comparison, and DevTools can replay actions only if the same input
+  always gives the same output.
+- What is middleware? A function `(store) => (next) => (action) => …` between
+  `dispatch` and the reducer; it can delay, change, cancel or dispatch actions.
+- What is normalized state? Entities are stored by ID (`{ ids, entities }`)
+  instead of nested arrays, so an item is updated in one place.
+  `createEntityAdapter` does it.
+- How to test Redux code? Reducers as pure functions; components with a real
+  store created by `configureStore` inside `Provider`, not with a mocked one.
+- When does a component connected with `useSelector` re-render? When the
+  selector result changes by reference after an action.
+
+## Common Mistakes
+
+- Mutating the state outside of `createSlice` (in a selector, a component or a
+  hand-written reducer).
+- Returning a new object or array from a `useSelector` selector without
+  memoization.
+- Selecting the whole state: `useSelector((state) => state)` re-renders on every
+  action.
+- Putting non-serializable values (`Date`, `Map`, class instances, promises) in
+  the state or in actions. RTK warns about it; exceptions are configured with
+  `serializableCheck.ignoredActions`.
+- Keeping server data, form inputs and other local state in Redux.
+- Generating random IDs or reading the time inside a reducer: it is a side
+  effect.
+
+## See Also
+
+- [State](../basics/state.md#usereducer) — `useReducer` uses the same reducer
+  idea locally.
+- [React Context](../hooks/context.md)

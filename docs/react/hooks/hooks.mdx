@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+description: Built-in hooks at a glance, the Rules of Hooks and custom hooks
 ---
 
 import Tabs from '@theme/Tabs';
@@ -7,163 +8,142 @@ import TabItem from '@theme/TabItem';
 
 # Hooks
 
-Hooks are functions that allow you to use additional React features in
-functional components. They were introduced in React 16.8 to provide a way to
-use stateful logic and side effects (like fetching data or subscribing to
-events) in functional components, which were previously only possible in class
-components.
+**Hooks** are functions whose names start with `use`. They give function
+components access to React features: state, effects, context, refs. There are
+two rules: call hooks only **at the top level** (not in conditions, loops,
+nested functions or after an early return) and only **from React functions**
+(components and custom hooks). The reason is that React matches a hook call with
+its stored state by the **order of calls**.
 
-Using hooks makes it easier to reuse stateful logic without changing component
-hierarchy (unlike higher-order components or render props). They also promote
-cleaner and more readable code in functional components.
+Applies to: React 19.
 
-## Rules of Hooks
+## Details
 
-**Only call hooks at the top level.** Don't call hooks inside conditions, loops,
-nested functions or after an early return. React matches each hook with its
-state by the order of calls, so the order must be the same on every render.
+### Built-in Hooks
 
-**Only call hooks from React functions.** Hooks can be called from functional
-components and from custom hooks (which are functions that use hooks), but not
-from regular JavaScript functions or class components.
+| Hook                   | Purpose                                                              | Page                                                                    |
+| ---------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `useState`             | State of a component                                                 | [State](../basics/state.md)                                             |
+| `useReducer`           | State with update logic in a reducer                                 | [State](../basics/state.md#usereducer)                                  |
+| `useContext`           | Read a context value                                                 | [Context](./context.md)                                                 |
+| `useRef`               | A mutable value that does not cause re-renders; access to DOM nodes  | [Refs](./refs.md)                                                       |
+| `useImperativeHandle`  | Customize what a ref to the component exposes                        | [Refs](./refs.md#useimperativehandle)                                   |
+| `useEffect`            | Synchronize with an external system after render                     | [Side Effects](./side-effects.md)                                       |
+| `useLayoutEffect`      | The same, but before the browser paints                              | [Side Effects](./side-effects.md#uselayouteffect)                       |
+| `useInsertionEffect`   | Insert styles before layout effects; for CSS-in-JS libraries         | —                                                                       |
+| `useEffectEvent`       | A function that reads the latest props and state inside an effect    | [Side Effects](./side-effects.md#dependencies)                          |
+| `useMemo`              | Cache a computed value between renders                               | [Optimization](../performance/optimization.md#memoization)              |
+| `useCallback`          | Cache a function between renders                                     | [Optimization](../performance/optimization.md#memoization)              |
+| `useTransition`        | Mark a state update as non-urgent                                    | [Concurrent Rendering](../performance/concurrent-rendering.md)          |
+| `useDeferredValue`     | A value that lags behind during urgent updates                       | [Concurrent Rendering](../performance/concurrent-rendering.md)          |
+| `useId`                | A unique ID that is the same on the server and the client            | —                                                                       |
+| `useSyncExternalStore` | Subscribe to a store outside of React                                | —                                                                       |
+| `useActionState`       | State and pending flag of an Action                                  | [Forms](../basics/forms.md#actions)                                     |
+| `useOptimistic`        | Show the expected result while an Action is pending                  | [Forms](../basics/forms.md#actions)                                     |
+| `useFormStatus`        | Status of the parent `<form>` (from `react-dom`)                     | [Forms](../basics/forms.md#actions)                                     |
+| `use`                  | Read a promise or a context. Not a hook: can be called conditionally | [Concurrent Rendering](../performance/concurrent-rendering.md#suspense) |
 
-The first rule means that you can't use hooks in conditions. Here is a bad
-example.
+### Rules of Hooks
+
+1. **Only call hooks at the top level.** React keeps the hooks of a component in
+   a list and finds each one by its position. If a call is skipped, every hook
+   after it gets the wrong state.
+2. **Only call hooks from React functions**: function components and custom
+   hooks. Not from regular functions, class components or event handlers.
+
+- `use` is the exception to the first rule: it can be called in a condition or a
+  loop, but still only inside a component or a hook.
+- The rules are checked by `eslint-plugin-react-hooks`.
+
+### Custom Hooks
+
+- A custom hook is a function named `use…` that calls other hooks.
+- It shares **logic, not state**: every component that calls the hook gets its
+  own independent state.
+- It replaces [HOCs and render props](../basics/patterns.md) and can be tested
+  separately from the UI.
+- A function that calls no hooks should not be named `use…`.
+
+## Example
+
+A condition goes inside the hook, not around it:
 
 ```jsx
-function InvalidComponent() {
-  if (condition) {
-    useEffect(() => {
-      // This is a violation of the rules of hooks
-    }, []);
+import { useEffect } from 'react';
+
+function Chat({ roomId, isOnline }) {
+  // Wrong: the hook is skipped on some renders
+  if (isOnline) {
+    useEffect(() => connect(roomId), [roomId]);
   }
-  return <div>Invalid Component</div>;
-}
-```
 
-However, there are ways to achieve a similar effect. Here is an example where
-the component state updates conditionally.
-
-```jsx
-function ValidComponent() {
+  // Right: the hook is always called, the condition is inside
   useEffect(() => {
-    if (condition) {
-      // Properly condition the effect inside useEffect
+    if (!isOnline) {
+      return;
     }
-  }, [condition]);
 
-  return <div>Valid Component</div>;
+    return connect(roomId);
+  }, [roomId, isOnline]);
+
+  return <p>Room: {roomId}</p>;
 }
 ```
 
-```jsx
-import { useState, useEffect } from 'react';
-
-function ConditionalEffectComponent() {
-  const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [shouldFetch, setShouldFetch] = useState(false);
-
-  useEffect(() => {
-    if (shouldFetch) {
-      setIsLoading(true);
-      // Simulate fetching data
-      setTimeout(() => {
-        setData({ message: 'Data fetched successfully' });
-        setIsLoading(false);
-      }, 2000);
-    }
-  }, [shouldFetch]);
-
-  const handleFetchData = () => {
-    setShouldFetch(true);
-  };
-
-  return (
-    <div>
-      <button onClick={handleFetchData}>Fetch Data</button>
-      {isLoading && <p>Loading...</p>}
-      {error && <p>Error: {error.message}</p>}
-      {data && <p>Data: {data.message}</p>}
-    </div>
-  );
-}
-
-export default ConditionalEffectComponent;
-```
-
-## Custom Hooks
-
-Custom hooks allow you to extract reusable logic from components into reusable
-functions. They follow the same rules as standard hooks but encapsulate more
-complex stateful logic or side effects that can be reused across multiple
-components.
-
-:::info
-
-When you create custom hooks, their names must start with the prefix "use". This
-convention helps distinguish hooks from regular functions and indicates that
-they may use React state or effects.
-
-:::
-
-Once you have defined a custom hook, you can use it in any functional component.
+A custom hook:
 
 <Tabs>
 
-  <TabItem value="ToggleComponent.jsx" label="ToggleComponent.jsx" default>
+  <TabItem value="useToggle.js" label="useToggle.js" default>
 
-```jsx
-import useToggle from './useToggle';
+```javascript
+import { useCallback, useState } from 'react';
 
-function ToggleComponent() {
-  const [isOn, toggleIsOn] = useToggle(false);
+export default function useToggle(initialValue = false) {
+  const [value, setValue] = useState(initialValue);
 
-  return (
-    <div>
-      <button onClick={toggleIsOn}>{isOn ? 'ON' : 'OFF'}</button>
-      <p>Current state: {isOn ? 'ON' : 'OFF'}</p>
-    </div>
-  );
+  const toggle = useCallback(() => {
+    setValue((prevValue) => !prevValue);
+  }, []);
+
+  return [value, toggle];
 }
-
-export default ToggleComponent;
 ```
 
 </TabItem>
 
-  <TabItem value="useToggle.js" label="useToggle.js">
+  <TabItem value="ToggleButton.jsx" label="ToggleButton.jsx">
 
-```javascript
-import { useState } from 'react';
+```jsx
+import useToggle from './useToggle';
 
-function useToggle(initialValue = false) {
-  const [value, setValue] = useState(initialValue);
+export default function ToggleButton() {
+  const [isOn, toggleIsOn] = useToggle(false);
 
-  const toggle = () => {
-    setValue((prevValue) => !prevValue);
-  };
-
-  return [value, toggle];
+  return <button onClick={toggleIsOn}>{isOn ? 'ON' : 'OFF'}</button>;
 }
-
-export default useToggle;
 ```
 
 </TabItem>
 
 </Tabs>
 
-### Benefits
+## Follow-up Questions
 
-**Code Reusability.** Custom hooks allow you to encapsulate complex logic into a
-single function that can be reused across multiple components. This promotes
-cleaner and more modular code.
+- Why can't hooks be called conditionally? React identifies a hook by its call
+  order, not by a name.
+- Do two components that use the same custom hook share state? No. To share
+  state, lift it up or use context or a store.
+- Can hooks be used in class components? No. A class can be wrapped in a
+  function component that calls the hook and passes the result as props.
+- Why should data not be fetched "on a flag" in an effect? A request caused by a
+  click belongs in the event handler; an effect is for what must happen because
+  the component is on screen, see
+  [Side Effects](./side-effects.md#you-might-not-need-an-effect).
 
-**Separation of Concerns.** By extracting logic into custom hooks, you can
-separate concerns between UI components and business logic, making your
-components more focused and easier to maintain.
+## Common Mistakes
 
-**Simplifies Testing.** Logic encapsulated in custom hooks can be tested
-independently, improving the testability of your React applications.
+- An early `return` above a hook call.
+- Calling a hook inside a callback, an event handler or `useMemo`.
+- Naming the two rules as "not in conditions" and "not in loops": that is one
+  rule; the second one is about where hooks can be called from.

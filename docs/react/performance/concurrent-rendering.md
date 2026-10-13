@@ -1,123 +1,146 @@
 ---
 sidebar_position: 3
+description: Transitions, useDeferredValue, Suspense and the use hook
 ---
 
 # Concurrent Rendering
 
-:::info
+**Concurrent rendering** means that React can prepare a new version of the UI in
+the background and **interrupt**, pause, resume or abandon that work. An urgent
+update (typing, a click) is not blocked by a slow one. It is not parallelism:
+everything still runs on one thread, React splits rendering into small chunks
+and yields to the browser between them. It is not a mode either: it works in any
+app created with `createRoot` and is used for updates marked as non-urgent with
+**transitions**, **`useDeferredValue`** and **`Suspense`**.
 
-Concurrency is a way of using multiple tasks at once to make software run
-faster. It uses system resources more efficiently, which can improve how well an
-application works.
+Applies to: React 19.
 
-:::
+## Details
 
-Concurrent mode was introduced in React 18. It lets developers build components
-that render at the same time, without blocking the user interface. This means
-users can interact with your page without noticing a re-render.
+### APIs
 
-Concurrency isn’t a new feature. It’s rather an internal technique and related
-public API that allows React to render multiple versions of the UI
-simultaneously. React uses priority queues and multiple buffering to implement
-concurrency.
+| API                               | What it does                                                           | Use it when                                                 |
+| --------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `useTransition`                   | Marks state updates as non-urgent, returns `isPending`                 | You own the state update that causes a slow render          |
+| `startTransition` (import)        | The same without `isPending`, works outside components                 | The update happens in a library or a plain function         |
+| `useDeferredValue(value)`         | Returns a copy of the value that lags behind during urgent updates     | The value comes from props or a hook you do not control     |
+| `<Suspense fallback>`             | Shows a fallback while something inside is not ready                   | Lazy components, data read with `use`, framework data       |
+| `use(promise)`                    | Suspends the component until the promise settles and returns its value | Reading a promise created outside the component             |
+| `lazy(() => import('./Comp.js'))` | Loads the component code on first render                               | [Code splitting](../../web-platform/bundle-optimization.md) |
 
-To get the benefits of Concurrency mode, you need to use some related public
-APIs.
+### Transitions
 
-## Suspense
+- Updates inside `startTransition` have low priority. React keeps the current UI
+  on screen, renders the new one in the background and sets `isPending` to
+  `true`.
+- The background render is **interruptible**: a new urgent update or a newer
+  transition makes React drop the unfinished work.
+- React can only yield **between components**. One component with a slow body
+  still blocks the thread; a slow tree of many components does not.
+- A transition does not replace already visible content with a `Suspense`
+  fallback: the old content stays until the new one is ready.
+- The function can be async (React 19 calls it an **Action**): `isPending` stays
+  `true` until it finishes. State updates after an `await` must be wrapped in
+  another `startTransition`.
+- A controlled input value can't be updated in a transition: typing must be
+  synchronous.
 
-Suspense is a React feature that lets components "wait" for something before
-they render. It’s typically used to handle asynchronous operations like data
-fetching or
-[loading code-split components](../../web-platform/bundle-optimization.md#splitting-code-into-chunks).
+### `Suspense`
 
-```javascript
-import React, { useState, Suspense } from 'react';
+- A component **suspends** when it renders a `lazy` component that is not loaded
+  yet, calls `use` with a pending promise, or reads data through a
+  Suspense-enabled library (Next.js, Relay, `useSuspenseQuery` in TanStack
+  Query).
+- Data fetched in `useEffect` or in an event handler **does not** trigger
+  `Suspense`.
+- The promise passed to `use` must be stable: created in a parent, a loader or a
+  cache. A promise created during the render of the same component is new on
+  every render.
+- A rejected promise is handled by the nearest
+  [Error Boundary](../basics/patterns.md#error-boundaries).
 
-const fetchData = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve('Data loaded successfully');
-    }, 2000); // Simulating a delay in data fetching
-  });
-};
+### `useDeferredValue`
 
-const DataComponent = () => {
-  const [data, setData] = useState(null);
+- On the first render the deferred value equals the value.
+- On an update React first re-renders with the **old** deferred value (fast,
+  urgent), then tries to render with the new one in the background.
+- The background render is interruptible: on the next keystroke React abandons
+  it and starts again with the latest value.
+- It does not delay or cancel network requests. It only delays rendering.
+- The slow child must be wrapped in `memo`, otherwise it re-renders with the old
+  value anyway.
 
-  const loadData = async () => {
-    const result = await fetchData();
-    setData(result);
-  };
+## Example
 
+`Suspense` with `use`: the fallback is shown until the promise resolves.
+
+```jsx
+import { Suspense, use } from 'react';
+
+function fetchUser(id) {
+  return fetch(`/api/users/${id}`).then((response) => response.json());
+}
+
+// Created once, outside of rendering
+const userPromise = fetchUser(1);
+
+function Profile({ userPromise }) {
+  const user = use(userPromise); // suspends while the promise is pending
+  return <h1>{user.name}</h1>;
+}
+
+export default function App() {
   return (
-    <div>
-      <Suspense fallback={<div>Loading...</div>}>
-        {data ? <p>{data}</p> : <button onClick={loadData}>Load Data</button>}
-      </Suspense>
-    </div>
+    <Suspense fallback={<p>Loading...</p>}>
+      <Profile userPromise={userPromise} />
+    </Suspense>
   );
-};
-
-export default DataComponent;
+}
 ```
 
-## Transitions
+`useTransition`: switching to a slow tab does not freeze the UI. The buttons
+stay responsive, and a click on another tab interrupts the unfinished render.
 
-`useTransition` is a React hook that helps you manage state transitions in your
-application, particularly for transitions that might take a noticeable amount of
-time, like data fetching or complex calculations. It allows you to provide
-feedback to users during these transitions, improving the overall user
-experience.
+```jsx
+import { useState, useTransition } from 'react';
+import About from './About';
+import Posts from './Posts'; // renders thousands of items
 
-- The hook returns a boolean value indicating if a transition is pending, and a
-  function to start the transition.
-- Use the startTransition function to wrap the state updates that you want to
-  defer.
-
-```javascript
-import React, { useState, useTransition } from 'react';
-
-function MyComponent() {
-  const [count, setCount] = useState(0);
+export default function Tabs() {
+  const [tab, setTab] = useState('about');
   const [isPending, startTransition] = useTransition();
 
-  const handleClick = () => {
+  const selectTab = (nextTab) => {
     startTransition(() => {
-      setCount((prevCount) => prevCount + 1);
+      setTab(nextTab);
     });
   };
 
   return (
-    <div>
-      <button onClick={handleClick}>Increment</button>
-      {isPending ? <p>Loading...</p> : <p>Count: {count}</p>}
-    </div>
+    <>
+      <button onClick={() => selectTab('about')}>About</button>
+      <button onClick={() => selectTab('posts')}>Posts</button>
+      <div style={{ opacity: isPending ? 0.6 : 1 }}>
+        {tab === 'about' ? <About /> : <Posts />}
+      </div>
+    </>
   );
 }
-
-export default MyComponent;
 ```
 
-## useDeferredValue
+`useDeferredValue`: the input updates immediately, the results follow when they
+are ready. While the user types "ab", the list still shows the results for "a"
+instead of the fallback.
 
-During the initial render, the `deferredValue` matches the provided `value`. On
-updates, React first re-renders with the old value, then re-renders in the
-background with the new value.
-
-```javascript
-const deferredValue = useDeferredValue(value);
-```
-
-Consider this example from the official documentation[^1]
-
-```javascript
-import { Suspense, useState, useDeferredValue } from 'react';
-import SearchResults from './SearchResults.js';
+```jsx
+import { Suspense, useDeferredValue, useState } from 'react';
+import SearchResults from './SearchResults';
 
 export default function App() {
   const [query, setQuery] = useState('');
   const deferredQuery = useDeferredValue(query);
+  const isStale = query !== deferredQuery;
+
   return (
     <>
       <label>
@@ -125,30 +148,37 @@ export default function App() {
         <input value={query} onChange={(e) => setQuery(e.target.value)} />
       </label>
       <Suspense fallback={<h2>Loading...</h2>}>
-        <SearchResults query={deferredQuery} />
+        <div style={{ opacity: isStale ? 0.6 : 1 }}>
+          <SearchResults query={deferredQuery} />
+        </div>
       </Suspense>
     </>
   );
 }
 ```
 
-If we type _"a"_ in the input, we will see "Loading..." fallback before the data
-will be returned from `SearchResults` component
+## Follow-up Questions
 
-**Initial Render.** When you type _"ab"_, React re-renders with the new query
-("ab") but the old deferredQuery ("a").
+- Is concurrent rendering parallel? No. It is one thread with interruptible work
+  split into chunks.
+- How is a transition different from debounce or throttle? There is no fixed
+  delay: the render starts immediately, adapts to the device speed and can be
+  interrupted. It does not reduce the number of network requests.
+- `useTransition` or `useDeferredValue`? `useTransition` wraps the state update
+  itself; `useDeferredValue` is for a value you only receive.
+- Why is the commit phase not interruptible? See
+  [Rendering and Reconciliation](../basics/rendering.md#render-and-commit).
 
-**Background Update.** React then tries to re-render with both query and
-deferredQuery set to "ab". If this succeeds, it updates the screen. If the data
-isn't ready, React waits and retries, showing the old deferredQuery until then.
+## Common Mistakes
 
-:::note
+- Calling it "Concurrent Mode": the mode was never released, since React 18 it
+  is a set of features that are opted into per update.
+- Expecting `Suspense` to show a fallback for a request made in `useEffect`.
+- Creating the promise for `use` inside the same component on every render.
+- Wrapping the update of a controlled input in `startTransition`.
 
-This deferred rendering is interruptible. If you keep typing, React abandons the
-current attempt and restarts with the latest value. Each keystroke still
-triggers a network request, but responses are cached, making actions like
-pressing Backspace instantaneous.
+## See Also
 
-:::
-
-[^1]: https://react.dev/reference/react/useDeferredValue
+- [Optimization of React Components](./optimization.md)
+- [Forms: Actions](../basics/forms.md#actions)
+- [`useDeferredValue` reference](https://react.dev/reference/react/useDeferredValue)

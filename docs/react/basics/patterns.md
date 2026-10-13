@@ -1,40 +1,168 @@
 ---
 sidebar_position: 7
+description:
+  Composition, conditional rendering, compound components, render props, HOCs
+  and error boundaries
 ---
 
 # Common Patterns
 
-## Conditional Rendering
+React code is reused through **composition**, not inheritance. UI is composed
+with `children` and **compound components**; logic is shared with **custom
+hooks**, which replaced **render props** and **higher-order components** in most
+cases. **Error boundaries** catch rendering errors and show a fallback.
 
-Depending on the state of your application, you can render different components
-or elements.
+## Details
+
+| Pattern                | Idea                                                                    | Today                                    |
+| ---------------------- | ----------------------------------------------------------------------- | ---------------------------------------- |
+| Composition            | Pass JSX as `children` or other props instead of configuring with flags | The default                              |
+| Conditional rendering  | `if`, a ternary or `&&` decides what to return                          | The default                              |
+| Custom hook            | A `use…` function that shares stateful logic                            | The default for logic                    |
+| Compound components    | Several components share implicit state through context                 | UI libraries: tabs, selects, accordions  |
+| Render prop            | A prop that is a function returning JSX                                 | When the child decides what to pass back |
+| Higher-order component | A function that takes a component and returns a new one                 | Legacy; replaced by hooks                |
+| Error boundary         | A class component that catches errors of its subtree                    | Required; no hook equivalent             |
+
+### Conditional Rendering
+
+- `if` with an early return, a ternary `a ? <A /> : <B />`, or `a && <A />`.
+- **`&&` with a number.** `{count && <List />}` renders `0` when `count` is `0`:
+  React skips `false`, `null` and `undefined`, but renders numbers. Write
+  `count > 0 && …` or use a ternary.
+
+### Composition
+
+- A component that accepts `children` does not need to know what is inside:
+  `<Card><Avatar user={user} /></Card>`.
+- It removes [prop drilling](./props.md#prop-drilling): the data is used where
+  the element is created.
+- "Slots" are ordinary props with JSX: `<Layout sidebar={<Menu />} />`.
+
+### Compound Components
+
+The parent keeps the state and provides it through
+[context](../hooks/context.md); the children read it. The user of the component
+controls the markup and the order, the state stays hidden.
+
+### Render Props and HOCs
+
+- A **render prop** lets a component delegate rendering:
+  `<MouseTracker render={(position) => …} />`. `children` can be such a function
+  too.
+- A **higher-order component** wraps a component to add props or behavior:
+  `withRouter(Component)`, `connect(mapState)(Component)`.
+- HOC problems: "wrapper hell" in DevTools, prop name collisions, unclear origin
+  of props. A [custom hook](../hooks/hooks.mdx#custom-hooks) solves the same
+  task without them.
+
+### Error Boundaries
+
+- A class with `static getDerivedStateFromError` (switch to the fallback) and/or
+  `componentDidCatch` (log the error). There is no hook for it; the
+  `react-error-boundary` package provides a ready component.
+- It **catches** errors thrown below it during rendering, in lifecycle methods
+  and in effects.
+- It **does not catch** errors in event handlers, in asynchronous code
+  (`setTimeout`, promise callbacks), during server rendering, or in the boundary
+  itself. Those are handled with `try` / `catch`.
+- Without a boundary an error unmounts the whole app.
+- Boundaries are placed around independent parts of the UI: the page, a widget,
+  a route.
+
+## Example
+
+Compound components:
 
 ```jsx
-function Greeting({ isLoggedIn }) {
-  if (isLoggedIn) {
-    return <h1>Welcome back!</h1>;
-  }
+import { createContext, use, useState } from 'react';
 
-  return <h1>Please sign in.</h1>;
+const TabsContext = createContext(null);
+
+function Tabs({ defaultValue, children }) {
+  const [value, setValue] = useState(defaultValue);
+
+  return <TabsContext value={{ value, setValue }}>{children}</TabsContext>;
+}
+
+function Tab({ value, children }) {
+  const tabs = use(TabsContext);
+
+  return (
+    <button
+      role="tab"
+      aria-selected={tabs.value === value}
+      onClick={() => tabs.setValue(value)}
+    >
+      {children}
+    </button>
+  );
+}
+
+function TabPanel({ value, children }) {
+  const tabs = use(TabsContext);
+  return tabs.value === value ? <div role="tabpanel">{children}</div> : null;
+}
+
+export default function App() {
+  return (
+    <Tabs defaultValue="about">
+      <Tab value="about">About</Tab>
+      <Tab value="posts">Posts</Tab>
+      <TabPanel value="about">About me</TabPanel>
+      <TabPanel value="posts">My posts</TabPanel>
+    </Tabs>
+  );
 }
 ```
 
-## Render Props
-
-Render props is a technique for sharing code between React components using a
-prop whose value is a function. This function returns a React element and allows
-the parent component to control what is rendered by a child component.
+An error boundary:
 
 ```jsx
-function MouseTracker({ render }) {
-  const [position, setPosition] = React.useState({ x: 0, y: 0 });
+import { Component } from 'react';
 
-  const handleMouseMove = (event) => {
-    setPosition({ x: event.clientX, y: event.clientY });
-  };
+class ErrorBoundary extends Component {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, info) {
+    console.error(error, info.componentStack);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+
+    return this.props.children;
+  }
+}
+
+// Usage
+<ErrorBoundary fallback={<p>Something went wrong.</p>}>
+  <Profile />
+</ErrorBoundary>;
+```
+
+<details>
+<summary>Render prop and HOC</summary>
+
+```jsx
+import { useState } from 'react';
+
+function MouseTracker({ render }) {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
   return (
-    <div style={{ height: '100vh' }} onMouseMove={handleMouseMove}>
+    <div
+      style={{ height: '100vh' }}
+      onMouseMove={(event) =>
+        setPosition({ x: event.clientX, y: event.clientY })
+      }
+    >
       {render(position)}
     </div>
   );
@@ -43,92 +171,49 @@ function MouseTracker({ render }) {
 // Usage
 <MouseTracker
   render={({ x, y }) => (
-    <h1>
+    <p>
       The mouse position is ({x}, {y})
-    </h1>
+    </p>
   )}
 />;
 ```
 
-Some libraries provide components that use render props, such as
-[Controller](https://react-hook-form.com/docs/usecontroller/controller) from
-`react-hook-form`.
-
-## Higher-Order Components (HOCs)[^1]
-
-A higher-order component is a function that takes a component and returns a new
-component. HOCs are used to add additional functionality to existing components.
-
-:::note
-
-Higher-order components are not commonly used in modern React code.
-
-:::
-
 ```jsx
 function withAuthorization(WrappedComponent) {
-  return class extends React.Component {
-    render() {
-      const { isAuthorized, ...rest } = this.props;
-      if (!isAuthorized) {
-        return <h1>Unauthorized</h1>;
-      }
-      return <WrappedComponent {...rest} />;
+  return function Authorized({ isAuthorized, ...rest }) {
+    if (!isAuthorized) {
+      return <h1>Unauthorized</h1>;
     }
+
+    return <WrappedComponent {...rest} />;
   };
 }
 
 // Usage
-const AuthorizedComponent = withAuthorization(SomeComponent);
+const ProtectedSettings = withAuthorization(Settings);
 ```
 
-:::info[See also]
+</details>
 
-[Custom hooks](../hooks/hooks.mdx#custom-hooks) can be considered as a common
-pattern that can be used instead of HOCs in functional components. They allow
-you to extract component logic into reusable functions.
+## Follow-up Questions
 
-:::
+- Why did hooks replace HOCs and render props? The same logic is shared without
+  extra components in the tree and with explicit inputs and outputs.
+- How to handle an error in an event handler? `try` / `catch` and state. To show
+  the boundary's fallback, pass the error to `showBoundary` from the
+  `useErrorBoundary` hook of `react-error-boundary`.
+- Composition or inheritance? Composition: React components are not extended
+  from one another.
 
-## Error Boundaries
+## Common Mistakes
 
-There is no option to catch errors using functional components. By wrapping your
-functional components in a class component you can catch JavaScript errors
-anywhere in their child component tree, log those errors, and display a
-fallback.
+- `{items.length && <List />}` rendering `0`.
+- Expecting an error boundary to catch errors from `onClick` or `fetch`.
+- One error boundary for the whole app: any error replaces the entire page.
+- Creating a HOC inside a component: a new component type on every render
+  remounts the subtree.
 
-```jsx
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
+## See Also
 
-  static getDerivedStateFromError(error) {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error('Error caught by ErrorBoundary:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return <h1>Something went wrong.</h1>;
-    }
-
-    return this.props.children;
-  }
-}
-
-// Usage
-function App() {
-  return (
-    <ErrorBoundary>
-      <ComponentThatMayThrowError />
-    </ErrorBoundary>
-  );
-}
-```
-
-[^1]: https://legacy.reactjs.org/docs/higher-order-components.html
+- [Hooks](../hooks/hooks.mdx)
+- [Higher-Order Components (legacy docs)](https://legacy.reactjs.org/docs/higher-order-components.html)

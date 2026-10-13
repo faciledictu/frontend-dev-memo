@@ -1,40 +1,94 @@
 ---
 sidebar_position: 2
+description: Rendering only the visible part of a long list or grid
 ---
 
-# Data Virtualization
+# List Virtualization
 
-When we need to work with large datasets in React, such as large lists, we can
-run into problems with initial render time and memory usage.
+**Virtualization** (windowing) renders only the items that are visible in the
+viewport, plus a few around it, instead of the whole list. The number of DOM
+nodes stays constant whatever the size of the data, which fixes slow first
+render, slow updates and high memory use. Current libraries: **TanStack
+Virtual** (a headless hook), **react-window** and **React Virtuoso** (ready
+components). `react-virtualized` is no longer maintained.
 
-Data virtualization is an approach for improving the performance of applications
-in those cases. It typically uses a technique called "windowing" or "viewport
-rendering". Instead of rendering the entire list/grid at once, only a small
-subset (or "viewport") of items is rendered based on the current scroll position
-or viewport size.
+Applies to: TanStack Virtual 3.
 
-`react-virtualized` is a feature-rich library, providing a variety of components
-and utilities for virtualizing large lists, tables, and grids.
+## Details
+
+### How It Works
+
+- The scroll container has a fixed height and `overflow: auto`.
+- An inner element has the **full height** of the list, so the scrollbar is
+  real.
+- Only the visible items are rendered, absolutely positioned at their offsets.
+- On scroll the library recalculates which indexes are visible.
+- **Overscan** is a few extra items above and below, so fast scrolling does not
+  show blank space.
+- Item size is either fixed, or estimated first and then measured (dynamic
+  heights).
+
+### When to Use
+
+- Thousands of rows, or hundreds of heavy ones.
+- For a few hundred simple items it is usually unnecessary.
+- First check whether pagination or "load more" solves the problem.
+
+### Trade-offs
+
+- The browser's find-in-page does not see items that are not rendered.
+- Screen readers see only the rendered part: the total needs `aria-rowcount` or
+  `aria-setsize`.
+- Dynamic heights can make the scroll position jump.
+- Scroll restoration and "scroll to item" need the library API.
+
+### Alternatives
+
+- Pagination or infinite scroll (often combined with virtualization).
+- CSS `content-visibility: auto`: the nodes stay in the DOM, but the browser
+  skips layout and paint for the off-screen ones.
+
+## Example
 
 ```jsx
-import React from 'react';
-import { List } from 'react-virtualized';
+import { useRef } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
-const rowRenderer = ({ index, key, style }) => (
-  <div key={key} style={style}>
-    Row {index}
-  </div>
-);
+export default function VirtualList({ items }) {
+  const parentRef = useRef(null);
 
-const App = () => (
-  <List
-    width={300}
-    height={150}
-    rowCount={1000}
-    rowHeight={35}
-    rowRenderer={rowRenderer}
-  />
-);
+  const virtualizer = useVirtualizer({
+    count: items.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 35,
+    overscan: 5,
+  });
 
-export default App;
+  return (
+    <div ref={parentRef} style={{ height: 400, overflow: 'auto' }}>
+      <div style={{ height: virtualizer.getTotalSize(), position: 'relative' }}>
+        {virtualizer.getVirtualItems().map((virtualItem) => (
+          <div
+            key={virtualItem.key}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: virtualItem.size,
+              transform: `translateY(${virtualItem.start}px)`,
+            }}
+          >
+            {items[virtualItem.index]}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 ```
+
+## See Also
+
+- [Optimization of React Components](./optimization.md)
+- [TanStack Virtual](https://tanstack.com/virtual/latest)

@@ -1,134 +1,86 @@
 ---
 sidebar_position: 6
+description: createPortal, event bubbling through portals, modal accessibility
 ---
 
 # Portals
 
-Portals provide a way to render children into a DOM node that exists outside the
-hierarchy of the parent component. They are useful for cases where you need to
-break out of the typical parent-child containment in the component tree.
+A **portal** renders children into a different DOM node:
+`createPortal(children, domNode)`. In the React tree they stay where they were,
+so **context** and **event bubbling** follow the React tree, not the DOM.
+Portals are used for modals, tooltips and dropdowns that must escape the
+parent's `overflow: hidden` or stacking context.
 
-Portals are particularly handy in scenarios such as:
+## Details
 
-- **Modals or dialogs** that should overlay other elements but not be
-  constrained by parent styles.
-- **Tooltips** that need to appear outside the parent container without being
-  clipped.
-- **Dropdowns or menus** to avoid clipping issues and better control the
-  positioning.
+- `createPortal` is imported from `react-dom` and is returned from a component
+  like any JSX.
+- **Events bubble through the React tree.** A click inside a portal reaches
+  `onClick` of its React parent, although that parent is not its DOM ancestor.
+  To prevent it, stop the propagation inside the portal.
+- **Context** from the React parents is available inside a portal.
+- **CSS** follows the DOM: styles are inherited from the target node, not from
+  the React parent.
+- On the server there is no `document`. A portal is rendered only on the client,
+  after mount.
 
-## Creating
+### Accessibility of Modals
 
-To create a portal in React, you use the `ReactDOM.createPortal` function and
-pass children nodes as the first argument and an HTML element as the second.
+A portal moves only the DOM nodes. A modal also needs:
 
-`ReactDOM.createPortal(child, container);`
+- `role="dialog"`, `aria-modal="true"` and a label;
+- focus moved into the modal on open, kept inside while it is open and returned
+  to the trigger on close;
+- closing on `Escape`.
 
-Below is a simple example of how to use a portal to render a modal:
+The native **`<dialog>`** element with `showModal()` does all of this and
+renders in the browser's top layer, so a portal is often unnecessary.
+
+## Example
+
+The modal is rendered into `#modal-root`, but a click inside it still bubbles to
+the `onClick` of `App`:
 
 ```jsx
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 
-// Modal component using a portal
-const Modal = ({ children }) => {
-  return createPortal(children, document.getElementById('modal-root'));
-};
-
-// Main App component
-const App = () => {
-  const [isModalActive, setIsModalActive] = useState(false);
-
-  const handleShow = () => {
-    setIsModalActive(true);
-  };
-
-  const handleHide = () => {
-    setIsModalActive(false);
-  };
-
-  return (
-    <div>
-      <button onClick={handleShow}>Show Modal</button>
-      {isModalActive && (
-        <Modal>
-          <div className="modal">
-            <p>This is a modal!</p>
-            <button onClick={handleHide}>Close Modal</button>
-          </div>
-        </Modal>
-      )}
-    </div>
+function Modal({ children }) {
+  return createPortal(
+    <div role="dialog" aria-modal="true" aria-label="Example">
+      {children}
+    </div>,
+    document.getElementById('modal-root')
   );
-};
-```
+}
 
-:::tip
-
-Portals allow you to render components outside their parent hierarchy, which can
-be useful for various UI elements.
-
-These elements are not affected by the parent component's overflow or other
-styles.
-
-:::
-
-## Event Bubbling
-
-In a typical React component tree, events bubble up from the target element to
-the root. When using portals, the child component is rendered outside its parent
-component in the DOM, but React maintains the connection in the React component
-tree.
-
-Events originating from elements inside a portal will propagate to ancestors in
-the React tree as if the portal content were a direct child of those ancestors.
-
-```jsx
-import { useState } from 'react';
-import { createPortal } from 'react-dom';
-
-// Modal component using a portal
-const Modal = ({ children }) => {
-  return createPortal(children, document.getElementById('modal-root'));
-};
-
-// Main App component
-const App = () => {
-  const [isModalActive, setIsModalActive] = useState(false);
-
-  const handleShow = () => {
-    setIsModalActive(true);
-  };
-
-  const handleHide = () => {
-    setIsModalActive(false);
-  };
-
-  // Event handler for clicks on the main container
-  // highlight-start
-  const handleClick = (event) => {
-    console.log('Event bubbled to App component');
-  };
-  // highlight-end
+export default function App() {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     // highlight-next-line
-    <div onClick={handleClick}>
-      <button onClick={handleShow}>Show Modal</button>
-      {isModalActive && (
+    <div onClick={() => console.log('Bubbled to App')}>
+      <button onClick={() => setIsOpen(true)}>Show modal</button>
+      {isOpen && (
         <Modal>
-          <div className="modal">
-            <p>This is a modal!</p>
-            <button onClick={handleHide}>Close Modal</button>
-          </div>
+          <p>This is a modal</p>
+          <button onClick={() => setIsOpen(false)}>Close</button>
         </Modal>
       )}
     </div>
   );
-};
+}
 ```
 
-Despite the modal being outside the DOM hierarchy of the `App` component, the
-click event bubbles up to the `App` component. Clicking on the button will close
-the modal and log `Event bubbled to App component`, demonstrating that event
-bubbling works across the portal boundary.
+## Follow-up Questions
+
+- Why not render the modal in place? A parent with `overflow: hidden`,
+  `transform` or its own stacking context clips it or limits its `z-index`.
+- Does a portal break context or event handling? No, both follow the React tree.
+- Where is the content in the DOM? In the target node, usually a sibling of the
+  app root in `<body>`.
+
+## See Also
+
+- [React in the Browser](./react-in-browser.md)
+- [`createPortal` reference](https://react.dev/reference/react-dom/createPortal)

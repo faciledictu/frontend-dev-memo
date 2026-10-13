@@ -1,133 +1,102 @@
 ---
 sidebar_position: 3
+description:
+  Passing data and callbacks, default values, children, typing and prop drilling
 ---
 
 # Props
 
-Props (short for properties) are used to pass data from a parent component to a
-child component. This makes components reusable and helps maintain a clear data
-flow in your application.
+**Props** are the arguments of a component: the parent passes data and callbacks
+to the child. Props are **read-only**. Data flows **one way**: down through
+props, and back up through callback props. To change what a child shows, the
+parent re-renders and passes new props.
 
-```jsx
-function Greeting(props) {
-  return <h1>Hello, {props.name}!</h1>;
-}
+Applies to: React 19.
 
-// Usage
-<Greeting name="Alice" />;
-```
+## Details
 
-Props are read-only, meaning a child component cannot modify the props it
-receives. This immutability ensures that data flows in one direction (from
-parent to child), which simplifies understanding how data changes in the
-application. If child components could modify props, it would be harder to track
-the state and data flow.
+- **Any value** can be a prop: primitives, objects, functions, JSX elements.
+- **`children`** is the content between the opening and the closing tag. It is
+  the main tool of composition: `<Card><Avatar /></Card>`.
+- **Default values** are set in destructuring: `{ size = 'm' }`. The default is
+  used for a missing prop and for `undefined`, but not for `null`.
+- **`defaultProps`** on function components was removed in React 19 (it still
+  works for classes).
+- **Spread** passes an object as props: `<Button {...props} />`. Rest syntax
+  collects the remaining ones: `{ variant, ...rest }`.
+- **`key`** is not a prop: the component can't read it. **`ref`** is a regular
+  prop of function components since React 19, see
+  [Refs](../hooks/refs.md#ref-as-a-prop).
 
-## Default Props
+### Typing
 
-You can define default values for your props if they are not provided by the
-parent component by using the `defaultProps` property.
+- Props are typed with **TypeScript**: a `type` or an `interface` for the props
+  object.
+- The **`prop-types`** package checked props at runtime in development. React 19
+  ignores `propTypes` silently, so it remains only in legacy code.
 
-```jsx
-function Greeting(props) {
-  return <h1>Hello, {props.name}!</h1>;
-}
+### Reverse Data Flow
 
-Greeting.defaultProps = {
-  name: 'Guest',
-};
+A child can't change its props. To report something, it calls a function that
+the parent passed down, and the parent updates its own state. Moving state to
+the closest common parent is called
+[lifting state up](./state.md#where-state-lives).
 
-// Usage
-<Greeting />;
-```
+### Prop Drilling
 
-## Prop Typing
+**Prop drilling** is passing a prop through components that don't use it only to
+reach a deep child. Ways to avoid it:
 
-There are two ways to specify the expected types for the props a component
-receives. This helps with type checking and ensures that the component is used
-correctly.
+- composition: pass a ready element (`children` or another prop) instead of the
+  data for it;
+- [context](../hooks/context.md);
+- a store such as [Redux](../ecosystem/redux.md).
 
-### Runtime Typing
-
-For runtime typing, React provides a library called `prop-types` to define these
-types.
-
-```jsx
-import PropTypes from 'prop-types';
-
-function Greeting(props) {
-  return <h1>Hello, {props.name}!</h1>;
-}
-
-Greeting.propTypes = {
-  name: PropTypes.string.isRequired,
-};
-
-// Usage
-<Greeting name="Alice" />;
-```
-
-It helps catch errors during development by providing warnings in the console if
-a prop doesn’t match the expected type. However, these checks happen at runtime,
-which means they can’t prevent type errors during the build process or offer
-full guarantees.
-
-## Static Type Checkers
-
-Flow and TypeScript are static type checkers that help catch errors during the
-development process, before the code runs.
-
-:::info
-
-TypeScript's tooling is often considered more mature and better integrated with
-modern development environments. While Flow is purely a type checker, TypeScript
-is a superset of JavaScript and includes its own language features. TypeScript
-has a larger community and broader support.
-
-:::
-
-TypeScript typing:
+## Example
 
 ```tsx
-type GreetingProps = {
-  name: string;
+import { useState, type ReactNode } from 'react';
+
+type ButtonProps = {
+  children: ReactNode;
+  variant?: 'primary' | 'secondary';
+  onClick: () => void;
 };
 
-function Greeting({ name }: GreetingProps) {
-  return <h1>Hello, {name}!</h1>;
+function Button({ children, variant = 'primary', onClick }: ButtonProps) {
+  return (
+    <button className={variant} onClick={onClick}>
+      {children}
+    </button>
+  );
 }
 
-// Usage
-<Greeting name="Alice" />;
-```
+export default function Counter() {
+  const [count, setCount] = useState(0);
 
-## Reverse Data Flow
-
-There are scenarios where child components need to communicate changes back to
-their parent components. This is typically done using callback functions passed
-via props.
-
-1. Create a function in the parent component that will handle the data or event.
-2. Pass the callback function to the child component as a prop.
-3. In the child component, invoke the callback function (e.g., in response to
-   user input or other events).
-
-```jsx
-function ParentComponent() {
-  const [data, setData] = React.useState('');
-
-  const handleDataChange = (newData) => {
-    setData(newData);
-  };
-
-  return <ChildComponent onDataChange={handleDataChange} />;
-}
-
-function ChildComponent({ onDataChange }) {
-  const handleInputChange = (event) => {
-    onDataChange(event.target.value);
-  };
-
-  return <input type="text" onChange={handleInputChange} />;
+  // Data goes down as props, the event comes back through a callback
+  return (
+    <Button onClick={() => setCount(count + 1)}>Clicked {count} times</Button>
+  );
 }
 ```
+
+## Follow-up Questions
+
+- What is the difference between props and state? Props come from the parent and
+  are read-only; [state](./state.md) is owned and changed by the component
+  itself.
+- Why are props read-only? With one-way data flow there is a single owner of
+  every value, so it is clear where a change comes from.
+- Does a component re-render when its props change? It re-renders when its
+  parent re-renders, whether or not the props changed. Comparing props is an
+  optimization: [`memo`](../performance/optimization.md#memoization).
+
+## Common Mistakes
+
+- Mutating a prop: `props.items.push(item)` changes the parent's data without a
+  re-render.
+- Copying a prop into state (`useState(props.value)`): the state does not follow
+  later changes of the prop.
+- Relying on `defaultProps` or `propTypes` in function components on React 19.
+- Passing a new object or function to a memoized child on every render.

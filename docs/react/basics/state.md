@@ -1,219 +1,159 @@
 ---
 sidebar_position: 4
+description:
+  useState and useReducer, state as a snapshot, batching, immutable updates
 ---
 
 # State
 
-In React, state refers to a built-in object that stores property values that
-belong to a component. When the state object changes, the component re-renders.
+**State** is data that a component remembers between renders. Calling the setter
+does not change the variable: it **schedules a re-render** with the new value,
+and every render sees its own **snapshot** of the state. Updates made in one
+event handler are **batched** into one re-render. State is treated as
+**immutable**: objects and arrays are replaced, not mutated.
 
-## Working with State in Class Components
+## Details
 
-In class components, the state is typically initialized in the constructor
-method as the `state` property and updated using the `this.setState` method.
+### `useState`
 
-```jsx
-class MyComponent extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      count: 0,
-    };
-  }
-
-  handleIncrement = () => {
-    this.setState((prevState) => ({ count: prevState.count + 1 }));
-  };
-
-  render() {
-    return (
-      <div>
-        <button onClick={this.handleIncrement}>+ 1</button>
-        <p>Count: {this.state.count}</p>
-      </div>
-    );
-  }
-}
-```
-
-## `useState`
-
-In functional components, the state should be initialized with the `useState()`
-hook. It returns a variable containing the state and a function to update it.
-
-The setter function schedules an update to the component’s state and tells React
-that this component and its children need to be re-rendered with the updated
-state.
-
-```jsx
-const [count, setCount] = useState(0);
-
-const increment = () => {
-  setCount(count + 1);
-};
-
-return (
-  <div>
-    <button onClick={increment}>+ 1</button>
-    <p>Count: {count}</p>
-  </div>
-);
-```
-
-## Asynchronous Nature of Setting State
-
-The `setState` function is asynchronous to optimize performance and ensure that
-the UI is updated efficiently. When you call `setState`, React batches multiple
-state updates and re-renders the component once, rather than re-rendering after
-each individual state update.
-
-```javascript
-const [count, setCount] = useState(0);
-setCount(count + 1);
-console.log(count); // Will return the old state value
-```
-
-React batches state updates for performance optimization. When multiple
-`setState` calls are made, React groups them together and performs a single
-re-render at the end of the event loop, rather than after each individual state
-update.
-
-```jsx
-const [count, setCount] = useState(0);
-
-const increment = () => {
-  setCount(count + 1);
-  setCount(count + 1);
-  setCount(count + 1);
-  // After all 3 setCount calls, count is incremented only by 1 because each time setCount
-  // receives the old count value. Think about the count value as a closure:
-  //   setCount(0 + 1);
-  //   setCount(0 + 1);
-  //   setCount(0 + 1);
-};
-
-return (
-  <div>
-    <button onClick={increment}>+ 3</button>
-    <p>Count: {count}</p>
-  </div>
-);
-```
-
-### Functional Updates
-
-To avoid this, the setter function can accept an updater function. This function
-receives the previous state as an argument and returns the new state.
-
-```javascript
-const increment = () => {
-  setCount((prevCount) => prevCount + 1);
-  setCount((prevCount) => prevCount + 1);
-  setCount((prevCount) => prevCount + 1);
-  // After all 3 setCount calls, count is incremented by 3
-};
-```
+- `const [value, setValue] = useState(initialValue)`.
+- **Snapshot.** Inside one render the state variable never changes. Reading it
+  right after `setValue` gives the old value.
+- **Updater function.** `setCount((c) => c + 1)` receives the latest pending
+  state. Use it when the next state depends on the previous one.
+- **Bailout.** If the new value is the same (`Object.is`), React skips the
+  re-render.
+- **Lazy initialization.** `useState(() => createInitialState())` calls the
+  function only on the first render; `useState(createInitialState())` calls it
+  on every render and throws the result away.
+- State belongs to a position in the tree. A different
+  [`key`](./rendering.md#diffing-heuristics) resets it.
 
 ### Batching
 
-React groups multiple state updates into a single re-render for optimization
-purposes.
+- React processes state updates after the event handler finishes, so several
+  setters cause **one** re-render.
+- Since React 18 batching is **automatic** everywhere: in promises, timeouts and
+  native event handlers too. Before, it worked only in React event handlers.
+- [`flushSync`](./react-in-browser.md#flushsync) opts out.
 
-When several state updates are triggered in a React component, React batches
-them together. Instead of re-rendering the component after each individual state
-update, React processes all updates in a batch and performs a single re-render.
+### Immutable Updates
 
-It works in React event handlers as well. The click on the button will trigger
-only one re-render, not 3.
+React compares state by reference. A mutated object is the same reference, so
+there is no re-render.
+
+| Operation              | How                                                   |
+| ---------------------- | ----------------------------------------------------- |
+| Add to an array        | `[...items, item]`                                    |
+| Remove from an array   | `items.filter((item) => item.id !== id)`              |
+| Replace an array item  | `items.map((item) => (item.id === id ? next : item))` |
+| Update an object field | `{ ...user, name }`                                   |
+| Update a nested field  | `{ ...user, address: { ...user.address, city } }`     |
+
+### Where State Lives
+
+- **Lifting state up.** When two components need the same data, the state moves
+  to their closest common parent and comes down through props.
+- **Derived state.** What can be computed from props or other state is not
+  stored: it is computed during render (`const total = price * count`), with
+  `useMemo` if the computation is expensive.
+- Data that does not affect rendering (a timer ID) belongs in a
+  [ref](../hooks/refs.md).
+
+### `useReducer`
+
+- `const [state, dispatch] = useReducer(reducer, initialState)`.
+- The **reducer** is a pure function `(state, action) => newState`. An action is
+  conventionally an object with a `type` field.
+- Prefer it to `useState` when there are several related fields, when many
+  handlers update the state in similar ways, or when the logic should be tested
+  outside of the component.
+
+## Example
+
+A snapshot and an updater function:
 
 ```jsx
-const [count, setCount] = useState(0);
+import { useState } from 'react';
 
-const increment = () => {
-  setCount((prevCount) => prevCount + 1);
-  setCount((prevCount) => prevCount + 1);
-  setCount((prevCount) => prevCount + 1);
-};
+export default function Counter() {
+  const [count, setCount] = useState(0);
 
-return (
-  <div>
-    <button onClick={increment}>+ 3</button>
-    <p>Count: {count}</p>
-  </div>
-);
+  const addOne = () => {
+    // `count` is 0 in this render, so this is setCount(1) three times
+    setCount(count + 1);
+    setCount(count + 1);
+    setCount(count + 1);
+    console.log(count); // 0
+  };
+
+  const addThree = () => {
+    // Each updater receives the result of the previous one
+    setCount((c) => c + 1);
+    setCount((c) => c + 1);
+    setCount((c) => c + 1);
+  };
+
+  return (
+    <>
+      <p>Count: {count}</p>
+      <button onClick={addOne}>+ 1</button>
+      <button onClick={addThree}>+ 3</button>
+    </>
+  );
+}
 ```
 
-:::info[Automatic Batching]
+The same counter with `useReducer`:
 
-In earlier versions of React, when `setState` is called inside an asynchronous
-function (promises, `setTimeout`, native event handlers), each call will trigger
-a separate re-render.
+```jsx
+import { useReducer } from 'react';
 
-With the _Automatic Batching_ feature of React 18, batching extends to
-asynchronous functions, making it more comprehensive.
-
-:::
-
-## `useReducer`
-
-The `useReducer` hook is a built-in React hook that provides an alternative to
-`useState` for managing state in functional components.
-
-:::note[When to Use]
-
-By using `useReducer`, you can manage state in a more declarative and
-predictable manner.
-
-It can be useful when:
-
-- you have complex state logic that involves multiple sub-values,
-- the next state depends on the previous one,
-- multiple actions lead to the same state update.
-
-:::
-
-You start by defining a reducer function. This function takes the current state
-and an action as arguments and returns a new state based on the action.
-
-```javascript
-const reducer = (state, action) => {
+function reducer(state, action) {
   switch (action.type) {
-    case 'increment':
-      return { ...state, count: state.count + 1 };
-    case 'decrement':
-      return { ...state, count: state.count - 1 };
+    case 'incremented':
+      return { ...state, count: state.count + action.step };
+    case 'reset':
+      return { ...state, count: 0 };
     default:
-      throw new Error();
+      throw new Error(`Unknown action: ${action.type}`);
   }
-};
+}
+
+export default function Counter() {
+  const [state, dispatch] = useReducer(reducer, { count: 0 });
+
+  return (
+    <>
+      <p>Count: {state.count}</p>
+      <button onClick={() => dispatch({ type: 'incremented', step: 1 })}>
+        + 1
+      </button>
+      <button onClick={() => dispatch({ type: 'reset' })}>Reset</button>
+    </>
+  );
+}
 ```
 
-You also need to define an initial state. This can be a single value, an object,
-or an array.
+## Follow-up Questions
 
-```javascript
-const initialState = { count: 0 };
-```
+- Is `setState` asynchronous? It returns nothing and can't be awaited. The
+  update is queued and applied on the next render; the current render keeps its
+  snapshot.
+- How to reset the state of a component? Render it with a different `key`.
+- `useState` or `useReducer`? They are equivalent in power. A reducer keeps the
+  update logic in one place and makes it testable.
+- State or ref? State when the value is shown in the UI; a ref when it is not.
 
-You use the `useReducer` hook, passing in your reducer function and initial
-state. It returns an array containing the current state and a `dispatch`
-function.
+## Common Mistakes
 
-```javascript
-const [state, dispatch] = useReducer(reducer, initialState);
-```
+- Mutating state: `user.name = 'Bob'; setUser(user)` does not re-render.
+- Reading the state right after the setter and expecting the new value.
+- Storing derived data in state and synchronizing it in an effect.
+- Copying props into state.
+- `useState(expensiveFunction())` instead of `useState(expensiveFunction)`.
 
-To update the state, you call the `dispatch` function with an `action` argument
-that describes what should happen.
+## See Also
 
-```javascript
-dispatch({ type: 'increment' });
-```
-
-:::tip
-
-Conventionally, the `action` argument is an object that has a `type` property
-that indicates the type of action and can have additional data as needed.
-
-:::
+- [Redux](../ecosystem/redux.md)
+- [Class Components](./class-components.md) — `this.state` and `this.setState`.
