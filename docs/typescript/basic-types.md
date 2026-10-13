@@ -16,12 +16,12 @@ and erased from the output. The basic set:
 
 The most common question is the difference between the special types:
 
-| Type      | What can be assigned to it | What you can do with it                       |
-| --------- | -------------------------- | --------------------------------------------- |
-| `any`     | anything                   | anything, checks are off                      |
-| `unknown` | anything                   | nothing until it is narrowed                  |
-| `never`   | nothing                    | it never has a value                          |
-| `void`    | `undefined`                | the result of a function that returns nothing |
+| Type      | What can be assigned to it | What you can do with it                |
+| --------- | -------------------------- | -------------------------------------- |
+| `any`     | anything                   | anything, checks are off               |
+| `unknown` | anything                   | nothing until it is narrowed           |
+| `never`   | nothing                    | nothing: it never has a value          |
+| `void`    | `undefined`                | nothing: the function returns no value |
 
 ## Primitives
 
@@ -133,8 +133,9 @@ const x: [string, number] = ['hello', 10];
 
 ## Union types
 
-A union type allows a value to be one of several types. Before using it, the
-type has to be narrowed, for example with `typeof`.
+A union type allows a value to be one of several types. To use something that
+only one of the variants has, the type has to be narrowed first, for example
+with `typeof`.
 
 ```typescript
 let value: number | string;

@@ -34,10 +34,12 @@ DOM element). For external data, prefer **type guards** or validation.
 
 ### Type Guards Instead of Assertions
 
-Narrowing is checked by the compiler and by the runtime:
+A type guard performs a real runtime check, and the compiler narrows the type
+from it:
 
 - `typeof value === 'string'`, `value instanceof Date`, `'id' in value`;
-- a custom guard: a function that returns `value is Type`;
+- a custom guard: a function that returns `value is Type` (the compiler trusts
+  its body);
 - a schema validator such as Zod for API responses.
 
 ## Example

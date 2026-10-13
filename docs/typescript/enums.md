@@ -17,17 +17,19 @@ Applies to: TypeScript 5.8+ (for `erasableSyntaxOnly`).
 ### Kinds of Enums
 
 - **Numeric.** Members are numbered from `0` or from the given initializer. They
-  have a **reverse mapping** from value to name. Any value of type `number` can
-  be assigned to a numeric enum, so they are less type-safe.
+  have a **reverse mapping** from value to name. Any expression of type `number`
+  can be assigned to a numeric enum, so they are less type-safe. Only a literal
+  that is not a member value (`99`) is rejected.
 - **String.** Every member needs an initializer. There is no reverse mapping. A
   plain string is not assignable: you have to write `Status.Active`.
 - **`const enum`.** Has no object at runtime: the compiler inlines the values
-  where they are used. Tools that compile one file at a time (Babel, esbuild,
-  SWC) can't inline a `const enum` declared in another file.
+  where they are used. Tools that compile one file at a time (Babel, SWC,
+  `isolatedModules`) can't inline a `const enum` declared in another file.
 
 ### Why Enums Are Avoided
 
-- They generate runtime code, while the rest of TypeScript is only types.
+- They generate runtime code, while almost all the rest of TypeScript is only
+  types.
 - They can't be removed by "type stripping", which is how Node.js runs
   TypeScript files directly. With `erasableSyntaxOnly` enabled an enum is a
   compile error.
@@ -58,7 +60,7 @@ enum Status {
   Blocked = 'BLOCKED',
 }
 
-const status: Status = Status.Active;
+const current: Status = Status.Active;
 // const other: Status = 'ACTIVE';
 // Error: Type '"ACTIVE"' is not assignable to type 'Status'.
 ```
