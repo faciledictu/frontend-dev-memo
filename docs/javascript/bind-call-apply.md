@@ -39,6 +39,6 @@ function showThisAndArgs(...args) {
   console.log(this, ...args);
 }
 
-showThisAndArgs.call({}, ['a', 'b']); // {} a b
-showThisAndArgs.apply({}, 'a', 'b'); // {} a b
+showThisAndArgs.call({}, 'a', 'b'); // {} a b
+showThisAndArgs.apply({}, ['a', 'b']); // {} a b
 ```
