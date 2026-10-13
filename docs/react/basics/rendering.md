@@ -21,8 +21,8 @@ touched.
    and compares the result with the previous tree. Nothing is changed in the
    DOM. This work can be paused or thrown away.
 3. **Commit phase**: React applies the DOM changes, sets refs and runs layout
-   effects, all in one synchronous pass. After the browser paints, `useEffect`
-   callbacks run.
+   effects, all in one synchronous pass. `useEffect` callbacks run later,
+   usually after the browser paints.
 
 A component re-renders when:
 
@@ -36,8 +36,8 @@ A component re-renders when:
 - It is the tree of React elements: plain JavaScript objects that describe the
   UI.
 - "The DOM is slow, the virtual DOM is fast" is a myth. A DOM operation is
-  cheap; what costs is unnecessary layout and paint, and keeping the DOM in sync
-  with the state by hand.
+  cheap; what is expensive is unnecessary layout and paint, and keeping the DOM
+  in sync with the state by hand.
 - What it gives: the UI is written as a function of state, and React works out
   the DOM updates. It also makes other renderers possible (React Native).
 - It is not free: diffing takes time. Svelte and Solid work without a virtual
@@ -58,9 +58,10 @@ Consequences:
 
 - The same type at the same position keeps the DOM node and the component state;
   only the changed attributes and props are updated.
-- An index as a `key` breaks when the list is reordered, filtered or prepended:
-  state and DOM (input values, focus) stay with the position, not with the item.
-  A key must be stable and unique among siblings, such as an ID from the data.
+- An index as a `key` breaks when the list is reordered, filtered or prepended
+  to: state and DOM (input values, focus) stay with the position, not with the
+  item. A key must be stable and unique among siblings, such as an ID from the
+  data.
 - Changing the `key` on purpose resets a component.
 - Trees are compared level by level: a subtree moved to another parent is
   recreated.
@@ -144,11 +145,10 @@ export default function Form() {
 - "The virtual DOM is faster than the real DOM."
 - "A component re-renders when its props change": it re-renders when the parent
   does.
-- Defining a component inside another component: a new type on every render, so
-  the subtree is remounted.
+
 - `key={Math.random()}` or `key={index}` for a dynamic list.
 
 ## See Also
 
-- [Optimization of React Components](../performance/optimization.md)
+- [Optimizing React Components](../performance/optimization.md)
 - [React Fiber Architecture](https://github.com/acdlite/react-fiber-architecture)

@@ -5,7 +5,7 @@ description:
   Compiler
 ---
 
-# Optimization of React Components
+# Optimizing React Components
 
 React is fast by default, and a re-render is usually cheap. Optimization starts
 with **measuring** (the Profiler) and goes in this order: fix the **structure**
@@ -67,8 +67,8 @@ Applies to: React 19, React Compiler 1.0.
 - **React DevTools Profiler**: which components rendered, how long it took and
   why.
 - The browser's Performance panel for everything outside React.
-- Always measure a **production build**: development mode is several times
-  slower.
+- Measure a **production build** (a profiling build for the React Profiler):
+  development mode is several times slower.
 
 ### Doing Less Work
 

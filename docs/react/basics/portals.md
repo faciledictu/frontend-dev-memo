@@ -33,8 +33,8 @@ A portal moves only the DOM nodes. A modal also needs:
   to the trigger on close;
 - closing on `Escape`.
 
-The native **`<dialog>`** element with `showModal()` does all of this and
-renders in the browser's top layer, so a portal is often unnecessary.
+The native **`<dialog>`** element with `showModal()` does all of this except the
+label and renders in the browser's top layer, so a portal is often unnecessary.
 
 ## Example
 

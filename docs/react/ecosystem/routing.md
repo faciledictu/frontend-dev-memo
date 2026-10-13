@@ -12,20 +12,20 @@ without a page reload. Routes are **nested**: a parent route renders the layout
 and an **`<Outlet />`**, where the matched child route appears. There are three
 ways to use it: **declarative** (`<BrowserRouter>` with `<Routes>`), **data**
 (`createBrowserRouter` with loaders and actions) and **framework** (a Vite
-plugin with file-based routes and SSR, the successor of Remix).
+plugin with route modules and SSR, the successor of Remix).
 
-Applies to: React Router 8. In v7 the API is the same; in v6 everything is
-imported from `react-router-dom`, which no longer exists in v8.
+Applies to: React Router 8. In v7 the API is almost the same; in v6 everything
+is imported from `react-router-dom`, which no longer exists in v8.
 
 ## Details
 
 ### Modes
 
-| Mode        | Setup                                      | Adds                                                             |
-| ----------- | ------------------------------------------ | ---------------------------------------------------------------- |
-| Declarative | `<BrowserRouter>`, `<Routes>`, `<Route>`   | URL matching, navigation, nested layouts                         |
-| Data        | `createBrowserRouter` + `<RouterProvider>` | `loader`, `action`, pending and error UI, lazy routes, `fetcher` |
-| Framework   | `@react-router/dev` Vite plugin            | File-based route modules, SSR, code splitting, typed routes      |
+| Mode        | Setup                                      | Adds                                                                   |
+| ----------- | ------------------------------------------ | ---------------------------------------------------------------------- |
+| Declarative | `<BrowserRouter>`, `<Routes>`, `<Route>`   | URL matching, navigation, nested layouts                               |
+| Data        | `createBrowserRouter` + `<RouterProvider>` | `loader`, `action`, pending and error UI, lazy routes, `fetcher`       |
+| Framework   | `@react-router/dev` Vite plugin            | Route modules listed in `routes.ts`, SSR, code splitting, typed routes |
 
 ### Building Blocks
 
@@ -72,11 +72,13 @@ there is no `exact` prop and the order of `<Route>` elements does not matter.
 
 - Declarative mode: a layout route that checks the user and renders either
   `<Outlet />` or `<Navigate to="/login" replace />`.
-- Data mode: check in a `loader` (or route middleware) and `throw redirect()`.
-  The protected component and its data are never requested.
+- Data mode: `throw redirect()` from route **middleware** on the protected
+  branch: it runs before any loader. A check in a parent `loader` does not stop
+  the child loaders, because they run in parallel.
 - Either way it is only UX: the real check is on the server.
 
-### Routers
+<details>
+<summary>Routers</summary>
 
 | Router          | URL is stored in                  | Use case                                             |
 | --------------- | --------------------------------- | ---------------------------------------------------- |
@@ -87,6 +89,8 @@ there is no `exact` prop and the order of `<Route>` elements does not matter.
 
 The data-mode counterparts are `createBrowserRouter`, `createHashRouter`,
 `createMemoryRouter` and `createStaticRouter`.
+
+</details>
 
 <details>
 <summary>What changed since v5</summary>
@@ -179,7 +183,7 @@ loaded lazily.
 import { createBrowserRouter, redirect, useLoaderData } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 import { getUser } from './auth';
-import { ErrorPage, Layout } from './pages';
+import { ErrorPage, Layout, Login } from './pages';
 
 async function userLoader({ params }) {
   if (!getUser()) {
@@ -205,6 +209,7 @@ const router = createBrowserRouter([
     Component: Layout,
     ErrorBoundary: ErrorPage,
     children: [
+      { path: 'login', Component: Login },
       { path: 'users/:userId', loader: userLoader, Component: User },
       // The module exports `Component` and, optionally, `loader`
       { path: 'reports', lazy: () => import('./reports') },

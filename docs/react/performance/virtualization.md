@@ -41,6 +41,8 @@ Applies to: TanStack Virtual 3.
   `aria-setsize`.
 - Dynamic heights can make the scroll position jump.
 - Scroll restoration and "scroll to item" need the library API.
+- [React Compiler](./optimization.md#react-compiler) skips components that call
+  `useVirtualizer`: the hook returns functions that can't be memoized safely.
 
 ### Alternatives
 
@@ -90,5 +92,5 @@ export default function VirtualList({ items }) {
 
 ## See Also
 
-- [Optimization of React Components](./optimization.md)
+- [Optimizing React Components](./optimization.md)
 - [TanStack Virtual](https://tanstack.com/virtual/latest)

@@ -8,12 +8,12 @@ import TabItem from '@theme/TabItem';
 
 # Hooks
 
-**Hooks** are functions whose names start with `use`. They give function
-components access to React features: state, effects, context, refs. There are
-two rules: call hooks only **at the top level** (not in conditions, loops,
-nested functions or after an early return) and only **from React functions**
-(components and custom hooks). The reason is that React matches a hook call with
-its stored state by the **order of calls**.
+**Hooks** are functions such as `useState` and `useEffect`; their names start
+with `use`. They give function components access to React features: state,
+effects, context, refs. There are two rules: call hooks only **at the top
+level** (not in conditions, loops, nested functions or after an early return)
+and only **from React functions** (components and custom hooks). The reason is
+that React matches a hook call with its stored state by the **order of calls**.
 
 Applies to: React 19.
 
@@ -136,14 +136,10 @@ export default function ToggleButton() {
   state, lift it up or use context or a store.
 - Can hooks be used in class components? No. A class can be wrapped in a
   function component that calls the hook and passes the result as props.
-- Why should data not be fetched "on a flag" in an effect? A request caused by a
-  click belongs in the event handler; an effect is for what must happen because
-  the component is on screen, see
-  [Side Effects](./side-effects.md#you-might-not-need-an-effect).
 
 ## Common Mistakes
 
 - An early `return` above a hook call.
 - Calling a hook inside a callback, an event handler or `useMemo`.
-- Naming the two rules as "not in conditions" and "not in loops": that is one
+- Giving "not in conditions" and "not in loops" as the two rules: that is one
   rule; the second one is about where hooks can be called from.

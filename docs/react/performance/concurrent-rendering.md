@@ -1,17 +1,16 @@
 ---
 sidebar_position: 3
-description: Transitions, useDeferredValue, Suspense and the use hook
+description: Transitions, useDeferredValue, Suspense and use
 ---
 
 # Concurrent Rendering
 
-**Concurrent rendering** means that React can prepare a new version of the UI in
-the background and **interrupt**, pause, resume or abandon that work. An urgent
-update (typing, a click) is not blocked by a slow one. It is not parallelism:
-everything still runs on one thread, React splits rendering into small chunks
-and yields to the browser between them. It is not a mode either: it works in any
-app created with `createRoot` and is used for updates marked as non-urgent with
-**transitions**, **`useDeferredValue`** and **`Suspense`**.
+**Concurrent rendering** lets React prepare a new version of the UI in the
+background and **interrupt** or abandon that work, so an urgent update (typing,
+a click) is not blocked by a slow one. It is not parallelism: there is one
+thread, and rendering is split into chunks with pauses for the browser. It is
+opt-in per update through **transitions** and **`useDeferredValue`**, and
+**`Suspense`** builds on it.
 
 Applies to: React 19.
 
@@ -57,18 +56,21 @@ Applies to: React 19.
   cache. A promise created during the render of the same component is new on
   every render.
 - A rejected promise is handled by the nearest
-  [Error Boundary](../basics/patterns.md#error-boundaries).
+  [error boundary](../basics/patterns.md#error-boundaries).
 
 ### `useDeferredValue`
 
-- On the first render the deferred value equals the value.
+- On the first render the deferred value equals the value, unless the second
+  argument `initialValue` is passed.
 - On an update React first re-renders with the **old** deferred value (fast,
   urgent), then tries to render with the new one in the background.
 - The background render is interruptible: on the next keystroke React abandons
   it and starts again with the latest value.
 - It does not delay or cancel network requests. It only delays rendering.
-- The slow child must be wrapped in `memo`, otherwise it re-renders with the old
-  value anyway.
+- With `Suspense`: if the render with the new value suspends, React keeps
+  showing the old content instead of the fallback.
+- A slow (not suspending) child must be wrapped in `memo`, otherwise it
+  re-renders with the old value anyway.
 
 ## Example
 
@@ -166,7 +168,8 @@ export default function App() {
   interrupted. It does not reduce the number of network requests.
 - `useTransition` or `useDeferredValue`? `useTransition` wraps the state update
   itself; `useDeferredValue` is for a value you only receive.
-- Why is the commit phase not interruptible? See
+- Why is the commit phase not interruptible? A partially applied update would
+  show an inconsistent UI, see
   [Rendering and Reconciliation](../basics/rendering.md#render-and-commit).
 
 ## Common Mistakes
@@ -179,6 +182,6 @@ export default function App() {
 
 ## See Also
 
-- [Optimization of React Components](./optimization.md)
+- [Optimizing React Components](./optimization.md)
 - [Forms: Actions](../basics/forms.md#actions)
 - [`useDeferredValue` reference](https://react.dev/reference/react/useDeferredValue)

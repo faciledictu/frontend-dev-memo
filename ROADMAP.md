@@ -141,7 +141,7 @@
 - [x] 0. cspell в CI, опечатки и американская орфография по всем разделам.
 - [x] 1. JavaScript.
 - [x] 2. TypeScript (поднят перед React по итогам аудита).
-- [ ] 3. React.
+- [x] 3. React.
 - [ ] 4. Web Platform.
 - [ ] 5. Next.js.
 - [ ] 6. React Native.

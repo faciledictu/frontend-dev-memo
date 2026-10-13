@@ -66,6 +66,9 @@ controls the markup and the order, the state stays hidden.
 - It **does not catch** errors in event handlers, in asynchronous code
   (`setTimeout`, promise callbacks), during server rendering, or in the boundary
   itself. Those are handled with `try` / `catch`.
+- Exception in React 19: an error thrown inside an **Action** (a function passed
+  to `startTransition` or `<form action>`, async ones included) and a promise
+  rejected in `use` do reach the boundary.
 - Without a boundary an error unmounts the whole app.
 - Boundaries are placed around independent parts of the UI: the page, a widget,
   a route.
@@ -200,8 +203,8 @@ const ProtectedSettings = withAuthorization(Settings);
 - Why did hooks replace HOCs and render props? The same logic is shared without
   extra components in the tree and with explicit inputs and outputs.
 - How to handle an error in an event handler? `try` / `catch` and state. To show
-  the boundary's fallback, pass the error to `showBoundary` from the
-  `useErrorBoundary` hook of `react-error-boundary`.
+  the boundary's fallback, run the work in `startTransition` or pass the error
+  to `showBoundary` from the `useErrorBoundary` hook of `react-error-boundary`.
 - Composition or inheritance? Composition: React components are not extended
   from one another.
 

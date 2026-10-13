@@ -54,7 +54,7 @@ a component.
 ### Function and Class Components
 
 Function components with hooks are the standard. Classes are legacy; the only
-thing that still needs one is an
+common thing that still needs one is an
 [error boundary](./patterns.md#error-boundaries). See
 [Class Components](./class-components.md).
 
@@ -103,8 +103,6 @@ export default function Blog({ posts }) {
 - Calling a component as a function (`Button()`) instead of `<Button />`: its
   hooks become hooks of the caller.
 - Mutating props or outer variables during render.
-- `{items.length && <List />}` renders `0`, see
-  [Conditional Rendering](./patterns.md#conditional-rendering).
 
 ## See Also
 

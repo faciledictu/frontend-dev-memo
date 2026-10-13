@@ -21,8 +21,8 @@ event handler are **batched** into one re-render. State is treated as
   right after `setValue` gives the old value.
 - **Updater function.** `setCount((c) => c + 1)` receives the latest pending
   state. Use it when the next state depends on the previous one.
-- **Bailout.** If the new value is the same (`Object.is`), React skips the
-  re-render.
+- **Bailout.** If the new value is the same (`Object.is`), React bails out:
+  children are not re-rendered and effects don't run.
 - **Lazy initialization.** `useState(() => createInitialState())` calls the
   function only on the first render; `useState(createInitialState())` calls it
   on every render and throws the result away.
@@ -150,7 +150,7 @@ export default function Counter() {
 - Mutating state: `user.name = 'Bob'; setUser(user)` does not re-render.
 - Reading the state right after the setter and expecting the new value.
 - Storing derived data in state and synchronizing it in an effect.
-- Copying props into state.
+
 - `useState(expensiveFunction())` instead of `useState(expensiveFunction)`.
 
 ## See Also

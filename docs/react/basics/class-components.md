@@ -9,8 +9,8 @@ description:
 A **class component** is a class that extends `Component` and has a `render()`
 method. State is kept in `this.state` and updated with `this.setState()`, and
 **lifecycle methods** are used instead of hooks. It is a **legacy** API: new
-code uses function components. The only feature that still needs a class is an
-[error boundary](./patterns.md#error-boundaries).
+code uses function components. The only common feature that still needs a class
+is an [error boundary](./patterns.md#error-boundaries).
 
 ## Details
 
@@ -34,14 +34,15 @@ code uses function components. The only feature that still needs a class is an
   `componentWillUnmount` to the **commit phase**, see
   [Rendering](./rendering.md#render-and-commit).
 - `componentWillMount`, `componentWillReceiveProps` and `componentWillUpdate`
-  are deprecated and exist only with the `UNSAFE_` prefix.
+  are deprecated and renamed to `UNSAFE_…`; the old names still work with a
+  warning.
 
 ### Differences from Function Components
 
 - `this.setState` **merges** the object into the state; a `useState` setter
   replaces the value.
-- Handlers lose `this`, so they are declared as arrow class fields or bound in
-  the constructor.
+- Methods passed as handlers lose `this`, so they are declared as arrow class
+  fields or bound in the constructor.
 - `this.props` and `this.state` are mutable and always the latest; a function
   component captures the values of its render.
 - Classes can't use hooks. Logic was shared with

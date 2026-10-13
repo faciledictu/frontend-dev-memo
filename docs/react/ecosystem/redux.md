@@ -61,7 +61,8 @@ Applies to: Redux Toolkit 2, React Redux 9, Reselect 5.
   state shape, and derived data is not stored.
 - `useSelector` compares the result by reference. A selector that returns a new
   array or object (`filter`, `map`, `{ ...}`) causes a re-render after **every**
-  action.
+  action that changes any part of the state. React Redux warns about such
+  selectors in development.
 - `createSelector(inputSelectors, resultFn)` fixes it: `resultFn` runs again
   only when one of the input results changes, otherwise the cached reference is
   returned.

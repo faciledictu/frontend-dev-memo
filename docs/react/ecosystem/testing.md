@@ -41,7 +41,8 @@ and later.
 | `queryBy…` | Returns `null`          | Asserting that an element is **absent** |
 | `findBy…`  | Rejects after a timeout | Elements that appear **asynchronously** |
 
-- Each has an `…AllBy…` version that returns an array.
+- All three throw when more than one element matches. The `…AllBy…` versions
+  return an array.
 - Priority: `getByRole` (with `name`) → `getByLabelText` → `getByText` →
   `getByTestId` as the last resort. A query by role also checks accessibility.
 
@@ -49,8 +50,8 @@ and later.
 
 - `fireEvent.click` dispatches one DOM event.
 - `user.click` reproduces the whole interaction: pointer events, focus, click;
-  `user.type` presses keys one by one. It also refuses to click a disabled or
-  hidden element.
+  `user.type` presses keys one by one. It does not fire `click` on a disabled
+  element and throws on one with `pointer-events: none`.
 - `userEvent` methods are async: `const user = userEvent.setup()` and
   `await user.click(…)`.
 

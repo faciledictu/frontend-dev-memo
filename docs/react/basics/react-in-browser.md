@@ -53,8 +53,8 @@ does nothing in production.
 
 - Calls component functions, state initializers and updater functions **twice**
   to reveal impure rendering.
-- On mount runs an extra **setup → cleanup → setup** cycle for every effect (and
-  ref callback) to reveal a missing cleanup.
+- On mount runs an extra **setup → cleanup → setup** cycle for every effect and
+  ref callback, see [Side Effects](../hooks/side-effects.md#strictmode).
 - Warns about deprecated APIs.
 
 ### `flushSync`

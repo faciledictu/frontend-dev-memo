@@ -36,8 +36,9 @@ Applies to: React 19.
 ### Actions
 
 - `<form action={fn}>`: React calls `fn(formData)` on submit. The function can
-  be async. No `preventDefault` is needed, and uncontrolled fields are reset
-  after a successful submit.
+  be async. No `preventDefault` is needed. Uncontrolled fields are reset when
+  the action finishes without throwing, even if it returns validation errors:
+  return the entered values and pass them to `defaultValue` to keep them.
 - **`useActionState(action, initialState)`** returns
   `[state, formAction, isPending]`. The action receives
   `(previousState, formData)` and returns the next state, for example validation
@@ -116,11 +117,11 @@ async function subscribeAction(previousState, formData) {
   const email = formData.get('email');
 
   if (!email.includes('@')) {
-    return { error: 'Enter a valid email' };
+    return { error: 'Enter a valid email', email };
   }
 
   await subscribe(email);
-  return { error: null };
+  return { error: null, email: '' };
 }
 
 function SubmitButton() {
@@ -132,11 +133,14 @@ function SubmitButton() {
 }
 
 export default function SubscribeForm() {
-  const [state, formAction] = useActionState(subscribeAction, { error: null });
+  const [state, formAction] = useActionState(subscribeAction, {
+    error: null,
+    email: '',
+  });
 
   return (
     <form action={formAction}>
-      <input type="email" name="email" />
+      <input type="email" name="email" defaultValue={state.email} />
       <SubmitButton />
       {state.error && <p role="alert">{state.error}</p>}
     </form>

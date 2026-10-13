@@ -8,12 +8,11 @@ description:
 # Side Effects
 
 A **side effect** is anything that reaches outside of rendering: a network
-request, a subscription, a timer, a manual DOM change. An effect caused by a
-user action belongs in an **event handler**. **`useEffect`** is for
-synchronizing a component with an external system for as long as it is on
-screen. It runs **after** React has updated the DOM, runs again when its
-**dependencies** change, and its **cleanup** function runs before the next run
-and on unmount.
+request, a subscription, a timer, a manual DOM change. Side effects caused by a
+user action belong in **event handlers**. **`useEffect`** is for synchronizing a
+component with an external system for as long as it is on screen. It runs
+**after** React has updated the DOM, runs again when its **dependencies**
+change, and its **cleanup** function runs before the next run and on unmount.
 
 Applies to: React 19.
 
@@ -41,7 +40,8 @@ Applies to: React 19.
 
 1. React renders the component and updates the DOM.
 2. `useLayoutEffect` callbacks run; the browser paints.
-3. `useEffect` callbacks run.
+3. `useEffect` callbacks run (usually after the paint; after a click or another
+   discrete event React may run them before it).
 
 - On an update, the **cleanup of the previous effect** runs first, with the
   props and state of the previous render, then the new setup.
@@ -70,7 +70,7 @@ adding a "did run" ref hides the bug.
 ### `useLayoutEffect`
 
 - The same API, but it runs synchronously after the DOM is updated and **before
-  the browser paints**. In time it matches `componentDidMount` and
+  the browser paints**. Its timing matches `componentDidMount` and
   `componentDidUpdate`.
 - Use it to measure layout and correct the DOM before the user sees it (position
   of a tooltip). It blocks painting, so `useEffect` is the default.
