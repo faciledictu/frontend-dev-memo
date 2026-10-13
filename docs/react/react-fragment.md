@@ -13,7 +13,7 @@ React Fragments, that let you group elements without a wrapper element.
 This is useful when you need to return multiple elements from a component's
 return (or render method) but don't want to create unnecessary wrapper elements,
 which can clutter the DOM and affect styling and performance. Another way is
-returning an array of components, alhough you will need to add a `key` prop for
+returning an array of components, although you will need to add a `key` prop for
 each element.
 
 :::
@@ -33,13 +33,12 @@ Fragments declared with the explicit `<Fragment>` syntax may have keys (for
 rendering a list of Fragments)
 
 ```javascript
-return (
 function Blog() {
-  return posts.map(post =>
+  return posts.map((post) => (
     <Fragment key={post.id}>
       <PostTitle title={post.title} />
       <PostBody body={post.body} />
     </Fragment>
-  );
+  ));
 }
 ```
