@@ -6,11 +6,12 @@ sidebar_position: 1
 
 ## Overview
 
-HTTP stands for _HyperText Transfer Protocol_. It is the basic text protocol
-used by the World Wide Web. HTTP allows web browsers to request resources, such
-as HTML documents and other files, from web servers. The server then responds to
-these requests, allowing users to view web pages. HTTP defines how messages are
-formatted and transmitted, and how web servers and browsers should respond.
+HTTP stands for _HyperText Transfer Protocol_. It is the application-layer
+protocol used by the World Wide Web. HTTP allows web browsers to request
+resources, such as HTML documents and other files, from web servers. The server
+then responds to these requests, allowing users to view web pages. HTTP defines
+how messages are formatted and transmitted, and how web servers and browsers
+should respond.
 
 HTTP is stateless, meaning that each request from a client to a server is
 treated as an independent transaction that is unrelated to any previous request.
@@ -63,9 +64,10 @@ created, otherwise it will be replaced. Idempotent. Multiple PUT requests with
 the same data will produce the same result as a single request.
 
 `PATCH` _Partially update an existing resource_. Only the specified fields are
-updated. The rest of the resource remains unchanged. Generally idempotent.
-Multiple PATCH requests with the same data will produce the same result as a
-single request, but this can vary depending on the implementation.
+updated. The rest of the resource remains unchanged. **Not guaranteed to be
+idempotent**: it depends on the operation. Setting a field to a given value
+gives the same result when repeated, while an operation like "append an item"
+does not.
 
 `DELETE` _Delete a resource_. Removes data from a server. Idempotent.
 
@@ -73,14 +75,13 @@ single request, but this can vary depending on the implementation.
 
 REST (Representational State Transfer) is an architectural style for designing
 networked applications. HTTP with its CRUD methods is often used as a protocol
-for building RESTful applications. Beause HTTP protocol provides all the key
-concepts of REST:
+for building RESTful applications, because HTTP provides all the key concepts of
+REST:
 
 - Stateless Communication
 - Client-Server Communication
 - Cacheability
-- Uniform Interface (methods)
-- with universal methods
+- Uniform Interface (universal methods)
 
 ## AJAX
 
@@ -91,7 +92,7 @@ display and behavior of the existing page.
 
 ## Performing requests using JavaScript
 
-Request can be sended using standard browser API or using an external library,
+Requests can be sent using standard browser API or using an external library,
 such as Axios.
 
 When working with server responses, you typically get and parse the JSON data.
@@ -146,17 +147,25 @@ fetch('https://api.example.com/data', {
 
 ## CORS
 
-CORS (Cross-Origin Resource Sharing) is a security feature implemented by
-browsers to prevent web pages from making requests to a different domain than
-the one that served the web page. It is essential for protecting users and
-servers from certain types of attacks.
+By default, browsers enforce the **Same-Origin Policy**: a script can't read the
+response to a request made to a different origin. An origin is the combination
+of scheme, host and port, so `https://example.com` and `https://api.example.com`
+are different origins. The policy protects users from malicious pages reading
+their data on other sites.
 
-To bypass CORS the server can to include the necessary CORS headers like
-`Access-Control-Allow-Origin` to the response.
+CORS (Cross-Origin Resource Sharing) is a mechanism that lets a server relax
+this policy. The server tells the browser which origins are allowed to read its
+responses using the `Access-Control-Allow-Origin` header (and other
+`Access-Control-*` headers).
 
-For development and testing purposes, it is possible to disable CORS in the
-browser by running the browser in special mode or by using extensions.
+For requests that are not "simple" (e.g. with a JSON body or custom headers),
+the browser first sends a _preflight_ `OPTIONS` request to check that the actual
+request is allowed.
 
-The proxy server will make the request on your behalf and then forward the
-response back to your client. This way, the request appears to be coming from
-the same origin.
+If you don't control the server, you can use a proxy server on the same origin
+as the page. The proxy makes the request on your behalf and forwards the
+response back to your client. This way, for the browser the request goes to the
+same origin.
+
+For development and testing purposes, it is also possible to disable these
+checks by running the browser in a special mode or by using extensions.
