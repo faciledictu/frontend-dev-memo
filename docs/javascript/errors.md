@@ -13,7 +13,8 @@ handle the exception.
 
 JavaScript exceptions can be divided to 2 categories: built-in exceptions
 (Error, TypeError, ReferenceError, SyntaxError etc.) and custom exceptions, that
-can be created using the `throw` statement.
+are created by extending the `Error` class. Both are thrown using the `throw`
+statement.
 
 ## `throw` Statement
 
@@ -32,7 +33,7 @@ JavaScript provides mechanisms to handle runtime errors using `try...catch`
 blocks.
 
 ```javascript
-function tryToGetAccess() {
+function tryToGetAccess(age) {
   try {
     const result = getAccess(age);
     console.log(result);
