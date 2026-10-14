@@ -84,9 +84,10 @@ export const tooling: Category = {
 
 export const git: Category = {
   id: 'git',
-  label: 'Git and Gitflow',
+  label: 'Git',
   navbarLabel: 'Git',
-  description: 'Working with Git',
+  description:
+    'Merge vs rebase, undoing changes, stash, tags and branching models',
   group: 'general',
 };
 
