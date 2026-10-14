@@ -219,8 +219,10 @@
 
 Порядок, по одной ветке на пачку:
 
-- [ ] 1. JavaScript: промисы и async/await, модули ESM, `Map` / `Set` /
-      `WeakMap`, итераторы и генераторы, debounce / throttle.
+- [x] 1. JavaScript: промисы и async/await, модули ESM, `Map` / `Set` /
+      `WeakMap`, итераторы и генераторы, debounce / throttle (5 страниц:
+      `map-set`, `iterators-generators`, `modules`, `promises`,
+      `debounce-throttle`).
 - [ ] 2. TypeScript: utility types, сужение типов и type guards, `type` vs
       `interface`, типизация React.
 - [ ] 3. React: когда компонент перерисовывается, списки и `key`, React 19,
