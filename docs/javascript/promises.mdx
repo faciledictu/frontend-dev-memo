@@ -53,14 +53,14 @@ What the promise returned by `then` / `catch` becomes depends on the callback:
 
 ### Static Methods
 
-| Method                         | Fulfills when                                                    | Rejects when                               |
-| ------------------------------ | ---------------------------------------------------------------- | ------------------------------------------ |
-| `Promise.all(iterable)`        | all fulfill; values in input order                               | **the first** rejects (fail-fast)          |
-| `Promise.allSettled(iterable)` | all settle; objects `{ status, value }` or `{ status, reason }`  | never                                      |
-| `Promise.race(iterable)`       | the first to settle fulfills                                     | the first to settle rejects                |
-| `Promise.any(iterable)`        | **the first** fulfills                                           | all reject: `AggregateError` with `errors` |
-| `Promise.resolve(value)`       | immediately; a promise is returned as is, a thenable is followed | —                                          |
-| `Promise.reject(reason)`       | —                                                                | immediately, with `reason`                 |
+| Method                         | Fulfills when                                                    | Rejects when                                 |
+| ------------------------------ | ---------------------------------------------------------------- | -------------------------------------------- |
+| `Promise.all(iterable)`        | all fulfill; values in input order                               | **the first** rejects (fail-fast)            |
+| `Promise.allSettled(iterable)` | all settle; objects `{ status, value }` or `{ status, reason }`  | never                                        |
+| `Promise.race(iterable)`       | the first to settle fulfills                                     | the first to settle rejects                  |
+| `Promise.any(iterable)`        | **the first** fulfills                                           | all reject: `AggregateError` with `errors`   |
+| `Promise.resolve(value)`       | immediately; a promise is returned as is, a thenable is followed | if `value` is a rejected promise or thenable |
+| `Promise.reject(reason)`       | —                                                                | immediately, with `reason`                   |
 
 - `Promise.withResolvers()` (ES2024) returns `{ promise, resolve, reject }`, to
   settle the promise from outside the executor.
@@ -95,7 +95,8 @@ What the promise returned by `then` / `catch` becomes depends on the callback:
 - A **floating promise** (an `async` call without `await`, `return` or `catch`)
   hides its errors. Linters flag it (`no-floating-promises`).
 - `return await promise` vs `return promise`: inside `try`, only `return await`
-  lets `catch` and `finally` handle the rejection.
+  lets `catch` handle the rejection and makes `finally` run after the promise
+  settles.
 
 ### Cancellation
 
@@ -171,7 +172,7 @@ const ids = [1, 2, 3];
 ids.forEach(async (id) => {
   await save(id);
 });
-console.log('done'); // printed before anything is saved
+console.log('done'); // printed before any save finishes
 // error-end
 
 // correct-start

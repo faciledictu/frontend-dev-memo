@@ -105,7 +105,8 @@ import config from './config.json' with { type: 'json' };
 - `with { type: 'json' }` tells the runtime what kind of module to expect, so a
   server can't make a `.json` URL run as JavaScript. JSON modules have only a
   default export.
-- Browsers also support `type: 'css'`, which gives a `CSSStyleSheet`.
+- Chromium and Firefox also support `type: 'css'`, which gives a `CSSStyleSheet`
+  (not Safari yet).
 - Baseline 2025, Node.js 22+. The old `assert { type: 'json' }` syntax is
   removed.
 
@@ -168,8 +169,8 @@ button.addEventListener('click', async () => {
 - Why can't you import a module from `file://`? Module scripts are fetched with
   CORS, and `file://` URLs are not treated as same-origin.
 - What does `import()` return for a CommonJS module in Node.js? A namespace
-  object with `module.exports` in `default`. Browsers can't load CommonJS at
-  all.
+  object with `module.exports` in `default`, plus the named exports Node.js can
+  detect statically. Browsers can't load CommonJS at all.
 
 ## Common Mistakes
 

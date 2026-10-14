@@ -31,7 +31,7 @@ So the order is: synchronous code → microtasks → rendering → the next task
 ### Microtasks
 
 - Promise callbacks (`then`, `catch`, `finally`); the `Promise` constructor
-  itself executes synchronously. See [Promises and async/await](./promises.mdx)
+  itself executes synchronously. See [Promises and async/await](./promises.mdx).
 - Code after `await` in async functions
 - `queueMicrotask()`
 - `MutationObserver`

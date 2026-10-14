@@ -14,8 +14,8 @@ description:
   keep its key alive, and when the key becomes unreachable the entry disappears.
   That is why they can't be iterated and have no `size`.
 
-Keys and values are compared with **SameValueZero**: like `===`, but `NaN`
-equals `NaN`. Objects are compared by reference.
+`Map` keys and `Set` values are compared with **SameValueZero**: like `===`, but
+`NaN` equals `NaN`. Objects are compared by reference.
 
 ## Details
 
@@ -47,13 +47,14 @@ and `new Map(Object.entries(obj))`.
 | `delete(key)`               | `delete(value)`            | removes; returns `true` if it was there      |
 | `clear()`                   | `clear()`                  | removes everything                           |
 | `size`                      | `size`                     | the number of entries (a getter, not a call) |
-| `keys()`, `values()`        | `values()`                 | iterators in insertion order                 |
+| `keys()`, `values()`        | `keys()`, `values()`       | iterators in insertion order                 |
 | `entries()`, `forEach(fn)`  | `entries()`, `forEach(fn)` | `entries()` of a `Set` gives `[v, v]` pairs  |
 | `Map.groupBy(items, fn)`    | —                          | groups items into a `Map` by key (ES2024)    |
-| `getOrInsert(key, default)` | —                          | `get`, or `set` and return (Baseline 2026)   |
+| `getOrInsert(key, default)` | —                          | `get`, or `set` and return (ES2026)          |
 
-`getOrInsertComputed(key, fn)` calls `fn` only when the key is missing. Both are
-new: check support or use a polyfill.
+`getOrInsertComputed(key, fn)` calls `fn` only when the key is missing. Both
+also exist on `WeakMap`. They are Baseline 2026 and not in Node.js 24 (added in
+Node.js 26): check support or use a polyfill.
 
 ### Set Operations (ES2025)
 
@@ -74,7 +75,7 @@ but not an array. `a.union([1, 2])` throws a `TypeError`; wrap it:
 ### WeakMap and WeakSet
 
 - Keys of a `WeakMap` and values of a `WeakSet` must be **objects** (or
-  non-registered symbols). Primitives throw a `TypeError`.
+  non-registered symbols). Adding a primitive throws a `TypeError`.
 - Only `get`, `set`, `has`, `delete` (`add` for `WeakSet`). No `size`, no
   iteration, no `clear`: the contents depend on when the garbage collector runs.
 - Uses:

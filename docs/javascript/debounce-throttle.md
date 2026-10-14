@@ -28,10 +28,9 @@ Ten events, one every 100 ms, with a 300 ms limit (each character in the diagram
 is 100 ms):
 
 ```text
-time:      0  3  6  9  12   (×100 ms)
 events:    ||||||||||
-debounce:              *    1200: 300 ms after the last event
-throttle:  *  *  *  *  *    0, 300, 600, 900 and the trailing call at 1200
+debounce:              *    once, 300 ms after the last event
+throttle:  *  *  *  *       once per 300 ms while the events come
 ```
 
 |                           | Debounce                    | Throttle                           |
@@ -49,8 +48,8 @@ throttle:  *  *  *  *  *    0, 300, 600, 900 and the trailing call at 1200
 - **`cancel()`**: drop a pending call, for example when a component unmounts.
 - **`flush()`**: run the pending call now, for example before the page is
   closed.
-- In Lodash, `throttle(fn, ms)` is `debounce` with `maxWait: ms`: a debounce
-  that is forced to run at least once per interval.
+- In Lodash, `throttle(fn, ms)` is `debounce` with `leading: true` and
+  `maxWait: ms`: a debounce that is forced to run at least once per interval.
 
 ### Alternatives
 
@@ -148,8 +147,10 @@ function Search() {
 }
 ```
 
-If the debounced callback needs fresh props or state, read them through a ref
-updated on every render, or use a hook such as `useDebouncedCallback` from
+`useMemo` is a performance hint, and React may discard its cache;
+`useState(() => debounce(…))` or a ref guarantees a single instance. If the
+debounced callback needs fresh props or state, read them through a ref updated
+on every render, or use a hook such as `useDebouncedCallback` from
 `use-debounce`.
 
 </details>
@@ -160,10 +161,9 @@ updated on every render, or use a hook such as `useDebouncedCallback` from
   runs with `this` equal to `undefined` (or the global object in sloppy mode).
 - How do you make sure the last scroll position is handled by a throttle? Add a
   trailing call, as in the implementation above.
-- Does debounce reduce the number of network responses that arrive out of order?
-  No. A slow earlier request can still finish after a later one: cancel it with
-  `AbortController` or ignore stale responses. See
-  [Promises and async/await](./promises.mdx).
+- Does debounce prevent responses from arriving out of order? No. A slow earlier
+  request can still finish after a later one: cancel it with `AbortController`
+  or ignore stale responses. See [Promises and async/await](./promises.mdx).
 
 ## Common Mistakes
 
