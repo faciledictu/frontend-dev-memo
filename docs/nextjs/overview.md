@@ -44,11 +44,11 @@ URL must be served by only one of them.
 
 ### Recent Versions
 
-| Version | What changed                                                                                                                                               |
-| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 15      | `fetch` and `GET` Route Handlers are no longer cached by default; `params`, `searchParams`, `cookies()`, `headers()` became async; React 19                |
-| 16      | Turbopack is the default bundler; `middleware` renamed to `proxy`; Cache Components (`'use cache'`); synchronous request APIs removed; `next lint` removed |
-| 16.4    | Cache Components recommended for all apps and enabled in new projects; it becomes the default in Next.js 17                                                |
+| Version | What changed                                                                                                                                                           |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 15      | `fetch` and `GET` Route Handlers are no longer cached by default; `params`, `searchParams`, `cookies()`, `headers()` became async; React 19                            |
+| 16      | Turbopack is the default bundler; `middleware` deprecated in favor of `proxy`; Cache Components (`'use cache'`); synchronous request APIs removed; `next lint` removed |
+| 16.4    | Cache Components recommended for all apps and enabled in new projects; it becomes the default in Next.js 17                                                            |
 
 ### When Next.js Is Not Needed
 
@@ -56,8 +56,8 @@ URL must be served by only one of them.
   load matter less: a client-side SPA on Vite is simpler to build and host.
 - **A content site with little interactivity**: Astro or another static site
   generator ships less JavaScript.
-- **No Node.js hosting**: only a static export (`output: 'export'`) is possible,
-  and it loses everything that needs a server.
+- **Pure static hosting, no server at all**: only a static export
+  (`output: 'export'`) is possible, and it loses everything that needs a server.
 
 ## Follow-up Questions
 

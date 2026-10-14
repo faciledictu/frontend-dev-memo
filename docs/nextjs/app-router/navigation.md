@@ -33,7 +33,7 @@ All are imported from `next/navigation` and work only in Client Components.
   in `app/`.
 - A component that calls `useSearchParams()` should be wrapped in `<Suspense>`;
   otherwise the page up to the closest Suspense boundary is rendered on the
-  client.
+  client, and with no boundary at all `next build` fails on a static page.
 - In Server Components the same data comes from the `params` and `searchParams`
   props.
 
@@ -43,9 +43,10 @@ All are imported from `next/navigation` and work only in Client Components.
 - By default, a static route is prefetched fully; for a dynamic route only the
   part down to the nearest `loading.tsx` (the loading shell) is prefetched.
   `prefetch={true}` prefetches the full route, `prefetch={false}` turns it off.
-- With Partial Prefetching (`partialPrefetching: true`) the default prefetch is
-  the route's static shell with cached content; `prefetch={true}` adds cached
-  content that depends on the link's URL.
+- With Partial Prefetching (`partialPrefetching: true`; requires Cache
+  Components, both on in new 16.4 projects) the default prefetch is the route's
+  static shell with cached content, reused across links; `prefetch={true}` adds
+  cached content that depends on the link's URL.
 
 ### Where to Redirect
 
@@ -60,8 +61,8 @@ All are imported from `next/navigation` and work only in Client Components.
 - `redirect()` and `notFound()` throw a special error, so they are called
   outside `try/catch` (or the error is rethrown).
 - `notFound()` renders the closest `not-found.tsx` with a 404 status.
-- `middleware.ts` was renamed to `proxy.ts` in Next.js 16; the exported function
-  is `proxy`.
+- `middleware.ts` is deprecated in Next.js 16 in favor of `proxy.ts`: the
+  exported function is `proxy`, and it runs only on the Node.js runtime.
 
 ## Example
 

@@ -72,7 +72,10 @@ const PostSchema = z.object({
   body: z.string().max(5000),
 });
 
-export type State = { errors?: Record<string, string[] | undefined> };
+export type State = {
+  errors?: Record<string, string[] | undefined>;
+  values?: { title?: string; body?: string };
+};
 
 export async function createPost(
   _prev: State,
@@ -80,9 +83,14 @@ export async function createPost(
 ): Promise<State> {
   const { userId } = await verifySession(); // the endpoint is public
 
-  const result = PostSchema.safeParse(Object.fromEntries(formData));
+  const values = {
+    title: String(formData.get('title') ?? ''),
+    body: String(formData.get('body') ?? ''),
+  };
+  const result = PostSchema.safeParse(values);
   if (!result.success) {
-    return { errors: z.flattenError(result.error).fieldErrors };
+    // Return the values too: React resets the form after the action
+    return { errors: z.flattenError(result.error).fieldErrors, values };
   }
 
   const post = await db.post.create({
@@ -109,9 +117,9 @@ export function PostForm() {
 
   return (
     <form action={formAction}>
-      <input name="title" />
+      <input name="title" defaultValue={state.values?.title} />
       {state.errors?.title && <p>{state.errors.title[0]}</p>}
-      <textarea name="body" />
+      <textarea name="body" defaultValue={state.values?.body} />
       <button disabled={isPending}>Publish</button>
     </form>
   );

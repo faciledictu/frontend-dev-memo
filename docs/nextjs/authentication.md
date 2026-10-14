@@ -22,13 +22,13 @@ The general theory (sessions vs JWT, OAuth, where to keep a token) is in
 
 ### Where to Check Access
 
-| Place                          | What it does                                                                                   | Enough on its own?                                          |
-| ------------------------------ | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| Proxy (`proxy.ts`)             | Optimistic check: is there a session cookie? If not, redirect to `/login`. No database queries | No: a matcher can miss a path, and it does not see the data |
-| Data Access Layer              | `verifySession()` before every query; returns only what this user may see                      | Yes, this is the real check                                 |
-| Server Actions, Route Handlers | Call `verifySession()` and check the rights at the start of each one                           | Yes, they are public HTTP endpoints                         |
-| Layout                         | Nothing: a layout is not re-rendered on client navigation, so a check there can be skipped     | No                                                          |
-| Client components              | Hide buttons and links                                                                         | No, this is UX                                              |
+| Place                          | What it does                                                                                                    | Enough on its own?                                          |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Proxy (`proxy.ts`)             | Optimistic check: is there a session cookie? If not, redirect to `/login`. No database queries                  | No: a matcher can miss a path, and it does not see the data |
+| Data Access Layer              | `verifySession()` before every query; returns only what this user may see                                       | Yes, this is the real check                                 |
+| Server Actions, Route Handlers | Call `verifySession()` and check the rights at the start of each one                                            | Yes, they are public HTTP endpoints                         |
+| Layout                         | Unreliable: a shared layout is not re-rendered on client navigation, so its check does not run for the new page | No                                                          |
+| Client components              | Hide buttons and links                                                                                          | No, this is UX                                              |
 
 ### Session
 
@@ -38,9 +38,9 @@ The general theory (sessions vs JWT, OAuth, where to keep a token) is in
 - **Database session:** the cookie holds only a random session ID; the data is
   in a database. Easy to revoke, one query per check.
 - Cookie flags: `HttpOnly`, `Secure`, `SameSite=Lax`, an expiration date.
-- `cookies()` from `next/headers` is async. Cookies can be **set or deleted only
-  in Server Actions and Route Handlers**, not while rendering a Server
-  Component.
+- `cookies()` from `next/headers` is async. With it, cookies can be **set or
+  deleted only in Server Actions and Route Handlers**, never while rendering;
+  Proxy sets them through `response.cookies`.
 
 ### Pages Router
 
@@ -53,7 +53,8 @@ The general theory (sessions vs JWT, OAuth, where to keep a token) is in
 ## Example
 
 A session check reused by the whole Data Access Layer. `cache` from React runs
-it once per request, however many components call it:
+it once per server render, however many components call it (it does not
+deduplicate calls in Server Actions and Route Handlers):
 
 ```typescript title="lib/dal.ts"
 import 'server-only';
@@ -72,7 +73,10 @@ export const verifySession = cache(async () => {
 
 export async function getInvoices() {
   const { userId } = await verifySession();
-  return db.invoice.findMany({ where: { ownerId: userId } });
+  return db.invoice.findMany({
+    where: { ownerId: userId },
+    select: { id: true, amount: true, status: true }, // a DTO, not whole rows
+  });
 }
 ```
 
@@ -86,12 +90,18 @@ import { redirect } from 'next/navigation';
 import { createSession } from '@/lib/session'; // sets the HttpOnly cookie
 import { findUser } from '@/lib/users';
 
-export async function login(_prev: string | undefined, formData: FormData) {
+type LoginState = { error?: string; email?: string };
+
+export async function login(
+  _prev: LoginState,
+  formData: FormData
+): Promise<LoginState> {
   const email = String(formData.get('email'));
   const password = String(formData.get('password'));
 
   const user = await findUser(email, password);
-  if (!user) return 'Invalid email or password.';
+  // Return the email: React resets the form after the action
+  if (!user) return { error: 'Invalid email or password.', email };
 
   await createSession(user.id);
   redirect('/dashboard');
@@ -105,13 +115,13 @@ import { useActionState } from 'react';
 import { login } from '@/app/actions/auth';
 
 export function LoginForm() {
-  const [error, formAction, isPending] = useActionState(login, undefined);
+  const [state, formAction, isPending] = useActionState(login, {});
 
   return (
     <form action={formAction}>
-      <input name="email" type="email" required />
+      <input name="email" type="email" defaultValue={state.email} required />
       <input name="password" type="password" required />
-      {error && <p role="alert">{error}</p>}
+      {state.error && <p role="alert">{state.error}</p>}
       <button disabled={isPending}>Log in</button>
     </form>
   );

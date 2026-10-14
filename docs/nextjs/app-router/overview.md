@@ -27,7 +27,7 @@ Applies to: Next.js 16.
 | `template.tsx`  | Like a layout, but remounted on every navigation (state and effects reset)     |
 | `loading.tsx`   | Wraps the page in `<Suspense>` and shows this fallback while it loads          |
 | `error.tsx`     | Error boundary for the segment; must be a Client Component                     |
-| `not-found.tsx` | Shown when `notFound()` is called or no route matches                          |
+| `not-found.tsx` | Shown when `notFound()` is called; the root one also handles unmatched URLs    |
 | `route.ts`      | [Route Handler](./route-handlers.md): an HTTP endpoint instead of a page       |
 
 The root `app/layout.tsx` is required and must render `<html>` and `<body>`.
@@ -50,8 +50,9 @@ kept next to the page.
 - `params` and `searchParams` are passed to pages as **promises** since Next.js
   15: `const { slug } = await params`.
 - With Cache Components, awaiting `params` is request-time data: the page needs
-  a `loading.tsx` (or another `<Suspense>` above it) or `generateStaticParams`,
-  otherwise `next build` fails.
+  a `loading.tsx` (or another `<Suspense>` above it), otherwise `next build`
+  fails. `generateStaticParams` makes `params` known at build time, but uncached
+  data in the page still needs `<Suspense>` or `'use cache'`.
 
 ### Parallel and Intercepting Routes
 
@@ -106,8 +107,9 @@ export default async function PostPage({
 
 - What is the difference between `layout` and `template`? A layout persists
   across navigations and keeps its state; a template is remounted each time.
-- Why must `error.tsx` be a Client Component? It is a React error boundary and
-  receives a `reset` function to retry rendering.
+- Why must `error.tsx` be a Client Component? It is a React error boundary. It
+  receives `retry()` (since 16.3), which fetches again and re-renders the
+  segment; the older `reset()` only clears the error state.
 - Can the App Router and the Pages Router be used together? Yes, during a
   migration, but the same URL in both directories is a build error.
 

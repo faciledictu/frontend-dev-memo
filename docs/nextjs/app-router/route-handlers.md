@@ -20,7 +20,7 @@ Applies to: Next.js 16.
 - The URL comes from the folder: `app/api/users/[id]/route.ts` → `/api/users/1`.
   The `api/` prefix is a convention, not a requirement.
 - A folder cannot have both `route.ts` and `page.tsx`.
-- The second argument holds `params`; like in pages it is a **promise**.
+- The second argument holds `params`; as in pages, it is a **promise**.
 - Query string: `request.nextUrl.searchParams`. Body: `await request.json()` or
   `await request.formData()`.
 - `cookies()` and `headers()` from `next/headers` work here, and cookies can be
@@ -48,28 +48,38 @@ Both are public endpoints: check the session and validate the input in each one.
 
 ```typescript title="app/api/users/[id]/route.ts"
 import { NextResponse, type NextRequest } from 'next/server';
+import { z } from 'zod';
+import { getSession } from '@/lib/session'; // returns null, does not redirect
 import { getUser, updateUser } from '@/lib/users';
-import { verifySession } from '@/lib/dal';
 
 type Context = { params: Promise<{ id: string }> };
 
+const UpdateSchema = z.object({ name: z.string().min(1).max(100) });
+
+// Public on purpose: returns only public fields
 export async function GET(_request: NextRequest, { params }: Context) {
   const { id } = await params;
   const user = await getUser(id);
   if (!user) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
-  return NextResponse.json(user);
+  return NextResponse.json({ id: user.id, name: user.name });
 }
 
 export async function PATCH(request: NextRequest, { params }: Context) {
-  const session = await verifySession();
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   const { id } = await params;
   if (session.userId !== id) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
-  const data = await request.json();
-  return NextResponse.json(await updateUser(id, data));
+  const parsed = UpdateSchema.safeParse(await request.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: 'Invalid body' }, { status: 400 });
+  }
+  return NextResponse.json(await updateUser(id, parsed.data));
 }
 ```
 

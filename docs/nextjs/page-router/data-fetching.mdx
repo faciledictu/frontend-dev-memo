@@ -18,12 +18,12 @@ Applies to: Next.js 16 (Pages Router).
 
 ## Details
 
-| Function             | Runs                                                                       | Returns                                                       |
-| -------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `getStaticProps`     | At build time; again in the background with `revalidate`                   | `{ props }`, `{ revalidate }`, `{ notFound }`, `{ redirect }` |
-| `getStaticPaths`     | At build time, for a dynamic route with `getStaticProps`                   | `{ paths, fallback }`                                         |
-| `getServerSideProps` | On every request                                                           | `{ props }`, `{ notFound }`, `{ redirect }`                   |
-| `getInitialProps`    | On the server for the first load, then in the browser on client navigation | Props. Legacy: not recommended                                |
+| Function             | Runs                                                                       | Returns                                                  |
+| -------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `getStaticProps`     | At build time; again in the background with `revalidate`                   | `{ props, revalidate? }`, `{ notFound }`, `{ redirect }` |
+| `getStaticPaths`     | At build time, for a dynamic route with `getStaticProps`                   | `{ paths, fallback }`                                    |
+| `getServerSideProps` | On every request                                                           | `{ props }`, `{ notFound }`, `{ redirect }`              |
+| `getInitialProps`    | On the server for the first load, then in the browser on client navigation | Props. Legacy: not recommended                           |
 
 - They work only in files under `pages/`, not in components.
 - `props` must be JSON-serializable: no `Date` objects, functions or `undefined`
@@ -109,10 +109,12 @@ export function Profile() {
   server, and its code is removed from the client bundle.
 - Why is `getInitialProps` discouraged? It runs in the browser on navigation, so
   its code and dependencies ship to the client, and a custom `getInitialProps`
-  in `_app` turns off automatic static optimization for all pages.
+  in `_app` turns off automatic static optimization for every page without
+  `getStaticProps`.
 - What does the App Router use instead? `async` Server Components,
-  `generateStaticParams` instead of `getStaticPaths`, and caching instead of
-  `revalidate`.
+  `generateStaticParams` instead of `getStaticPaths`, and `'use cache'` with
+  `cacheLife` instead of `revalidate` (`fetch` `next.revalidate` or
+  `export const revalidate` in the previous model).
 
 ## See Also
 

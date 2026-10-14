@@ -157,7 +157,7 @@
 - [x] 3. React.
 - [x] 4. Web Platform (`http` разделена на `http` и `cors`; заодно `html-css` и
       `react/ecosystem/styling`).
-- [ ] 5. Next.js.
+- [x] 5. Next.js (Next.js 16.4; Pages Router помечен как legacy).
 - [ ] 6. React Native.
 - [ ] 7. `programming`, `tooling`, `git`.
 - [ ] 8. `nodejs`, `sql` — только ошибки.

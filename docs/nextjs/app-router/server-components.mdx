@@ -62,11 +62,11 @@ In the browser:
 
 ### Rendering Strategies
 
-| Strategy  | When HTML is made                                                             | Happens when                                                                              |
-| --------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| Static    | At build time or on revalidation; the result is cached and served to everyone | The route uses no request data                                                            |
-| Dynamic   | On every request                                                              | The route reads `cookies()`, `headers()`, `searchParams`, `connection()` or uncached data |
-| Streaming | Parts are sent as they are ready                                              | Slow parts are wrapped in `<Suspense>` or the segment has `loading.tsx`                   |
+| Strategy  | When HTML is made                                                             | Happens when                                                                                                         |
+| --------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Static    | At build time or on revalidation; the result is cached and served to everyone | The route uses no request data                                                                                       |
+| Dynamic   | On every request                                                              | The route reads `cookies()`, `headers()`, `searchParams` or `connection()`; with Cache Components also uncached data |
+| Streaming | Parts are sent as they are ready                                              | Slow parts are wrapped in `<Suspense>` or the segment has `loading.tsx`                                              |
 
 - In the previous model one dynamic API made the **whole route** dynamic.
 - With **Cache Components** (Next.js 16) the route is split instead: the static
@@ -79,8 +79,10 @@ In the browser:
 
 ## Example
 
-Streaming: the heading arrives at once, each list replaces its fallback when its
-data is ready.
+Streaming with Cache Components: the heading arrives at once, each list replaces
+its fallback when its data is ready. In the previous model this page uses no
+request data, so it is prerendered at build time and the fallbacks are never
+shown.
 
 <Tabs>
 <TabItem value="app/page.tsx" label="app/page.tsx" default>

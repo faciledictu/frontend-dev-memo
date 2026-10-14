@@ -31,26 +31,26 @@ Applies to: Next.js 16.
 
 ### `next/image`
 
-| Prop              | What it does                                                                                                                |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `src`, `alt`      | Required. A static import gives `width`, `height` and a blur placeholder automatically                                      |
-| `width`, `height` | Reserve space before loading (no CLS). Required for remote images unless `fill` is set                                      |
-| `fill`            | The image fills a positioned parent; used with `sizes` and CSS `object-fit`                                                 |
-| `sizes`           | How wide the image is at each breakpoint; without it the browser assumes `100vw` and may download a bigger file than needed |
-| `loading`         | `lazy` by default; `eager` for images visible on the first screen                                                           |
-| `preload`         | Adds a `<link rel="preload">` in `<head>` for the LCP image. Replaces `priority`, deprecated in 16                          |
-| `placeholder`     | `empty` (default), `blur` (with `blurDataURL` for remote images) or a `data:image/...` URL                                  |
-| `quality`         | 75 by default; allowed values are listed in `images.qualities`                                                              |
+| Prop              | What it does                                                                                                                                       |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src`, `alt`      | Required. A static import gives `width`, `height` and a blur placeholder automatically                                                             |
+| `width`, `height` | Reserve space before loading (no CLS). Required for remote images unless `fill` is set                                                             |
+| `fill`            | The image fills a positioned parent; used with `sizes` and CSS `object-fit`                                                                        |
+| `sizes`           | How wide the image is at each breakpoint; without it the `srcset` of a `fill` image assumes `100vw`, and a small image downloads a full-width file |
+| `loading`         | `lazy` by default; `eager` for images visible on the first screen                                                                                  |
+| `preload`         | Adds a `<link rel="preload">` in `<head>` for the LCP image. Replaces `priority`, deprecated in 16                                                 |
+| `placeholder`     | `empty` (default), `blur` (with `blurDataURL` for remote images) or a `data:image/...` URL                                                         |
+| `quality`         | 75 by default; allowed values are listed in `images.qualities`                                                                                     |
 
 - Images are resized on demand and served as WebP (AVIF if enabled in
   `images.formats`) depending on the browser's `Accept` header.
 - Remote hosts must be allowed in `images.remotePatterns`.
-- For the LCP image use `preload`, or `loading="eager"` with
-  `fetchPriority="high"`; never leave it lazy.
+- For the LCP image use `loading="eager"` or `fetchPriority="high"`; `preload`
+  only when one known image is the LCP on every viewport. Never leave it lazy.
 
 ### `next/font`
 
-- Google Fonts and local files are downloaded at build time and **served from
+- Google Fonts are downloaded at build time and, like local fonts, **served from
   your own domain**: no request to Google, no extra connection.
 - A fallback font with adjusted metrics is generated, so swapping fonts does not
   shift the layout.

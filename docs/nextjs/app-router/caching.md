@@ -10,13 +10,13 @@ description:
 Caching in Next.js is described by four questions: **what** is cached, **where**
 (one request, the server, the prerendered route, the browser), **for how long**
 and **how it is invalidated**. The layers stay the same; the API changes between
-versions. In the current model, **Cache Components** (`cacheComponents: true`,
-on in new projects since 16.4, the default from 17), **nothing is cached
-implicitly**: you mark a function or a component with **`'use cache'`**, set its
-lifetime with **`cacheLife`**, tag it with **`cacheTag`** and invalidate it with
-**`revalidateTag`** / **`updateTag`**. In the **previous model** caching is set
-with `fetch` options and route segment config; since Next.js 15 `fetch` is not
-cached by default.
+versions. In the current model, **Cache Components** (`cacheComponents: true`
+with `partialPrefetching: true`, on in new projects since 16.4, the default from
+17), **nothing is cached implicitly**: you mark a function or a component with
+**`'use cache'`**, set its lifetime with **`cacheLife`**, tag it with
+**`cacheTag`** and invalidate it with **`revalidateTag`** / **`updateTag`**. In
+the **previous model** caching is set with `fetch` options and route segment
+config; since Next.js 15 `fetch` is not cached by default.
 
 Applies to: Next.js 16.4.
 
@@ -158,7 +158,8 @@ export async function createPost(formData: FormData) {
 - Describing the Next.js 14 model ("everything is cached") as current.
 - With Cache Components, awaiting `params`, `cookies()` or uncached data at the
   top of a page with no `<Suspense>` or `loading.tsx` above it: the build fails
-  with a blocking-route error.
+  with a blocking-route error. Fixes: a Suspense boundary, `'use cache'`, or
+  `export const instant = false` to allow a blocking route.
 - Calling `cookies()` inside a `'use cache'` function instead of passing the
   value as an argument.
 - Expecting a page without `cookies()` or `searchParams` to fetch fresh data on

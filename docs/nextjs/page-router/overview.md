@@ -19,14 +19,14 @@ Applies to: Next.js 16 (Pages Router).
 
 ### Routes
 
-| File                        | URL                | `router.query`         |
-| --------------------------- | ------------------ | ---------------------- |
-| `pages/index.js`            | `/`                |                        |
-| `pages/blog/first-post.js`  | `/blog/first-post` |                        |
-| `pages/posts/[id].js`       | `/posts/a`         | `{ id: 'a' }`          |
-| `pages/shop/[...slug].js`   | `/shop/a/b`        | `{ slug: ['a', 'b'] }` |
-| `pages/shop/[[...slug]].js` | `/shop` and deeper | `{}` on `/shop`        |
-| `pages/api/users.js`        | `/api/users`       | API Route, not a page  |
+| File                        | URL                | `router.query`                   |
+| --------------------------- | ------------------ | -------------------------------- |
+| `pages/index.js`            | `/`                |                                  |
+| `pages/blog/first-post.js`  | `/blog/first-post` |                                  |
+| `pages/posts/[id].js`       | `/posts/a`         | `{ id: 'a' }`                    |
+| `pages/shop/[...slug].js`   | `/shop/a/b`        | `{ slug: ['a', 'b'] }`           |
+| `pages/shop/[[...slug]].js` | `/shop` and deeper | `{ slug: undefined }` on `/shop` |
+| `pages/api/users.js`        | `/api/users`       | API Route, not a page            |
 
 A catch-all `[...slug]` does not match `/shop`; the optional one `[[...slug]]`
 does.
@@ -66,15 +66,15 @@ import { useRouter } from 'next/router';
 
 export default function Post() {
   const router = useRouter();
-  const { id } = router.query;
+  // A static page gets the query only after hydration
+  if (!router.isReady) return null;
+  const id = Number(router.query.id);
 
   return (
     <>
       <h1>Post {id}</h1>
       <Link href="/posts">Back</Link>
-      <button onClick={() => router.push(`/posts/${Number(id) + 1}`)}>
-        Next
-      </button>
+      <button onClick={() => router.push(`/posts/${id + 1}`)}>Next</button>
     </>
   );
 }
