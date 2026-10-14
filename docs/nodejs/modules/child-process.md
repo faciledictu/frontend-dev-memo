@@ -36,8 +36,7 @@ Applies to: Node.js 24 LTS.
   `ENOENT`), and `'exit'` / `'close'` with the exit code when it ends.
 - A child process is a full process: a Node.js child (`fork`) takes tens of
   megabytes of memory and some time to start. For CPU-heavy JavaScript inside
-  the same process, use
-  [`worker_threads`](./cluster.md#cluster-vs-worker-threads).
+  the same process, use [`worker_threads`](./worker-threads.md).
 
 ### Shell Injection
 

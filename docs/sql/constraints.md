@@ -101,7 +101,8 @@ DELETE FROM departments WHERE id = 1; -- also deletes the employee: ON DELETE CA
   change when business data changes; natural candidates such as email become
   `UNIQUE` constraints.
 - Why index a foreign key column? Joins and `ON DELETE` checks scan the child
-  table by that column; PostgreSQL does not create the index automatically.
+  table by that column; PostgreSQL does not create the index automatically. See
+  [Indexes](./indexes.md).
 - Can a `CHECK` look at another table? No, only at the current row. Use a
   foreign key or a trigger.
 
@@ -116,5 +117,6 @@ DELETE FROM departments WHERE id = 1; -- also deletes the employee: ON DELETE CA
 ## See Also
 
 - [Relationships Between Tables](./relationships.md)
+- [Indexes](./indexes.md)
 - [Data Types](./data-types.md)
 - [Transactions](./transactions.md)

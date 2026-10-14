@@ -3,6 +3,6 @@
   "position": 2,
   "link": {
     "type": "generated-index",
-    "description": "Built-in Node.js modules asked about in interviews: HTTP, file system, events, streams, child processes and cluster"
+    "description": "Built-in Node.js modules asked about in interviews: HTTP, file system, events, streams, child processes, cluster and worker threads"
   }
 }

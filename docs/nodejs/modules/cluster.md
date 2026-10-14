@@ -1,8 +1,8 @@
 ---
 sidebar_position: 6
 description:
-  Using all CPU cores with cluster, how workers share a port, cluster vs
-  worker_threads vs child_process
+  Using all CPU cores with cluster, how workers share a port, scaling with PM2
+  or containers
 ---
 
 # Cluster Module
@@ -14,7 +14,7 @@ process forks **worker** processes (usually one per core), and all workers
 hands them to workers in turn (round-robin; on Windows the OS distributes them).
 Workers are separate processes with separate memory, so shared state (sessions,
 caches) must live outside them, for example in Redis. For CPU-heavy tasks inside
-one process, use **`worker_threads`** instead.
+one process, use [`worker_threads`](./worker-threads.md) instead.
 
 Applies to: Node.js 24 LTS.
 
@@ -34,16 +34,11 @@ Applies to: Node.js 24 LTS.
 
 ### Cluster vs Worker Threads
 
-|         | `cluster` / `child_process`                    | `worker_threads`                                                                       |
-| ------- | ---------------------------------------------- | -------------------------------------------------------------------------------------- |
-| Unit    | A separate **process**                         | A **thread** inside the same process                                                   |
-| Memory  | Separate; messages are copied over IPC         | Separate V8 heap, but `SharedArrayBuffer` can be shared and `ArrayBuffer`s transferred |
-| Cost    | Tens of MB and slower start per worker         | Lighter, still a full V8 instance per thread                                           |
-| A crash | Kills one worker                               | An uncaught error ends the thread and emits `'error'` on the `Worker`                  |
-| Use for | Scaling an HTTP server across cores, isolation | CPU-heavy work: image processing, parsing, hashing                                     |
-
-Neither helps with I/O-bound work: a single process already handles thousands of
-concurrent connections.
+`cluster` scales a server across cores with separate **processes**;
+`worker_threads` runs CPU-heavy tasks in **threads** of one process. Neither
+helps with I/O-bound work: a single process already handles thousands of
+concurrent connections. See
+[Worker Threads](./worker-threads.md#worker-threads-vs-cluster-vs-child-process).
 
 ## Example
 
@@ -73,29 +68,6 @@ if (cluster.isPrimary) {
 }
 ```
 
-CPU work in a worker thread:
-
-```javascript
-// hash.mjs
-import {
-  Worker,
-  isMainThread,
-  parentPort,
-  workerData,
-} from 'node:worker_threads';
-import { pbkdf2Sync } from 'node:crypto';
-
-if (isMainThread) {
-  const worker = new Worker(new URL(import.meta.url), { workerData: 'secret' });
-  worker.on('message', (hash) => console.log('Hash:', hash));
-  worker.on('error', (err) => console.error(err));
-} else {
-  // Blocks only this thread; the main event loop stays responsive
-  const hash = pbkdf2Sync(workerData, 'salt', 500_000, 32, 'sha256');
-  parentPort.postMessage(hash.toString('hex'));
-}
-```
-
 ## Follow-up Questions
 
 - How do workers share one port? The primary owns the listening socket and
@@ -104,20 +76,17 @@ if (isMainThread) {
   database, or stateless JWTs. A worker's memory is not visible to others.
 - Should every Node.js app use `cluster`? Not when it runs in containers that
   are scaled horizontally; one process per container is simpler.
-- Why not create a new worker thread per request? Starting a thread is costly;
-  use a pool (for example Piscina) and only for CPU-heavy tasks.
 
 ## Common Mistakes
 
 - Using `cluster.isMaster`: deprecated, use `isPrimary`.
 - Keeping in-memory state (sessions, rate limits, WebSocket rooms) and expecting
   every worker to see it.
-- Using `worker_threads` for database or HTTP calls: they are already
-  non-blocking.
 - Forking more workers than cores: they compete for CPU and only add memory.
 
 ## See Also
 
+- [Worker Threads](./worker-threads.md)
 - [Child Process Module](./child-process.md)
 - [What Is Node.js](../overview.md)
 - [Event Loop in Node.js](../event-loop.md)

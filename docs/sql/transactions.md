@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 description:
   ACID, BEGIN / COMMIT / ROLLBACK and savepoints, isolation levels and read
   anomalies, how PostgreSQL actually implements them, lost updates and locking

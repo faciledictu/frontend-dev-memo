@@ -137,4 +137,5 @@ JOIN courses c ON c.id = e.course_id;
 ## See Also
 
 - [Constraints](./constraints.md)
+- [Indexes](./indexes.md)
 - [SQL Commands: JOIN](./commands.mdx#join)

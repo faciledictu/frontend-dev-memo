@@ -122,7 +122,7 @@ fs.readFile(__filename, () => {
   [Event Loop in the browser](../javascript/event-loop.md).
 - What blocks the event loop? Synchronous CPU work, `*Sync` file functions,
   `JSON.parse` of huge strings, catastrophic regular expressions. Move heavy
-  work to [`worker_threads`](./modules/cluster.md#cluster-vs-worker-threads).
+  work to [`worker_threads`](./modules/worker-threads.md).
 - How do you detect a blocked loop? `perf_hooks.monitorEventLoopDelay()`, or
   measure the delay between a `setInterval` that should fire every N ms and its
   actual calls.

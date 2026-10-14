@@ -41,8 +41,8 @@ available as `global`), and process information is in `process`.
   runners).
 - **Poor fit:** CPU-bound work (image processing, heavy calculations) on the
   main thread: while it runs, no other request is served. Move it to
-  [`worker_threads`](./modules/cluster.md#cluster-vs-worker-threads), a child
-  process or another service.
+  [`worker_threads`](./modules/worker-threads.md), a child process or another
+  service.
 
 ### Built-in Tooling
 
@@ -73,7 +73,8 @@ available as `global`), and process information is in `process`.
   garbage collection and compilation threads.
 - How do you use all CPU cores? Run several processes (`cluster`, PM2,
   containers) or move CPU work to `worker_threads`. See
-  [Cluster](./modules/cluster.md).
+  [Cluster](./modules/cluster.md) and
+  [Worker Threads](./modules/worker-threads.md).
 
 ## Common Mistakes
 
