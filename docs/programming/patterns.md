@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Programming patterns
 
-Programming patterns are solutions to common software design problems. They are
+Programming patterns are solutions to common software design problems. They
 provide a proven approach to solving common design issues. These patterns help
 developers create more flexible, reusable, and maintainable code.
 
@@ -18,7 +18,7 @@ suitable to the situation.
 Examples: _Singleton_, _Factory Method_, _Abstract Factory_, _Builder_,
 _Prototype_.
 
-#### Example: Factory Method
+#### Example: Simple Factory
 
 ```javascript
 // Product classes
@@ -40,7 +40,7 @@ class ToggleButton extends Button {
   }
 }
 
-// Factory
+// Simple Factory (a static method with a switch)
 class ButtonFactory {
   static createButton(type) {
     switch (type) {
@@ -68,7 +68,7 @@ button3.render();
 ### Structural Patterns
 
 These deal with object composition, helping to ensure that if one part of a
-system changes, the entire system doesn’t need to do the same.
+system changes, the entire system doesn't need to do the same.
 
 Examples: _Adapter_, _Composite_, _Proxy_, _Flyweight_, _Facade_.
 

@@ -11,7 +11,7 @@ evaluation of mathematical functions and avoids changing state and mutable data.
 
 A pure function is a function that:
 
-- Deterministic, i. e. given the same input, always returns the same output.
+- Is deterministic, i.e., given the same input, always returns the same output.
 - Has no side effects (does not modify any external state).
 
 ## First-Class Functions
@@ -56,8 +56,8 @@ function volume(length) {
 }
 
 // Example usage:
-const length2 = volume(2); // Partially apply length
-const length2Width3 = length2(3); // Partially apply width
+const length2 = volume(2); // Returns a function that takes width
+const length2Width3 = length2(3); // Returns a function that takes height
 console.log(length2Width3(4)); // Output: 24
 
 // You can also use it in a single step:
@@ -128,7 +128,7 @@ asynchronous computations, state, etc.
 
 ### Monad Laws
 
-- **Left Identity** `unit(a).flatMap(f)`is equivalent to`f(a)`
+- **Left Identity** `unit(a).flatMap(f)` is equivalent to `f(a)`
 
 - **Right Identity** `m.flatMap(unit)` is equivalent to `m`
 

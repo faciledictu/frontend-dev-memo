@@ -12,10 +12,10 @@ exposes a controlled interface.
 - Helps maintain clear boundaries between modules.
 - Prevents unintended access or modification of internal data.
 
-**Realization In Typescript**
+### Implementation in TypeScript
 
-- use private/protected class members to hide internal logic
-- use getters/setters to control access to properties
+- Use private/protected class members to hide internal logic.
+- Use getters/setters to control access to properties.
 
 ```typescript
 class SecureStoreService {
@@ -36,13 +36,13 @@ class SecureStoreService {
 Inheritance allows a class to inherit properties and methods from another class.
 
 - Promotes reusability.
-- Helps define base behaviors for common patterns
+- Helps define base behaviors for common patterns.
 
 In modern React, where functional components are more common, we can create a
 base component and then extend it with specific functionality by creating a new
 component on top of it.
 
-**Realization In Typescript**
+### Implementation in TypeScript
 
 ```tsx
 const BaseButton = ({ children }) => {
@@ -69,9 +69,9 @@ interface, enabling interchangeable use.
 - Facilitates mocking and testing.
 - Enables writing generic, flexible functions.
 
-**Realization In Typescript**
+### Implementation in TypeScript
 
-Use with interfaces for injecting dependencies (e.g., mock vs real services).
+Use interfaces to inject dependencies (e.g., mock vs real services).
 
 ```typescript
 interface INotificationService {
@@ -104,7 +104,7 @@ complexity.
   implementation.
 - Useful when building platform-agnostic services (e.g., storage, network).
 
-**Realization In Typescript**
+### Implementation in TypeScript
 
 ```typescript
 interface INotificationService {

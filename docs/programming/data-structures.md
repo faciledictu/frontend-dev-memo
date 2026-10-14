@@ -8,16 +8,19 @@ sidebar_position: 4
 
 :::info[Algorithm]
 
-Algorithm is a sequence of well-defined instructions designed to solve a problem
-efficiently. Algorithms can range from simple to complex, and they are essential
-in programming for tasks like searching, sorting, and data manipulation.
+An algorithm is a sequence of well-defined instructions designed to solve a
+problem efficiently. Algorithms can range from simple to complex, and they are
+essential in programming for tasks like searching, sorting, and data
+manipulation.
 
 :::
 
 ### Complexity of Algorithms
 
-Big O notation, denoted as **O()**, is used to describe the upper bound, or
-worst case, performance or complexity of an algorithm.
+Big O notation, denoted as **O()**, is used to describe the upper bound on how
+an algorithm's running time or memory usage grows as the input size increases.
+It is commonly used to express the worst-case behavior, but it is not itself a
+case.
 
 We need Big O notation because it provides a standardized way of comparing the
 efficiency of algorithms. It helps to understand how the algorithm's performance
@@ -29,8 +32,8 @@ scales with increasing input.
 | ------------------ | ---------------------------- | ---------------------------------------------------------- |
 | O(1)               | Constant Time Complexity     | Accessing an element in an array by index                  |
 | O(log _n_)         | Logarithmic Time Complexity  | Binary Search                                              |
-| O(_n_ log _n_)     | Linearithmic Time Complexity | Merge Sort                                                 |
 | O(_n_)             | Linear Time Complexity       | Linear search in an unsorted array                         |
+| O(_n_ log _n_)     | Linearithmic Time Complexity | Merge Sort                                                 |
 | O(_n²_)            | Quadratic Time Complexity    | Bubble Sort                                                |
 | O(2<sup>_n_</sup>) | Exponential Time Complexity  | Recursive Fibonacci algorithm without memoization          |
 | O(_n_!)            | Factorial Time Complexity    | Brute-force solution for finding all permutations of a set |
@@ -39,8 +42,8 @@ scales with increasing input.
 
 ### Arrays
 
-Arrays are a collection of elements stored in contiguous memory locations. They
-offer constant-time access to elements but can be inefficient for insertion and
+An array is a collection of elements stored in contiguous memory locations. It
+offers constant-time access to elements but can be inefficient for insertion and
 deletion operations as they may require shifting elements.
 
 ### Linked Lists

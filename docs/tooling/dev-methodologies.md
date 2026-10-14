@@ -79,15 +79,16 @@ and their progress.
 #### Scrum
 
 Scrum is a framework within Agile, focusing on fixed-length iterations
-(sprints), with defined roles (Scrum Master, Product Owner, Development Team)
-and ceremonies.
+(sprints), with defined roles (Scrum Master, Product Owner, Developers) and
+events.
 
-**Ceremonies** are related to sprint stages:
+**Events** of the Scrum framework:
 
-- Sprint planning,
-- Daily stand-ups during sprint execution,
-- Sprint review,
-- Retrospective.
+- Sprint (the container for all other events),
+- Sprint Planning,
+- Daily Scrum,
+- Sprint Review,
+- Sprint Retrospective.
 
 Accurate **effort estimating** helps in planning sprints and allocating
 resources effectively. In Scrum, story points or hours might be used to estimate
@@ -103,11 +104,3 @@ fixed iterations.
 Scrum is a specific Agile framework with fixed iterations and roles.
 
 :::
-
-#### Project Management Tools
-
-Jira is a project management tool widely used in Agile development. It helps
-teams plan, track, and manage software development projects by providing
-features like backlog management, sprint planning, and real-time collaboration.
-Jira's integration capabilities and customizable workflows make it a versatile
-tool for managing complex projects.
