@@ -47,7 +47,7 @@ How objects are created, so that code does not depend on concrete classes.
 | Singleton        | Exactly one instance with a global access point                                            | An ES module export (`api`, `store`): a module is evaluated once                 |
 | Factory Method   | A base class creates objects through a method that subclasses override to choose the class | Rare in JS; usually a simple factory instead                                     |
 | Abstract Factory | Creates **families** of related objects without naming their classes                       | A UI kit factory returning matching `Button` and `Input` for a theme or platform |
-| Builder          | Builds a complex object step by step; the same steps can produce different results         | Query builders (`knex`), `URLSearchParams`, test data builders                   |
+| Builder          | Builds a complex object step by step; the same steps can produce different results         | Query builders (`knex`), test data builders                                      |
 | Prototype        | New objects are copies of an existing one                                                  | `Object.create`, `structuredClone`, the JS prototype chain                       |
 
 ### Structural
@@ -115,11 +115,11 @@ How objects communicate and how responsibilities are distributed.
 
 A level above design patterns: how the whole UI and its data are organized.
 
-| Pattern | Parts and data flow                                                                               | Examples                |
-| ------- | ------------------------------------------------------------------------------------------------- | ----------------------- |
-| MVC     | **Model** (data and rules), **View** (display), **Controller** (handles input, updates the model) | Ruby on Rails, Backbone |
-| MVVM    | The **ViewModel** exposes state and commands; the View is bound to it and updates automatically   | Angular, Vue, Knockout  |
-| Flux    | **One-way** flow: action → dispatcher → store → view; the view never changes the store directly   | Redux, Zustand          |
+| Pattern | Parts and data flow                                                                               | Examples                                                    |
+| ------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| MVC     | **Model** (data and rules), **View** (display), **Controller** (handles input, updates the model) | Ruby on Rails, Backbone                                     |
+| MVVM    | The **ViewModel** exposes state and commands; the View is bound to it and updates automatically   | Angular, Vue, Knockout                                      |
+| Flux    | **One-way** flow: action → dispatcher → store → view; the view never changes the store directly   | Flux (Facebook); Redux is Flux-inspired, with no dispatcher |
 
 ## Example
 

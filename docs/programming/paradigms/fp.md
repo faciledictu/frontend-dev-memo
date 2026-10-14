@@ -8,35 +8,68 @@ description:
 
 # Functional Programming
 
-In functional programming (FP) a program is built from functions in the
-mathematical sense: a function **takes values and returns a new value, and does
-nothing else**. Such a function is called **pure**: its result depends only on
-its arguments, and calling it has no **side effects** (it changes nothing
-outside and does no I/O). Data is **immutable**: instead of changing a value,
-the program creates a new one. Functions are ordinary values, so they are passed
-to other functions and combined (**higher-order functions**, **composition**).
-Real programs need effects (network, DOM, storage), so FP keeps them at the
-edges and the core pure. JavaScript is not a functional language, but FP is a
-common style in it: array methods, React components, Redux reducers.
+Functional programming (FP) is a way of writing programs out of **pure
+functions**: functions that, like a formula in math, always give the same answer
+for the same input and do nothing besides returning it. Data is not changed in
+place — a changed copy is created instead (**immutability**). Functions are
+values like numbers or strings, so they can be passed to other functions and
+combined. In JavaScript FP is a style rather than a language feature: `map` /
+`filter`, React components and Redux reducers are written this way.
 
 ## Details
 
+### In Plain Words
+
+**A pure function** is like `2 + 3`: the answer is always `5`, and computing it
+changes nothing in the world. "What time is it?" or "add this to my cart" are
+not pure: the answer depends on when you ask, or the action changes something.
+
+```javascript
+const add = (a, b) => a + b; // pure: depends only on a and b
+
+let count = 0;
+const increment = () => ++count; // impure: changes count outside
+
+console.log(add(2, 3), add(2, 3)); // 5 5
+console.log(increment(), increment()); // 1 2 — the same call, different answers
+```
+
+**Immutability**: instead of changing an object, make a new one with the change.
+The old value stays as it was, so nobody holding it is surprised.
+
+```javascript
+const user = { name: 'Alice', city: 'Paris' };
+const moved = { ...user, city: 'Rome' }; // a new object
+
+console.log(user.city, moved.city); // Paris Rome
+```
+
+**Functions as values**: a function can be passed to another function, like an
+instruction: "here is a list, and here is what to do with each element".
+
+```javascript
+const prices = [10, 20, 30];
+const withTax = prices.map((price) => price * 1.2);
+
+console.log(withTax); // [ 12, 24, 36 ]
+```
+
 ### Definitions
 
-| Term                     | Strict meaning                                                                                                                                                                                                  |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Pure function            | Both conditions hold: (1) the result depends **only on the arguments** — not on outer mutable variables, time, randomness or input from I/O; (2) the call has **no observable side effects**                    |
-| Side effect              | Any observable interaction besides returning a value: changing a variable or object outside the function (including the arguments), I/O (network, DOM, storage, logging), throwing an exception the caller sees |
-| Referential transparency | An expression can be replaced with its value without changing the program's behavior. Calls of pure functions with the same arguments are referentially transparent                                             |
-| Immutability             | A value is never changed after it is created; an "update" creates a new value                                                                                                                                   |
-| First-class functions    | Functions are values: assigned to variables, passed as arguments, returned from functions, stored in data structures                                                                                            |
-| Higher-order function    | A function that takes a function as an argument or returns one: `map`, `filter`, `reduce`, `debounce`, a HOC                                                                                                    |
-| Closure                  | A function together with the variables of the scope where it was created; it can read them after that scope has finished. Currying and partial application rely on it                                           |
-| Declarative style        | Code describes **what** the result is (`filter`, then `map`), not the steps to compute it                                                                                                                       |
+| Term                     | Strict meaning                                                                                                                                                                                  |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pure function            | (1) **Deterministic**: the same arguments always give the same result; (2) **no side effects**: the call does nothing observable besides returning the result                                   |
+| Side effect              | Any observable interaction besides returning a value: changing a variable or object outside the function (including the arguments), I/O (network, DOM, storage, logging), throwing an exception |
+| Referential transparency | An expression can be replaced with its value without changing the program's behavior. A call of a pure function is referentially transparent                                                    |
+| Immutability             | A value is never changed after it is created; an "update" creates a new value                                                                                                                   |
+| First-class functions    | Functions are values: assigned to variables, passed as arguments, returned from functions, stored in data structures                                                                            |
+| Higher-order function    | A function that takes a function as an argument or returns one: `map`, `filter`, `reduce`, `debounce`, a HOC                                                                                    |
+| Closure                  | A function together with the variables of the scope where it was created; it can read them after that scope has finished. Currying and partial application rely on it                           |
+| Declarative style        | Code describes **what** the result is (`filter`, then `map`), not the steps to compute it                                                                                                       |
 
-Both conditions of purity are needed: a function that only **reads** a global
-variable changes nothing, but it is still impure, because its result can differ
-for the same arguments.
+What breaks determinism: reading anything that can change between calls — a
+mutable outer variable, the time (`Date.now()`), randomness (`Math.random()`),
+input from I/O. Reading a constant (`Math.PI`, a frozen config) does not.
 
 ### Why It Matters
 
@@ -64,7 +97,7 @@ outer layer:
 | ------------------------------------------- | ---------------------------------------- |
 | Reducers, selectors, formatting, validation | `fetch`, `localStorage`, timers, logging |
 | The render of a React component             | `useEffect`, event handlers              |
-| Redux reducers                              | Thunks, sagas, listener middleware       |
+| Pure derived data in `useMemo`              | Thunks, sagas, listener middleware       |
 
 ### Immutability in JavaScript
 
@@ -136,29 +169,10 @@ appear in everyday code (`Array`, `Promise`, optional values).
 ## Example
 
 ```javascript
-// Impure: depends on and changes outer state
-let total = 0;
-function addToTotal(price) {
-  total += price;
-  return total;
-}
-
-// Pure: the same arguments always give the same result
-const sum = (prices) => prices.reduce((acc, price) => acc + price, 0);
-
-console.log(addToTotal(5), addToTotal(5)); // 5 10
-console.log(sum([5, 5]), sum([5, 5])); // 10 10
-
-// Immutable update: a new object, the original is untouched
-const user = { name: 'Alice', address: { city: 'Paris' } };
-const moved = { ...user, address: { ...user.address, city: 'Rome' } };
-console.log(user.address.city, moved.address.city); // Paris Rome
-console.log(user === moved, user.name === moved.name); // false true
-
 // Currying: one argument at a time, thanks to closures
 const volume = (length) => (width) => (height) => length * width * height;
-const baseArea6 = volume(2)(3); // remembers length and width, waits for height
-console.log(baseArea6(4), volume(2)(3)(4)); // 24 24
+const volumeOf2x3 = volume(2)(3); // remembers length and width, waits for height
+console.log(volumeOf2x3(4), volume(2)(3)(4)); // 24 24
 
 // Partial application: fix some arguments of a regular function
 const multiply = (a, b, c) => a * b * c;
@@ -186,6 +200,9 @@ console.log(pipe(times2, plus2)(3), compose(times2, plus2)(3)); // 8 10
 `Maybe` holds a value or nothing (`null` / `undefined`); every step after
 "nothing" is skipped, so there are no `null` checks between steps. Optional
 chaining (`user?.address?.city`) solves the same problem for property access.
+This simplified `Maybe` treats `of(null)` as "nothing", so the left identity law
+fails for functions that handle `null`; full implementations have separate
+`Just` and `Nothing` types.
 
 ```javascript
 class Maybe {
@@ -242,8 +259,8 @@ console.log(city(2)); // Maybe { value: undefined }
 
 ## Common Mistakes
 
-- Defining a pure function only as "no side effects": it must also depend only
-  on its arguments.
+- Defining a pure function only as "no side effects": it must also be
+  deterministic.
 - Mixing up currying and partial application.
 - Thinking `const` or `Object.freeze` makes nested data immutable.
 - Calling `forEach` that pushes into an outer array "functional".

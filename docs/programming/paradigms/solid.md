@@ -139,7 +139,7 @@ class Rectangle {
 
 // error-start
 class Square extends Rectangle {
-  setWidth(width: number) {
+  override setWidth(width: number) {
     this.width = width;
     this.height = width; // breaks the expectation that height stays the same
   }

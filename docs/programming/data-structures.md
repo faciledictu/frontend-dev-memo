@@ -35,7 +35,8 @@ a case.
 | Θ(_g_)   | Tight: both O(_g_) and Ω(_g_)       | "exactly of order _g_"  |
 
 In everyday speech "O" is often used where Θ is meant: "binary search is O(log
-_n_)" means it grows exactly like log _n_.
+_n_)" means that in the worst case it grows exactly like log _n_ (in the best
+case it finds the element at once).
 
 Rules for computing Big O:
 
@@ -173,7 +174,8 @@ Average case unless stated.
 
 - A **stable** sort keeps equal elements in their original order: sort users by
   name, then stably by age — users of the same age stay sorted by name.
-- No comparison-based sort can be faster than O(_n_ log _n_) in the worst case.
+- No comparison-based sort can beat Ω(_n_ log _n_) comparisons in the worst
+  case.
 - `Array.prototype.sort` is stable since ES2019 and, without a comparator,
   compares elements **as strings**: `[10, 9, 1].sort()` gives `[1, 10, 9]`. Pass
   `(a, b) => a - b` for numbers. See [Arrays](../javascript/arrays.md).

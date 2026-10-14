@@ -43,8 +43,9 @@ that code needs restructuring.
 **When DRY hurts.** Two pieces of code that look the same but change for
 different reasons are not duplication. Merging them into one function leads to
 flags and branches for every caller. "Duplication is far cheaper than the wrong
-abstraction" (Sandi Metz); the rule of three: extract on the third repetition,
-when the common shape is clear.
+abstraction" (Sandi Metz). The **rule of three** (Don Roberts, popularized by
+Martin Fowler's "Refactoring"): extract on the third repetition, when the common
+shape is clear.
 
 ### Other Principles
 
@@ -83,7 +84,7 @@ From Martin Fowler's "Refactoring" (with Kent Beck):
 | Smell                  | Symptom                                                      |
 | ---------------------- | ------------------------------------------------------------ |
 | Duplicated code        | The same logic in several places                             |
-| Long function          | Hard to name and understand at once                          |
+| Long method            | Hard to name and understand at once                          |
 | Large class            | Too many fields and methods ("god class")                    |
 | Long parameter list    | Many arguments; group them into an object                    |
 | Feature envy           | A method uses another object's data more than its own        |
@@ -95,8 +96,8 @@ From Martin Fowler's "Refactoring" (with Kent Beck):
 | Temporary field        | A field set only in some cases                               |
 | Comments               | Comments that compensate for unclear code                    |
 
-The second edition (2018) renames some of them: Insider Trading, Repeated
-Switches.
+Names are from the first edition (1999); the second (2018) renames some of them:
+Long Function, Insider Trading, Repeated Switches.
 
 ## Follow-up Questions
 
@@ -116,4 +117,4 @@ Switches.
 ## See Also
 
 - [SOLID Principles](./paradigms/solid.md)
-- [Programming Patterns](./patterns.md)
+- [Design Patterns](./patterns.md)
