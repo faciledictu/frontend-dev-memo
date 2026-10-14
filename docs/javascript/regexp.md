@@ -1,5 +1,5 @@
 ---
-sidebar_position: 15
+sidebar_position: 20
 description: Creating regular expressions, methods and basic syntax
 ---
 

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 11
+sidebar_position: 13
 description: Class syntax, inheritance, private fields and static methods
 ---
 

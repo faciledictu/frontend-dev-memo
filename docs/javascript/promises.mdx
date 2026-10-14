@@ -1,0 +1,282 @@
+---
+sidebar_position: 16
+description:
+  Promise states and chaining, Promise.all vs allSettled vs race vs any,
+  async/await, errors and cancellation
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Promises and async/await
+
+A **promise** is an object that stands for the result of an asynchronous
+operation that may not be ready yet. It is **pending** at first and then becomes
+**fulfilled** with a value or **rejected** with a reason, once and for all.
+Callbacks are attached with `then`, `catch` and `finally`; each of them returns
+a **new promise**, so calls can be chained.
+
+**`async/await`** is syntax on top of promises. An `async` function always
+returns a promise, and `await` pauses the function until a promise settles, then
+gives its value or throws its reason. The rest of the function continues as a
+microtask; see [Event Loop](./event-loop.md).
+
+## Details
+
+### States and Terms
+
+- **Pending** → **fulfilled** or **rejected**. A fulfilled or rejected promise
+  is **settled** and never changes again: later `resolve` or `reject` calls are
+  ignored.
+- **Resolved** is not the same as fulfilled: a promise resolved with another
+  promise follows that promise and may still end up rejected.
+- The executor in `new Promise((resolve, reject) => …)` runs **synchronously**.
+  An exception thrown in it rejects the promise.
+- A **thenable** is any object with a `then` method. `await`, `Promise.resolve`
+  and returning from `then` accept thenables as promises.
+
+### Chaining
+
+What the promise returned by `then` / `catch` becomes depends on the callback:
+
+| The callback…                 | The new promise…                        |
+| ----------------------------- | --------------------------------------- |
+| returns a value               | is fulfilled with that value            |
+| returns a promise or thenable | follows it                              |
+| throws                        | is rejected with the error              |
+| is missing                    | passes the value or the error unchanged |
+
+- `catch(fn)` is `then(undefined, fn)`. After a `catch` the chain continues as
+  fulfilled, unless the handler throws again.
+- `finally(fn)` gets no arguments and passes the previous result through. It
+  changes the result only if it throws or returns a rejected promise.
+
+### Static Methods
+
+| Method                         | Fulfills when                                                    | Rejects when                               |
+| ------------------------------ | ---------------------------------------------------------------- | ------------------------------------------ |
+| `Promise.all(iterable)`        | all fulfill; values in input order                               | **the first** rejects (fail-fast)          |
+| `Promise.allSettled(iterable)` | all settle; objects `{ status, value }` or `{ status, reason }`  | never                                      |
+| `Promise.race(iterable)`       | the first to settle fulfills                                     | the first to settle rejects                |
+| `Promise.any(iterable)`        | **the first** fulfills                                           | all reject: `AggregateError` with `errors` |
+| `Promise.resolve(value)`       | immediately; a promise is returned as is, a thenable is followed | —                                          |
+| `Promise.reject(reason)`       | —                                                                | immediately, with `reason`                 |
+
+- `Promise.withResolvers()` (ES2024) returns `{ promise, resolve, reject }`, to
+  settle the promise from outside the executor.
+- `Promise.try(fn)` (ES2025, Baseline 2025) calls `fn` and always returns a
+  promise: a synchronous throw becomes a rejection.
+- `Promise.all` does not cancel the other operations when one fails: they keep
+  running, and their results are ignored.
+- An empty iterable: `all` and `allSettled` fulfill with `[]`, `any` rejects,
+  `race` stays pending forever.
+
+### async/await
+
+- `async function` always returns a promise: `return x` fulfills it, `throw`
+  rejects it.
+- `await` works in `async` functions and at the top level of modules. A
+  non-promise value is wrapped with `Promise.resolve`.
+- Errors are handled with `try...catch` around `await`; see
+  [Error Handling](./errors.md).
+- **Sequential vs parallel.** Two `await`s in a row run one after another.
+  Independent operations should be started first and awaited together with
+  `Promise.all`.
+- **Loops.** `for...of` with `await` is sequential. `forEach` does not wait for
+  an `async` callback. For parallel work, use `Promise.all(items.map(async …))`;
+  to limit concurrency, process the items in batches or use a library like
+  `p-limit`.
+
+### Errors
+
+- A rejection that has no handler by the time the microtask queue is empty is an
+  **unhandled rejection**: `unhandledrejection` event in browsers; in Node.js
+  15+ the process exits by default.
+- A **floating promise** (an `async` call without `await`, `return` or `catch`)
+  hides its errors. Linters flag it (`no-floating-promises`).
+- `return await promise` vs `return promise`: inside `try`, only `return await`
+  lets `catch` and `finally` handle the rejection.
+
+### Cancellation
+
+A promise can't be canceled; the operation behind it can. The standard way is
+**`AbortController`**: pass `controller.signal` to `fetch` (or to your own code)
+and call `controller.abort()`. The promise rejects with an `AbortError`.
+`AbortSignal.timeout(ms)` gives a signal that aborts by itself, and
+`AbortSignal.any([...])` combines signals.
+
+## Example
+
+The same code with `then` and with `async/await`:
+
+<Tabs groupId="promise-syntax">
+<TabItem value="async" label="async/await" default>
+
+```javascript
+async function loadUserPosts(id) {
+  try {
+    const user = await getUser(id);
+    const posts = await getPosts(user.id);
+    return posts.map((post) => post.title);
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+```
+
+</TabItem>
+<TabItem value="then" label="then">
+
+```javascript
+function loadUserPosts(id) {
+  return getUser(id)
+    .then((user) => getPosts(user.id))
+    .then((posts) => posts.map((post) => post.title))
+    .catch((error) => {
+      console.error(error);
+      return [];
+    });
+}
+```
+
+</TabItem>
+</Tabs>
+
+<details>
+<summary>More examples</summary>
+
+Sequential vs parallel:
+
+```javascript
+const wait = (ms, value) =>
+  new Promise((resolve) => setTimeout(() => resolve(value), ms));
+
+// error-start
+const a = await wait(500, 'a');
+const b = await wait(500, 'b'); // ~1000 ms in total
+// error-end
+
+// correct-start
+const [c, d] = await Promise.all([wait(500, 'c'), wait(500, 'd')]); // ~500 ms
+// correct-end
+```
+
+`forEach` does not wait:
+
+```javascript
+const ids = [1, 2, 3];
+
+// error-start
+ids.forEach(async (id) => {
+  await save(id);
+});
+console.log('done'); // printed before anything is saved
+// error-end
+
+// correct-start
+await Promise.all(ids.map((id) => save(id)));
+console.log('done');
+// correct-end
+```
+
+`return await` inside `try`:
+
+```javascript
+async function withoutAwait() {
+  try {
+    return Promise.reject(new Error('fail'));
+  } catch {
+    return 'handled'; // never reached: the promise rejects after `try` is left
+  }
+}
+
+async function withAwait() {
+  try {
+    return await Promise.reject(new Error('fail'));
+  } catch {
+    return 'handled';
+  }
+}
+
+await withoutAwait().catch((error) => error.message); // 'fail'
+await withAwait(); // 'handled'
+```
+
+A timeout with `AbortController`:
+
+```javascript
+const controller = new AbortController();
+const timer = setTimeout(() => controller.abort(), 5000);
+
+try {
+  const response = await fetch('/api/report', { signal: controller.signal });
+  console.log(await response.json());
+} catch (error) {
+  if (error.name === 'AbortError') console.log('Canceled');
+  else throw error;
+} finally {
+  clearTimeout(timer);
+}
+
+// Or simply: fetch(url, { signal: AbortSignal.timeout(5000) }),
+// which rejects with a TimeoutError instead.
+```
+
+</details>
+
+## Follow-up Questions
+
+- What does this print?
+  `console.log(1); new Promise(() => console.log(2)); Promise.resolve().then(() => console.log(3)); console.log(4);`
+  → `1 2 4 3`: the executor is synchronous, `then` callbacks are microtasks.
+- How do you turn a callback API into a promise? Wrap it in `new Promise` and
+  call `resolve` / `reject` from the callback; Node.js has `util.promisify`.
+- How is `Promise.withResolvers` useful? When the code that settles the promise
+  is not inside the executor: an event listener, a queue, a test.
+- Implement `Promise.all`:
+
+<details>
+<summary>Answer</summary>
+
+```javascript
+function promiseAll(iterable) {
+  return new Promise((resolve, reject) => {
+    const items = [...iterable];
+    const results = new Array(items.length);
+    let remaining = items.length;
+
+    if (remaining === 0) resolve(results);
+
+    items.forEach((item, index) => {
+      Promise.resolve(item).then((value) => {
+        results[index] = value;
+        remaining -= 1;
+        if (remaining === 0) resolve(results);
+      }, reject);
+    });
+  });
+}
+```
+
+</details>
+
+## Common Mistakes
+
+- Forgetting `return` inside `then`: the next `then` gets `undefined` and does
+  not wait for the inner promise.
+- Wrapping a promise in `new Promise` without need (the "explicit construction
+  anti-pattern"): return the existing promise instead.
+- Sequential `await`s for independent requests.
+- "`Promise.all` cancels the remaining promises on failure." It only stops
+  waiting for them.
+- "`Promise.race` returns the first fulfilled promise." It returns the first
+  **settled** one; the first fulfilled is `Promise.any`.
+- "`async` makes code run in another thread." It runs on the same thread; only
+  waiting is asynchronous.
+
+## See Also
+
+- [Event Loop](./event-loop.md)
+- [Error Handling](./errors.md)
+- [Iterators and Generators](./iterators-generators.md): async iteration

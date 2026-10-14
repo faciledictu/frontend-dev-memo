@@ -1,5 +1,5 @@
 ---
-sidebar_position: 13
+sidebar_position: 18
 description: How memory is freed in JavaScript and where leaks come from
 ---
 
@@ -40,7 +40,8 @@ mistake is reachable, so it is never freed.
 
 `WeakMap` holds its keys weakly and `WeakSet` its values: an entry does not keep
 the object alive. `WeakRef` does the same for a single object. They are used for
-caches and metadata attached to objects.
+caches and metadata attached to objects. See
+[Map, Set, WeakMap and WeakSet](./map-set.md).
 
 ## Example
 

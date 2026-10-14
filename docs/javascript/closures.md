@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 11
 description:
   A function that remembers the variables of the scope it was created in
 ---
@@ -17,7 +17,8 @@ closure; the term matters when the function **outlives** its outer scope.
 
 - **Private state**: variables that can be changed only through the returned
   functions.
-- **Function factories** and helpers such as `once`, `memoize`, `debounce`.
+- **Function factories** and helpers such as `once`, `memoize`,
+  [`debounce`](./debounce-throttle.md).
 - **Callbacks**: event handlers, timers and promise callbacks that use variables
   of the surrounding code.
 

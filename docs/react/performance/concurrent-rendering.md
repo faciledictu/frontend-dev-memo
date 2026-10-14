@@ -163,9 +163,10 @@ export default function App() {
 
 - Is concurrent rendering parallel? No. It is one thread with interruptible work
   split into chunks.
-- How is a transition different from debounce or throttle? There is no fixed
-  delay: the render starts immediately, adapts to the device speed and can be
-  interrupted. It does not reduce the number of network requests.
+- How is a transition different from
+  [debounce or throttle](../../javascript/debounce-throttle.md)? There is no
+  fixed delay: the render starts immediately, adapts to the device speed and can
+  be interrupted. It does not reduce the number of network requests.
 - `useTransition` or `useDeferredValue`? `useTransition` wraps the state update
   itself; `useDeferredValue` is for a value you only receive.
 - Why is the commit phase not interruptible? A partially applied update would

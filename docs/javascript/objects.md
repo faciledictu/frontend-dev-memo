@@ -99,7 +99,9 @@ console.log(Object.hasOwn(person, 'toString')); // false
 | `Object.entries(obj)` | own enumerable `[key, value]` pairs             |
 
 Integer-like keys go first in ascending order, then string keys in the order
-they were added. `for...in` is not meant for arrays.
+they were added. `for...in` is not meant for arrays. Plain objects are not
+iterable, so `for...of` needs one of the methods above; see
+[Iterators and Generators](./iterators-generators.md).
 
 <details>
 <summary>Examples</summary>
@@ -147,6 +149,7 @@ for (const [key, value] of Object.entries(obj)) {
   objects have to be frozen separately.
 - When should `Map` be used instead of an object? For keys that are not strings,
   frequent additions and removals, and when the size and insertion order matter.
+  See [Map, Set, WeakMap and WeakSet](./map-set.md).
 
 ## Common Mistakes
 

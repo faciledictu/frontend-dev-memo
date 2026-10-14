@@ -1,5 +1,5 @@
 ---
-sidebar_position: 14
+sidebar_position: 19
 description:
   throw, try...catch...finally, custom errors and errors in async code
 ---
@@ -23,7 +23,7 @@ created by extending `Error`.
 - `try...catch` is synchronous. It does not catch an error thrown later inside a
   callback, for example in `setTimeout`.
 - In asynchronous code a rejected promise is handled with `.catch()` or with
-  `try...catch` around `await`.
+  `try...catch` around `await`. See [Promises and async/await](./promises.mdx).
 - Unhandled errors can be observed globally: the `error` and
   `unhandledrejection` events of `window`.
 - Catch only what you can handle. Rethrow the rest, so errors are not swallowed.

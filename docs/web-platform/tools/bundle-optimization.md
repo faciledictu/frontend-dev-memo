@@ -100,4 +100,5 @@ function Dashboard() {
 ## See Also
 
 - [Optimization in React](../../react/performance/optimization.md)
+- [ES Modules](../../javascript/modules.md)
 - [How the Browser Works](../browser/browser-workflow.md)

@@ -68,7 +68,7 @@ console.log(withTax); // [ 12, 24, 36 ]
 | Referential transparency | An expression can be replaced with its value without changing the program's behavior. A call of a pure function is referentially transparent                                                       |
 | Immutability             | A value is never changed after it is created; an "update" creates a new value                                                                                                                      |
 | First-class functions    | Functions are values: assigned to variables, passed as arguments, returned from functions, stored in data structures                                                                               |
-| Higher-order function    | A function that takes a function as an argument or returns one: `map`, `filter`, `reduce`, `debounce`, a React HOC (higher-order component)                                                        |
+| Higher-order function    | A function that takes a function as an argument or returns one: `map`, `filter`, `reduce`, [`debounce`](../../javascript/debounce-throttle.md), a React HOC (higher-order component)               |
 | Closure                  | A function together with references to the variables of the scope where it was created; it can read and update them after that scope has finished. Curried functions in JS are built with closures |
 | Declarative style        | Code describes **what** the result is (`filter`, then `map`), not the steps to compute it                                                                                                          |
 

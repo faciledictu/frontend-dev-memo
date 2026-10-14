@@ -129,7 +129,9 @@ arr.sort((a, b) => a - b); // [1, 2, 10]
 | `for...of`    | a loop over the values; supports `break` and `await` |
 | `entries()`   | an iterator of `[index, value]` pairs for `for...of` |
 
-`forEach` can't be stopped with `break` and does not wait for `async` callbacks.
+`forEach` can't be stopped with `break` and does not wait for `async` callbacks;
+see [Promises and async/await](./promises.mdx). How `for...of` works is covered
+in [Iterators and Generators](./iterators-generators.md).
 
 ### Creating
 
@@ -189,7 +191,8 @@ let y = 2;
 
 - How do you copy an array? `[...arr]` or `arr.slice()` for a shallow copy,
   `structuredClone(arr)` for a deep one. See [Objects](./objects.md).
-- How do you remove duplicates? `[...new Set(arr)]`.
+- How do you remove duplicates? `[...new Set(arr)]`. See
+  [Map, Set, WeakMap and WeakSet](./map-set.md).
 - What is the difference between `map` and `forEach`? `map` returns a new array,
   `forEach` returns nothing and is used for side effects.
 

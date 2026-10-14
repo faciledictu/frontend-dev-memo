@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 12
 description: The prototype chain, __proto__ vs prototype, what new does
 ---
 
