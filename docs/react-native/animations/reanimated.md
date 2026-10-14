@@ -22,17 +22,17 @@ Applies to: Reanimated 4, React Native 0.87.
 
 ### Core API
 
-| API                                       | What it does                                                                               |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `useSharedValue(initial)`                 | A value shared by JS and UI threads; read and write with `.value` (or `.get()` / `.set()`) |
-| `useAnimatedStyle(() => style)`           | A worklet that computes a style from shared values; re-runs when they change               |
-| `useDerivedValue(() => value)`            | A shared value computed from others, like `useMemo` on the UI thread                       |
-| `useAnimatedProps`                        | Same as `useAnimatedStyle` for non-style props (SVG `d`, `TextInput` text)                 |
-| `useAnimatedScrollHandler`                | Handles scroll events on the UI thread                                                     |
-| `withTiming`, `withSpring`, `withDecay`   | Animate a shared value to a target: `x.value = withSpring(100)`                            |
-| `withSequence`, `withRepeat`, `withDelay` | Compose animations                                                                         |
-| `interpolate`, `interpolateColor`         | Map a value from one range to another                                                      |
-| `cancelAnimation(sv)`                     | Stop an animation on a shared value                                                        |
+| API                                       | What it does                                                                                                                |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `useSharedValue(initial)`                 | A value shared by JS and UI threads; read and write with `.value`, or `.get()` / `.set()` (recommended with React Compiler) |
+| `useAnimatedStyle(() => style)`           | A worklet that computes a style from shared values; re-runs when they change                                                |
+| `useDerivedValue(() => value)`            | A shared value computed from others, like `useMemo` on the UI thread                                                        |
+| `useAnimatedProps`                        | Same as `useAnimatedStyle` for non-style props (SVG `d`, `TextInput` text)                                                  |
+| `useAnimatedScrollHandler`                | Handles scroll events on the UI thread                                                                                      |
+| `withTiming`, `withSpring`, `withDecay`   | Animate a shared value to a target: `x.value = withSpring(100)`                                                             |
+| `withSequence`, `withRepeat`, `withDelay` | Compose animations                                                                                                          |
+| `interpolate`, `interpolateColor`         | Map a value from one range to another                                                                                       |
+| `cancelAnimation(sv)`                     | Stop an animation on a shared value                                                                                         |
 
 ### Threads and Worklets
 
@@ -62,11 +62,11 @@ animations; shared values are for gestures, scroll and anything interactive.
 
 ### Why Reanimated Is Faster than Animated
 
-| Animated                                                      | Reanimated                                          |
-| ------------------------------------------------------------- | --------------------------------------------------- |
-| Native driver: only `transform` / `opacity`, fixed animations | Any style property on the UI thread                 |
-| Logic (gesture → value) runs in JS                            | Logic is a worklet on the UI thread; JS can be busy |
-| Layout properties need JS on every frame                      | Layout properties are animated without JS           |
+| Animated                                                                                                       | Reanimated                                          |
+| -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| Native driver: non-layout props only (layout props with the experimental backend since 0.85), fixed animations | Any style property on the UI thread                 |
+| Logic (gesture → value) runs in JS                                                                             | Logic is a worklet on the UI thread; JS can be busy |
+| Layout properties need JS on every frame                                                                       | Layout properties are animated without JS           |
 
 ### Version History
 
@@ -85,12 +85,13 @@ import Animated, {
   FadeIn,
   useAnimatedStyle,
   useSharedValue,
+  withSequence,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
-export function LikeButton() {
+export function LikeButton({ onBounceEnd }: { onBounceEnd: () => void }) {
   const [likes, setLikes] = useState(0);
   const scale = useSharedValue(1);
 
@@ -99,11 +100,14 @@ export function LikeButton() {
   }));
 
   const onPress = () => {
-    scale.value = withTiming(1.3, { duration: 100 }, (finished) => {
-      // A worklet on the UI thread: go back to JS to update React state
-      if (finished) scheduleOnRN(setLikes, likes + 1);
-      scale.value = withSpring(1);
-    });
+    setLikes((count) => count + 1); // onPress runs on the JS thread
+    scale.value = withSequence(
+      withTiming(1.3, { duration: 100 }),
+      withSpring(1, {}, (finished) => {
+        // The callback is a worklet on the UI thread: go back to JS
+        if (finished) scheduleOnRN(onBounceEnd);
+      })
+    );
   };
 
   return (

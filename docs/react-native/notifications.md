@@ -55,14 +55,15 @@ Settings.
 | Library                            | Notes                                                                                                               |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `expo-notifications`               | Permissions, tokens (Expo or native), foreground display, local and scheduled notifications. Works in bare apps too |
-| `@react-native-firebase/messaging` | FCM on both platforms (FCM forwards to APNs on iOS); does not display foreground notifications itself               |
+| `@react-native-firebase/messaging` | FCM on both platforms (FCM forwards to APNs on iOS); does not display foreground notifications on Android           |
 | Notifee                            | Was the usual pair for Firebase to display local notifications; archived, its authors point to `expo-notifications` |
 
 ### Credentials
 
 - **iOS**: an **APNs authentication key** (`.p8`) from the Apple Developer
-  account, uploaded to Firebase or Expo. One key works for all apps of the team
-  and does not expire. The older per-app `.p12` certificate expires every year.
+  account, uploaded to Firebase or Expo. A team-scoped key works for all apps of
+  the team and does not expire. The older per-app `.p12` certificate expires
+  every year.
 - **Android**: a Firebase project and `google-services.json` in the app; the
   backend authenticates to the **FCM HTTP v1 API** with a service account (the
   legacy API with a server key was shut down in 2024).
@@ -127,6 +128,8 @@ with an OAuth 2.0 access token of a service account.
 
 ## Common Mistakes
 
+- Testing remote pushes in Expo Go on Android: since SDK 53 they need a
+  development build.
 - Expecting a notification to appear while the app is open: in the foreground it
   is delivered to the code, and the app decides whether to show it.
 - Relying on data-only pushes for important updates on iOS.

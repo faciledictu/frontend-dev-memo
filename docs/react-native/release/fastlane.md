@@ -40,16 +40,25 @@ instead.
 ```ruby
 lane :beta_ios do
   match(type: "appstore")           # Fetch the certificate and profile
-  increment_build_number
-  build_app(scheme: "MyApp")        # Build the .ipa
+  increment_build_number(xcodeproj: "ios/MyApp.xcodeproj")
+  build_app(workspace: "ios/MyApp.xcworkspace", scheme: "MyApp")
   upload_to_testflight
 end
 
 lane :beta_android do
+  # Play rejects a second upload with the same versionCode
+  increment_version_code(gradle_file_path: "android/app/build.gradle") # plugin
   gradle(task: "clean bundleRelease", project_dir: "android")
   upload_to_play_store(track: "internal", aab: "android/app/build/outputs/bundle/release/app-release.aab")
 end
 ```
+
+## Common Mistakes
+
+- Not bumping the build number or `versionCode`: the store rejects a build with
+  a number it already has.
+- Committing certificates or keystore passwords instead of using `match` and CI
+  secrets.
 
 ## See Also
 

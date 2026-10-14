@@ -21,13 +21,13 @@ Applies to: Expo SDK 57.
 
 ### Tools
 
-| Tool                      | Where values are available                                           | Notes                                                                                                                                        |
-| ------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `EXPO_PUBLIC_*` in `.env` | JS                                                                   | Read as `process.env.EXPO_PUBLIC_API_URL`; replaced with the literal at build                                                                |
-| `app.config.ts` (Expo)    | Native config: bundle ID, app name, plugins                          | Can read any env variable at build time; `extra` is readable via `expo-constants`                                                            |
-| EAS environment variables | Builds and updates on EAS                                            | Per environment (development, preview, production); "secret" ones are not printed in logs, but still end up in the app if the code uses them |
-| `react-native-config`     | JS, Android (`BuildConfig`, Gradle), iOS (`Info.plist`, Objective-C) | `ENVFILE=.env.staging` selects the file                                                                                                      |
-| `react-native-dotenv`     | JS only                                                              | A Babel plugin                                                                                                                               |
+| Tool                      | Where values are available                                           | Notes                                                                                                                                                   |
+| ------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXPO_PUBLIC_*` in `.env` | JS                                                                   | Read as `process.env.EXPO_PUBLIC_API_URL`; replaced with the literal at build                                                                           |
+| `app.config.ts` (Expo)    | Native config: bundle ID, app name, plugins                          | Can read any env variable at build time; `extra` is readable via `expo-constants`                                                                       |
+| EAS environment variables | Builds and updates on EAS                                            | Per environment (development, preview, production); "sensitive" and "secret" ones are hidden in logs, but still end up in the app if the code uses them |
+| `react-native-config`     | JS, Android (`BuildConfig`, Gradle), iOS (`Info.plist`, Objective-C) | `ENVFILE=.env.staging` selects the file                                                                                                                 |
+| `react-native-dotenv`     | JS only                                                              | A Babel plugin                                                                                                                                          |
 
 ### What Is a Secret
 

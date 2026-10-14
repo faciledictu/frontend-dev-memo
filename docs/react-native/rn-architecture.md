@@ -14,7 +14,7 @@ objects and call them directly, synchronously if needed. On top of JSI are
 **Fabric** (the renderer), **TurboModules** (native modules) and **Codegen**
 (typed bindings generated from a TS spec). The New Architecture is the default
 since 0.76, and since 0.82 it is the only one: the legacy architecture cannot be
-turned on.
+turned on, and its code is being removed since 0.84.
 
 Applies to: React Native 0.87.
 
@@ -47,19 +47,24 @@ How it worked and what was wrong with it:
 | TurboModules | Native modules built on JSI                                                                       | Loaded lazily on first use; can return values synchronously; can be written in C++  |
 | Fabric       | The renderer; its shadow tree is in C++ and shared by both platforms                              | Synchronous layout and measuring, React concurrent features (transitions, Suspense) |
 | Codegen      | Generates native interfaces from a TypeScript or Flow spec at build time                          | Type-safe JS ↔ native boundary                                                      |
-| Bridgeless   | The mode in which the bridge is not created at all                                                | Default since 0.74 with the New Architecture                                        |
+| Bridgeless   | The mode in which the bridge is not created at all                                                | Default since 0.74; the only mode since 0.82                                        |
 
-**Hermes** is the default JS engine. It compiles JS to bytecode at build time,
-so the app starts faster and uses less memory than with a JIT engine.
+**Hermes** is the default JS engine (since 0.70; its new version, Hermes V1,
+since 0.84). It compiles JS to bytecode at build time, so the app starts faster
+and uses less memory than with a JIT engine.
 
 ### From `setState` to Pixels (Fabric)
 
 1. **Render** (JS thread): React calls components and reconciles the element
    tree; Fabric builds a C++ **shadow tree** from it.
-2. **Commit** (any thread): Yoga computes the layout of the shadow tree, and the
-   new tree is promoted as the next one to mount.
+2. **Commit** (JS thread): Yoga computes the layout of the shadow tree, and the
+   new tree is promoted as the next one to mount. There is no separate shadow
+   thread any more.
 3. **Mount** (UI thread): the difference between the old and new trees is
    applied to the real native views.
+
+For an urgent update from a UI event, the whole pipeline can run synchronously
+on the UI thread.
 
 The render phase can be interrupted by a more urgent update, as with
 [concurrent rendering](../react/performance/concurrent-rendering.md) on the web.
@@ -95,7 +100,8 @@ skip the JS thread.
 
 ## Common Mistakes
 
-- Describing the bridge as the current mechanism. It is gone since 0.82.
+- Describing the bridge as the current mechanism. It cannot be enabled since
+  0.82.
 - Saying the legacy architecture had one thread for layout and UI. Layout ran on
   a separate shadow thread.
 - Saying JSI makes every call synchronous. It makes synchronous calls possible;

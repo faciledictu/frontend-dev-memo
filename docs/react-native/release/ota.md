@@ -32,8 +32,9 @@ Applies to: Expo SDK 57.
   version) or **`fingerprint`** (a hash of the native code and config, changes
   automatically when native code does).
 - Rollouts: publish to a percentage of users; roll back by republishing the
-  previous update (`eas update:rollback`). If the new bundle crashes on start,
-  `expo-updates` falls back to the previous working one.
+  previous update or to the one embedded in the build (`eas update:rollback`).
+  If an update crashes before its first screen renders, `expo-updates` may roll
+  back to the previous one, but this is a last resort, not a safety net.
 
 ### What Happened to CodePush
 
@@ -47,9 +48,10 @@ Applies to: Expo SDK 57.
 ### Store Rules
 
 - **Apple**: the Developer Program License Agreement allows downloading
-  interpreted code (JS) if it does not change the app's primary purpose or add
-  features that bypass review. Bug fixes and small UI changes are fine; a new
-  feature set should go through review.
+  interpreted code (JS) if it does not change the app's primary purpose, does
+  not create a store for other code and does not bypass signing, the sandbox or
+  OS security. Bug fixes and small UI changes are fine; a new feature set should
+  go through review.
 - **Google Play**: an app must not download executable native code (dex, `.so`)
   from outside Play, but code run by an interpreter, such as JS, is allowed as
   long as the result still follows Play policies.

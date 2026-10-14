@@ -47,6 +47,7 @@
     "macrotask",
     "macrotasks",
     "mediumblob",
+    "Menlo",
     "metacharacters",
     "microtask",
     "microtasks",
@@ -109,7 +110,9 @@
     "visibilitychange",
     "worklet",
     "workletized",
-    "worklets"
+    "worklets",
+    "xcodeproj",
+    "xcworkspace"
   ],
   "overrides": [
     {

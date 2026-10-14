@@ -48,8 +48,10 @@ testers for 14 days before the first production release.
 | App Store   | TestFlight and the App Store                  | No                                    |
 | Enterprise  | In-house apps of a company, outside the store | No                                    |
 
-Android has no provisioning profiles: any signed APK can be installed if the
-user allows it.
+Android has no provisioning profiles: a signed APK can be installed outside the
+store if the user allows it. Since September 2026 in some countries (globally in
+2027), the developer must also be verified by Google, or the user has to install
+through adb or an extra confirmation flow.
 
 ### Android Signing and Play App Signing
 

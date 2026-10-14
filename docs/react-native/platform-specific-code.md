@@ -34,7 +34,7 @@ platform's file is not included in the bundle.
 | --------------------- | ------------------------------------------------------------------------------------- |
 | `Platform.OS`         | `'ios'`, `'android'`, `'web'`, …                                                      |
 | `Platform.select({})` | The value for the current platform; keys `ios`, `android`, `native`, `web`, `default` |
-| `Platform.Version`    | Android: API level as a number (`34`); iOS: system version as a string (`'18.2'`)     |
+| `Platform.Version`    | Android: API level as a number (`34`); iOS: system version as a string (`'26.0'`)     |
 | `Platform.isPad`      | iOS only: the device is an iPad                                                       |
 
 ## Example
@@ -43,12 +43,12 @@ platform's file is not included in the bundle.
 import { Platform, StyleSheet, PermissionsAndroid } from 'react-native';
 
 const styles = StyleSheet.create({
-  container: {
+  code: {
     padding: Platform.OS === 'ios' ? 20 : 10,
-    ...Platform.select({
-      ios: { shadowOpacity: 0.2, shadowRadius: 4 },
-      android: { elevation: 4 },
-      default: {},
+    fontFamily: Platform.select({
+      ios: 'Menlo',
+      android: 'monospace',
+      default: 'monospace',
     }),
   },
 });

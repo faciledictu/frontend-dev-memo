@@ -61,8 +61,8 @@ Applies to: React Native 0.87, FlashList 2.
 - **`removeClippedSubviews`**: detaches off-screen views from the native
   hierarchy (on by default on Android).
 - **Memoize items**: wrap the item component in `React.memo` and keep
-  `renderItem` stable with `useCallback`, so a parent re-render does not
-  re-render every visible row.
+  `renderItem` stable with `useCallback` (or let React Compiler do it), so a
+  parent re-render does not re-render every visible row.
 - Keep items light: small images (resized on the server), no heavy work in
   render.
 
@@ -71,8 +71,8 @@ Applies to: React Native 0.87, FlashList 2.
 - Same API as `FlatList` (`data`, `renderItem`, `keyExtractor`), so migration is
   usually a rename.
 - Recycling: an item that scrolls out is reused for the one scrolling in, with
-  new props. Local state inside an item is therefore reused too; reset it when
-  the item changes.
+  new props. Local state inside an item is therefore reused too; use
+  `useRecyclingState`, which resets when the item changes.
 - Version 2 needs the New Architecture and measures items itself; size estimates
   (`estimatedItemSize`) are no longer needed.
 - Use `getItemType` when the list mixes different kinds of rows, so a view is

@@ -47,12 +47,12 @@ Android version changes that come up in interviews:
 
 ### Libraries
 
-| Library                                 | Notes                                                                                                                                                      |
-| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PermissionsAndroid` (React Native)     | Android only; returns `granted`, `denied` or `never_ask_again`                                                                                             |
-| `react-native-permissions`              | One API for both platforms, `check` / `request` / `openSettings`                                                                                           |
-| Expo modules                            | Each module has its own `requestPermissionsAsync` / `use…Permissions` hook (`expo-camera`, `expo-location`); the old `expo-permissions` package is removed |
-| `Linking.openSettings()` (React Native) | Opens the app's page in Settings                                                                                                                           |
+| Library                                 | Notes                                                                                                                                                                        |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PermissionsAndroid` (React Native)     | Android only; returns `granted`, `denied` or `never_ask_again`                                                                                                               |
+| `react-native-permissions`              | One API for both platforms, `check` / `request` / `openSettings`                                                                                                             |
+| Expo modules                            | Each module has its own `requestPermissionsAsync` / `use…Permissions` hook (`expo-camera`, `expo-location`); the old `expo-permissions` package is no longer part of the SDK |
+| `Linking.openSettings()` (React Native) | Opens the app's page in Settings                                                                                                                                             |
 
 ### Best Practices
 

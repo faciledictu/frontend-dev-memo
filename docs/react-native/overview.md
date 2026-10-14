@@ -61,7 +61,7 @@ Update**).
   [Architecture](./rn-architecture.md).
 - What is Hermes? A JS engine built for React Native: it compiles JS to bytecode
   at build time, so the app starts faster and uses less memory. It is the
-  default engine.
+  default engine; Hermes V1, a faster rewrite, is the default since 0.84.
 - Can React Native share code with a web app? Business logic, hooks and state
   yes; UI only through React Native Web or Expo's web target.
 

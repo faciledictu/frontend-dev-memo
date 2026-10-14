@@ -35,13 +35,13 @@ In a style array, later entries override earlier ones; `false`, `null` and
 
 ### API
 
-| Member                     | What it does                                                                                          |
-| -------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `StyleSheet.create(obj)`   | Returns `obj` as is; freezes it in development and gives type checking and autocompletion             |
-| `StyleSheet.flatten(arr)`  | Merges an array of styles into one object; later entries win                                          |
-| `StyleSheet.compose(a, b)` | Returns `[a, b]`, or the other style if one is falsy; keeps references stable for memoized components |
-| `StyleSheet.hairlineWidth` | The thinnest line the screen can draw, for borders and separators                                     |
-| `StyleSheet.absoluteFill`  | `{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }`, for overlays                        |
+| Member                     | What it does                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------- |
+| `StyleSheet.create(obj)`   | Returns `obj` as is; freezes it in development and gives type checking and autocompletion         |
+| `StyleSheet.flatten(arr)`  | Merges an array of styles into one object; later entries win                                      |
+| `StyleSheet.compose(a, b)` | Returns `[a, b]`; if one is `null` / `undefined`, returns the other unchanged without a new array |
+| `StyleSheet.hairlineWidth` | The thinnest line the screen can draw, for borders and separators                                 |
+| `StyleSheet.absoluteFill`  | `{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }`, for overlays                    |
 
 ### Screen Size
 
@@ -66,9 +66,10 @@ See [Styling approaches](../react/ecosystem/styling.md).
 - `fontFamily` is the font's **PostScript name** on iOS and the file name on
   Android. They often match (`Inter-Bold`), but when they do not, the font works
   on Android and silently falls back on iOS.
-- Usually each weight is a separate file referenced by its own `fontFamily`
-  (`Inter-Regular`, `Inter-Bold`); setting `fontWeight` on a custom font is not
-  reliable across platforms.
+- In bare apps each weight is usually a separate file referenced by its own
+  `fontFamily` (`Inter-Regular`, `Inter-Bold`). The `expo-font` plugin can group
+  files into one family with weights, so `fontFamily: 'Inter'` with
+  `fontWeight: '700'` works on both platforms.
 
 ## Example
 

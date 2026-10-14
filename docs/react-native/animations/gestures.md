@@ -168,7 +168,8 @@ Every move event goes through the JS thread, so the drag lags when JS is busy.
 
 ## Common Mistakes
 
-- Forgetting `GestureHandlerRootView`: gestures silently do nothing.
+- Forgetting `GestureHandlerRootView`: `GestureDetector` throws in development,
+  and in production the gestures are not recognized.
 - Using `TouchableOpacity` in new code instead of `Pressable`.
 - Updating React state on every `onUpdate`: it re-renders on every frame; update
   shared values instead.

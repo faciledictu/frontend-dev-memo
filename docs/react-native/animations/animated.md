@@ -12,8 +12,9 @@ description:
 `spring`, `decay`) and bound to the style of an `Animated.View` /
 `Animated.Text`, so the view updates **without re-rendering** the component.
 With **`useNativeDriver: true`** the animation is sent to the native side once
-and runs on the UI thread, so a busy JS thread does not make it stutter; this
-works only for non-layout properties such as `transform` and `opacity`.
+and runs on the UI thread, so a busy JS thread does not make it stutter; by
+default this works only for non-layout properties such as `transform` and
+`opacity`.
 
 Applies to: React Native 0.87.
 
@@ -56,8 +57,10 @@ shrinks as the list scrolls. `extrapolate: 'clamp'` stops at the range ends.
 | `transform`, `opacity` and other non-layout properties      | Any property, including `width`, `height`, `top` |
 | Cannot be mixed with JS-driven animations on the same value | —                                                |
 
-For layout properties, gestures and complex logic on the UI thread, use
-[Reanimated](./reanimated.md).
+Since 0.85 an experimental animation backend (opt-in through the experimental
+release channel) lets the native driver animate layout properties too. For
+layout properties, gestures and complex logic on the UI thread in a stable
+setup, use [Reanimated](./reanimated.md).
 
 ### `LayoutAnimation`
 
@@ -79,11 +82,11 @@ polling.
 ## Example
 
 ```tsx
-import { useEffect, useRef } from 'react';
-import { Animated } from 'react-native';
+import { useEffect } from 'react';
+import { Animated, useAnimatedValue } from 'react-native';
 
 export function FadeInCard() {
-  const progress = useRef(new Animated.Value(0)).current;
+  const progress = useAnimatedValue(0);
 
   useEffect(() => {
     const animation = Animated.timing(progress, {
@@ -115,10 +118,12 @@ export function FadeInCard() {
 
 ## Common Mistakes
 
-- Creating `new Animated.Value(0)` in the component body without `useRef`: a new
-  value on every render resets the animation.
-- Animating `width` or `height` with `useNativeDriver: true`: it throws, because
-  layout properties are not supported by the native driver.
+- Creating `new Animated.Value(0)` in the component body without
+  `useAnimatedValue` or `useRef`: a new value on every render resets the
+  animation.
+- Animating `width` or `height` with `useNativeDriver: true`: without the
+  experimental backend it throws, because layout properties are not supported by
+  the native driver.
 - Not stopping a running or looping animation on unmount.
 
 ## See Also
