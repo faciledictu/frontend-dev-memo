@@ -80,10 +80,27 @@ const activeNames = users
 console.log(names, activeNames); // [ 'ALICE', 'CAROL' ] [ 'ALICE', 'CAROL' ]
 ```
 
+## Follow-up Questions
+
+- FP vs OOP? OOP bundles state with the methods that change it and hides it
+  inside objects; FP keeps data and functions separate, avoids changing state
+  and passes it explicitly. OOP models entities with identity well (a user
+  session, a UI widget); FP fits data transformations (filters, reducers). Most
+  JavaScript code mixes both.
+- Is JavaScript functional or object-oriented? Both: it has first-class
+  functions and closures (functional) and objects with prototypes and classes
+  (object-oriented), and it is imperative at its core (mutable variables,
+  loops).
+- What is structured programming? The discipline behind procedural code (Edsger
+  Dijkstra, late 1960s): programs are built only from sequence, branching (`if`)
+  and loops, without arbitrary `goto` jumps.
+
 ## Common Mistakes
 
-- Calling recursion declarative: a recursive function still describes the steps;
-  what matters is whether the code states the result or the procedure.
+- Calling recursion declarative or imperative by itself: it is neither. A
+  recursive definition can be declarative (`factorial(n)` **is**
+  `n * factorial(n - 1)`), while recursion that drives mutations step by step is
+  imperative.
 - Saying that declarative code has no imperative parts: they are hidden in the
   library, not removed.
 

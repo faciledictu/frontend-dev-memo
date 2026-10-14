@@ -8,21 +8,25 @@ description:
 # Design Patterns
 
 A design pattern is a **known, named solution to a problem that keeps coming
-up** when designing code. It is not a library or a piece of code to copy, but an
-idea of how to arrange objects and functions, which is then written differently
-in every project. Patterns give developers a **shared vocabulary**: "wrap it in
-an adapter" says a lot in three words. The classic catalog is the book "Design
-Patterns" by the "Gang of Four" (GoF: Gamma, Helm, Johnson, Vlissides, 1994): 23
-patterns in three groups — **creational** (how objects are created),
-**structural** (how they are composed) and **behavioral** (how they communicate
-and share responsibilities). The book is written for class-based languages; in
-JavaScript many patterns are simpler: a module is a singleton, a higher-order
-function is a decorator, a callback is a strategy.
+up** when designing code. It is not a library or code to copy, but an idea of
+how to arrange objects and functions, written differently in every project.
+
+- Patterns give a **shared vocabulary**: "wrap it in an adapter" says a lot in
+  three words.
+- The classic catalog is "Design Patterns" by the **Gang of Four** (GoF: Gamma,
+  Helm, Johnson, Vlissides, 1994): 23 patterns in three groups — **creational**
+  (how objects are created), **structural** (how they are composed) and
+  **behavioral** (how they communicate).
+- The book targets class-based languages. In JavaScript many patterns shrink: a
+  decorator is often just a higher-order function, a strategy is often just a
+  callback.
 
 ## Details
 
 ### What a Pattern Is
 
+- The idea of patterns comes from architecture: Christopher Alexander, "A
+  Pattern Language" (1977).
 - GoF describe every pattern with four elements: a **name**, the **problem**
   (when to apply it), the **solution** (the roles of objects and how they
   interact) and the **consequences** (trade-offs).
@@ -42,27 +46,27 @@ function is a decorator, a callback is a strategy.
 
 How objects are created, so that code does not depend on concrete classes.
 
-| Pattern          | Problem → solution                                                                         | In frontend                                                                      |
-| ---------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| Singleton        | Exactly one instance with a global access point                                            | An ES module export (`api`, `store`): a module is evaluated once                 |
-| Factory Method   | A base class creates objects through a method that subclasses override to choose the class | Rare in JS; usually a simple factory instead                                     |
-| Abstract Factory | Creates **families** of related objects without naming their classes                       | A UI kit factory returning matching `Button` and `Input` for a theme or platform |
-| Builder          | Builds a complex object step by step; the same steps can produce different results         | Query builders (`knex`), test data builders                                      |
-| Prototype        | New objects are copies of an existing one                                                  | `Object.create`, `structuredClone`, the JS prototype chain                       |
+| Pattern          | Problem → solution                                                                         | In frontend                                                                                                                               |
+| ---------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Singleton        | Exactly one instance with a global access point                                            | An ES module export (`api`, `store`): evaluated once per module graph (a duplicated package or SSR across requests breaks the assumption) |
+| Factory Method   | A base class creates objects through a method that subclasses override to choose the class | Rare in JS; usually a simple factory instead                                                                                              |
+| Abstract Factory | Creates **families** of related objects without naming their classes                       | A UI kit factory returning matching `Button` and `Input` for a theme or platform                                                          |
+| Builder          | Builds a complex object step by step; the same steps can produce different results         | Query builders (`knex`), test data builders                                                                                               |
+| Prototype        | New objects are created by **copying** an existing instance                                | `structuredClone`, `{ ...obj }`, a `clone()` method. JS prototypes share the name but **delegate** to the prototype instead of copying    |
 
 ### Structural
 
 How objects and classes are combined into larger structures.
 
-| Pattern   | Problem → solution                                                              | In frontend                                                                 |
-| --------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| Adapter   | An object has the wrong interface → a wrapper converts it to the expected one   | Mapping an API response to the app's model, a wrapper around an old library |
-| Bridge    | Two dimensions vary independently → split an abstraction and its implementation | Chart components over interchangeable Canvas / SVG renderers                |
-| Composite | A tree of objects should be treated like a single object                        | The DOM, nested React components, menus                                     |
-| Decorator | Add behavior to an object without changing it → wrap it, keeping the interface  | Higher-order functions (`withRetry(fetch)`), HOCs, TS decorators            |
-| Facade    | A complex subsystem → one simple interface over it                              | An `api` module hiding `fetch`, auth and retries                            |
-| Flyweight | Many similar objects use too much memory → share the common part                | Thousands of map markers share one icon object; only the position differs   |
-| Proxy     | Control access to an object → a stand-in with the same interface                | JavaScript `Proxy`, Vue reactivity, lazy loading, caching                   |
+| Pattern   | Problem → solution                                                                                                                              | In frontend                                                                                                                            |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Adapter   | An object has the wrong interface → a wrapper converts it to the expected one                                                                   | A wrapper that gives an old or third-party library the interface the app expects                                                       |
+| Bridge    | Two dimensions vary independently → split an abstraction and its implementation                                                                 | Chart components over interchangeable Canvas / SVG renderers                                                                           |
+| Composite | Clients should treat single objects and groups of objects **uniformly** → both share one interface, groups contain children                     | The DOM (an element and a tree of elements are both `Node`s), nested React components, menus                                           |
+| Decorator | Add behavior to an object without changing it → wrap it, keeping the interface                                                                  | Higher-order functions (`withRetry(fetch)`), HOCs. TS / ES `@decorators` are definition-time metaprogramming, related but not the same |
+| Facade    | A complex subsystem → one simple interface over it                                                                                              | An `api` module hiding `fetch`, auth and retries                                                                                       |
+| Flyweight | Many similar objects use too much memory → share the **intrinsic** state (the same for all), pass the **extrinsic** state (unique) from outside | Thousands of map markers share one icon object; each keeps only its position                                                           |
+| Proxy     | Control access to an object → a stand-in with the same interface                                                                                | JavaScript `Proxy`, Vue reactivity, lazy loading, caching                                                                              |
 
 **Adapter vs Decorator vs Proxy vs Facade** — all wrap something:
 
@@ -76,19 +80,19 @@ How objects and classes are combined into larger structures.
 
 How objects communicate and how responsibilities are distributed.
 
-| Pattern                 | Problem → solution                                                               | In frontend                                                    |
-| ----------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| Observer                | Objects need to know about changes in another → it notifies its subscribers      | `addEventListener`, store subscriptions, signals               |
-| Strategy                | Interchangeable algorithms → each behind one interface, chosen at runtime        | A sorting, validation or pricing function passed in            |
-| Command                 | An action should be queued, logged or undone → represent it as an object         | Redux actions, undo / redo, keyboard shortcuts                 |
-| Chain of Responsibility | A request passes along handlers until one handles it                             | Middleware (Redux, Express), event bubbling                    |
-| Mediator                | Many objects talk to each other → they talk through one central object           | A form controller coordinating its fields, a chat room         |
-| Iterator                | Traverse a collection without exposing its structure                             | `Symbol.iterator`, `for...of`, generators                      |
-| State                   | Behavior depends on the current state → one object per state, or a state machine | `status: 'idle' \| 'loading' \| 'error'`, XState               |
-| Template Method         | A base class fixes the steps of an algorithm, subclasses fill in some of them    | Lifecycle methods of React class components                    |
-| Memento                 | Save and restore an object's state without exposing its internals                | Undo history of state snapshots, time travel in Redux DevTools |
-| Visitor                 | Add operations to a structure of objects without changing their classes          | AST traversal in Babel plugins and ESLint rules                |
-| Interpreter             | Evaluate sentences of a small language by representing its grammar as objects    | Template engines, formula and query parsers                    |
+| Pattern                 | Problem → solution                                                                                                      | In frontend                                                                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Observer                | Objects need to know about changes in another → it notifies its subscribers                                             | `addEventListener`, store subscriptions, signals                                                                                    |
+| Strategy                | Interchangeable algorithms → each behind one interface, chosen at runtime                                               | A sorting, validation or pricing function passed in                                                                                 |
+| Command                 | An action should be queued, logged or undone → represent it as an object                                                | Undo / redo stacks, keyboard shortcuts; loosely, Redux actions (the Redux style guide models them as events, not commands)          |
+| Chain of Responsibility | A request passes along a chain of handlers until one handles it                                                         | Event bubbling (until `stopPropagation`), middleware in Redux and Express (a variant: each handler may act and pass the request on) |
+| Mediator                | Many objects talk to each other → they talk through one central object                                                  | A form controller coordinating its fields, a chat room                                                                              |
+| Iterator                | Traverse a collection without exposing its structure                                                                    | `Symbol.iterator`, `for...of`, generators                                                                                           |
+| State                   | Behavior depends on the current state → one object per state with the behavior for it; the object switches between them | A map of handlers per status (`idle`, `loading`, `error`), state machines (XState) — instead of `switch (status)` everywhere        |
+| Template Method         | A base class fixes the steps of an algorithm, subclasses fill in some of them                                           | Lifecycle methods of React class components                                                                                         |
+| Memento                 | Save and restore an object's state without exposing its internals                                                       | Undo history of state snapshots, time travel in Redux DevTools                                                                      |
+| Visitor                 | Add operations to a structure of objects without changing their classes                                                 | Traversal of an AST (abstract syntax tree: code as a tree of nodes) in Babel plugins and ESLint rules                               |
+| Interpreter             | Represent the grammar of a small language as objects and evaluate its sentences (parsing is a separate step)            | Evaluating a filter or formula expression from its AST (syntax tree), template engines                                              |
 
 ### Observer vs Pub/Sub
 
@@ -99,6 +103,9 @@ How objects communicate and how responsibilities are distributed.
   topic.
 - `EventTarget` in the DOM is Observer; an event bus (`mitt`) or a
   `BroadcastChannel`, where both sides only know the channel name, is Pub/Sub.
+- Observer notifications are usually **synchronous** (the subject calls each
+  observer in turn); Pub/Sub delivery is often **asynchronous** or buffered by
+  the broker.
 - Pub/Sub is not one of the 23 GoF patterns; it is a messaging pattern built on
   the same idea.
 
@@ -115,11 +122,11 @@ How objects communicate and how responsibilities are distributed.
 
 A level above design patterns: how the whole UI and its data are organized.
 
-| Pattern | Parts and data flow                                                                               | Examples                                                    |
-| ------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| MVC     | **Model** (data and rules), **View** (display), **Controller** (handles input, updates the model) | Ruby on Rails, Backbone                                     |
-| MVVM    | The **ViewModel** exposes state and commands; the View is bound to it and updates automatically   | Angular, Vue, Knockout                                      |
-| Flux    | **One-way** flow: action → dispatcher → store → view; the view never changes the store directly   | Flux (Facebook); Redux is Flux-inspired, with no dispatcher |
+| Pattern | Parts and data flow                                                                                                       | Examples                                                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| MVC     | **Model** (data and rules), **View** (display), **Controller** (handles input, updates the model); Trygve Reenskaug, 1979 | Ruby on Rails; Backbone is MV* (no controllers)             |
+| MVVM    | The **ViewModel** exposes state and commands; the View is bound to it and updates automatically                           | Knockout, Angular; Vue is partly inspired by it             |
+| Flux    | **One-way** flow: action → dispatcher → store → view; the view never changes the store directly                           | Flux (Facebook); Redux is Flux-inspired, with no dispatcher |
 
 ## Example
 
@@ -264,8 +271,9 @@ console.log(await withRetry(flaky)(), calls); // ok 3
   chooses the algorithm; in State the object switches itself as its state
   changes.
 - Which patterns does React use? Composite (component tree), Observer (state
-  subscriptions, `useSyncExternalStore`), Decorator (HOCs), Strategy (render
-  props, callbacks), Command (actions in `useReducer`).
+  subscriptions, `useSyncExternalStore`), Decorator (HOCs — higher-order
+  components), Strategy (render props, callbacks), Command (actions in
+  `useReducer`).
 - Why do many GoF patterns look trivial in JavaScript? Functions are first-class
   values: Strategy, Command and Decorator need a function, not a class
   hierarchy.

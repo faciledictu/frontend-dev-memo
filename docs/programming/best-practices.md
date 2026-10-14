@@ -8,14 +8,17 @@ description:
 # Best Practices
 
 Code is read far more often than it is written, so the goal is code that is
-**easy to understand and safe to change**. **Naming**: names reveal intent,
-verbs for functions, nouns for values, `is` / `has` for booleans. **DRY** (Don't
-Repeat Yourself): one piece of knowledge lives in one place. **KISS** (Keep It
-Simple, Stupid): the simplest solution that works. **YAGNI** (You Aren't Gonna
-Need It): do not build what is not needed yet. Robert C. Martin's **Clean Code**
-adds small single-purpose functions, comments that explain _why_, and explicit
-error handling. **Code smells** (from Martin Fowler's "Refactoring") are signs
-that code needs restructuring.
+**easy to understand and safe to change**:
+
+- **Naming**: names reveal intent — verbs for functions, nouns for values, `is`
+  / `has` for booleans.
+- **DRY** (Don't Repeat Yourself): each piece of knowledge lives in one place.
+- **KISS** (Keep It Simple, Stupid): the simplest solution that works.
+- **YAGNI** (You Aren't Gonna Need It): do not build what is not needed yet.
+- **Clean Code** (Robert C. Martin): small single-purpose functions, comments
+  that explain _why_, explicit error handling.
+- **Code smells** (Martin Fowler's "Refactoring"): signs that code needs
+  restructuring.
 
 ## Details
 
@@ -30,15 +33,15 @@ that code needs restructuring.
 - Named constants instead of magic numbers: `MAX_RETRIES = 3`.
 - One convention across the codebase. In JavaScript: `camelCase` for variables
   and functions, `PascalCase` for classes and components, `UPPER_SNAKE_CASE` for
-  constants.
+  hard-coded module-level constants (not for every `const`).
 
 ### DRY, KISS, YAGNI
 
-| Principle | Means                                                   | Overdone, it becomes                                   |
-| --------- | ------------------------------------------------------- | ------------------------------------------------------ |
-| DRY       | One source of truth for each rule or piece of knowledge | A shared abstraction over code that only looks similar |
-| KISS      | The simplest solution that solves the problem           | Rarely harmful                                         |
-| YAGNI     | Build only what is needed now                           | Ignoring requirements that are already known           |
+| Principle | Origin                                             | Means                                                                                                                                 | Overdone, it becomes                                   |
+| --------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| DRY       | Hunt and Thomas, "The Pragmatic Programmer" (1999) | "Every piece of knowledge must have a single, unambiguous, authoritative representation" — about knowledge, not about identical lines | A shared abstraction over code that only looks similar |
+| KISS      | Attributed to aircraft engineer Kelly Johnson      | The simplest solution that solves the problem                                                                                         | Rarely harmful                                         |
+| YAGNI     | Extreme Programming (XP), late 1990s               | Build only what is needed now                                                                                                         | Ignoring requirements that are already known           |
 
 **When DRY hurts.** Two pieces of code that look the same but change for
 different reasons are not duplication. Merging them into one function leads to
@@ -49,14 +52,15 @@ shape is clear.
 
 ### Other Principles
 
-| Principle                       | Means                                                                                                |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| Separation of concerns          | Each part of the code deals with one concern: data, logic, presentation                              |
-| Law of Demeter                  | A unit talks only to its direct collaborators: not `order.customer.address.city`                     |
-| Composition over inheritance    | Combine small parts instead of building class hierarchies (see [OOP](./paradigms/oop-principles.md)) |
-| Fail fast                       | Detect invalid state as early as possible and fail loudly instead of continuing silently             |
-| Principle of least astonishment | Code behaves the way its name and context suggest                                                    |
-| Boy Scout Rule                  | Leave the code a little cleaner than you found it                                                    |
+| Principle                       | Means                                                                                                                     |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Low coupling, high cohesion     | Modules depend little on each other; the parts inside a module belong together (see [OOP](./paradigms/oop-principles.md)) |
+| Separation of concerns          | Each part of the code deals with one concern: data, logic, presentation                                                   |
+| Law of Demeter (Holland, 1987)  | A unit talks only to its direct collaborators: not `order.customer.address.city`                                          |
+| Composition over inheritance    | Combine small parts instead of building class hierarchies (see [OOP](./paradigms/oop-principles.md))                      |
+| Fail fast                       | Detect invalid state as early as possible and fail loudly instead of continuing silently                                  |
+| Principle of least astonishment | Code behaves the way its name and context suggest                                                                         |
+| Boy Scout Rule                  | Leave the code a little cleaner than you found it                                                                         |
 
 ### Clean Code
 
@@ -79,7 +83,8 @@ examples are in Java. The ideas above are the widely accepted part.
 
 ### Code Smells
 
-From Martin Fowler's "Refactoring" (with Kent Beck):
+A code smell is a surface sign of a deeper design problem (the term is Kent
+Beck's). The catalog is from Martin Fowler's "Refactoring" (with Kent Beck):
 
 | Smell                  | Symptom                                                      |
 | ---------------------- | ------------------------------------------------------------ |
@@ -98,6 +103,50 @@ From Martin Fowler's "Refactoring" (with Kent Beck):
 
 Names are from the first edition (1999); the second (2018) renames some of them:
 Long Function, Insider Trading, Repeated Switches.
+
+## Example
+
+Names, magic numbers and nesting, before and after. The second version uses
+**guard clauses**: early returns for the special cases, so the main path is not
+nested.
+
+```javascript
+// error-start
+function calc(u, items) {
+  if (u) {
+    if (items.length > 0) {
+      let t = 0;
+      for (const i of items) t += i.p * i.q;
+      if (u.vip) t = t * 0.9;
+      return t;
+    } else {
+      return 0;
+    }
+  }
+  throw new Error('No user');
+}
+// error-end
+
+// correct-start
+const VIP_DISCOUNT = 0.1;
+
+function calculateTotal(user, cartItems) {
+  if (!user) throw new Error('No user');
+  if (cartItems.length === 0) return 0;
+
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  return user.isVip ? subtotal * (1 - VIP_DISCOUNT) : subtotal;
+}
+// correct-end
+
+console.log(
+  calc({ vip: true }, [{ p: 10, q: 2 }]),
+  calculateTotal({ isVip: true }, [{ price: 10, quantity: 2 }])
+); // 18 18
+```
 
 ## Follow-up Questions
 

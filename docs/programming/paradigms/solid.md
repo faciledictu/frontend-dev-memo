@@ -11,8 +11,8 @@ SOLID is five principles of designing modules and classes so that the code is
 **easy to change without breaking it**. They were collected by Robert C. Martin
 around 2000; the acronym was coined by Michael Feathers. In plain words:
 
-- **Single responsibility**: each module is about one thing, so a change in one
-  requirement touches one place.
+- **Single responsibility**: each module serves one group of people (one reason
+  to change), so a change in one requirement touches one place.
 - **Open/closed**: new behavior is added by adding code, not by rewriting code
   that already works.
 - **Liskov substitution**: if code works with a base type, it must keep working
@@ -40,6 +40,10 @@ They come from OOP, but apply equally to modules, components and hooks.
 - **Strictly** (Bertrand Meyer, 1988): a module is **open for extension** (its
   behavior can be extended) and **closed for modification** (its source does not
   need to change for that).
+- Meyer achieved it with implementation inheritance: a finished class is
+  "closed" (stable, used by clients) and extended by subclasses. Robert C.
+  Martin (1996) restated it in terms of abstract interfaces and polymorphism —
+  the version used today.
 - Achieved with **extension points**: interfaces and polymorphism, callbacks,
   configuration maps, plugins.
 - **Frontend**: a component takes `children`, render props or a map of renderers
@@ -47,13 +51,16 @@ They come from OOP, but apply equally to modules, components and hooks.
 
 ### Liskov Substitution Principle (LSP)
 
-- **Strictly** (Barbara Liskov, 1987): objects of a subtype must be usable
-  wherever the base type is expected **without changing the correctness** of the
-  program. This is **behavioral subtyping**; matching method signatures is not
-  enough. A subtype:
+- **Strictly** (Barbara Liskov, 1987; formalized as **behavioral subtyping** by
+  Liskov and Wing, 1994): objects of a subtype must be usable wherever the base
+  type is expected **without changing the correctness** of the program. Matching
+  method signatures is not enough. A subtype:
   - must not **strengthen preconditions** (demand more from arguments);
   - must not **weaken postconditions** (promise less about the result);
-  - must keep the **invariants** of the base type;
+  - must keep the **invariants** of the base type (rules that always hold for
+    its objects);
+  - must not allow state changes the base type forbids (the **history
+    constraint**): a mutable subtype of an immutable type breaks it;
   - must not throw new kinds of errors the callers do not expect.
 - Signs of a violation: a subclass throws "not supported" for an inherited
   method, or callers need `instanceof` checks.
@@ -98,20 +105,83 @@ They come from OOP, but apply equally to modules, components and hooks.
 ## Example
 
 <details>
-<summary>Open/closed: a map instead of a switch</summary>
+<summary>Single responsibility: split a component by reasons to change</summary>
+
+```tsx
+// error-start
+// Fetching, business rules and markup in one place: three reasons to change
+function UserCard({ id }: { id: string }) {
+  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    fetch(`/api/users/${id}`)
+      .then((res) => res.json())
+      .then(setUser);
+  }, [id]);
+  if (!user) return <Spinner />;
+  const isVip = user.orders > 10;
+  return <div>{isVip ? `⭐ ${user.name}` : user.name}</div>;
+}
+// error-end
+
+// correct-start
+// Data access: changes when the API changes
+const fetchUser = (id: string): Promise<User> =>
+  fetch(`/api/users/${id}`).then((res) => res.json());
+
+// Business rule: changes when the business changes it
+const isVip = (user: User) => user.orders > 10;
+
+// Presentation: changes when the design changes
+function UserCard({ id }: { id: string }) {
+  const user = useUser(id, fetchUser); // a data hook
+  if (!user) return <Spinner />;
+  return <div>{isVip(user) ? `⭐ ${user.name}` : user.name}</div>;
+}
+// correct-end
+```
+
+</details>
+
+<details>
+<summary>Interface segregation: narrow props</summary>
+
+```tsx
+// error-next-line
+function Avatar({ user }: { user: User }) {
+  // Depends on the whole User: re-typed and retested when any field changes
+  return <img src={user.avatarUrl} alt={user.name} />;
+}
+
+// correct-next-line
+function Avatar({ src, name }: { src: string; name: string }) {
+  // Depends only on what it uses; works for a team or a bot too
+  return <img src={src} alt={name} />;
+}
+```
+
+</details>
+
+<details>
+<summary>Open/closed: an extension point instead of a switch</summary>
 
 ```typescript
 type Format = (value: number) => string;
 
-// A new format is added to the map; formatValue does not change
-const formats: Record<string, Format> = {
-  currency: (value) => `$${value.toFixed(2)}`,
-  percent: (value) => `${(value * 100).toFixed(0)}%`,
-};
+const formats = new Map<string, Format>([
+  ['currency', (value) => `$${value.toFixed(2)}`],
+]);
 
-function formatValue(value: number, type: string): string {
-  return formats[type]?.(value) ?? String(value);
+// The extension point: other modules add formats without editing this one
+export function registerFormat(type: string, format: Format) {
+  formats.set(type, format);
 }
+
+export function formatValue(value: number, type: string): string {
+  return formats.get(type)?.(value) ?? String(value);
+}
+
+// In another module
+registerFormat('percent', (value) => `${(value * 100).toFixed(0)}%`);
 
 console.log(formatValue(0.25, 'percent'), formatValue(3, 'currency')); // 25% $3.00
 ```
@@ -123,10 +193,13 @@ console.log(formatValue(0.25, 'percent'), formatValue(3, 'currency')); // 25% $3
 
 ```typescript
 class Rectangle {
-  constructor(
-    public width: number,
-    public height: number
-  ) {}
+  width: number;
+  height: number;
+
+  constructor(width: number, height: number) {
+    this.width = width;
+    this.height = height;
+  }
 
   setWidth(width: number) {
     this.width = width;
@@ -139,9 +212,14 @@ class Rectangle {
 
 // error-start
 class Square extends Rectangle {
+  constructor(side: number) {
+    super(side, side);
+  }
+
+  // Weakens the postcondition of setWidth: "height stays the same"
   override setWidth(width: number) {
     this.width = width;
-    this.height = width; // breaks the expectation that height stays the same
+    this.height = width;
   }
 }
 // error-end
@@ -151,7 +229,7 @@ function stretch(rect: Rectangle) {
   return rect.area();
 }
 
-console.log(stretch(new Rectangle(2, 5)), stretch(new Square(5, 5))); // 50 100
+console.log(stretch(new Rectangle(2, 5)), stretch(new Square(5))); // 50 100 — expected 50
 ```
 
 </details>
@@ -172,7 +250,11 @@ class ConsoleNotificationService implements NotificationService {
 
 // Depends on the interface, not on a concrete service
 class MessageManager {
-  constructor(private notification: NotificationService) {}
+  private notification: NotificationService;
+
+  constructor(notification: NotificationService) {
+    this.notification = notification;
+  }
 
   notifyUser(message: string) {
     return this.notification.send(message);
