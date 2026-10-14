@@ -46,6 +46,17 @@ flags and branches for every caller. "Duplication is far cheaper than the wrong
 abstraction" (Sandi Metz); the rule of three: extract on the third repetition,
 when the common shape is clear.
 
+### Other Principles
+
+| Principle                       | Means                                                                                                |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Separation of concerns          | Each part of the code deals with one concern: data, logic, presentation                              |
+| Law of Demeter                  | A unit talks only to its direct collaborators: not `order.customer.address.city`                     |
+| Composition over inheritance    | Combine small parts instead of building class hierarchies (see [OOP](./paradigms/oop-principles.md)) |
+| Fail fast                       | Detect invalid state as early as possible and fail loudly instead of continuing silently             |
+| Principle of least astonishment | Code behaves the way its name and context suggest                                                    |
+| Boy Scout Rule                  | Leave the code a little cleaner than you found it                                                    |
+
 ### Clean Code
 
 The main ideas of Robert C. Martin's "Clean Code":
@@ -60,6 +71,10 @@ The main ideas of Robert C. Martin's "Clean Code":
 | Tests          | As clean as production code, one concept per test                               |
 | Classes        | Small, one responsibility, encapsulated details                                 |
 | Dependencies   | Separate construction from use, inject dependencies                             |
+
+"Clean Code" (2008) is influential but not gospel: some advice, such as very
+short functions and avoiding comments almost entirely, is debated, and the
+examples are in Java. The ideas above are the widely accepted part.
 
 ### Code Smells
 

@@ -7,32 +7,93 @@ description:
 
 # SOLID Principles
 
-SOLID is five design principles collected by Robert C. Martin (the acronym was
-coined by Michael Feathers) for code that is easy to change:
+SOLID is five principles of designing modules and classes so that the code is
+**easy to change without breaking it**. They were collected by Robert C. Martin
+around 2000; the acronym was coined by Michael Feathers. In plain words:
 
-- **Single responsibility**: a module has one reason to change.
-- **Open/closed**: add behavior by extending, not by editing working code.
-- **Liskov substitution**: a subtype can replace its base type without breaking
-  callers.
-- **Interface segregation**: many small interfaces instead of one large.
-- **Dependency inversion**: high-level code depends on abstractions, not on
-  concrete implementations.
+- **Single responsibility**: each module is about one thing, so a change in one
+  requirement touches one place.
+- **Open/closed**: new behavior is added by adding code, not by rewriting code
+  that already works.
+- **Liskov substitution**: if code works with a base type, it must keep working
+  with any of its subtypes.
+- **Interface segregation**: nobody should depend on methods it does not use.
+- **Dependency inversion**: important logic should not depend on details like a
+  particular database, API client or library; both depend on an interface.
 
-They come from OOP but apply to modules, components and hooks as well.
+They come from OOP, but apply equally to modules, components and hooks.
 
 ## Details
 
-| Principle             | Rule                                             | In frontend                                                                                    |
-| --------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
-| Single responsibility | One reason to change                             | Separate UI, business logic and data access: a component, a hook, an API module                |
-| Open/closed           | Open for extension, closed for modification      | Extend through props, `children`, render functions, a config map instead of a growing `switch` |
-| Liskov substitution   | A subtype keeps the contract of its base type    | A custom `Input` accepts and honors the props of a native `input`                              |
-| Interface segregation | Clients do not depend on methods they do not use | Components take the props they need, not a whole `user` or `store` object                      |
-| Dependency inversion  | Both levels depend on abstractions               | Business logic takes an `api` / `storage` interface; tests pass a fake                         |
+### Single Responsibility Principle (SRP)
 
-Signs of an LSP violation: a subclass throws "not supported" for a base method,
-needs `instanceof` checks in callers, or strengthens the requirements on
-arguments.
+- **Strictly**: "a module should have one, and only one, reason to change". A
+  reason to change is an **actor**: a group of people (users, the business,
+  designers) whose requirements the code serves.
+- It is not "a function does one thing": a module may do several things if they
+  always change together for the same actor.
+- **Frontend**: data fetching, business rules and markup change for different
+  reasons, so they live in an API module, a hook and a component.
+
+### Open/Closed Principle (OCP)
+
+- **Strictly** (Bertrand Meyer, 1988): a module is **open for extension** (its
+  behavior can be extended) and **closed for modification** (its source does not
+  need to change for that).
+- Achieved with **extension points**: interfaces and polymorphism, callbacks,
+  configuration maps, plugins.
+- **Frontend**: a component takes `children`, render props or a map of renderers
+  instead of a growing `switch` over types.
+
+### Liskov Substitution Principle (LSP)
+
+- **Strictly** (Barbara Liskov, 1987): objects of a subtype must be usable
+  wherever the base type is expected **without changing the correctness** of the
+  program. This is **behavioral subtyping**; matching method signatures is not
+  enough. A subtype:
+  - must not **strengthen preconditions** (demand more from arguments);
+  - must not **weaken postconditions** (promise less about the result);
+  - must keep the **invariants** of the base type;
+  - must not throw new kinds of errors the callers do not expect.
+- Signs of a violation: a subclass throws "not supported" for an inherited
+  method, or callers need `instanceof` checks.
+- **Frontend**: a custom `Input` that extends the props of a native `input` must
+  honor them: `disabled`, `onChange`, `ref`.
+
+### Interface Segregation Principle (ISP)
+
+- **Strictly**: clients should not be forced to depend on methods they do not
+  use. Several small, role-specific interfaces are better than one general
+  interface.
+- A client that depends on a large interface has to change (and be retested)
+  when any part of it changes.
+- **Frontend**: a component takes only the props it needs (`name`, `avatarUrl`),
+  not the whole `user` object or the whole store.
+
+### Dependency Inversion Principle (DIP)
+
+- **Strictly**: (1) high-level modules should not depend on low-level modules;
+  both should depend on **abstractions**. (2) Abstractions should not depend on
+  details; details should depend on abstractions.
+- **High-level** means the business logic (what the app does); **low-level**
+  means the details (HTTP, `localStorage`, a specific SDK).
+- "Inversion": without it, the logic imports the details; with it, the logic
+  defines the interface it needs, and the details implement it.
+- **Dependency injection** is the usual way to apply it: dependencies are passed
+  in (constructor, function argument, React context) instead of being imported
+  and created inside.
+- **Frontend**: a service takes an `api` or `storage` interface; tests pass a
+  fake, the app passes the real implementation.
+
+### Summary
+
+| Principle             | Problem it prevents                                 | Typical tool                                  |
+| --------------------- | --------------------------------------------------- | --------------------------------------------- |
+| Single responsibility | One change spreads over unrelated code              | Splitting by reason to change                 |
+| Open/closed           | Every new case edits and risks working code         | Extension points: interfaces, callbacks, maps |
+| Liskov substitution   | A subtype breaks code written for the base type     | Behavioral contracts, composition             |
+| Interface segregation | Clients depend on and break because of unused parts | Small role interfaces, narrow props           |
+| Dependency inversion  | Business logic is welded to libraries and APIs      | Interfaces + dependency injection             |
 
 ## Example
 
@@ -131,6 +192,12 @@ await new MessageManager(new ConsoleNotificationService()).notifyUser('Hi');
   dependencies in from outside).
 - How does SRP apply to React? A component that fetches, transforms and renders
   data is split into a data hook and a presentational component.
+- Do the principles apply to functional code? Yes, with functions in place of
+  classes: a function type is an interface (ISP, DIP), a callback argument is an
+  extension point (OCP), and a module has one reason to change (SRP).
+- Can SOLID be overdone? Yes: interfaces with one implementation and layers of
+  indirection for code that never changes make it harder to read. Apply the
+  principles where change actually happens.
 
 ## Common Mistakes
 

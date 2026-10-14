@@ -5,29 +5,53 @@ description: Imperative vs declarative programming, with examples in JavaScript
 
 # Programming Paradigms
 
-A paradigm is a style of structuring code. **Imperative** code says **how**: a
-sequence of statements that change state step by step (loops, assignments).
-**Declarative** code says **what** result is wanted and leaves the steps to a
-library or the language: `map` / `filter` instead of a loop, SQL, CSS, JSX.
-**Procedural** and **object-oriented** programming are imperative styles;
-**functional** programming is declarative. JavaScript is multi-paradigm and
-mixes all of them.
+A **paradigm** is a way of thinking about a program: what it is made of and how
+it is described. The main split is between **imperative** programming — the
+program is a **sequence of commands** that change the state step by step ("take
+the first user, check it, add it to the list, move to the next") — and
+**declarative** programming — the program describes **what result is wanted**
+("active users' names"), and the language or a library decides how to compute
+it. **Procedural** and **object-oriented** programming are kinds of imperative
+programming; **functional** and **logic** programming are kinds of declarative.
+A paradigm is a property of code, not only of a language: JavaScript is
+**multi-paradigm**, and the same task can be written in any of these styles.
 
 ## Details
 
-|              | Imperative                          | Declarative                                   |
-| ------------ | ----------------------------------- | --------------------------------------------- |
-| Describes    | Steps to perform                    | The desired result                            |
-| State        | Mutated in place                    | New values are produced                       |
-| Control flow | Explicit: `for`, `if`, `break`      | Hidden in functions and the runtime           |
-| Examples     | C, a `for` loop, direct DOM updates | SQL, CSS, HTML, `map` / `filter`, JSX, React  |
-| Styles       | Procedural, object-oriented         | Functional, logic, markup and query languages |
+### Imperative vs Declarative
+
+|              | Imperative                     | Declarative                                   |
+| ------------ | ------------------------------ | --------------------------------------------- |
+| Describes    | Steps to perform               | The desired result                            |
+| State        | Changed in place (assignments) | New values are produced from old ones         |
+| Control flow | Explicit: `for`, `if`, `break` | Hidden in functions and the runtime           |
+| Examples     | A `for` loop, `appendChild`, C | `map` / `filter`, JSX, SQL, CSS, HTML, regexp |
+
+### The Main Paradigms
+
+| Paradigm        | Kind        | The program is…                                                              | Examples                                |
+| --------------- | ----------- | ---------------------------------------------------------------------------- | --------------------------------------- |
+| Procedural      | Imperative  | Procedures (functions) that run commands over shared data                    | C, Pascal, a plain JS script            |
+| Object-oriented | Imperative  | Objects that hold state and expose methods; objects send each other messages | Java, C#, Smalltalk, JS classes         |
+| Functional      | Declarative | Expressions built from pure functions over immutable values                  | Haskell, Elm, Clojure, JS array methods |
+| Logic           | Declarative | Facts and rules; the runtime searches for answers                            | Prolog, Datalog                         |
+| Reactive        | Declarative | Values that depend on other values and update automatically when they change | Spreadsheets, RxJS, signals, MobX       |
+
+Event-driven programming (code reacts to events: clicks, messages, timers) is
+how the browser and Node.js run code, whatever the style of the handlers.
+
+### Things That Are Easy to Get Wrong
 
 - Declarative code is built on imperative code: `Array.prototype.map` is a loop
-  inside.
-- React is declarative: a component describes what the UI looks like for a
-  state, and React computes the DOM updates; `document.createElement` and
-  `appendChild` are the imperative way.
+  inside, React calls `appendChild` for you. The imperative part is hidden, not
+  removed.
+- Functional and declarative are not synonyms: functional programming is one
+  declarative style; SQL and CSS are declarative but not functional.
+- Object-oriented code is not automatically imperative in every line, and
+  functional code is not "code without objects": the paradigm is about how state
+  and control flow are handled.
+- React is declarative: a component describes what the UI looks like for a given
+  state, and React works out the DOM updates.
 
 ## Example
 
