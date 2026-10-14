@@ -8,8 +8,8 @@ description:
 # ES Modules
 
 An **ES module** (ESM) is a file with its own scope that shares code through
-**`export`** and gets it through **`import`**. The standard module system of
-JavaScript, supported by browsers and Node.js.
+**`export`** and gets it through **`import`**. It is the standard module system
+of JavaScript, supported by browsers and Node.js.
 
 - Imports and exports are **static**: they are found before the code runs, so
   the whole dependency graph is loaded and linked first. This is what makes
@@ -167,8 +167,9 @@ button.addEventListener('click', async () => {
   runs as soon as it is loaded, in any order.
 - Why can't you import a module from `file://`? Module scripts are fetched with
   CORS, and `file://` URLs are not treated as same-origin.
-- What does `import()` return for a CommonJS module? A namespace object with
-  `module.exports` in `default`.
+- What does `import()` return for a CommonJS module in Node.js? A namespace
+  object with `module.exports` in `default`. Browsers can't load CommonJS at
+  all.
 
 ## Common Mistakes
 

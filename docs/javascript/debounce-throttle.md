@@ -24,7 +24,8 @@ between calls.
 
 ### How They Differ
 
-Ten events, one every 100 ms, with a 300 ms limit (one character is 100 ms):
+Ten events, one every 100 ms, with a 300 ms limit (each character in the diagram
+is 100 ms):
 
 ```text
 time:      0  3  6  9  12   (×100 ms)
