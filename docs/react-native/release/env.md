@@ -1,75 +1,101 @@
 ---
 sidebar_position: 3
+description:
+  Environment variables in React Native and Expo, why values in the JS bundle
+  are not secret, where to keep real secrets
 ---
 
 # Environment Configuration and Secrets
 
-Use `.env` files and a library. React Native does not natively support
-`process.env` (except `NODE_ENV`), so use a library to inject
-environment-specific values:
+Environment values (API URL, feature flags, keys of public SDKs) are **inlined
+at build time**: there is no `process.env` at runtime on the device. In Expo,
+variables prefixed with **`EXPO_PUBLIC_`** are inlined into the JS bundle; in
+bare apps, **`react-native-config`** reads `.env` files and exposes the values
+to JS and native code. Everything that ends up in the app **is not secret**: the
+bundle and the binary can be unpacked. Real secrets stay on a backend, and the
+app gets short-lived tokens from it.
 
-- `react-native-config` (env variables in both JS and native code)
-- `react-native-dotenv` (env variables in JS only)
+Applies to: Expo SDK 57.
 
-For example, create `.env.dev` and `.env.prod` files with API endpoints, feature
-flags, etc., and load them in code.
+## Details
 
-In JS, import `Config` from `react-native-config`. In native code, use
-`BuildConfig` on Android or `Info.plist` on iOS.
+### Tools
 
-## Examples
+| Tool                      | Where values are available                                           | Notes                                                                                                                                        |
+| ------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXPO_PUBLIC_*` in `.env` | JS                                                                   | Read as `process.env.EXPO_PUBLIC_API_URL`; replaced with the literal at build                                                                |
+| `app.config.ts` (Expo)    | Native config: bundle ID, app name, plugins                          | Can read any env variable at build time; `extra` is readable via `expo-constants`                                                            |
+| EAS environment variables | Builds and updates on EAS                                            | Per environment (development, preview, production); "secret" ones are not printed in logs, but still end up in the app if the code uses them |
+| `react-native-config`     | JS, Android (`BuildConfig`, Gradle), iOS (`Info.plist`, Objective-C) | `ENVFILE=.env.staging` selects the file                                                                                                      |
+| `react-native-dotenv`     | JS only                                                              | A Babel plugin                                                                                                                               |
 
-### In JavaScript code
+### What Is a Secret
 
-```javascript
+| Can be in the app                                | Must stay on the server                      |
+| ------------------------------------------------ | -------------------------------------------- |
+| API base URL, feature flags                      | Payment provider secret keys                 |
+| Public keys of SDKs: Maps, Sentry DSN, analytics | Database credentials, admin tokens           |
+| OAuth client ID                                  | OAuth client secret, third-party API secrets |
+
+Build-time secrets (keystore passwords, App Store Connect API key, EAS token)
+belong in CI secrets or EAS credentials, not in the repository.
+
+### One Environment per Build
+
+Build a separate binary per environment (separate EAS build profiles, Gradle
+flavors or Xcode schemes) and load only its values. A production build that also
+contains staging URLs and keys leaks them.
+
+## Example
+
+```bash title=".env.production"
+EXPO_PUBLIC_API_URL=https://api.example.com
+```
+
+```ts
+// Expo: inlined at build time
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+```
+
+<details>
+<summary>react-native-config in JS and native code</summary>
+
+```ts
 import Config from 'react-native-config';
 
-console.log(Config.API_URL);
+const apiUrl = Config.API_URL;
 ```
 
-### In native code
+```groovy title="android/app/build.gradle"
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
+android {
+    defaultConfig {
+        applicationId project.env.get("APP_ID")
+    }
+}
+```
 
 ```java
-public HttpURLConnection getApiUrl(){
-    URL url = new URL(BuildConfig.API_URL);
-    // ...
-}
+// Android: values become BuildConfig fields
+String apiUrl = BuildConfig.API_URL;
 ```
 
-```gradle
-defaultConfig {
-    apiURL project.env.get("API_URL")
-    versionCode project.env.get("VERSION_CODE").toInteger()
-}
-```
+On iOS, use `$(API_URL)` in `Info.plist` or `[RNCConfig envFor:@"API_URL"]` in
+Objective-C.
 
-```objective-c
-// import header
-#import "RNCConfig.h"
+</details>
 
-// then read individual keys like:
-NSString *apiUrl = [RNCConfig envFor:@"API_URL"];
+## Common Mistakes
 
-// or just fetch the whole config
-NSDictionary *config = [RNCConfig env];
-```
+- Putting an API secret in `.env` and thinking it is hidden: it is inlined into
+  the bundle as plain text.
+- Expecting `process.env.API_URL` without the `EXPO_PUBLIC_` prefix to work in
+  Expo app code: it is `undefined`.
+- Reading env variables dynamically (`process.env[name]`): only static
+  references are inlined.
 
-## Secrets
+## See Also
 
-Sensitive keys (API secrets, certificates) should not be hardcoded or checked
-into Git.
-
-Instead, store secrets in secure places. Common practices include using CI/CD
-variables (so keys are only in your build environment) or a secret manager
-(e.g., AWS Secrets Manager). For build-time secrets (like certificate
-passwords), use Gradle/Mac Keychain for Android and Xcode build settings for iOS
-(again from CI secrets or keychain) to avoid exposing them in source.
-
-:::tip[Inject only one config per build.]
-
-Avoid bundling multiple environments into one binary. Use separate .env or
-configuration files per build target, and configure your build scripts (Fastlane
-lanes, EAS build profiles, etc.) to load only the needed variables. This
-prevents leaking staging keys or debug endpoints in production releases.
-
-:::
+- [Publishing and Distribution](./distribution.md)
+- [OTA Updates](./ota.md)

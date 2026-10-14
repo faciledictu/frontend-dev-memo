@@ -1,83 +1,69 @@
 ---
 sidebar_position: 3
+description:
+  Platform-specific file extensions, Platform.OS, Platform.select and
+  Platform.Version
 ---
 
 # Platform-Specific Code
 
-## Platform-Specific File Extensions
+There are two ways to write code for one platform. **File extensions**
+(`Button.ios.tsx`, `Button.android.tsx`) let the bundler (Metro) pick the right
+file at build time; use them when the implementations differ a lot. The
+**`Platform` module** (`Platform.OS`, `Platform.select`, `Platform.Version`)
+branches at runtime; use it for small differences.
 
-You can create platform-specific files by naming them accordingly:
+## Details
 
-- `Component.ios.js` for iOS-specific code.
+### File Extensions
 
-- `Component.android.js` for Android-specific code.
+| File                    | Picked up by                                               |
+| ----------------------- | ---------------------------------------------------------- |
+| `Component.ios.tsx`     | iOS build                                                  |
+| `Component.android.tsx` | Android build                                              |
+| `Component.native.tsx`  | iOS and Android, when there is no `.ios` / `.android` file |
+| `Component.web.tsx`     | Web build (React Native Web)                               |
+| `Component.tsx`         | Any platform without a more specific file                  |
 
-- `Component.native.js` is picked up by the React Native bundler for both
-  Android and iOS (Metro).
+Import without the extension: `import Component from './Component'`. The other
+platform's file is not included in the bundle.
 
-- `Component.js` is picked up by webpack, Rollup or any other Web bundler.
+### `Platform` Module
 
-When you import `Component` without the extension, React Native will
-automatically pick the correct file based on the platform.
+| API                   | What it gives                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------- |
+| `Platform.OS`         | `'ios'`, `'android'`, `'web'`, …                                                      |
+| `Platform.select({})` | The value for the current platform; keys `ios`, `android`, `native`, `web`, `default` |
+| `Platform.Version`    | Android: API level as a number (`34`); iOS: system version as a string (`'18.2'`)     |
+| `Platform.isPad`      | iOS only: the device is an iPad                                                       |
 
-## `Platform` Module
+## Example
 
-The Platform module from react-native allows you to write conditional code based
-on the platform.
-
-### Specific Styles
-
-```javascript
-import { Platform, StyleSheet } from 'react-native';
+```tsx
+import { Platform, StyleSheet, PermissionsAndroid } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
     padding: Platform.OS === 'ios' ? 20 : 10,
+    ...Platform.select({
+      ios: { shadowOpacity: 0.2, shadowRadius: 4 },
+      android: { elevation: 4 },
+      default: {},
+    }),
   },
 });
-```
 
-You can also use `Platform.select` for more complex cases. It accepts an object
-where keys can be one of `'ios' | 'android' | 'native' | 'default'`, and returns
-the most fitting value for the platform you are currently running on.
-
-```javascript
-const styles = StyleSheet.create({
-  container: Platform.select({
-    ios: { padding: 20 },
-    android: { padding: 10 },
-    // other platforms, web for example
-    default: { padding: 15 },
-  }),
-});
-```
-
-### Specific Hooks
-
-You can create custom hooks that encapsulate platform-specific logic.
-
-```javascript
-import { Platform } from 'react-native';
-
-const usePlatformSpecificLogic = () => {
-  if (Platform.OS === 'ios') {
-    // iOS-specific logic
-  } else if (Platform.OS === 'android') {
-    // Android-specific logic
-  } else {
-    // Web-specific logic
+// Runtime permission for notifications exists since Android 13 (API 33)
+async function askNotificationPermission() {
+  if (Platform.OS === 'android' && Platform.Version >= 33) {
+    await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+    );
   }
-};
+}
 ```
 
-### Specific Components
+## See Also
 
-```jsx
-import { Platform } from 'react-native';
-import IOSComponent from './IOSComponent';
-import AndroidComponent from './AndroidComponent';
-
-const MyComponent = () => {
-  return Platform.OS === 'ios' ? <IOSComponent /> : <AndroidComponent />;
-};
-```
+- [Permissions](./permissions.md)
+- [StyleSheet](./stylesheet.md)

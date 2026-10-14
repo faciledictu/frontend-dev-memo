@@ -1,86 +1,87 @@
 ---
 sidebar_position: 5
+description:
+  How Flexbox in React Native differs from the web, alignment properties and
+  their values
 ---
 
-# Flexbox Model
+# Flexbox in React Native
 
-Flexbox is a powerful layout system used in React Native to create responsive
-UIs. It helps in organizing components in a flexible and predictable way, which
-is especially useful for mobile app development where screen sizes vary.
+Every `View` is a flex container; layout is computed by **Yoga**, a Flexbox
+engine. It works like CSS Flexbox with different defaults:
+**`flexDirection: 'column'`**, `alignContent: 'flex-start'`, `flexShrink: 0`,
+and **`flex` takes a single number**. `justifyContent` aligns children along the
+main axis (set by `flexDirection`), `alignItems` along the cross axis.
 
-## Properties
+Applies to: React Native 0.87.
 
-### `flexDirection`
+## Details
 
-- `column` (default)<br /> Aligns children vertically (top to bottom).
-- `row`<br /> Aligns children horizontally (left to right).
-- `column-reverse`<br /> Aligns children vertically in reverse order (bottom to
-  top).
-- `row-reverse`<br /> Aligns children horizontally in reverse order (right to
-  left).
+### Differences from the Web
 
-### `justifyContent`
+| Property        | Web default        | React Native default |
+| --------------- | ------------------ | -------------------- |
+| `display`       | `block`            | `flex` (every view)  |
+| `flexDirection` | `row`              | `column`             |
+| `alignContent`  | `normal` (stretch) | `flex-start`         |
+| `flexShrink`    | `1`                | `0`                  |
+| `flex`          | Shorthand: `1 1 0` | One number           |
+| `position`      | `static`           | `relative`           |
 
-Aligns children along **the primary axis** (direction defined by
-`flexDirection`).
+`flex: 1` means "take the free space"; siblings with `flex: 1` and `flex: 2`
+share it 1:2. `flex: 0` sizes the view by its `width` / `height`; a negative
+value lets it shrink to `minWidth` / `minHeight`.
 
-- `flex-start` (default)<br /> Children are aligned at the beginning of the
-  container.
-- `center`<br /> Children are centered within the container.
-- `flex-end`<br /> Children are aligned at the end of the container.
-- `space-between`<br /> Space is evenly distributed between children.
-- `space-around`<br /> Space is evenly distributed around children.
-- `space-evenly`<br /> Space is evenly distributed, including at the ends of the
-  container.
+### Properties
 
-### `alignItems`
+| Property                              | Axis                 | Values                                                                                                                         |
+| ------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `flexDirection`                       | —                    | `column` (default), `row`, `column-reverse`, `row-reverse`                                                                     |
+| `justifyContent`                      | Main                 | `flex-start` (default), `center`, `flex-end`, `space-between`, `space-around`, `space-evenly`                                  |
+| `alignItems`                          | Cross                | `stretch` (default), `flex-start`, `center`, `flex-end`, `baseline`                                                            |
+| `alignSelf`                           | Cross, for one child | `auto` (default, takes the parent's `alignItems`) or any `alignItems` value                                                    |
+| `flexWrap`                            | —                    | `nowrap` (default), `wrap`, `wrap-reverse`                                                                                     |
+| `alignContent`                        | Cross, between lines | `flex-start` (default), `center`, `flex-end`, `stretch`, `space-between`, `space-around`, `space-evenly`; only with `flexWrap` |
+| `gap`                                 | Between children     | `gap`, `rowGap`, `columnGap` in dp                                                                                             |
+| `flexGrow`, `flexShrink`, `flexBasis` | Main                 | Same as on the web                                                                                                             |
 
-Aligns children along **the cross axis** (perpendicular to the `flexDirection`).
+`stretch` stretches children along the cross axis only if they have no fixed
+size on that axis.
 
-- `stretch`<br /> Children stretch to fill the container (default for any
-  direction).
-- `flex-start`<br /> Children are aligned at the start of the cross axis.
-- `center`<br /> Children are centered on the cross axis.
-- `flex-end`<br /> Children are aligned at the end of the cross axis.
+## Example
 
-### `flex`
+```tsx
+import { StyleSheet, Text, View } from 'react-native';
 
-Controls how much space a child should take up relative to its siblings.
+// A header row: title on the left, actions on the right
+function Header() {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.title}>Inbox</Text>
+      <Text>Edit</Text>
+      <Text>New</Text>
+    </View>
+  );
+}
 
-For example:
+const styles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  title: { flex: 1 }, // pushes the actions to the right
+});
+```
 
-- `flex: 1`: The child will expand to fill available space, dividing it equally
-  if other children also have `flex: 1`.
-- `flex: 0.5`: The child will take up half the space relative to a child with
-  `flex: 1`.
+## Common Mistakes
 
-### `alignSelf`
+- Expecting children in a row by default: the default direction is `column`.
+- Writing `flex: '1 1 auto'`: `flex` takes one number; use `flexGrow`,
+  `flexShrink` and `flexBasis` for the rest.
+- Forgetting that `flexShrink` is `0`, so long content overflows instead of
+  shrinking.
 
-Allows individual child elements to override the `alignItems` of their parent.
+## See Also
 
-- `auto` (default)<br /> Inherits the parent's `alignItems`.
-- `flex-start`, `center`, `flex-end`, `stretch`<br /> Same as `alignItems`.
-
-### `flexWrap`
-
-Determines whether the children should wrap onto multiple lines/columns when
-they exceed the container's boundaries.
-
-- `nowrap` (default)<br /> All children are placed in a single line.
-- `wrap`<br /> Children wrap to the next line/column if they exceed the
-  container's boundaries.
-- `wrap-reverse`<br /> Children wrap to the next line/column in reverse order.
-
-### `alignContent`
-
-Aligns multiple rows or columns within the container when `flexWrap` is set to
-`wrap`.
-
-- `flex-start`<br /> Lines are packed at the start of the container.
-- `center`<br /> Lines are packed at the center of the container.
-- `flex-end`<br /> Lines are packed at the end of the container.
-- `space-between`<br /> Lines are evenly distributed with the first line at the
-  start and the last line at the end.
-- `space-around`<br /> Lines are evenly distributed with equal space around each
-  line.
-- `stretch`<br /> Lines stretch to take up the remaining space.
+- [StyleSheet](./stylesheet.md)

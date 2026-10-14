@@ -1,111 +1,153 @@
 ---
 sidebar_position: 6
+description:
+  ScrollView vs FlatList vs SectionList vs FlashList, virtualization, FlatList
+  optimization props
 ---
 
-# Working with Lists
+# Lists: ScrollView, FlatList, FlashList
 
-## ScrollView
+`ScrollView` renders **all** its children at once: fine for a screen of content,
+bad for long lists. `FlatList` and `SectionList` are **virtualized**: they
+render only the items in and near the visible area and replace the rest with
+empty space, so memory stays flat. **FlashList** (Shopify) is a drop-in
+alternative that **recycles** item views instead of creating new ones, which
+scrolls smoother on long, varied lists.
 
-This component is a generic container that can be scrolled vertically or
-horizontally (by setting the `horizontal` property). It's great for simple
-content that doesn't require any complex list optimizations.
+Applies to: React Native 0.87, FlashList 2.
 
-You might use `map()` to iterate over an array and render each item inside a
-`ScrollView`. This is useful for small lists, but it's not recommended for large
-datasets because all items are rendered at once, which can lead to performance
-issues.
+## Details
 
-```jsx
-import React from 'react';
-import { ScrollView, Text } from 'react-native';
+### Which One to Use
 
-const MyList = ({ data }) => {
+| Component     | Renders                      | Use for                                                   |
+| ------------- | ---------------------------- | --------------------------------------------------------- |
+| `ScrollView`  | Everything at once           | Forms, settings, a few dozen items at most                |
+| `FlatList`    | A window around the viewport | Long or unbounded lists, infinite scroll                  |
+| `SectionList` | Same, with section headers   | Grouped data: contacts by letter, messages by date        |
+| `FlashList`   | Same, recycling item views   | Long lists with heavy or varied items, when FlatList lags |
+
+### How Virtualization Works
+
+- **Render window**: items within `windowSize` screens around the viewport
+  (default 21: 10 above, 10 below, the visible one) are mounted; items outside
+  are unmounted and replaced with blank space of the same size.
+- **Incremental rendering**: new items are rendered in batches with low
+  priority, so touches and animations are not blocked.
+- The cost: scrolling faster than items render shows **blank areas**, and the
+  state of an unmounted item (for example an expanded section) is lost unless it
+  is kept outside the item.
+
+### FlatList Props
+
+| Prop                                                               | What it does                                                                                                                     |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `data`, `renderItem`                                               | Items and how to render one                                                                                                      |
+| `keyExtractor`                                                     | A stable key per item; use an ID, not the index                                                                                  |
+| `extraData`                                                        | Anything **outside `data`** that `renderItem` reads (selected ID); the list is a pure component and does not re-render otherwise |
+| `ListHeaderComponent`, `ListFooterComponent`, `ListEmptyComponent` | Header, footer, empty state                                                                                                      |
+| `onEndReached`, `onEndReachedThreshold`                            | Load the next page near the end                                                                                                  |
+| `refreshing`, `onRefresh`                                          | Pull to refresh                                                                                                                  |
+
+### FlatList Optimization
+
+- **`getItemLayout`**: if items have a fixed height, tell the list the size and
+  offset of each one; it skips measuring and `scrollToIndex` works instantly.
+- **`windowSize`**: smaller means less memory and more blank areas on fast
+  scroll.
+- **`initialNumToRender`**: just enough items to fill the first screen.
+- **`maxToRenderPerBatch`**, **`updateCellsBatchingPeriod`**: how many items are
+  rendered per batch and how often.
+- **`removeClippedSubviews`**: detaches off-screen views from the native
+  hierarchy (on by default on Android).
+- **Memoize items**: wrap the item component in `React.memo` and keep
+  `renderItem` stable with `useCallback`, so a parent re-render does not
+  re-render every visible row.
+- Keep items light: small images (resized on the server), no heavy work in
+  render.
+
+### FlashList
+
+- Same API as `FlatList` (`data`, `renderItem`, `keyExtractor`), so migration is
+  usually a rename.
+- Recycling: an item that scrolls out is reused for the one scrolling in, with
+  new props. Local state inside an item is therefore reused too; reset it when
+  the item changes.
+- Version 2 needs the New Architecture and measures items itself; size estimates
+  (`estimatedItemSize`) are no longer needed.
+- Use `getItemType` when the list mixes different kinds of rows, so a view is
+  recycled only for a row of the same kind.
+
+## Example
+
+```tsx
+import { memo, useCallback, useState } from 'react';
+import { FlatList, Pressable, Text } from 'react-native';
+
+type Message = { id: string; text: string };
+
+const ITEM_HEIGHT = 56;
+
+const Row = memo(function Row({
+  item,
+  selected,
+  onPress,
+}: {
+  item: Message;
+  selected: boolean;
+  onPress: (id: string) => void;
+}) {
   return (
-    <ScrollView>
-      {data.map((item, index) => (
-        <Text key={index}>{item}</Text>
-      ))}
-    </ScrollView>
+    <Pressable
+      style={{ height: ITEM_HEIGHT, opacity: selected ? 0.5 : 1 }}
+      onPress={() => onPress(item.id)}
+    >
+      <Text>{item.text}</Text>
+    </Pressable>
   );
-};
-```
+});
 
-## List virtualization
+export function Messages({ messages }: { messages: Message[] }) {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
-List virtualization is a performance optimization technique used in React Native
-(and other platforms) to efficiently render long lists of data. It allows only a
-small subset of items from the list to be rendered at any given time, instead of
-rendering the entire list at once. This reduces memory usage and improves the
-performance of your app, especially when dealing with large datasets.
+  const renderItem = useCallback(
+    ({ item }: { item: Message }) => (
+      <Row
+        item={item}
+        selected={item.id === selectedId}
+        onPress={setSelectedId}
+      />
+    ),
+    [selectedId]
+  );
 
-- Finite Render Window
-
-  React Native maintains a limited set of items within this render window, which
-  corresponds to the portion of the list currently visible on the screen, plus a
-  buffer zone around it.
-
-  Items that fall outside this window are not rendered but replaced with blank
-  space, which reduces memory consumption.
-
-- Incremental rendering
-
-  Virtualized lists are optimized for fast scrolling.
-
-  Items that are far from the visible area are rendered incrementally with low
-  priority, ensuring that the app's main interactions (such as user touches and
-  animations) are not interrupted.
-
-  If an item is about to come into view, it is rendered with higher priority to
-  ensure that the user does not encounter any blank spaces during normal
-  scrolling.
-
-## FlatList
-
-This is a performant component for rendering large lists of data. Unlike
-`ScrollView`, `FlatList` only renders items that are currently visible on the
-screen, making it more memory-efficient.
-
-### Common Props
-
-- `data`<br /> The array of data to be rendered.
-- `renderItem`<br /> A function that returns the component to render for each
-  item.
-- `keyExtractor`<br /> A function to generate unique keys for each item, which
-  helps React Native manage item re-renders.
-- `ListHeaderComponent`<br /> A component or JSX to render at the top of the
-  list.
-- `extraData`<br /> Used to re-render the list when this prop changes.
-
-```jsx
-import React from 'react';
-import { FlatList, Text, View } from 'react-native';
-
-const MyFlatList = ({ data }) => {
   return (
     <FlatList
-      data={data}
-      renderItem={({ item }) => <Text>{item}</Text>}
-      keyExtractor={(item, index) => index.toString()}
-      ListHeaderComponent={<Text>Header Content</Text>}
-      extraData={data}
+      data={messages}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id}
+      extraData={selectedId}
+      getItemLayout={(_, index) => ({
+        length: ITEM_HEIGHT,
+        offset: ITEM_HEIGHT * index,
+        index,
+      })}
     />
   );
-};
+}
 ```
 
-### extraData
+## Common Mistakes
 
-It is a marker property for telling the list to re-render (since _it implements
-PureComponent_). If any of your renderItem, Header, Footer, etc. functions
-depend on anything outside of the data prop, stick it here and treat it
-immutably.
+- `data.map()` inside a `ScrollView` for a long or unbounded list.
+- Index as the key: after an insert or delete, rows keep the wrong state.
+- Passing `data` again as `extraData`: it is already compared. `extraData` is
+  for values outside `data`.
+- Nesting a `FlatList` inside a vertical `ScrollView`: virtualization stops
+  working because the list gets unlimited height. Use `ListHeaderComponent`
+  instead.
 
-## SectionList
+## See Also
 
-Similar to `FlatList`, but designed to handle grouped data. It supports
-rendering sections with headers and items within each section.
-
-- `sections`<br /> An array where each section contains a title and data array.
-- `renderItem`<br /> Function to render each item within a section.
-- `renderSectionHeader`<br /> Function to render the header for each section.
-- `keyExtractor`<br /> Similar to `FlatList`, but for section items.
+- [Virtualization in React](../react/performance/virtualization.md)
+- [Optimization in React](../react/performance/optimization.md)

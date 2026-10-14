@@ -1,73 +1,57 @@
 ---
 sidebar_position: 2
+description:
+  What fastlane automates for iOS and Android releases, lanes, match, fastlane
+  vs EAS
 ---
 
 # Fastlane
 
-Fastlane is an open-source toolchain that automates building, signing, testing,
-and releasing mobile apps — particularly useful for both iOS and Android in
-React Native projects.
+**fastlane** is an open-source Ruby tool that automates building, signing,
+testing and releasing native apps. Steps are **actions** (`build_app`,
+`upload_to_testflight`, `match`), grouped into **lanes** in a `Fastfile`, and
+run the same way on a laptop and in CI. In React Native it is used for bare
+projects; Expo projects usually rely on **EAS Build** and **EAS Submit**
+instead.
 
-## What is it used for?
+## Details
 
-1. Automated Screenshot Generation
+### What It Automates
 
-   - Capture localized screenshots across all languages and devices your app
-     supports.
-   - Define the setup once, and anyone on your team can regenerate screenshots
-     later.
-   - Runs headlessly — great for CI.
-   - Perfect for App Store and Play Store submissions with proper localization.
+| Task              | Actions                                                                                                        |
+| ----------------- | -------------------------------------------------------------------------------------------------------------- |
+| iOS code signing  | `match`: certificates and profiles in a private encrypted git repo or cloud storage, shared by the team and CI |
+| Build             | `build_app` (gym) for iOS, `gradle` for Android                                                                |
+| Versioning        | `increment_build_number`, `increment_version_code` (plugin)                                                    |
+| Beta distribution | `upload_to_testflight`, `upload_to_play_store(track: 'internal')`, Firebase App Distribution (plugin)          |
+| Store release     | `upload_to_app_store` (deliver), `upload_to_play_store` (supply), metadata and release notes                   |
+| Screenshots       | `capture_screenshots` (snapshot) across devices and languages                                                  |
 
-2. Beta Deployment
+### Fastlane vs EAS
 
-   - Publish builds to beta testers using TestFlight, Play Store internal track,
-     or other services like Firebase App Distribution, etc.
-   - Automates: version bumping, code signing, building the app, uploading
-     builds, setting changelogs
+|         | fastlane                                    | EAS Build / Submit                        |
+| ------- | ------------------------------------------- | ----------------------------------------- |
+| Runs on | Your machines or CI (iOS builds need macOS) | Expo's cloud, or locally with `--local`   |
+| Signing | `match` or manual                           | Credentials managed by EAS                |
+| Fits    | Any native project, full control            | Expo projects; paid tiers for more builds |
 
-3. App Store and Google Play Deployment
-
-   - Fully automate release submissions.
-   - Automatically submit new app versions for review.
-   - Great for repeatable and reliable deployment workflows.
-
-4. Automatic Code Signing (iOS)
-
-   - Handles provisioning profiles and certificates via match.
-   - Stores them securely in a private, encrypted git repo.
-   - Ensures every dev on the team can generate signed builds.
-
-5. CI/CD Integration
-   - Integrates with CI/CD pipelines (e.g., GitHub Actions, GitLab CI).
-
-## Example: A simple Fastlane setup
+## Example
 
 ```ruby
-lane :release_ios do
-  match(type: "appstore")           # Fetch provisioning profiles
-  increment_build_number            # Bump build number
+lane :beta_ios do
+  match(type: "appstore")           # Fetch the certificate and profile
+  increment_build_number
   build_app(scheme: "MyApp")        # Build the .ipa
-  upload_to_testflight              # Send to TestFlight
+  upload_to_testflight
+end
+
+lane :beta_android do
+  gradle(task: "clean bundleRelease", project_dir: "android")
+  upload_to_play_store(track: "internal", aab: "android/app/build/outputs/bundle/release/app-release.aab")
 end
 ```
 
-```ruby
-lane :release_android do
-  gradle(task: "clean bundleRelease")
-  upload_to_play_store(track: "beta") # Push to Google Play beta track
-end
-```
+## See Also
 
-:::tip[Advantages]
-
-- **Repeatable:** Makes the release process predictable across teams.
-- **Reliable:** Cuts down on human error in releases.
-- **Time-saving:** Automates repetitive steps so you can focus on writing
-  features.
-- **Cross-platform:** Works equally well for iOS and Android in React Native
-  projects.
-- **Team-friendly:** Easy handoff for builds and distribution between devs and
-  QA.
-
-:::
+- [Publishing and Distribution](./distribution.md)
+- [CI/CD](../../tooling/ci-cd.md)

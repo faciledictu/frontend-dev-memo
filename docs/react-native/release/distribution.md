@@ -1,155 +1,116 @@
 ---
 sidebar_position: 1
+description:
+  Publishing to the App Store and Google Play, signing, provisioning profiles,
+  Play App Signing, test tracks, review and staged rollout
 ---
 
 # Publishing and Distribution
 
-Publishing and distributing React Native apps involves several steps and
-requires meeting the guidelines of both the Apple App Store and Google Play
-Store.
+A release is a **signed** native build uploaded to the store: an `.ipa` to **App
+Store Connect** and an `.aab` (Android App Bundle) to the **Google Play
+Console**. iOS signs with a **distribution certificate** and a **provisioning
+profile**; Android signs with an **upload key** from a keystore, and Google
+re-signs the app with the **app signing key** it keeps (Play App Signing).
+Builds go to testers first (**TestFlight**, Play **testing tracks**), then to
+review and a gradual rollout. In Expo projects, `eas build` and `eas submit` do
+all of this in the cloud.
 
-| Aspect                 | iOS                                             | Android                                        |
-| ---------------------- | ----------------------------------------------- | ---------------------------------------------- |
-| Developer Account Cost | $99/year                                        | $25 (one-time fee)                             |
-| Signing                | Requires provisioning profiles and certificates | Requires a keystore for signing                |
-| Review Time            | Longer 1–7 days (review required), stricter     | Shorter, more automated (A few hours to 1 day) |
-| Distribution Options   | App Store, Ad-Hoc, Enterprise                   | Google Play, APK sharing                       |
-| Submission Tool        | Xcode or Transporter                            | Google Play Console                            |
-| Staged Rollout         | Phased Release (7 days)                         | Supported                                      |
-| Pricing & Availability | Configured in App Store Connect                 | Configured in Play Console                     |
-| App File Type          | .ipa                                            | .apk or .aab                                   |
+## Details
 
-## Apple Store Distribution
+### iOS vs Android
 
-1. Create an App Store entry in App Store Connect. Set up app metadata
-   (description, screenshots, categories, etc.).
+|                   | iOS                                                                                | Android                                                        |
+| ----------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Developer account | $99 a year                                                                         | $25 once                                                       |
+| Signing           | Certificate + provisioning profile                                                 | Upload key (keystore); Google holds the app signing key        |
+| Artifact          | `.ipa`                                                                             | `.aab` (required for new apps on Play); `.apk` for sideloading |
+| Testing           | TestFlight: internal (up to 100, no review), external (up to 10,000, light review) | Internal, closed and open testing tracks                       |
+| Review            | Manual; most apps within a day or two                                              | Mostly automated; hours to a few days                          |
+| Gradual rollout   | Phased release over 7 days, can be paused                                          | Staged rollout by percentage, can be halted                    |
+| Upload            | Xcode, Transporter, `eas submit`, fastlane                                         | Play Console, `eas submit`, fastlane                           |
 
-2. Switch to the Release scheme (Product → Scheme → Edit Scheme, set
-   Configuration to Release), then:
-   - Archive the app (Product → Archive) for distribution.
-   - Press Distribute App (Product → Distribute App).
-   - Select App Store Connect.
-   - Sign it with the appropriate provisioning profile and distribution
-     certificate.
+New personal Google Play accounts must run a closed test with at least 12
+testers for 14 days before the first production release.
 
-   :::info
+### iOS Signing
 
-   Xcode includes an app validation step when you archive your app for
-   distribution. It checks:
+- **Certificate**: proves who built the app. A development certificate for
+  running on devices, a distribution certificate for TestFlight and the App
+  Store.
+- **Provisioning profile**: ties the app ID, the certificate and (for
+  development and ad hoc) the list of allowed devices.
 
-   - Provisioning profiles and certificates.
-   - App Store guidelines compliance.
-   - Missing or invalid settings in the app’s metadata.
+| Profile     | Purpose                                       | Device list                           |
+| ----------- | --------------------------------------------- | ------------------------------------- |
+| Development | Debug on registered devices                   | Yes                                   |
+| Ad Hoc      | Install on registered test devices            | Yes, up to 100 per device type a year |
+| App Store   | TestFlight and the App Store                  | No                                    |
+| Enterprise  | In-house apps of a company, outside the store | No                                    |
 
-   :::
+Android has no provisioning profiles: any signed APK can be installed if the
+user allows it.
 
-3. Upload the app binary. Now you can find it in the App Store Connect under
-   TestFlight.
+### Android Signing and Play App Signing
 
-4. Apple manually reviews the app to ensure compliance with guidelines. Approval
-   typically takes a few days, though it may vary.
+- You generate an **upload key** and sign builds with it.
+- Google Play strips it and signs the delivered APKs with the **app signing
+  key**, which only Google holds.
+- A lost upload key can be reset through Play Console support. Before Play App
+  Signing, a lost key meant the app could never be updated.
 
-5. Once approved, publish the app or schedule a release date.
+## Example
 
-### Provisioning Profile and Distribution Certificate
+<details>
+<summary>iOS release with Xcode</summary>
 
-- When building an app, you sign it using a certificate.
-- Then, you associate that signed app with a provisioning profile.
+1. Create the app in App Store Connect: bundle ID, name, metadata, screenshots.
+2. In Xcode, select the Release configuration and a generic device, then
+   **Product → Archive**.
+3. In the Organizer, **Distribute App → App Store Connect**. Xcode validates
+   signing and settings and uploads the build.
+4. The build appears in TestFlight after processing; add testers.
+5. Attach the build to a version, submit it for review, then release it
+   manually, automatically or with a phased release.
 
-**Provisioning Profiles** are Apple-specific and are a key component of Apple’s
-app development and distribution process. They are required to run apps on
-physical devices (for testing) and to distribute apps via the App Store or
-TestFlight.
+</details>
 
-Types of provisioning profiles:
+<details>
+<summary>Android release with Gradle</summary>
 
-| Type        | Purpose                                      | Includes Device UDIDs? |
-| ----------- | -------------------------------------------- | ---------------------- |
-| Development | Run and debug apps on real devices via Xcode | Yes                    |
-| Ad Hoc      | Distribute to testers outside the App Store  | Yes (max 100 devices)  |
-| App Store   | Submit app to App Store                      | No (open to public)    |
-| Enterprise  | Internal distribution within an organization | No                     |
-
-:::info[Do Android Apps Have an Equivalent?]
-
-Not directly. Android apps don’t use provisioning profiles, but they do require:
-
-- keystore: A digital file that holds the key used to sign your app.
-- Proper permissions and target API levels to ensure compatibility with devices.
-
-Android’s distribution process is more open and less restrictive compared to
-Apple’s, making provisioning profiles unnecessary in the Android ecosystem.
-
-:::
-
-**The distribution certificate** proves to Apple and devices that the app was
-created by a trusted developer.
-
-- Created in the Apple Developer Portal or via Xcode.
-- Identifies the developer or organization that published the app.
-- Ensures that the app has not been tampered with after being signed.
-- Is required to build and sign the app for distribution.
-
-You can only have two active iOS Distribution Certificates at once (per team).
-
-Types:
-
-- Development Certificate: For testing apps on real devices.
-- Distribution Certificate: For distributing apps either to the App Store or via
-  Ad Hoc/Enterprise channels.
-
-When creating a build for distribution (App Store or Enterprise), the app must
-be signed using the Distribution Certificate associated with your Apple
-Developer Account.
-
-## Google Play Distribution
-
-1. In Google Play Console, create your app entry and configure app details
-   (name, description, graphics, etc.).
-
-2. Android requires signing with a release key. Generate one with `keytool`:
+1. Generate the upload key:
 
    ```bash
-   keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+   keytool -genkeypair -v -storetype PKCS12 -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
    ```
 
-   - `keystore`: A file that holds the key used to sign your app.
-   - `alias`: A unique identifier for the key.
-   - `keyalg`: The algorithm used to generate the key (RSA).
-   - `keysize`: The size of the key (2048 bits).
-   - `validity`: The duration for which the key is valid (10000 days, ~27
-     years).
-
-   This creates `my-release-key.keystore`. Keep the keystore and passwords safe.
-   Place the `.keystore` in `android/app/` and put the credentials in
-   `~/.gradle/gradle.properties` so they are not committed.
+2. Put the keystore in `android/app/` and the passwords in
+   `~/.gradle/gradle.properties` (not in the repository), and reference them in
+   `signingConfigs.release` of `android/app/build.gradle`:
 
    ```properties
-   MYAPP_RELEASE_STORE_FILE=my-release-key.keystore
-   MYAPP_RELEASE_KEY_ALIAS=alias_name
-   MYAPP_RELEASE_STORE_PASSWORD=your_store_password
-   MYAPP_RELEASE_KEY_PASSWORD=your_key_password
+   MYAPP_UPLOAD_STORE_FILE=my-upload-key.keystore
+   MYAPP_UPLOAD_KEY_ALIAS=my-key-alias
+   MYAPP_UPLOAD_STORE_PASSWORD=*****
+   MYAPP_UPLOAD_KEY_PASSWORD=*****
    ```
 
-3. Generate a signed build. Use Android Studio or Gradle to build a signed
-   release **AAB** (Android App Bundle, required for new apps on Google Play) or
-   an **APK** (not recommended).
+3. Build the bundle: `cd android && ./gradlew bundleRelease`. The result is
+   `android/app/build/outputs/bundle/release/app-release.aab`.
+4. Upload it to a testing track in Play Console, then promote it to production
+   with a staged rollout.
 
-4. Upload signed build to Play Console. Fill in release notes etc.
+</details>
 
-   :::info
+## Follow-up Questions
 
-   Play Console performs checks during the APK or AAB upload process. This
-   includes verifying target API levels, permissions, and adherence to Android
-   Developer Guidelines.
+- How do you fix a JS bug without a store release? With an OTA update. See
+  [OTA Updates](./ota.md).
+- How do you automate releases? EAS Build and Submit, or fastlane. See
+  [Fastlane](./fastlane.md).
 
-   :::
+## See Also
 
-5. Once approved, publish your app or roll out in phases (via staged rollout).
-
-## Tools for Simplifying Distribution
-
-1. **Expo:** If using Expo Managed Workflow, you can use `eas build` and
-   `eas submit` for app creation and submission.
-2. **Fastlane:** Automate the app building, signing, and submission process for
-   both platforms.
+- [Fastlane](./fastlane.md)
+- [Environment Configuration and Secrets](./env.md)
+- [OTA Updates](./ota.md)

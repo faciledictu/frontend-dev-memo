@@ -1,37 +1,85 @@
 ---
 sidebar_position: 4
+description:
+  What over-the-air updates can change without the store, EAS Update, runtime
+  versions, what happened to CodePush, store rules
 ---
 
-# Over The Air (OTA) Updates
+# Over-the-Air (OTA) Updates
 
-OTA updates let you push JavaScript bundle changes directly to users without
-going through the app stores. This is great for urgent bug fixes or small
-tweaks.
+An OTA update replaces the **JS bundle and assets** of an installed app without
+a store release: the app downloads the new bundle from an update server and runs
+it, usually **on the next launch**. Native code (new native modules,
+permissions, SDK upgrades) cannot change this way and needs a store build. An
+update must target builds with compatible native code, which is what the
+**runtime version** is for. The standard tool is **EAS Update** (`expo-updates`,
+works in bare apps too); Microsoft's **CodePush** was shut down with App Center
+on March 31, 2025.
 
-**CodePush** works with any RN app (via the `react-native-code-push` SDK), but
-the SDK is now deprecated.
+Applies to: Expo SDK 57.
 
-**EAS Update** is newer and integrates with the Expo ecosystem, offering
-features like rollout percentages and rollbacks.
+## Details
 
-To use EAS Update, install `expo-updates` and run `eas update:configure`.
-Publish an update with:
+### How EAS Update Works
 
-```bash
-eas update --branch production
+- `eas update --channel production` uploads a new bundle to an update branch;
+  builds subscribe to a **channel** set in their build profile.
+- On launch the app checks for an update, downloads it in the background and
+  applies it on the next cold start (or immediately with
+  `Updates.reloadAsync()`).
+- **`runtimeVersion`** marks native compatibility: an update reaches only builds
+  with the same runtime version. Policies: `appVersion` (bump with the app
+  version) or **`fingerprint`** (a hash of the native code and config, changes
+  automatically when native code does).
+- Rollouts: publish to a percentage of users; roll back by republishing the
+  previous update (`eas update:rollback`). If the new bundle crashes on start,
+  `expo-updates` falls back to the previous working one.
+
+### What Happened to CodePush
+
+- App Center, which hosted CodePush, was retired on March 31, 2025, and the
+  `react-native-code-push` SDK was archived.
+- The SDK never supported the New Architecture, so it cannot be used with React
+  Native 0.82+.
+- Alternatives: EAS Update, a self-hosted server for `expo-updates` (it uses an
+  open protocol), or community forks.
+
+### Store Rules
+
+- **Apple**: the Developer Program License Agreement allows downloading
+  interpreted code (JS) if it does not change the app's primary purpose or add
+  features that bypass review. Bug fixes and small UI changes are fine; a new
+  feature set should go through review.
+- **Google Play**: an app must not download executable native code (dex, `.so`)
+  from outside Play, but code run by an interpreter, such as JS, is allowed as
+  long as the result still follows Play policies.
+
+## Example
+
+```json title="app.json"
+{
+  "expo": {
+    "runtimeVersion": { "policy": "fingerprint" },
+    "updates": { "url": "https://u.expo.dev/your-project-id" }
+  }
+}
 ```
 
-:::tip[Best Practices]
+```bash
+eas update --channel production --message "Fix crash on checkout"
+```
 
-In emergencies, an OTA release can fix a critical bug within minutes, bypassing
-store review delays.
+## Common Mistakes
 
-**Use OTA only for JS/asset changes.** Do not attempt to change native code that
-way. Keep in mind the App Store terms: updating UI/business logic via OTA is
-allowed (Apple’s Developer Program license permits updating JS this way), but
-adding entirely new native features requires an app store release.
+- Shipping an update that calls a native module the installed build does not
+  have: it crashes. The runtime version prevents this only if it changes with
+  native code.
+- Expecting the update to apply immediately: by default it runs on the next
+  launch.
+- Saying React Native's license is what allows OTA updates: the rules come from
+  Apple's and Google's developer agreements.
 
-**Use version checks** so that OTA updates are only applied to compatible app
-binary versions.
+## See Also
 
-:::
+- [Publishing and Distribution](./distribution.md)
+- [Environment Configuration and Secrets](./env.md)

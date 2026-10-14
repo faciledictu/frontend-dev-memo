@@ -1,209 +1,141 @@
 ---
 sidebar_position: 9
+description:
+  How push notifications work, device tokens, notification vs data messages,
+  foreground / background / quit behavior, APNs keys, libraries
 ---
 
 # Push Notifications
 
-Push notifications in React Native involve communication between an app, a
-backend server, and a push notification service (e.g., Apple Push Notification
-Service (APNs) for iOS or Firebase Cloud Messaging (FCM) for Android).
+A push goes **your server → a push service → the device**: **APNs** on iOS,
+**FCM** (Firebase Cloud Messaging) on Android. The app asks the user for
+permission (iOS always, Android 13+ too), registers with the push service and
+gets a **device token** for this installation, and sends the token to your
+backend. The backend sends a message to APNs / FCM with that token, and the
+service delivers it. What the user sees depends on the **message type** and on
+whether the app is in the **foreground, background or quit**.
 
-## User Flow Overview
+Applies to: React Native 0.87, Expo SDK 57.
 
-1. User Opt-In:
+## Details
 
-   - The app asks for the user’s permission to send push notifications.
-   - On iOS, this is required by the operating system.
-   - On Android 13 and later, the `POST_NOTIFICATIONS` runtime permission is
-     required as well. On older versions it is granted during app installation.
+### Flow
 
-2. Device Registration:
+1. Ask for permission (`POST_NOTIFICATIONS` on Android 13+).
+2. Get a token: from APNs / FCM, or an Expo push token that wraps them.
+3. Send it to the backend with the user ID; update it when it changes (the token
+   can be refreshed, and it changes after reinstalling).
+4. The backend sends a message to FCM / APNs (or to the Expo push service) with
+   the token.
+5. The OS shows the notification, or the app handles it in code.
+6. A tap on the notification opens the app; read the payload to navigate.
 
-   - The app registers itself with a push notification service (APNs for iOS,
-     FCM for Android).
-   - The service returns a Device Token (iOS) or a Registration Token (Android),
-     which uniquely identifies the app instance on the device.
+### Message Types
 
-3. Server Configuration:
+| Type         | Content                             | Who shows it                                               |
+| ------------ | ----------------------------------- | ---------------------------------------------------------- |
+| Notification | `title`, `body` (+ optional `data`) | The OS, when the app is in the background or quit          |
+| Data-only    | Only `data`                         | Nobody: the app receives it in code and decides what to do |
 
-   - The backend server securely stores the device tokens and is configured to
-     communicate with the respective push notification services.
+Data-only messages are not guaranteed: iOS treats them as low-priority
+background pushes, may throttle them and does not deliver them to an app the
+user has swiped away; Android delivers nothing to an app force-stopped in
+Settings.
 
-4. Push Notification Sending:
+### App State
 
-   - The backend server sends a notification request (with a payload and token)
-     to APNs/FCM.
-   - The service routes the notification to the target device using the token.
+| App state  | Notification message                                                   | Data-only message                                           |
+| ---------- | ---------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Foreground | **Not shown** by default; the app gets an event and may show it itself | Event in the app                                            |
+| Background | Shown by the OS; tap opens the app                                     | Background handler, with a short time limit                 |
+| Quit       | Shown by the OS; tap launches the app with the payload                 | Background handler on Android; usually not delivered on iOS |
 
-5. Notification Received:
+### Libraries
 
-   - The app receives the notification via an event listener or displays it in
-     the notification center.
+| Library                            | Notes                                                                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `expo-notifications`               | Permissions, tokens (Expo or native), foreground display, local and scheduled notifications. Works in bare apps too |
+| `@react-native-firebase/messaging` | FCM on both platforms (FCM forwards to APNs on iOS); does not display foreground notifications itself               |
+| Notifee                            | Was the usual pair for Firebase to display local notifications; archived, its authors point to `expo-notifications` |
 
-## How to set up notifications
+### Credentials
 
-1. **Choose a Library**
+- **iOS**: an **APNs authentication key** (`.p8`) from the Apple Developer
+  account, uploaded to Firebase or Expo. One key works for all apps of the team
+  and does not expire. The older per-app `.p12` certificate expires every year.
+- **Android**: a Firebase project and `google-services.json` in the app; the
+  backend authenticates to the **FCM HTTP v1 API** with a service account (the
+  legacy API with a server key was shut down in 2024).
 
-   - `react-native-push-notification` (not actively maintained)
-   - `@react-native-firebase/messaging`
-   - `notifee/react-native-notifee` (great for rich notification control,
-     advanced local notification handling, works with Firebase)
+## Example
 
-   For most modern apps, React Native Firebase Messaging + Notifee is the go-to
-   combo.
+Expo: permission, token and handlers.
 
-2. **Set up Firebase**
+```tsx
+import { useEffect } from 'react';
+import * as Notifications from 'expo-notifications';
 
-   - Android:
+// How to present notifications while the app is in the foreground
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowBanner: true,
+    shouldShowList: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
-     - Add your Android app in Firebase Console
-     - Download `google-services.json` and put it in `android/app/`
-     - Update your `android/build.gradle` and `android/app/build.gradle` for
-       Firebase and messaging
+export async function registerForPush(projectId: string) {
+  const { status } = await Notifications.requestPermissionsAsync();
+  if (status !== 'granted') return null;
 
-   - iOS:
+  const { data: token } = await Notifications.getExpoPushTokenAsync({
+    projectId,
+  });
+  return token; // send it to the backend
+}
 
-     - Add your iOS app in Firebase Console
-     - Download `GoogleService-Info.plist` and add it using Xcode
-     - Go to project target, then _Signing & Capabilities_ and enable
-       _Notifications & Background Modes_ -> 'Remote Notifications' in the Xcode
-       project settings
-     - Set up APNs and upload the key to Firebase
-     - In the app: request user permissions for iOS 10+ on app start:
-
-       ```typescript
-       import messaging from '@react-native-firebase/messaging';
-
-       const requestUserPermission = async () => {
-         const authStatus = await messaging().requestPermission();
-         const enabled =
-           authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-           authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-         if (enabled) {
-           console.log('Notification permission granted');
-         }
-       };
-       ```
-
-3. Get the FCM token
-
-   ```typescript
-   import messaging from '@react-native-firebase/messaging';
-
-   async function getFCMToken() {
-     const token = await messaging().getToken();
-     console.log('FCM Token:', token);
-   }
-   ```
-
-4. Listen for messages
-
-   **Foreground**
-
-   ```typescript
-   useEffect(() => {
-     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-       // Display a local notification (optional)
-       console.log('Foreground message:', remoteMessage);
-     });
-
-     return unsubscribe;
-   }, []);
-   ```
-
-   **Background and Quit state**
-
-   ```typescript
-   messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-     console.log('Background message:', remoteMessage);
-   });
-   ```
-
-   **Local notifications from foreground messages**
-
-   ```typescript
-   import notifee from '@notifee/react-native';
-
-   await notifee.displayNotification({
-     title: 'New Message',
-     body: 'You have a new notification',
-   });
-   ```
-
-## APNs Certificate
-
-A certificate generated by Apple and uploaded to your backend server.
-
-### How to Generate
-
-1. Log in to the Apple Developer Console.
-2. Create an App ID and enable the “Push Notifications” service.
-3. Generate a Certificate Signing Request (CSR) from your local machine.
-4. Upload the CSR to Apple to generate the APNs certificate.
-5. Download the certificate, convert it to .p12 or .pem format, and upload it to
-   your backend server or push notification provider (e.g., Firebase).
-
-## Device Token
-
-The device token is a unique identifier for the app instance. It's assigned to
-_a specific installation_ of the app on _a specific device_.
-
-On Android, it’s generated by FCM. On iOS, it comes from APNs and is passed
-through Firebase Messaging if you use it.
-
-### Simple flow
-
-1. User installs the app
-2. App requests permission to send push notifications
-3. Your app requests a device token from the notification service (APNs for iOS,
-   FCM for Android).
-4. APNs/Firebase returns device token
-5. Device token is sent to backend server
-6. Backend server stores device token
-7. Backend server sends notification to device using device token
-
-### Getting the FCM token
-
-```typescript
-const fcmToken = await messaging().getToken();
-// fcmToken: 'dXzlLpz...abc123' ← This is your device token
+export function useNotificationTap(
+  onOpen: (data?: Record<string, unknown>) => void
+) {
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => onOpen(response.notification.request.content.data)
+    );
+    return () => subscription.remove();
+  }, [onOpen]);
+}
 ```
 
-**The backend sends the notification like this:**
+<details>
+<summary>FCM HTTP v1 request from the backend</summary>
 
 ```json
 {
-  "to": "dXzlLpz...abc123",
-  "notification": {
-    "title": "Hi!",
-    "body": "You have a new message"
+  "message": {
+    "token": "dXzlLpz...abc123",
+    "notification": { "title": "Hi!", "body": "You have a new message" },
+    "data": { "chatId": "42" }
   }
 }
 ```
 
-:::note[APN token and Firebase]
+Sent as `POST https://fcm.googleapis.com/v1/projects/{project-id}/messages:send`
+with an OAuth 2.0 access token of a service account.
 
-If you don’t use Firebase and want the raw APNs token directly, you’d need to
-write native code or use a library like react-native-push-notification, but
-Firebase Messaging handles it internally and gives you an FCM token that works
-cross-platform.
+</details>
 
-:::
+## Common Mistakes
 
-:::warning
+- Expecting a notification to appear while the app is open: in the foreground it
+  is delivered to the code, and the app decides whether to show it.
+- Relying on data-only pushes for important updates on iOS.
+- Storing the token once: it must be refreshed and tied to the current user, and
+  removed on logout.
+- Sending the legacy FCM payload with `to` and a server key: that API no longer
+  works.
 
-Tokens can change over time — you must handle token refresh:
+## See Also
 
-```typescript
-useEffect(() => {
-  const unsubscribe = messaging().onTokenRefresh((newToken) => {
-    console.log('New FCM Token:', newToken);
-    // Update token in backend
-  });
-
-  return unsubscribe;
-}, []);
-```
-
-:::
+- [Permissions](./permissions.md)
+- [Platform-Specific Code](./platform-specific-code.md)

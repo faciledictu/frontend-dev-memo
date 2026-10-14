@@ -1,132 +1,152 @@
 ---
-sidebar_position: 3
+sidebar_position: 2
+description:
+  Reanimated 4 shared values, worklets and the UI thread, animated styles,
+  layout animations, CSS animations, why it is faster than Animated
 ---
 
-# React Native Reanimated
+# Reanimated
 
-React Native Reanimated is an advanced library designed to form more complex,
-performant animations beyond what the core Animated API provides. Catering
-specifically to the needs of modern mobile applications, Reanimated offers a
-declarative approach to animations, allowing you to define animations in a
-concise and efficient manner. It leverages worklets to run animations on a
-separate thread, offering unparalleled performance.
+**Reanimated** is the standard animation library for React Native. Animation
+logic runs on the **UI thread** as **worklets**: small JS functions that the
+Babel plugin copies into a second JS runtime living on the UI thread. State
+lives in **shared values** (`useSharedValue`), readable and writable from both
+threads; `useAnimatedStyle` turns them into styles that are applied to the view
+on every frame **without React re-renders and without the JS thread**. Version 4
+adds **CSS-like animations and transitions** and works only on the New
+Architecture.
 
-## Core Concepts
+Applies to: Reanimated 4, React Native 0.87.
 
-### Declarative Animation API
+## Details
 
-React Native Reanimated emphasizes a declarative API style. In contrast to
-imperative animations where developers control the flow manually, declarative
-APIs express logic in terms of "what" should happen rather than "how." This
-makes code more predictable, easier to read, and less prone to errors.
+### Core API
 
-```javascript
-import { useSharedValue, withTiming } from 'react-native-reanimated';
+| API                                       | What it does                                                                               |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `useSharedValue(initial)`                 | A value shared by JS and UI threads; read and write with `.value` (or `.get()` / `.set()`) |
+| `useAnimatedStyle(() => style)`           | A worklet that computes a style from shared values; re-runs when they change               |
+| `useDerivedValue(() => value)`            | A shared value computed from others, like `useMemo` on the UI thread                       |
+| `useAnimatedProps`                        | Same as `useAnimatedStyle` for non-style props (SVG `d`, `TextInput` text)                 |
+| `useAnimatedScrollHandler`                | Handles scroll events on the UI thread                                                     |
+| `withTiming`, `withSpring`, `withDecay`   | Animate a shared value to a target: `x.value = withSpring(100)`                            |
+| `withSequence`, `withRepeat`, `withDelay` | Compose animations                                                                         |
+| `interpolate`, `interpolateColor`         | Map a value from one range to another                                                      |
+| `cancelAnimation(sv)`                     | Stop an animation on a shared value                                                        |
 
-// Define a shared value for an animated property
-const opacity = useSharedValue(0);
+### Threads and Worklets
 
-// Define an animation in terms of "what" should happen
-const fadeIn = () => {
-  opacity.value = withTiming(1, { duration: 1000 });
-};
-```
+- A function becomes a **worklet** with the `'worklet'` directive; callbacks of
+  `useAnimatedStyle`, `useDerivedValue` and gesture callbacks are workletized
+  automatically by the Babel plugin.
+- A worklet captures the variables it uses by copy; it cannot touch React state
+  or call ordinary JS functions directly.
+- To call a JS-thread function from a worklet (set state, log analytics), use
+  `scheduleOnRN(fn, ...args)` from `react-native-worklets` (formerly
+  `runOnJS(fn)(...args)`). To run a worklet on the UI thread from JS, use
+  `scheduleOnUI` (formerly `runOnUI`).
+- Reading `.value` on the JS thread is synchronous and can block; do not read
+  shared values during render.
 
-### Understanding Nodes and Transitions
+### Layout and CSS Animations
 
-Nodes in Reanimated represent the basic building blocks for animations, akin to
-functions or variables in traditional programming. Transitions enhance
-declarative means by enabling smooth state changes within React Native.
+| Feature            | How                                                                                                      |
+| ------------------ | -------------------------------------------------------------------------------------------------------- |
+| Entering / exiting | `<Animated.View entering={FadeIn} exiting={FadeOut} />`: animates mount and unmount                      |
+| Layout transitions | `layout={LinearTransition}`: animates position and size changes after a re-render                        |
+| CSS transitions    | `transitionProperty`, `transitionDuration` in the style: a change of that style prop animates (new in 4) |
+| CSS animations     | `animationName` with keyframes, `animationDuration`, `animationIterationCount` (new in 4)                |
 
-#### Nodes
+CSS transitions and animations are the simplest choice for state-driven
+animations; shared values are for gestures, scroll and anything interactive.
 
-- Nodes provide a way to define animations in a complex flow.
-- They allow creation of dynamic animations by interconnecting various animated
-  properties without describing imperative flows.
+### Why Reanimated Is Faster than Animated
 
-#### Transitions
+| Animated                                                      | Reanimated                                          |
+| ------------------------------------------------------------- | --------------------------------------------------- |
+| Native driver: only `transform` / `opacity`, fixed animations | Any style property on the UI thread                 |
+| Logic (gesture → value) runs in JS                            | Logic is a worklet on the UI thread; JS can be busy |
+| Layout properties need JS on every frame                      | Layout properties are animated without JS           |
 
-- Transitions offer a higher-level abstraction over nodes for managing
-  transition effects when state changes.
+### Version History
 
-```javascript
-import { Transitioning, Transition } from 'react-native-reanimated';
+| Version | What changed                                                                                     |
+| ------- | ------------------------------------------------------------------------------------------------ |
+| 1       | Declarative "nodes" API; removed                                                                 |
+| 2, 3    | Shared values, worklets, hooks, layout animations                                                |
+| 4       | New Architecture only; worklets moved to `react-native-worklets`; CSS animations and transitions |
 
-// Define a transition
-const transition = (
-  <Transition.Together>
-    <Transition.In type="fade" durationMs={200} />
-    <Transition.Out type="fade" durationMs={200} />
-  </Transition.Together>
-);
-```
+## Example
 
-### High Performance Declarative Animation
+```tsx
+import { useState } from 'react';
+import { Pressable, Text } from 'react-native';
+import Animated, {
+  FadeIn,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
-Running high-performance animations is crucial for a smooth user experience.
-Reanimated provides several tools and mechanisms to ensure that your app
-animations run flawlessly:
+export function LikeButton() {
+  const [likes, setLikes] = useState(0);
+  const scale = useSharedValue(1);
 
-- **Use Worklets**: Execute JavaScript code directly on the UI thread, reducing
-  overhead and avoiding frame drops.
-- **Shared Values**: They represent mutable references allowing direct
-  interactions within animations without reevaluations.
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
 
-```javascript
-// Worklet executes on UI thread
-import { useAnimatedStyle, withSpring } from 'react-native-reanimated';
-
-const animatedStyle = useAnimatedStyle(() => {
-  return {
-    transform: [{ scale: withSpring(opacity.value) }],
+  const onPress = () => {
+    scale.value = withTiming(1.3, { duration: 100 }, (finished) => {
+      // A worklet on the UI thread: go back to JS to update React state
+      if (finished) scheduleOnRN(setLikes, likes + 1);
+      scale.value = withSpring(1);
+    });
   };
-});
+
+  return (
+    <Pressable onPress={onPress}>
+      <Animated.View entering={FadeIn} style={animatedStyle}>
+        <Text>♥ {likes}</Text>
+      </Animated.View>
+    </Pressable>
+  );
+}
 ```
 
-## Advanced Features
+<details>
+<summary>CSS transition</summary>
 
-### Worklets and Shared Values
+```tsx
+import Animated from 'react-native-reanimated';
 
-Worklets are isolated JavaScript running environments enabling animations to
-occur off of the JavaScript thread. They operate with `shared values` that can
-be safely accessed and manipulated within these worklets.
-
-#### Defining Worklets
-
-```javascript
-import { withSpring, runOnUI } from 'react-native-reanimated';
-
-// Using runOnUI to execute synchronous animations
-runOnUI(() => {
-  'worklet'; // Mark function as worklet
-  const animation = withSpring(1);
-})();
+export function Panel({ open }: { open: boolean }) {
+  return (
+    <Animated.View
+      style={{
+        height: open ? 200 : 0,
+        transitionProperty: 'height',
+        transitionDuration: 300,
+      }}
+    />
+  );
+}
 ```
 
-#### Using Shared Values
+</details>
 
-Shared values are mutable references that store animated state shared between
-worklets and components:
+## Common Mistakes
 
-```javascript
-const scale = useSharedValue(1); // Initiate a shared value
-```
+- Describing Reanimated 1: "nodes" and `Transitioning` no longer exist.
+- Mentioning `useNativeDriver` with Reanimated: it is an `Animated` option.
+- Calling a regular JS function or `setState` directly inside a worklet: it
+  crashes; wrap it in `scheduleOnRN`.
+- Setting React state on every frame of a gesture instead of a shared value.
 
-## Web Support
+## See Also
 
-React Native Reanimated supports web platforms, providing a consistent animation
-experience across different environments. Libraries like `react-native-web`
-ensure integration without significant changes to the codebase.
-
-- Ensure compatibility by configuring the build environment appropriately.
-- Use polyfills for certain platform-specific APIs.
-
-## Optimization Tips
-
-- Minimize the number of properties being animated simultaneously.
-- Leverage the `useNativeDriver` for purely transform/opacity animations,
-  reducing JavaScript execution.
-- **Avoid Memory Leaks**: Clean up animations and ensure worklet resources are
-  freed when components are unmounted.
-- **Efficient Reuse**: Where possible, reuse shared values and animations rather
-  than creating new instances.
+- [Animated API](./animated.md)
+- [Gestures](./gestures.md)
+- [Architecture](../rn-architecture.md)

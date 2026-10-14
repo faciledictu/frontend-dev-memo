@@ -1,135 +1,113 @@
 ---
 sidebar_position: 8
+description:
+  Runtime permissions on iOS and Android, permission statuses, blocked
+  permissions and settings, libraries
 ---
 
 # Permissions
 
-Permissions in mobile applications are requests to gain access to certain
-features or data on a user's device.
+Access to the camera, location, photos, contacts, microphone or notifications
+needs the user's consent, asked **at runtime**. Each permission is first
+**declared** in the native config: a usage description in `Info.plist` on iOS
+(the app crashes without it) and `<uses-permission>` in `AndroidManifest.xml` on
+Android. A request returns a status; once the user denies it for good
+(**blocked**), the app can no longer show the system dialog and can only send
+the user to the **Settings** app.
 
-**Why Permissions are Needed:**
+Applies to: React Native 0.87, Expo SDK 57.
 
-- To protect user privacy.
-- To enable app functionalities that rely on system features.
-- To ensure compliance with platform requirements.
+## Details
 
-## Common Permissions
+### iOS vs Android
 
-Some standard permissions include:
+|                  | iOS                                                                                      | Android                                                                                      |
+| ---------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Declared in      | `Info.plist`: `NSCameraUsageDescription` and the like, with the text shown in the dialog | `AndroidManifest.xml`                                                                        |
+| Asked at runtime | Every protected permission                                                               | Only "dangerous" ones (camera, location, …); "normal" ones (internet) are granted at install |
+| How often        | The system dialog is shown **once**; after a denial the permission is blocked            | Can be asked again; after the second denial it is blocked                                    |
+| Partial access   | Limited photo library, approximate location                                              | Approximate location; selected photos (Android 14+)                                          |
 
-- **Camera**: Accessing the device's camera for capturing photos or videos.
-- **Location**: Obtaining the geographic location of the device.
-- **Contacts**: Reading the user's contacts list.
-- **Storage**: Reading and writing data to the device storage.
-- **Microphone**: Audio recording purposes.
+Android version changes that come up in interviews:
 
-## Permission Handling
+- **Android 13 (API 33)**: `POST_NOTIFICATIONS` became a runtime permission;
+  `READ_EXTERNAL_STORAGE` was split into `READ_MEDIA_IMAGES`, `READ_MEDIA_VIDEO`
+  and `READ_MEDIA_AUDIO`.
+- **Android 14 (API 34)**: the user can grant access to selected photos only.
 
-**Android:** On Android, permissions are categorized into "Normal permissions"
-and "Dangerous permissions". Normal permissions are granted automatically, while
-dangerous ones require explicit user consent.
+### Statuses (`react-native-permissions`)
 
-**iOS:** On iOS, permissions are handled via a prompt the first time they are
-needed, with user consent required to proceed. Additionally, developers must
-provide a description in the `Info.plist` explaining why the permission is
-needed.
+| Status        | Meaning                                            | What to do                               |
+| ------------- | -------------------------------------------------- | ---------------------------------------- |
+| `granted`     | Allowed                                            | Use the feature                          |
+| `limited`     | Partly allowed (selected photos)                   | Use what is available, offer to add more |
+| `denied`      | Not asked yet, or denied but can be asked again    | Explain why, then `request`              |
+| `blocked`     | Denied for good, the system dialog will not appear | Explain and offer `openSettings()`       |
+| `unavailable` | The device has no such feature                     | Hide the feature                         |
 
-## Using React Native's Built-In Permissions
+### Libraries
 
-React Native provides basic facilities for interacting with permissions, though
-it may not cover all complex scenarios. The `PermissionsAndroid` module, for
-example, helps request permissions on Android platforms.
+| Library                                 | Notes                                                                                                                                                      |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PermissionsAndroid` (React Native)     | Android only; returns `granted`, `denied` or `never_ask_again`                                                                                             |
+| `react-native-permissions`              | One API for both platforms, `check` / `request` / `openSettings`                                                                                           |
+| Expo modules                            | Each module has its own `requestPermissionsAsync` / `use…Permissions` hook (`expo-camera`, `expo-location`); the old `expo-permissions` package is removed |
+| `Linking.openSettings()` (React Native) | Opens the app's page in Settings                                                                                                                           |
 
-Example of requesting a permission on Android:
+### Best Practices
 
-```javascript
-import { PermissionsAndroid } from 'react-native';
+- Ask **in context**, when the user taps the feature, not at launch.
+- Show your own explanation before the system dialog: the system one can be
+  shown only once on iOS.
+- Keep the app usable without the permission, and handle `blocked` with a link
+  to Settings.
+- Ask for the least: approximate location instead of precise, selected photos
+  instead of the whole library. Stores reject apps that request permissions they
+  do not need.
 
-async function requestCameraPermission() {
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.CAMERA,
-      {
-        title: 'Camera Permission',
-        message: 'This app needs access to your camera.',
-        buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
-      }
+## Example
+
+```tsx
+import { Alert, Platform } from 'react-native';
+import {
+  PERMISSIONS,
+  RESULTS,
+  openSettings,
+  request,
+} from 'react-native-permissions';
+
+export async function ensureCameraPermission(): Promise<boolean> {
+  const permission =
+    Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
+
+  const result = await request(permission);
+
+  if (result === RESULTS.GRANTED || result === RESULTS.LIMITED) return true;
+
+  if (result === RESULTS.BLOCKED) {
+    Alert.alert(
+      'Camera access is off',
+      'Turn it on in Settings to scan codes.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Open Settings', onPress: () => openSettings() },
+      ]
     );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log('You can use the camera');
-    } else {
-      console.log('Camera permission denied');
-    }
-  } catch (err) {
-    console.warn(err);
   }
+  return false;
 }
 ```
 
-For iOS native handling, permissions are usually requested using the specific
-libraries tailored for the task, along with configuring the `Info.plist`.
+## Common Mistakes
 
-## Third-Party Libraries for Permission Handling
+- Forgetting the `Info.plist` usage description: the app crashes on iOS at the
+  moment of the request.
+- Asking for all permissions on the first launch: users deny them, and on iOS
+  they cannot be asked again.
+- Treating `denied` and `blocked` the same: after `blocked`, `request` returns
+  immediately without a dialog.
 
-To streamline permission management in React Native, several third-party
-libraries are available:
+## See Also
 
-- **react-native-permissions**: A comprehensive library to handle both Android
-  and iOS permissions with ease.
-- **expo-permissions** (for apps built with Expo): Provides a unified interface
-  to check and request device permissions.
-
-Example using react-native-permissions:
-
-```javascript
-import { Platform } from 'react-native';
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
-
-// Example for accessing location
-async function requestLocationPermission() {
-  const result = await request(
-    Platform.OS === 'ios'
-      ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-      : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
-  );
-
-  if (result === RESULTS.GRANTED) {
-    console.log('The location permission is granted!');
-  } else if (result === RESULTS.DENIED) {
-    console.log('The location permission is denied!');
-  } else {
-    console.log('The user does not want to be bothered again.');
-  }
-}
-```
-
-## Best Practices
-
-:::tip
-
-Alongside requesting permissions, it's good practice to document how permissions
-function within your app and provide channels for users to give feedback. This
-transparency helps build trust and encourages users to grant the necessary
-permissions.
-
-:::
-
-- **Explain Necessity**: Always provide a clear and concise explanation of why a
-  permission is needed.
-- **Defer Until Necessary**: Request permissions only when they are needed and
-  not at the app launch.
-- **Handle Denial Gracefully**: Ensure the app can function without specific
-  permissions or guide users on enabling them if required.
-- **Respect User's Decision**: Don't repeatedly ask for permissions they have
-  denied, unless absolutely necessary.
-
-## Managing Permissions for App Store Compliance
-
-Both Google and Apple's app stores have stringent guidelines related to
-permissions, especially regarding privacy. To ensure compliance:
-
-- Provide accurate metadata information regarding permissions.
-- Update privacy policy to reflect permission usage.
-- Use permissions responsibly and avoid unnecessary requests.
+- [Push Notifications](./notifications.md)
+- [Platform-Specific Code](./platform-specific-code.md)

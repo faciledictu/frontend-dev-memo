@@ -1,138 +1,108 @@
 ---
 sidebar_position: 2
+description:
+  Legacy bridge vs New Architecture (JSI, Fabric, TurboModules, Codegen),
+  threads, rendering pipeline, native libraries and autolinking
 ---
 
-# Bridge vs. Bridgeless Architecture
+# React Native Architecture: Bridge vs New Architecture
 
-## Classic Bridge Architecture (Legacy)
+In the **legacy architecture** JS talked to native code through the **bridge**:
+an asynchronous queue of batched JSON messages. The **New Architecture**
+replaces it with **JSI**, a C++ interface that lets JS hold references to native
+objects and call them directly, synchronously if needed. On top of JSI are
+**Fabric** (the renderer), **TurboModules** (native modules) and **Codegen**
+(typed bindings generated from a TS spec). The New Architecture is the default
+since 0.76, and since 0.82 it is the only one: the legacy architecture cannot be
+turned on.
 
-In the legacy architecture, JavaScript communicates with native modules via an
-asynchronous bridge. JS calls and UI updates are serialized to JSON and sent
-over a queue to native threads. This design kept the JS thread and UI thread
-unblocked but at a cost.
+Applies to: React Native 0.87.
 
-Under the bridge model, layout calculations and native UI updates ran on a
-single main thread. This meant updates (e.g. layout or user input) could not be
-handled concurrently or synchronously, limiting responsiveness. The bridge’s
-asynchrony could also lead to “sync issues” (e.g. UI flashes) when JS and native
-states got out of sync.
+## Details
 
-### How It Works
+### Legacy Bridge
 
-- JS and Native code run in separate threads.
-- Communication happens via an asynchronous, batched bridge using
-  JSON-serializable messages.
-- Native Modules are registered and accessed through this bridge.
-- Rendering is also scheduled over the bridge.
+Threads:
 
-### Limitations
+- **JS thread**: runs React and the app's JS.
+- **Main (UI) thread**: native views and touch events.
+- **Shadow thread**: computes layout with Yoga (the Flexbox engine).
+- Native modules ran on their own background queues.
 
-- Serialization overhead: All data crossing the bridge must be serialized.
-- Thread hopping: Cost of context-switching between JS and native threads.
-- Debugging complexity: Poor stack traces across boundaries.
-- Limited performance for animations, gestures, and high-frequency updates.
+How it worked and what was wrong with it:
 
-## New Bridgeless Architecture
+- Every call and every UI update was serialized to JSON, batched and sent across
+  the bridge **asynchronously**; nothing could return a value right away.
+- Serialization cost grew with traffic: long lists, animations and gestures that
+  depended on JS lagged.
+- JS and native state could get out of sync, which showed as UI flashes, for
+  example when measuring a view before positioning another one.
+- All native modules were initialized at startup, even unused ones.
 
-React Native’s New Architecture removes the bridge entirely, using a C++
-JavaScript Interface (JSI) layer and new module/component systems. This enables
-direct, synchronous JS↔native calls, type-safe interfaces, and concurrent
-rendering.
+### New Architecture
 
-### What Changed
+| Part         | What it is                                                                                        | What it gives                                                                       |
+| ------------ | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| JSI          | A C++ API between the JS engine and native code; native objects are exposed to JS as host objects | No JSON, no queue; synchronous calls are possible                                   |
+| TurboModules | Native modules built on JSI                                                                       | Loaded lazily on first use; can return values synchronously; can be written in C++  |
+| Fabric       | The renderer; its shadow tree is in C++ and shared by both platforms                              | Synchronous layout and measuring, React concurrent features (transitions, Suspense) |
+| Codegen      | Generates native interfaces from a TypeScript or Flow spec at build time                          | Type-safe JS ↔ native boundary                                                      |
+| Bridgeless   | The mode in which the bridge is not created at all                                                | Default since 0.74 with the New Architecture                                        |
 
-- Built on JSI (JavaScript Interface), with Fabric for UI and TurboModules for
-  native modules.
-- Enables direct, synchronous access between JS and C++/native code—no JSON, no
-  bridge.
+**Hermes** is the default JS engine. It compiles JS to bytecode at build time,
+so the app starts faster and uses less memory than with a JIT engine.
 
-### Key Components
+### From `setState` to Pixels (Fabric)
 
-- JSI
+1. **Render** (JS thread): React calls components and reconciles the element
+   tree; Fabric builds a C++ **shadow tree** from it.
+2. **Commit** (any thread): Yoga computes the layout of the shadow tree, and the
+   new tree is promoted as the next one to mount.
+3. **Mount** (UI thread): the difference between the old and new trees is
+   applied to the real native views.
 
-  A lightweight C++ API that embeds the JS engine (Hermes, V8, etc.) into native
-  code. Native modules expose C++ objects and functions directly to JS as “host
-  objects,” eliminating JSON serialization and allowing JS to call C++/native
-  functions directly.
+The render phase can be interrupted by a more urgent update, as with
+[concurrent rendering](../react/performance/concurrent-rendering.md) on the web.
+Updates triggered from the UI thread (for example a Reanimated animation) can
+skip the JS thread.
 
-- TurboModules
+### Native Libraries and Linking
 
-  TurboModules use JSI under the hood to register native functions as C++ host
-  objects. They offer:
+- **Autolinking** (since 0.60): after installing a package, CocoaPods
+  (`pod install`) and Gradle pick up its native code. The old
+  `react-native link` command was removed in 0.69.
+- A library for the New Architecture is a **Turbo Native Module** (an API
+  without UI) or a **Fabric Native Component** (a native view), both described
+  by a Codegen spec.
+- Libraries written for the old architecture still work through the **interop
+  layer**, but new code should not rely on it.
+- In Expo apps, native modules are usually written with the **Expo Modules API**
+  in Swift and Kotlin, and native config is changed by config plugins instead of
+  editing `ios/` and `android/` by hand.
 
-  - Synchronous Calls. TurboModules can return values immediately (no callbacks
-    needed).
-  - Type Safety. Module interfaces are defined in TypeScript/Flow. A build-time
-    Codegen step auto-generates native binding code (for both Android and iOS).
-  - Lazy Loading. Modules are initialized on demand, not at startup.
-  - Cross-Platform C++ Core. Modules can be implemented in cross-platform C++
-    using the same interface.
+## Follow-up Questions
 
-- Fabric Renderer
+- Why was the bridge a bottleneck? All traffic was serialized to JSON and
+  asynchronous, so frequent updates (scroll, gestures, animations) could not
+  keep up, and native code could not answer synchronously.
+- Does the New Architecture make JS multithreaded? No. JS still runs on one
+  thread; JSI only removes the queue between JS and native code. Libraries like
+  Reanimated run small functions (worklets) in a second JS runtime on the UI
+  thread.
+- What does Codegen generate? Native interfaces (C++, Objective-C, Java) from a
+  typed spec, so a mismatch between JS and native signatures fails at build
+  time.
 
-  Next-gen rendering system for React Native; replaces UIManager. Enables
-  faster, batched, and more reliable UI updates, with better support for modern
-  React features (like useLayoutEffect and transitions).
+## Common Mistakes
 
-  - Synchronous Updates. Fabric uses JSI to synchronously send UI changes from
-    JS to the native view managers.
-  - Concurrent Rendering. It integrates React 18’s concurrent capabilities:
-    multiple render passes can work in parallel.
+- Describing the bridge as the current mechanism. It is gone since 0.82.
+- Saying the legacy architecture had one thread for layout and UI. Layout ran on
+  a separate shadow thread.
+- Saying JSI makes every call synchronous. It makes synchronous calls possible;
+  most module methods are still async (return a promise).
 
-- Codegen
+## See Also
 
-  Auto-generates type-safe bindings between JS and native code. Practically, you
-  define a module spec in TS, and Codegen produces the native interface stubs
-  for Android and iOS.
-
-### Benefits
-
-- Significantly lower latency for high-frequency operations (e.g., animations).
-- Reduced memory usage and startup time (lazy loading).
-- Seamless synchronous execution—critical for UI/UX responsiveness.
-
-:::info[Threading Model]
-
-Legacy React Native had three threads: JS thread (running JS code), main/UI
-thread (native UI), and a native bridge thread (processing queued calls).
-
-The new model removes the bridge thread. Instead, JS still runs on a JS runtime
-thread (often still called “JS thread”), but Fabric introduces separate UI
-management threads. Layout and view hierarchies can be computed on background
-threads while the UI thread commits final updates. This means multiple threads
-can handle work simultaneously. For example, React 18’s scheduler can slice work
-on the JS side while background layout threads prepare UI.
-
-:::
-
-## Native Libraries and Linking
-
-In React Native, the `react-native link` command was historically used to link
-native dependencies to your project. However, with the introduction of
-autolinking in React Native 0.60 and later, the need for `react-native link` has
-largely been reduced
-
-**Link the Library**: After installing the library, run:
-
-```bash
-npx react-native link <library-name>
-```
-
-If you omit library-name, it will try to link all installed dependencies that
-require linking.
-
-**Rebuild Your App**: Once linked, rebuild your app:
-
-**Conflict with Autolinking**: If you’re using React Native 0.60+, avoid using
-react-native link unless absolutely necessary, as it can cause conflicts.
-
-**Manual Linking**: For libraries that don’t support autolinking, you may need
-to link them manually by modifying your native configuration files
-(`android/settings.gradle`, `android/app/build.gradle`, or `ios/Podfile`).
-
-**Unlinking Libraries**: If a library is linked incorrectly, you can unlink it
-using:
-
-```bash
-npx react-native unlink <library-name>
-```
+- [What Is React Native](./overview.md)
+- [Reanimated](./animations/reanimated.md)
+- [Rendering and Reconciliation in React](../react/basics/rendering.md)
