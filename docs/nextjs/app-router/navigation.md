@@ -10,7 +10,7 @@ sidebar_position: 2
   navigation between routes. It is the recommended way to navigate between
   routes.
 
-```javascript
+```jsx
 import Link from 'next/link';
 
 function MyComponent() {
@@ -25,7 +25,7 @@ function MyComponent() {
 - `useRouter()` hook allows you to access the router object, giving you control
   over navigation and route information.
 
-```javascript
+```jsx
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -45,10 +45,10 @@ export default function Page() {
 
 ### Client Side
 
-To redirect on the client side, you can use the `useRouter`.
+To redirect on the client side, you can use the `useRouter` hook.
 
 If you need to redirect inside an event handler in a Client Component, you can
-use the push method from the useRouter hook.
+use the `push` method from the `useRouter` hook.
 
 ```jsx
 'use client';
@@ -70,8 +70,8 @@ export default function Page() {
 
 #### `redirect` and `permanentRedirect`
 
-Server-side redirection can be handled using the redirect function from
-next/navigation in server components or API routes.
+Server-side redirection can be handled using the `redirect` function from
+`next/navigation` in Server Components or API routes.
 
 ```jsx
 import { redirect } from 'next/navigation';
@@ -92,7 +92,7 @@ redirecting to a success page as a result of a POST request.
 
 `permanentRedirect` returns a 308 (permanent redirect) status code by default.
 
-permanentRedirect is often used after a mutation or event that changes an
+`permanentRedirect` is often used after a mutation or event that changes an
 entity's canonical URL, such as updating a user's profile URL after they change
 their username.
 
@@ -102,7 +102,7 @@ You can use middleware to perform redirects before the request reaches the final
 destination. Middleware is useful for authentication, logging, or other
 cross-cutting concerns.
 
-```jsx
+```javascript
 import { NextResponse } from 'next/server';
 
 export function middleware(request) {

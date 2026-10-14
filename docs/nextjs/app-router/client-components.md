@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Client Components
 
-By default, components are server components, but you can split your application
+By default, components are Server Components, but you can split your application
 into interactive (client) and non-interactive (server) parts.
 
 Client Components are pre-rendered to HTML on the server and then hydrated in
@@ -18,7 +18,7 @@ the browser, where they can use state, effects, event handlers and browser APIs.
 
 ## Creating Client Component
 
-You can specify client components using the `'use client'` directive at the top
+You can specify Client Components using the `'use client'` directive at the top
 of the file.
 
 ```jsx title="ClientComponent.js"
@@ -58,41 +58,43 @@ management across your application. To use these within Client Components,
 follow these steps.
 
 1. Set up your provider as you normally would in a React application, but add
-   `'use client'` directive.
+   the `'use client'` directive.
 
-```tsx title="context/ThemeContext.js"
-'use client';
+   ```tsx title="context/ThemeContext.js"
+   'use client';
 
-import { createContext } from 'react';
+   import { createContext } from 'react';
 
-export const ThemeContext = createContext({});
+   export const ThemeContext = createContext({});
 
-export default function ThemeProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return <ThemeContext.Provider value="dark">{children}</ThemeContext.Provider>;
-}
-```
+   export default function ThemeProvider({
+     children,
+   }: {
+     children: React.ReactNode;
+   }) {
+     return (
+       <ThemeContext.Provider value="dark">{children}</ThemeContext.Provider>
+     );
+   }
+   ```
 
 2. Your Server Component will now be able to directly render your provider since
    it's been marked as a Client Component.
 
-```tsx title="app/layout.tsx"
-import ThemeProvider from './theme-provider';
+   ```tsx title="app/layout.tsx"
+   import ThemeProvider from './theme-provider';
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html>
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
-      </body>
-    </html>
-  );
-}
-```
+   export default function RootLayout({
+     children,
+   }: {
+     children: React.ReactNode;
+   }) {
+     return (
+       <html>
+         <body>
+           <ThemeProvider>{children}</ThemeProvider>
+         </body>
+       </html>
+     );
+   }
+   ```

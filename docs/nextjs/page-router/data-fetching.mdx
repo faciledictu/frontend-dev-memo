@@ -17,7 +17,7 @@ import TabItem from '@theme/TabItem';
 2. `getStaticPaths()` generates dynamic routes at build time. Used in
    conjunction with `getStaticProps()` for pages with dynamic paths.
 
-```javascript title="pages/posts/[id].js"
+```jsx title="pages/posts/[id].js"
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
@@ -75,7 +75,7 @@ export default Post;
 
 Pages generated with `getStaticProps` can be cached and served as static files,
 resulting in faster load times. ISR allows you to update static content after
-you’ve built your site.
+you've built your site.
 
 By setting a `revalidate` interval in the `getStaticProps` function, you can
 specify how frequently a page should be revalidated and updated in the
@@ -105,7 +105,7 @@ ISR in Next.js is useful when you need:
 
 - Frequent Content Updates: Updates content periodically without rebuilding.
 - Dynamic User-Dependent Content: Content changes based on user interactions.
-- Optimized Build Times: Updates specific pages without rebuilding all.
+- Optimized Build Times: Updates specific pages without rebuilding all of them.
 
 Imagine you have an e-commerce site where product availability changes
 frequently. Using ISR, you can:
@@ -139,13 +139,13 @@ runs when navigating to a different route.
 
 :::note
 
-`getInitialProps` is legacy data fetching method. It is not recommended for new
-projects as it can lead to performance issues and is more complex to manage
+`getInitialProps` is a legacy data fetching method. It is not recommended for
+new projects as it can lead to performance issues and is more complex to manage
 compared to `getStaticProps` and `getServerSideProps`.
 
 :::
 
-```javascript
+```jsx
 // components/ExampleComponent.js
 import React from 'react';
 
@@ -197,12 +197,12 @@ page render.
 
 ### Example with Fetch API
 
-- Use a hook such as useEffect to perform the fetch when the component mounts.
+- Use a hook such as `useEffect` to perform the fetch when the component mounts.
 
-- Use useState hooks (data, loading, error) to manage the fetched data, loading
-  state, and errors.
+- Use `useState` hooks (`data`, `loading`, `error`) to manage the fetched data,
+  loading state, and errors.
 
-```javascript
+```jsx
 import { useEffect, useState } from 'react';
 
 const ClientSideFetch = () => {
@@ -252,11 +252,11 @@ export default ClientSideFetch;
 
 :::tip
 
-Libraries such as Tanstack Query simplifies working with fetching state and
-error handling by using properties like `isLoading`, `isError` etc. returned
-from useQuery
+Libraries such as TanStack Query simplify working with fetching state and error
+handling by using properties like `isLoading`, `isError`, etc. returned from
+`useQuery`.
 
-The `error` object returned by useQuery contains an error message.
+The `error` object returned by `useQuery` contains an error message.
 
 :::
 

@@ -10,7 +10,7 @@ efficient server-side rendering (SSR).
 :::tip
 
 The App Router takes priority over the Pages Router. Routes across directories
-should not resolve to the same URL path and will cause a build-time error to
+must not resolve to the same URL path, otherwise a build-time error is raised to
 prevent a conflict.
 
 :::
@@ -35,7 +35,7 @@ For example, `app/blog/[slug]/page.js` will map to `/blog/:slug`.
 
 ### Route Grouping
 
-Route Grouping helps in logically grouping routes together under a common
+Route Grouping helps to logically group routes together under a common
 directory. The group name is enclosed in parentheses and does not appear in the
 URL path.
 

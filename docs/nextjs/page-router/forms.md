@@ -8,7 +8,7 @@ sidebar_position: 4
 
 Next.js allows you to create API routes where you can define server-side
 functions to handle data fetching and mutations. API routes are typically
-created inside the pages/api directory, and each file within this directory
+created inside the `pages/api` directory, and each file within this directory
 defines a separate route.
 
 These routes can handle requests, perform operations like database queries, and
@@ -22,7 +22,7 @@ export default function handler(req, res) {
 
 ## Server-Only Forms
 
-You need to create certain API endpoint to handle received data on the server.
+You need to create an API endpoint to handle the received data on the server.
 
 ```typescript title="api/submit.ts"
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -39,7 +39,7 @@ export default async function handler(
 
 Then create the form and handle the submission.
 
-```javascript
+```tsx
 import { FormEvent } from 'react';
 
 export default function Page() {
@@ -68,13 +68,13 @@ export default function Page() {
 
 ## Data Validation
 
-If you need to validate the data on client, you can use HTML attributes like
-`required` and `type=email`.
+If you need to validate the data on the client, you can use HTML attributes like
+`required` and `type="email"`.
 
-For more complex data, you may consider validate them on server using schema
+For more complex data, you may consider validating it on the server using schema
 validation libraries like _zod_.
 
-Here is updated api endpoint.
+Here is the updated API endpoint.
 
 ```typescript title="api/submit.ts"
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -95,7 +95,7 @@ export default async function handler(
 
 ## Error Handling
 
-You can use React state to set an error message if form submission request
+You can use React state to set an error message if the form submission request
 fails.
 
 ```tsx

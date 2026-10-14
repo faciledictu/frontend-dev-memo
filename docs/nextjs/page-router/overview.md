@@ -33,7 +33,7 @@ route.
 Routes are based on the file system, where each file in the `pages/` directory
 corresponds to a route in the application.
 
-The router will automatically route files named index to the root of the
+The router will automatically route files named `index` to the root of the
 directory.
 
 | Filepath                 | Route            |
@@ -47,7 +47,7 @@ directory.
 Dynamic routes allow pages to be created dynamically based on the parameters of
 the URL.
 
-```javascript
+```jsx
 import { useRouter } from 'next/router';
 
 export default function Page() {
@@ -79,11 +79,11 @@ above).
 
 ### Templates
 
-File `pages/_app.js` customizes the default App component, allowing you to
+The `pages/_app.js` file customizes the default App component, allowing you to
 initialize pages. It is used to keep state when navigating between pages, inject
 global CSS, and provide layout components.
 
-```typescript
+```tsx
 import type { AppProps } from 'next/app';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
@@ -91,17 +91,17 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 }
 ```
 
-- `Component` prop contains the current page component, so it changes when you
-  navigate between routes. Any props you send to Component will be received by
-  the page.
+- The `Component` prop contains the current page component, so it changes when
+  you navigate between routes. Any props you send to `Component` will be
+  received by the page.
 - `pageProps` is an object with the initial props that were preloaded for your
   page by using one of the fetching methods. Otherwise, it's an empty object.
 
-`/_document.js` file customizes the HTML document that Next.js uses to render
-pages. It is only rendered on the server side and is used to augment the
+The `pages/_document.js` file customizes the HTML document that Next.js uses to
+render pages. It is only rendered on the server side and is used to augment the
 `<html>` and `<body>` tags.
 
-```typescript
+```tsx
 import { Html, Head, Main, NextScript } from 'next/document';
 
 export default function Document() {
@@ -119,14 +119,14 @@ export default function Document() {
 
 ## Navigation
 
-- **Client-side Navigation** Handles client-side navigation between pages using
+- **Client-side Navigation**. Handles client-side navigation between pages using
   Next.js's optimized `<Link>` component, which preloads linked pages for faster
   navigation.
 
-- `useRouter` hook allows you to access the router object and navigate
-  programmatically. It's part of the next/router package.
+- The `useRouter` hook allows you to access the router object and navigate
+  programmatically. It's part of the `next/router` package.
 
-```javascript
+```jsx
 import { useRouter } from 'next/router';
 
 const MyComponent = () => {
@@ -140,10 +140,10 @@ const MyComponent = () => {
 };
 ```
 
-- `withRouter` A higher-order component (HOC) that provides the router object as
-  a prop to the wrapped component.
+- `withRouter` is a higher-order component (HOC) that provides the router object
+  as a prop to the wrapped component.
 
-```javascript
+```jsx
 import { withRouter } from 'next/router';
 
 const MyComponent = ({ router }) => {

@@ -21,15 +21,15 @@ and in Server Actions.
 
 :::
 
-Server actions allow you to define asynchronous server functions that can be
+Server Actions allow you to define asynchronous server functions that can be
 invoked directly from your components without manually creating API routes.
 
-By running server actions on the server, you can keep sensitive information
+By running Server Actions on the server, you can keep sensitive information
 secure and avoid the complexities of client-server communication.
 
 ## Server Components
 
-Server actions can be directly called in server components.
+Server Actions can be called directly in Server Components.
 
 ```javascript
 // Server Component
@@ -49,7 +49,7 @@ export default function Page() {
 
 ## Client Components
 
-To use server actions in client components, ensure that the server action
+To use Server Actions in Client Components, ensure that the Server Action
 function is prefixed with `'use server'` to indicate that it should run on the
 server.
 
@@ -83,9 +83,9 @@ export async function create() {
 </TabItem>
 </Tabs>
 
-Or you can use the server action as a prop to pass it to any component.
+Or you can use the Server Action as a prop to pass it to any component.
 
-```typescript
+```tsx
 export default function Page() {
   async function create() {
     'use server';
@@ -104,14 +104,14 @@ The arguments and return value of Server Actions must be serializable by React.
 :::
 
 Server Actions can be invoked from event handlers (from elements like
-`<button>`), useEffect, third-party libraries and for form `<form>` submitting.
+`<button>`), `useEffect`, third-party libraries, and `<form>` submissions.
 
 ## Forms
 
 React extends the HTML `<form>` element to allow Server Actions to be invoked
 with the `action` prop.
 
-```typescript
+```tsx
 export default function Page() {
   async function createInvoice(formData: FormData) {
     'use server';
@@ -157,8 +157,8 @@ Component.
 
 ### Submit a Form Programmatically
 
-The requestSubmit method allows you to trigger the form's submit event,
-including validation and event listeners, as if the form was submitted by a
+The `requestSubmit` method allows you to trigger the form's submit event,
+including validation and event listeners, as if the form had been submitted by a
 user.
 
 ```jsx

@@ -23,7 +23,7 @@ changes. More complex requirements might benefit from a hybrid approach.
 
 ## Static Site Generation (SSG)
 
-If a page uses Static Generation, the page HTML-code is generated once at build
+If a page uses Static Generation, the page's HTML is generated once at build
 time. This HTML is then reused on each request. It can be cached by a CDN.
 
 In Next.js, you can statically generate pages with or without data.
@@ -31,12 +31,12 @@ In Next.js, you can statically generate pages with or without data.
 ### Pages without Data
 
 If the page doesn't need to fetch external data to be pre-rendered (does not
-have 'getServerSideProps' or 'getInitialProps'), Next.js generates a single HTML
+have `getServerSideProps` or `getInitialProps`), Next.js generates a single HTML
 file per page during build time using Static Generation.
 
 ### Pages with Data
 
-If the page need external data before they can be shown, use these functions to
+If the page needs external data before it can be shown, use these functions to
 handle this:
 
 - `getStaticProps`, if your page's content depends on external data.
@@ -57,8 +57,8 @@ documentation, product pages (for e-commerce).
 
 ## Server-side Rendering (SSR)
 
-SSR in Next.js involves rendering React components on the server-side before
-sending them to the client.
+SSR in Next.js involves rendering React components on the server before sending
+them to the client.
 
 ### How SSR Works
 
@@ -90,19 +90,19 @@ component.
 
 #### Limitations
 
-- SSR doesn't client-side specific features like browser APIs (geolocations,
-  event handling etc.) and state management.
+- SSR doesn't support client-side-specific features like browser APIs (location
+  access, event handling, etc.) and state management.
 
 ## Client-side Rendering (CSR)
 
 Client-side rendering (CSR) is a technique where the rendering of web pages
-happens dynamically populated on the client side (browser).
+happens dynamically on the client side (browser).
 
 ### Ways to Enable
 
 There are two ways to implement client-side rendering in Page Router:
 
-- Use the `useEffect()` and `useEffect()` hook instead of the server-side
+- Use the `useState()` and `useEffect()` hooks instead of the server-side
   rendering methods (`getStaticProps` and `getServerSideProps`).
 - Use a data fetching library like SWR or TanStack Query to fetch data on the
   client (recommended).
@@ -143,7 +143,7 @@ For more details see
 
 ### Performance
 
-- SSG: Offers the best performance for static content as it’s pre-rendered.
+- SSG: Offers the best performance for static content as it's pre-rendered.
 - SSR: Adds server load and might increase response time since pages are
   rendered on each request.
 - CSR: Reduces initial server load but might affect client performance due to
@@ -153,8 +153,8 @@ For more details see
 
 - SSG and SSR: Both are SEO-friendly as they pre-render content, which is
   beneficial for search engine indexing.
-- CSR: Not be ideal for SEO since content is loaded dynamically and may not be
-  indexed properly by search engines.
+- CSR: Might not be ideal for SEO since content is loaded dynamically and may
+  not be indexed properly by search engines.
 
 ### User Experience
 

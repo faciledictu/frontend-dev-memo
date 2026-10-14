@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # Server Components
 
-One of the key features of App Router system is the ability to use Server
+One of the key features of the App Router system is the ability to use Server
 Components.
 
 Server Components allow you to offload the rendering of components to the
@@ -20,7 +20,7 @@ In the following example, the `UsersPage` component fetches data on the server
 and renders a list of users. This approach ensures that the user data is
 available immediately when the page loads, improving both performance and SEO.
 
-```javascript title="app/users/page.js"
+```jsx title="app/users/page.js"
 import { fetchUsers } from '../lib/api';
 
 export default async function UsersPage() {
@@ -75,7 +75,7 @@ Then, on the client:
 - The React Server Components Payload is used to reconcile the Client and Server
   Component trees, and update the DOM.
 - The JavaScript instructions are used to hydrate Client Components and make
-  their UI interactive
+  their UI interactive.
 
 ## Rendering Strategies
 
@@ -120,7 +120,7 @@ see and interact with a page:
 1. All data for a given page is fetched on the server.
 2. The server then renders the HTML for the page.
 3. The HTML, CSS, and JavaScript for the page are sent to the client.
-4. A non-interactive user interface is shown using the generated HTML, and CSS.
+4. A non-interactive user interface is shown using the generated HTML and CSS.
 5. Finally, React hydrates the user interface to make it interactive.
 
 :::
@@ -131,7 +131,7 @@ soon as the actual data is prepared.
 
 To implement this you need to create a file `loading.js` in the route folder.
 
-```javascript
+```jsx
 export default function Loading() {
   // You can add any UI inside Loading, including a Skeleton.
   return <LoadingSkeleton />;
@@ -157,16 +157,17 @@ the fetches in the `page.js` have been performed on the server.
 
 ### Streaming
 
-Streaming allows you to progressive output the page by components. The whole
-work is split into chunks and streamed to the client as it is ready.
+Streaming allows you to progressively render the page component by component.
+The work is split into chunks, which are streamed to the client as they are
+ready.
 
 Streaming is built into the Next.js App Router by default.
 
 Using Suspense boundaries, developers can show fallback UI and swap in the
 actual content once it loads, enhancing user experience and interaction speed.
 
-By streaming, we allow to send parts of the actual to the client progressively
-as they are rendered on the server.
+Streaming allows us to send parts of the page to the client progressively as
+they are rendered on the server.
 
 <Tabs>
 
@@ -254,5 +255,5 @@ export default function Placeholder() {
 </Tabs>
 
 This approach reduces Time to First Byte (TTFB), First Contentful Paint (FCP)
-and Time to Interactive(TTI) and allows users to see and interact with parts of
+and Time to Interactive (TTI) and allows users to see and interact with parts of
 the page sooner, even before other data is fetched and rendered.

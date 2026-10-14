@@ -4,7 +4,7 @@ sidebar_position: 6
 
 # Best Practices for Working with Data
 
-## Fetch data on the server
+## Fetch Data on the Server
 
 - **Direct Access.** Gain direct access to backend data resources (e.g.,
   databases).
@@ -15,32 +15,32 @@ sidebar_position: 6
 - **Efficient Data Handling.** Fetch data and render in the same environment,
   reducing client-server communication and main thread work on the client.
 
-- **Optimized Data Fetching.** Perform multiple data fetches with a single
-  round-trip instead of multiple individual requests on the client.
+- **Optimized Data Fetching.** Perform multiple data fetches in a single round
+  trip instead of making multiple individual requests from the client.
 
 - **Improved Performance.** Reduce client-server waterfalls and latency by
   fetching data closer to the data source.
 
-## Fetch Data in the Component that Need It
+## Fetch Data in the Components That Need It
 
-You don't need to fetch data globally and pass props to children components when
+You don't need to fetch data globally and pass props to child components when
 using the same data in multiple components. Instead, you can use `fetch` or
 React `cache` in each component that needs the data.
 
 This approach doesn't affect performance because `fetch` requests are
 automatically memoized.
 
-## Working with Multiple Fetching
+## Working with Multiple Data Fetches
 
 ### Sequential Fetching
 
 In sequential data fetching, requests are made one after the other. If you have
 nested components, then data fetching will happen sequentially if those data
-requests are different. (this doesn't apply to requests for the same data as
+requests are different (this doesn't apply to requests for the same data, as
 they are automatically memoized).
 
-To implement this, you typically use await in an async function to ensure that
-each request completes before the next one starts.
+To implement this, you typically use `await` in an `async` function to ensure
+that each request completes before the next one starts.
 
 ```tsx
 // ...

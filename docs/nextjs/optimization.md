@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 ---
 
 # Optimization Tools
@@ -14,12 +14,12 @@ by only loading the necessary code for the current page.
 
 :::
 
-Next.js automatically splits your code of into separate bundles for each page
+Next.js automatically splits your code into separate bundles for each page
 (using Page Router) or for every Server Component (for App Router), reducing the
 amount of JavaScript that needs to be loaded initially.
 
 You can use dynamic imports to load components only when they are needed. There
-are to ways to achieve this:
+are two ways to achieve this:
 
 - Using dynamic imports with `next/dynamic`
 - Using `React.lazy()` with `Suspense`
@@ -52,10 +52,10 @@ export default function Components({ showMore }) {
 When using React.lazy() and Suspense, Client Components will be pre-rendered
 (SSR) by default.
 
-If you want to disable pre-rendering for a Client Component, you can use the ssr
-option set to false:
+If you want to disable pre-rendering for a Client Component, you can use the
+`ssr` option set to `false`:
 
-```jsx
+```javascript
 const ComponentC = dynamic(() => import('../components/C'), { ssr: false });
 ```
 
@@ -107,21 +107,21 @@ features like lazy loading, resizing, and serving modern formats like WebP.
   local file (statically imported) or a remote resource (URL). The module
   supports `.jpg`, `.png`, and `.webp` formats.
 
-- `width` and `height` properties allows a browser to allocate the necessary
-  space in the layout before the image loads. Next.js can determine properties
-  automatically for statically imported images. For remote images you need to
-  specify them explicitly, because Next.js does not have access to them.
+- `width` and `height` properties allow a browser to allocate the necessary
+  space in the layout before the image loads. Next.js can determine these
+  properties automatically for statically imported images. For remote images you
+  need to specify them explicitly, because Next.js does not have access to them.
 
-- `fill` property indicates that image fills the parent container. With `fill`,
-  we don't need to specify `width` and `height`
+- `fill` property indicates that the image fills the parent container. With
+  `fill`, we don't need to specify `width` and `height`.
 
 - `placeholder` is an optional property that specifies the content that will be
   displayed until the original file is downloaded.
   - When `empty`, the image container will be empty
-  - When `blur`, the container will be filled by blurred image. If the image is
-    statically imported, the blurred version will be generated automatically.
+  - When `blur`, the container will be filled with a blurred image. If the image
+    is statically imported, the blurred version will be generated automatically.
     Otherwise, you should provide it using `blurDataURL` property.
-  - When `data:image/...`, the provided `Data URL` will be user as the
+  - When `data:image/...`, the provided `Data URL` will be used as the
     placeholder.
 
 :::tip
@@ -131,7 +131,7 @@ browser will start loading it sooner, even before other lower-priority
 resources.
 
 This is useful for above-the-fold images (hero images or key visual elements).
-It's recommended to use this property with the images detected as the Largest
+It's recommended to use this property with images detected as the Largest
 Contentful Paint (LCP) elements.
 
 :::
@@ -211,8 +211,8 @@ export default function HomePage() {
 
 ### Strategies
 
-Strategy next/script loads third-party scripts on any page or layout by default.
-However, you can customize its behavior via the strategy property:
+By default, `next/script` loads third-party scripts on any page or layout.
+However, you can customize its behavior via the `strategy` property:
 
 - `beforeInteractive`: Loads the script before any Next.js code and before any
   page hydration occurs.
@@ -222,7 +222,7 @@ However, you can customize its behavior via the strategy property:
 
 - `lazyOnload`: Loads the script later while the browser is idle.
 
-- `worker`: Loads the script in web worker.
+- `worker`: Loads the script in a web worker.
 
 ```tsx
 import Script from 'next/script';
