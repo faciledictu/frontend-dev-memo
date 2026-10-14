@@ -1,46 +1,86 @@
 ---
 sidebar_position: 3
+description:
+  Creational, structural and behavioral design patterns with frontend examples,
+  Observer vs Pub/Sub, Factory Method vs Simple Factory
 ---
 
-# Programming patterns
+# Design Patterns
 
-Programming patterns are solutions to common software design problems. They
-provide a proven approach to solving common design issues. These patterns help
-developers create more flexible, reusable, and maintainable code.
+Design patterns are named, reusable solutions to recurring design problems,
+catalogued by the "Gang of Four" (Gamma, Helm, Johnson, Vlissides, 1994). They
+fall into three groups: **creational** (how objects are created: Singleton,
+Factory, Builder), **structural** (how objects are composed: Adapter, Decorator,
+Facade, Proxy) and **behavioral** (how objects communicate: Observer, Strategy,
+Command). In JavaScript many of them are simpler than in the original
+class-based form: a module is a singleton, a higher-order function is a
+decorator, a callback is a strategy.
 
-## Classification
+## Details
 
-### Creational Patterns
+### Creational
 
-These deal with object creation mechanisms, trying to create objects in a manner
-suitable to the situation.
+| Pattern        | Idea                                                    | In frontend                                          |
+| -------------- | ------------------------------------------------------- | ---------------------------------------------------- |
+| Singleton      | One shared instance                                     | An ES module export (`api`, `store`), evaluated once |
+| Factory Method | Subclasses decide which class to instantiate            | Rare in JS; usually replaced by a simple factory     |
+| Simple Factory | One function or static method picks the class to create | `createButton(type)`, a map from type to component   |
+| Builder        | Builds a complex object step by step                    | Query builders, `new URL()` + `searchParams.set`     |
+| Prototype      | New objects are copies of an existing one               | `Object.create`, `structuredClone`                   |
 
-Examples: _Singleton_, _Factory Method_, _Abstract Factory_, _Builder_,
-_Prototype_.
+### Structural
 
-#### Example: Simple Factory
+| Pattern   | Idea                                                   | In frontend                                       |
+| --------- | ------------------------------------------------------ | ------------------------------------------------- |
+| Adapter   | Converts one interface into the one the client expects | Mapping an API response to the app's model        |
+| Decorator | Adds behavior without changing the original            | Higher-order functions (`withRetry(fetch)`), HOCs |
+| Facade    | One simple interface over a complex subsystem          | An `api` module hiding `fetch`, auth and retries  |
+| Proxy     | A stand-in that controls access to an object           | JavaScript `Proxy`, Vue reactivity, lazy loading  |
+| Composite | Treats a tree of objects like a single object          | The DOM, nested React components                  |
+
+### Behavioral
+
+| Pattern                 | Idea                                                 | In frontend                                 |
+| ----------------------- | ---------------------------------------------------- | ------------------------------------------- |
+| Observer                | A subject notifies its subscribers about changes     | `addEventListener`, store subscriptions     |
+| Strategy                | Interchangeable algorithms behind one interface      | A sorting or validation function passed in  |
+| Command                 | An action as an object that can be queued or undone  | Redux actions, undo / redo                  |
+| Chain of Responsibility | A request passes along handlers until one handles it | Middleware (Redux, Express), event bubbling |
+| Mediator                | Objects communicate through one central object       | A form controller coordinating its fields   |
+
+### Observer vs Pub/Sub
+
+- **Observer**: subscribers register directly with the subject, and the subject
+  calls them. They know about each other.
+- **Pub/Sub**: publishers and subscribers do not know about each other; an
+  **event bus** (broker) routes messages by topic or channel.
+- `EventTarget` in the DOM is Observer; an event bus (`mitt`) or a
+  `BroadcastChannel`, where both sides only know the channel name, is Pub/Sub.
+
+## Example
+
+<details>
+<summary>Simple Factory</summary>
 
 ```javascript
-// Product classes
 class Button {
   render() {
-    console.log('Rendering a Button.');
+    return 'Button';
   }
 }
 
 class IconButton extends Button {
   render() {
-    console.log('Rendering an IconButton.');
+    return 'IconButton';
   }
 }
 
 class ToggleButton extends Button {
   render() {
-    console.log('Rendering a ToggleButton.');
+    return 'ToggleButton';
   }
 }
 
-// Simple Factory (a static method with a switch)
 class ButtonFactory {
   static createButton(type) {
     switch (type) {
@@ -54,129 +94,118 @@ class ButtonFactory {
   }
 }
 
-// Client code
-const button1 = ButtonFactory.createButton('icon');
-button1.render();
-
-const button2 = ButtonFactory.createButton('toggle');
-button2.render();
-
-const button3 = ButtonFactory.createButton();
-button3.render();
+console.log(ButtonFactory.createButton('icon').render()); // IconButton
+console.log(ButtonFactory.createButton().render()); // Button
 ```
 
-### Structural Patterns
+</details>
 
-These deal with object composition, helping to ensure that if one part of a
-system changes, the entire system doesn't need to do the same.
-
-Examples: _Adapter_, _Composite_, _Proxy_, _Flyweight_, _Facade_.
-
-#### Example: Facade
-
-The Facade pattern hides the complexities of the system and provides an
-easy-to-use interface for the client.
-
-In a web application, a Facade might simplify interactions with a suite of
-complex APIs by providing a single method that abstracts multiple underlying
-calls.
+<details>
+<summary>Facade</summary>
 
 ```javascript
-// Complex subsystem
-class SubsystemA {
-  operationA() {
-    console.log('SubsystemA: Ready!');
-  }
-}
+// The subsystem: auth, HTTP and error reporting
+const auth = { getToken: () => 'token-123' };
+const http = {
+  get: async (url, headers) => ({ url, headers }),
+};
+const logger = { error: (error) => console.error(error) };
 
-class SubsystemB {
-  operationB() {
-    console.log('SubsystemB: Go!');
-  }
-}
+// The facade: one call instead of three
+const api = {
+  async get(path) {
+    try {
+      return await http.get(`/api${path}`, {
+        Authorization: `Bearer ${auth.getToken()}`,
+      });
+    } catch (error) {
+      logger.error(error);
+      throw error;
+    }
+  },
+};
 
-class SubsystemC {
-  operationC() {
-    console.log('SubsystemC: Fire!');
-  }
-}
-
-// Facade
-class Facade {
-  constructor() {
-    this.subsystemA = new SubsystemA();
-    this.subsystemB = new SubsystemB();
-    this.subsystemC = new SubsystemC();
-  }
-
-  simplifiedOperation() {
-    this.subsystemA.operationA();
-    this.subsystemB.operationB();
-    this.subsystemC.operationC();
-  }
-}
-
-// Client code
-const facade = new Facade();
-facade.simplifiedOperation();
+console.log(await api.get('/users'));
+// { url: '/api/users', headers: { Authorization: 'Bearer token-123' } }
 ```
 
-### Behavioral Patterns
+</details>
 
-These deal with object collaboration and how responsibilities are distributed
-among objects.
-
-Examples: _Observer_, _Strategy_, _Command_, _Chain of Responsibility_,
-_Mediator_.
-
-#### Example: Observer
-
-The Observer pattern defines a one-to-many dependency between objects. When one
-object changes state, all its dependents are updated. It allows a subject to
-notify observers about changes without knowing who or what those observers are.
-
-Example: In JavaScript, the EventListener in the DOM API is an implementation of
-the Observer pattern.
+<details>
+<summary>Observer</summary>
 
 ```javascript
-// Subject
 class Subject {
-  constructor() {
-    this.observers = [];
+  #observers = new Set();
+
+  subscribe(observer) {
+    this.#observers.add(observer);
+    return () => this.#observers.delete(observer); // unsubscribe
   }
 
-  addObserver(observer) {
-    this.observers.push(observer);
-  }
-
-  removeObserver(observer) {
-    this.observers = this.observers.filter((obs) => obs !== observer);
-  }
-
-  notifyObservers() {
-    this.observers.forEach((observer) => observer.update());
-  }
-
-  changeState() {
-    console.log('Subject: State has changed!');
-    this.notifyObservers();
+  notify(data) {
+    this.#observers.forEach((observer) => observer(data));
   }
 }
 
-// Observer
-class Observer {
-  update() {
-    console.log('Observer: Notified of state change!');
-  }
-}
+const cart = new Subject();
+const unsubscribe = cart.subscribe((items) => console.log('Badge:', items));
+cart.subscribe((items) => console.log('Total:', items));
 
-// Client code
-const subject = new Subject();
-const observer1 = new Observer();
-const observer2 = new Observer();
-
-subject.addObserver(observer1);
-subject.addObserver(observer2);
-
-subject.changeState();
+cart.notify(3); // Badge: 3, Total: 3
+unsubscribe();
+cart.notify(4); // Total: 4
 ```
+
+</details>
+
+<details>
+<summary>Decorator as a higher-order function</summary>
+
+```javascript
+function withRetry(fn, retries = 2) {
+  return async (...args) => {
+    for (let attempt = 0; ; attempt++) {
+      try {
+        return await fn(...args);
+      } catch (error) {
+        if (attempt >= retries) throw error;
+      }
+    }
+  };
+}
+
+let calls = 0;
+const flaky = async () => {
+  calls++;
+  if (calls < 3) throw new Error('Network error');
+  return 'ok';
+};
+
+console.log(await withRetry(flaky)(), calls); // ok 3
+```
+
+</details>
+
+## Follow-up Questions
+
+- Why is Singleton often called an anti-pattern? It is global state: hidden
+  dependencies, hard to replace in tests. In JS a module export is a singleton
+  anyway; pass it as a dependency where tests need to swap it.
+- Factory Method vs Simple Factory? Factory Method is a method that subclasses
+  override to choose the product class; a simple factory is one function with a
+  `switch` or a map.
+- Which patterns does React use? Composite (component tree), Observer (state
+  subscriptions, `useSyncExternalStore`), Decorator (HOCs), Strategy (render
+  props, callbacks).
+
+## Common Mistakes
+
+- Calling a function with a `switch` a "Factory Method".
+- Treating Observer and Pub/Sub as the same thing.
+- Reaching for a pattern first and looking for a problem second.
+
+## See Also
+
+- [SOLID Principles](./paradigms/solid.md)
+- [OOP Principles](./paradigms/oop-principles.md)

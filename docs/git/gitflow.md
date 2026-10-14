@@ -13,8 +13,8 @@ versions. **GitHub Flow** has one permanent branch, `main`, which is always
 deployable, and short feature branches merged through pull requests.
 **Trunk-based development** goes further: everyone integrates into the trunk at
 least daily, and unfinished work is hidden behind **feature flags**. Web apps
-with continuous delivery usually use GitHub Flow or trunk-based development, as the author of Gitflow
-has recommended since 2020.
+with continuous delivery usually use GitHub Flow or trunk-based development, as
+the author of Gitflow has recommended since 2020.
 
 ## Details
 

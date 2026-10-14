@@ -1,119 +1,109 @@
 ---
 sidebar_position: 3
+description:
+  Encapsulation, inheritance, polymorphism and abstraction with TypeScript
+  examples, composition over inheritance
 ---
 
-# Object-Oriented Programming Principles
+# OOP Principles
 
-## Encapsulation
+Object-oriented programming models a program as **objects** that combine data
+and the methods that work on it. Four principles: **encapsulation** — hide the
+internal state, expose a controlled interface; **inheritance** — a class reuses
+and extends another class (`extends`); **polymorphism** — different classes are
+used through one interface, and each behaves its own way; **abstraction** —
+depend on what an object does, not how. Modern code prefers **composition over
+inheritance**: build behavior from small parts instead of deep class
+hierarchies.
 
-Encapsulation hides the internal state and behavior of an object and only
-exposes a controlled interface.
+## Details
 
-- Helps maintain clear boundaries between modules.
-- Prevents unintended access or modification of internal data.
+| Principle     | In TypeScript                                                                   | Gives                                          |
+| ------------- | ------------------------------------------------------------------------------- | ---------------------------------------------- |
+| Encapsulation | `private` / `protected` (compile time), `#field` (runtime), getters and setters | Invariants are protected; internals can change |
+| Inheritance   | `class B extends A`, `super`, method overriding                                 | Reuse of a base implementation                 |
+| Polymorphism  | An interface or base class, several implementations                             | Callers do not depend on concrete classes      |
+| Abstraction   | `interface`, `abstract class`                                                   | A contract without implementation details      |
 
-### Implementation in TypeScript
+### Composition over Inheritance
 
-- Use private/protected class members to hide internal logic.
-- Use getters/setters to control access to properties.
+- Inheritance couples the subclass to the internals of the base class: a change
+  in the base can break every subclass ("fragile base class").
+- A hierarchy fixes one axis of variation; a `Button` that is both `Icon` and
+  `Toggle` does not fit a tree.
+- Composition combines independent pieces: in React, components are composed
+  through `children` and props, and logic is shared through hooks. React never
+  uses inheritance between components.
 
-```typescript
-class SecureStoreService {
-  private token: string | null = null;
-
-  setToken(value: string) {
-    this.token = value;
-  }
-
-  getToken(): string | null {
-    return this.token;
-  }
-}
-```
-
-## Inheritance
-
-Inheritance allows a class to inherit properties and methods from another class.
-
-- Promotes reusability.
-- Helps define base behaviors for common patterns.
-
-In modern React, where functional components are more common, we can create a
-base component and then extend it with specific functionality by creating a new
-component on top of it.
-
-### Implementation in TypeScript
-
-```tsx
-const BaseButton = ({ children }) => {
-  return <button>{children}</button>;
-};
-
-const ButtonWithIcon = ({ children, icon: Icon }) => {
-  return (
-    <BaseButton>
-      <Icon />
-      {children}
-    </BaseButton>
-  );
-};
-```
-
-In real development, though, prefer composition over inheritance for UI.
-
-## Polymorphism
-
-Polymorphism allows objects to be treated as instances of their parent class or
-interface, enabling interchangeable use.
-
-- Facilitates mocking and testing.
-- Enables writing generic, flexible functions.
-
-### Implementation in TypeScript
-
-Use interfaces to inject dependencies (e.g., mock vs real services).
+## Example
 
 ```typescript
-interface INotificationService {
-  sendNotification(message: string): void;
-}
+// Encapsulation
+class Counter {
+  #count = 0; // not accessible outside the class
 
-class EmailNotificationService implements INotificationService {
-  sendNotification(message: string) {
-    console.log(`Sending email: ${message}`);
+  increment(): number {
+    return ++this.#count;
   }
 }
 
-class SMSNotificationService implements INotificationService {
-  sendNotification(message: string) {
-    console.log(`Sending SMS: ${message}`);
+// Inheritance and polymorphism
+abstract class Shape {
+  abstract area(): number;
+
+  describe(): string {
+    return `${this.constructor.name} with area ${this.area().toFixed(2)}`;
   }
 }
 
-function notifyUser(service: INotificationService, message: string) {
-  service.sendNotification(message);
+class Circle extends Shape {
+  constructor(private radius: number) {
+    super();
+  }
+
+  area(): number {
+    return Math.PI * this.radius ** 2;
+  }
 }
+
+class Rectangle extends Shape {
+  constructor(
+    private width: number,
+    private height: number
+  ) {
+    super();
+  }
+
+  area(): number {
+    return this.width * this.height;
+  }
+}
+
+const shapes: Shape[] = [new Circle(1), new Rectangle(2, 3)];
+shapes.forEach((shape) => console.log(shape.describe()));
+// Circle with area 3.14
+// Rectangle with area 6.00
+
+const counter = new Counter();
+counter.increment();
+console.log(counter.increment()); // 2
 ```
 
-## Abstraction
+## Follow-up Questions
 
-Abstraction means exposing only essential details and hiding unnecessary
-complexity.
+- `private` or `#field`? `private` is checked only by the compiler and is a
+  normal property at runtime; `#field` is enforced by JavaScript itself.
+- Interface or abstract class? An interface is only a type and disappears after
+  compilation; an abstract class can hold shared implementation and exists at
+  runtime.
 
-- Interfaces or abstract classes define contracts without specifying the
-  implementation.
-- Useful when building platform-agnostic services (e.g., storage, network).
+## Common Mistakes
 
-### Implementation in TypeScript
+- Calling a component that wraps another component "inheritance": that is
+  composition.
+- Building deep hierarchies for code reuse where a function or a hook would do.
 
-```typescript
-interface INotificationService {
-  sendNotification(message: string): void;
-}
+## See Also
 
-class FirebaseNotificationService implements INotificationService {
-  async sendNotification(message: string) {
-    // Implementation using Firebase
-  }
-}
-```
+- [SOLID Principles](./solid.md)
+- [Design Patterns](../patterns.md)

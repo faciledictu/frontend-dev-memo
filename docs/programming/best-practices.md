@@ -1,163 +1,104 @@
 ---
 sidebar_position: 1
-description: Naming, DRY / KISS / YAGNI and the main ideas of Clean Code
+description:
+  Naming, DRY / KISS / YAGNI and when DRY hurts, Clean Code principles, code
+  smells
 ---
 
 # Best Practices
 
-## Naming
+Code is read far more often than it is written, so the goal is code that is
+**easy to understand and safe to change**. **Naming**: names reveal intent,
+verbs for functions, nouns for values, `is` / `has` for booleans. **DRY** (Don't
+Repeat Yourself): one piece of knowledge lives in one place. **KISS** (Keep It
+Simple, Stupid): the simplest solution that works. **YAGNI** (You Aren't Gonna
+Need It): do not build what is not needed yet. Robert C. Martin's **Clean Code**
+adds small single-purpose functions, comments that explain _why_, and explicit
+error handling. **Code smells** (from Martin Fowler's "Refactoring") are signs
+that code needs restructuring.
 
-### Common Principles
+## Details
 
-- Choose names that clearly describe the purpose. Names should be as short as
-  possible but long enough to convey meaning.
+### Naming
 
-- Use full words instead of abbreviations.
+- Names describe purpose and are as short as possible but no shorter:
+  `elapsedMs`, not `t` or `timeElapsedInMillisecondsSinceStart`.
+- Full words instead of abbreviations; single letters only for loop indices.
+- Variables are nouns, collections are plural: `user`, `users`.
+- Functions are verbs: `fetchUser`, `formatDate`. Predicates start with `is`,
+  `has`, `can`, `should`: `isVisible`, `hasAccess`.
+- Named constants instead of magic numbers: `MAX_RETRIES = 3`.
+- One convention across the codebase. In JavaScript: `camelCase` for variables
+  and functions, `PascalCase` for classes and components, `UPPER_SNAKE_CASE` for
+  constants.
 
-- Avoid reserved words as names.
+### DRY, KISS, YAGNI
 
-- Stick to a consistent naming convention throughout your codebase. For JS they
-  are _camelCase_ and _PascalCase_.
+| Principle | Means                                                   | Overdone, it becomes                                   |
+| --------- | ------------------------------------------------------- | ------------------------------------------------------ |
+| DRY       | One source of truth for each rule or piece of knowledge | A shared abstraction over code that only looks similar |
+| KISS      | The simplest solution that solves the problem           | Rarely harmful                                         |
+| YAGNI     | Build only what is needed now                           | Ignoring requirements that are already known           |
 
-### Variables
+**When DRY hurts.** Two pieces of code that look the same but change for
+different reasons are not duplication. Merging them into one function leads to
+flags and branches for every caller. "Duplication is far cheaper than the wrong
+abstraction" (Sandi Metz); the rule of three: extract on the third repetition,
+when the common shape is clear.
 
-- Use nouns for variables.
+### Clean Code
 
-- Use Plurals for arrays and collections.
+The main ideas of Robert C. Martin's "Clean Code":
 
-- Except for loop indices, avoid using single character names.
+| Topic          | Advice                                                                          |
+| -------------- | ------------------------------------------------------------------------------- |
+| Names          | Intention-revealing, searchable, not misleading                                 |
+| Functions      | Small, do one thing, few parameters, no hidden side effects                     |
+| Comments       | Explain _why_, not _what_; code that needs a "what" comment needs a better name |
+| Formatting     | Consistent, automated (Prettier)                                                |
+| Error handling | Exceptions instead of error codes, do not return or pass `null` without need    |
+| Tests          | As clean as production code, one concept per test                               |
+| Classes        | Small, one responsibility, encapsulated details                                 |
+| Dependencies   | Separate construction from use, inject dependencies                             |
 
-- Use named constants instead of hard-coding values directly in your code.
+### Code Smells
 
-### Functions
+From Martin Fowler's "Refactoring" (with Kent Beck):
 
-- Use verbs for functions (because functions are actions).
+| Smell                  | Symptom                                                      |
+| ---------------------- | ------------------------------------------------------------ |
+| Duplicated code        | The same logic in several places                             |
+| Long function          | Hard to name and understand at once                          |
+| Large class            | Too many fields and methods ("god class")                    |
+| Long parameter list    | Many arguments; group them into an object                    |
+| Feature envy           | A method uses another object's data more than its own        |
+| Inappropriate intimacy | A class depends on the internals of another                  |
+| Primitive obsession    | Strings and numbers instead of small domain types            |
+| Data clumps            | The same group of values passed around together              |
+| Switch statements      | The same `switch` on a type repeated in many places          |
+| Speculative generality | Hooks and parameters for cases that do not exist (see YAGNI) |
+| Temporary field        | A field set only in some cases                               |
+| Comments               | Comments that compensate for unclear code                    |
 
-- If the function is predicate the name is often starting with _is_, _has_,
-  _can_, or _should_.
+The second edition (2018) renames some of them: Insider Trading, Repeated
+Switches.
 
-- Function names should clearly indicate if they have side effects.
+## Follow-up Questions
 
-## DRY, KISS, YAGNI
+- Does DRY conflict with KISS? Sometimes: an abstraction that removes
+  duplication can make code harder to follow. Prefer clarity until the
+  duplication is real.
+- Are comments bad? No: comments that explain _why_ (a workaround, a business
+  rule, a link to an issue) are valuable; comments that repeat the code are
+  noise that goes stale.
 
-**DRY** stands for _Don't Repeat Yourself_, which means you shouldn't write the
-same code over and over again. Instead, you should try to reuse code as much as
-possible to keep things efficient.
+## Common Mistakes
 
-**KISS** stands for _Keep It Simple, Stupid_. It means you should try to keep
-your code simple and easy to understand. Don't overcomplicate things if you
-don't need to.
+- Attributing the list of code smells to "Clean Code": it comes from
+  "Refactoring".
+- Applying DRY to code that is only accidentally similar.
 
-**YAGNI** stands for _You Ain't Gonna Need It_. This principle suggests that you
-shouldn't add functionality to your code unless you actually need it. So, don't
-waste time and effort on features that might not be necessary.
+## See Also
 
-## Clean code
-
-### Best Practices
-
-The main principles of Robert C. Martin's "Clean Code".
-
-1. **Meaningful Names**.
-   - Choose clear, intention-revealing names.
-   - Avoid misleading names and make names searchable.
-2. **Functions**.
-   - Keep functions small and focused on a single task.
-   - Use descriptive names and minimize the number of parameters.
-3. **Comments**.
-   - Write comments that explain _why,_ not _what._
-   - Avoid unnecessary or redundant comments.
-4. **Formatting**.
-   - Ensure code is well-organized and aesthetically pleasing.
-   - Use consistent indentation and spacing.
-5. **Error Handling**.
-   - Prefer exceptions over return codes.
-   - Handle errors appropriately and avoid returning null.
-6. **Testing**.
-   - Write clean, maintainable tests.
-   - Use descriptive names for tests and aim for high test coverage.
-7. **Classes**.
-   - Keep classes small and focused on a single responsibility.
-   - Use meaningful names and encapsulate details.
-8. **Systems**.
-   - Separate system construction from usage.
-   - Manage dependencies through dependency injection.
-9. **Concurrency**.
-   - Isolate concurrency-related code.
-   - Avoid shared mutable data and use thread-safe structures.
-10. **Source Code Structure**.
-    - Organize code logically with clear file and directory naming conventions.
-
-These principles aim to make code more readable, maintainable, and efficient,
-leading to higher-quality software and a smoother development process.
-
-### Antipatterns
-
-These antipatterns are addressed throughout "Clean Code" with the goal of
-encouraging practices that lead to more maintainable, understandable, and robust
-code. The book emphasizes the importance of writing clean, simple, and focused
-code, avoiding these common pitfalls.
-
-1. **The God Class**
-
-   A class that knows too much or does too much. It usually ends up being a
-   catch-all for functionality, violating the Single Responsibility Principle.
-
-2. **Duplicated Code**
-
-   Code that is repeated in multiple places. This leads to difficulties in
-   maintenance and increases the risk of bugs, as changes need to be replicated
-   in all locations.
-
-3. **Long Methods**
-
-   Methods that are excessively long, making them hard to understand and
-   maintain. Clean Code advocates for short, single-purpose methods.
-
-4. **Large Classes**
-
-   Classes that contain too much functionality, becoming difficult to manage.
-   They often indicate a need for refactoring into smaller, more cohesive
-   classes.
-
-5. **Feature Envy**
-
-   When a method in one class is more interested in the data of another class
-   than its own data, leading to tight coupling and low cohesion.
-
-6. **Inappropriate Intimacy**
-
-   When one class is too familiar with the inner workings of another class,
-   leading to strong coupling and making changes more difficult.
-
-7. **Primitive Obsession**
-
-   The use of primitive data types to represent domain ideas instead of creating
-   specific types that better represent the concepts and provide more meaning.
-
-8. **Data Clumps**
-
-   Groups of data items that tend to be passed around together, indicating they
-   might belong in their own class.
-
-9. **Switch Statements**
-
-   Overuse of switch statements can lead to code duplication and difficulty in
-   maintaining the code, suggesting the need for polymorphism to handle such
-   cases.
-
-10. **Speculative Generality**
-
-    Writing code to handle cases that don't exist yet, leading to unnecessary
-    complexity and maintenance overhead.
-
-11. **Temporary Field**
-
-    Fields that are set only in certain circumstances, making the class harder
-    to understand and maintain.
-
-12. **Comments**
-
-    Over-reliance on comments to explain what the code does instead of writing
-    self-explanatory code. Comments should be used to explain why something is
-    done, not what is done.
+- [SOLID Principles](./paradigms/solid.md)
+- [Programming Patterns](./patterns.md)

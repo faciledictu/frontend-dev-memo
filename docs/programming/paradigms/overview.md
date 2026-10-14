@@ -1,67 +1,69 @@
 ---
 sidebar_position: 1
+description: Imperative vs declarative programming, with examples in JavaScript
 ---
 
 # Programming Paradigms
 
-Programming paradigms refer to the fundamental styles or approaches to
-programming. They dictate how we structure and organize our code to solve
-problems.
+A paradigm is a style of structuring code. **Imperative** code says **how**: a
+sequence of statements that change state step by step (loops, assignments).
+**Declarative** code says **what** result is wanted and leaves the steps to a
+library or the language: `map` / `filter` instead of a loop, SQL, CSS, JSX.
+**Procedural** and **object-oriented** programming are imperative styles;
+**functional** programming is declarative. JavaScript is multi-paradigm and
+mixes all of them.
 
-## Imperative Programming
+## Details
 
-Imperative programming focuses on describing _how_ to achieve a task
-_step-by-step_. It emphasizes changing program state through statements that
-modify mutable variables and data structure.
+|              | Imperative                          | Declarative                                   |
+| ------------ | ----------------------------------- | --------------------------------------------- |
+| Describes    | Steps to perform                    | The desired result                            |
+| State        | Mutated in place                    | New values are produced                       |
+| Control flow | Explicit: `for`, `if`, `break`      | Hidden in functions and the runtime           |
+| Examples     | C, a `for` loop, direct DOM updates | SQL, CSS, HTML, `map` / `filter`, JSX, React  |
+| Styles       | Procedural, object-oriented         | Functional, logic, markup and query languages |
 
-- Uses statements like assignments, loops, and control structures (_if-else_,
-  _switch_).
+- Declarative code is built on imperative code: `Array.prototype.map` is a loop
+  inside.
+- React is declarative: a component describes what the UI looks like for a
+  state, and React computes the DOM updates; `document.createElement` and
+  `appendChild` are the imperative way.
 
-- Directly specifies the sequence of operations and their effects on state.
+## Example
 
-- Often closely tied to the underlying machine architecture and execution model.
-
-Examples include languages like C, Python (to some extent), and Java.
-
-### Example: Computing Factorial Imperatively
-
-```javascript
-function factorial(n) {
-  let result = 1;
-  for (let i = 1; i <= n; i++) {
-    result *= i;
-  }
-  return result;
-}
-
-console.log(factorial(5)); // Output: 120
-```
-
-## Declarative Programming
-
-Declarative programming focuses on describing _what_ you want to achieve without
-explicitly detailing how to achieve it. It emphasizes expressing the logic of a
-computation without describing its control flow.
-
-- Often uses expressions and declarations rather than statements.
-
-- Avoids explicit control flow and mutable state.
-
-- Often more abstract and high-level.
-
-Examples include functional programming languages (like Haskell, Lisp) and SQL
-(for database queries).
-
-Example: Computing Factorial Using Recursion
+The same task: the names of active users, uppercased.
 
 ```javascript
-function factorial(n) {
-  if (n <= 1) {
-    return 1;
-  }
+const users = [
+  { name: 'Alice', active: true },
+  { name: 'Bob', active: false },
+  { name: 'Carol', active: true },
+];
 
-  return n * factorial(n - 1);
+// Imperative: how to build the result
+const names = [];
+for (let i = 0; i < users.length; i++) {
+  if (users[i].active) {
+    names.push(users[i].name.toUpperCase());
+  }
 }
 
-console.log(factorial(5)); // Output: 120
+// Declarative: what the result is
+const activeNames = users
+  .filter((user) => user.active)
+  .map((user) => user.name.toUpperCase());
+
+console.log(names, activeNames); // [ 'ALICE', 'CAROL' ] [ 'ALICE', 'CAROL' ]
 ```
+
+## Common Mistakes
+
+- Calling recursion declarative: a recursive function still describes the steps;
+  what matters is whether the code states the result or the procedure.
+- Saying that declarative code has no imperative parts: they are hidden in the
+  library, not removed.
+
+## See Also
+
+- [Functional Programming](./fp.md)
+- [OOP Principles](./oop-principles.md)
