@@ -1,152 +1,176 @@
 ---
 sidebar_position: 5
+description:
+  ACID, BEGIN / COMMIT / ROLLBACK and savepoints, isolation levels and read
+  anomalies, how PostgreSQL actually implements them, lost updates and locking
 ---
 
 # Transactions in SQL
 
-A transaction is a sequence of one or more SQL operations that are executed as a
-single unit of work. A transaction ensures that all operations within it are
-completed successfully before making any changes permanent. If any operation
-within the transaction fails, the entire transaction can be rolled back, leaving
-the database in its original state.
+A **transaction** is a group of statements that the database executes as one
+unit: either all of their changes are saved (`COMMIT`) or none are (`ROLLBACK`).
+Transactions give the **ACID** guarantees: **atomicity** (all or nothing),
+**consistency** (constraints hold after every commit), **isolation** (concurrent
+transactions do not see each other's unfinished work) and **durability**
+(committed data survives a crash). How strong the isolation is depends on the
+**isolation level**: Read Uncommitted, Read Committed, Repeatable Read,
+Serializable. Weaker levels allow more anomalies but fail less often under
+concurrency. PostgreSQL defaults to **Read Committed**.
 
-## ACID Properties
+Applies to: PostgreSQL 18.
 
-ACID defines the key characteristics that ensure transactions are processed
-reliably.
+## Details
 
-### Atomicity
+### ACID
 
-Ensures that all operations within a transaction are treated as a single unit.
-They either all succeed or all fail.
+| Property    | Guarantee                                                      | Example                                                                     |
+| ----------- | -------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Atomicity   | All statements of a transaction take effect, or none do        | A transfer never debits one account without crediting the other             |
+| Consistency | A committed transaction leaves every constraint satisfied      | `CHECK (balance >= 0)` cannot be broken by a commit                         |
+| Isolation   | Concurrent transactions behave as the isolation level promises | A report does not see a half-done transfer                                  |
+| Durability  | After `COMMIT` returns, the data survives a crash              | PostgreSQL writes the change to the write-ahead log (WAL) before confirming |
 
-**Example:** In a bank transfer, if money is deducted from one account, it must
-be added to another. Atomicity ensures both steps are completed or neither is.
+### Commands
 
-### Consistency
+| Command                       | What it does                                                              |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| `BEGIN` (`START TRANSACTION`) | Starts a transaction; `BEGIN ISOLATION LEVEL SERIALIZABLE` sets the level |
+| `COMMIT`                      | Saves all changes of the current transaction                              |
+| `ROLLBACK`                    | Discards all of them                                                      |
+| `SAVEPOINT name`              | Marks a point inside the transaction                                      |
+| `ROLLBACK TO SAVEPOINT name`  | Discards changes made after the savepoint; the transaction continues      |
+| `RELEASE SAVEPOINT name`      | Forgets the savepoint, keeping its changes                                |
 
-Ensures that a transaction brings the database from one valid state to another,
-maintaining database invariants.
+- Without `BEGIN`, every statement is its own transaction (**autocommit**).
+- In PostgreSQL, an error inside a transaction **aborts** it: every following
+  statement fails with `current transaction is aborted`, and `COMMIT` performs a
+  `ROLLBACK`. To continue after an expected error, use a savepoint.
+- DDL (`CREATE`, `ALTER`, `DROP`) is transactional in PostgreSQL, so a migration
+  can be rolled back as a whole. MySQL commits DDL implicitly.
 
-**Example:** If a transaction modifies data in a way that violates database
-constraints, it must be rolled back to maintain consistency.
+### Read Anomalies
 
-### Isolation
+| Anomaly                            | What happens                                                                                       |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Dirty read                         | Reading another transaction's uncommitted changes                                                  |
+| Non-repeatable read                | Reading the same row twice gives different values because another transaction committed in between |
+| Phantom read                       | Re-running a query with a condition returns a different set of rows                                |
+| Lost update                        | Two transactions read a value, both write a new value based on it, and one write is lost           |
+| Serialization anomaly (write skew) | Each transaction is valid alone, but their combination could not happen in any serial order        |
 
-Ensures that transactions are executed in isolation from each other, so that
-concurrent transactions do not affect each other’s execution.
+### Isolation Levels
 
-**Example:** While one transaction is updating a record, another transaction
-should not be able to see the intermediate state of that record.
+What the SQL standard **allows** at each level, and what PostgreSQL actually
+does:
 
-### Durability
+| Level            | Dirty read                     | Non-repeatable read | Phantom read                   | Serialization anomaly |
+| ---------------- | ------------------------------ | ------------------- | ------------------------------ | --------------------- |
+| Read Uncommitted | Allowed; **not in PostgreSQL** | Possible            | Possible                       | Possible              |
+| Read Committed   | No                             | Possible            | Possible                       | Possible              |
+| Repeatable Read  | No                             | No                  | Allowed; **not in PostgreSQL** | Possible              |
+| Serializable     | No                             | No                  | No                             | No                    |
 
-Ensures that once a transaction is committed, its changes are permanent, even in
-the event of a system failure.
+How PostgreSQL implements them (**MVCC**: readers see a snapshot and never block
+writers):
 
-**Example:** After a transaction commits, the changes should be saved to disk
-and remain even if the system crashes immediately after.
+- **Read Uncommitted** behaves exactly like Read Committed.
+- **Read Committed** (default): each **statement** sees a snapshot of data
+  committed before it started.
+- **Repeatable Read**: the whole **transaction** sees one snapshot taken at its
+  first statement (snapshot isolation), so phantoms do not appear either. If it
+  tries to update a row that another transaction changed and committed, it fails
+  with `could not serialize access due to concurrent update`.
+- **Serializable**: Repeatable Read plus detection of dangerous dependencies
+  between transactions (SSI). It does **not** lock ranges of rows; instead, one
+  of the conflicting transactions fails with a serialization error.
+- At Repeatable Read and Serializable the application must be ready to **retry**
+  the whole transaction on error code `40001`.
+- Other databases differ: MySQL InnoDB defaults to Repeatable Read and uses
+  locks against phantoms; SQL Server's Serializable uses range locks.
 
-## Commands
+### Preventing Lost Updates
 
-- `BEGIN TRANSACTION` Starts a new transaction.
+At Read Committed, "read, compute in the application, write back" loses updates.
+Options:
 
-- `COMMIT`
+- **Atomic update:** `UPDATE accounts SET balance = balance - 30 WHERE id = 1`.
+  The database re-reads the row under a lock.
+- **Pessimistic lock:** `SELECT … FOR UPDATE` locks the rows until the end of
+  the transaction; other writers wait.
+- **Optimistic lock:** a `version` column,
+  `UPDATE … WHERE id = 1 AND version = 7`; zero updated rows means someone else
+  changed it, retry.
+- **Higher isolation level:** Repeatable Read or Serializable plus retries.
 
-  Permanently saves all changes made in the current transaction.
-
-- `ROLLBACK`
-
-  Undoes all changes made in the current transaction.
-
-- `SAVEPOINT savepoint_name`
-
-  Sets a savepoint within a transaction to which you can roll back later.
-
-- `RELEASE SAVEPOINT savepoint_name`
-
-  Removes a savepoint, making it no longer available for rollback.
-
-- `ROLLBACK TO SAVEPOINT savepoint_name`
-
-  Rolls back to the specified savepoint without affecting the rest of the
-  transaction.
-
-Consider a banking application where a transaction involves transferring money
-from one account to another.
+## Example
 
 ```sql
-BEGIN TRANSACTION;
+CREATE TABLE accounts (
+  id integer PRIMARY KEY,
+  balance numeric NOT NULL CHECK (balance >= 0)
+);
+INSERT INTO accounts VALUES (1, 100), (2, 50);
 
-UPDATE accounts
-SET balance = balance - 100
-WHERE account_id = 1;
-
-UPDATE accounts
-SET balance = balance + 100
-WHERE account_id = 2;
-
--- Check for any errors and rollback if necessary
-IF @@ERROR <> 0
-    ROLLBACK;
-ELSE
-    COMMIT;
+BEGIN;
+UPDATE accounts SET balance = balance - 500 WHERE id = 1;
+-- ERROR: new row for relation "accounts" violates check constraint "accounts_balance_check"
+UPDATE accounts SET balance = balance + 500 WHERE id = 2;
+-- ERROR: current transaction is aborted, commands ignored until end of transaction block
+COMMIT; -- reported as ROLLBACK: no change is saved, balances stay 100 and 50
 ```
 
-- The transaction ensures **atomicity** by treating the debit and credit as a
-  single unit of work.
+In application code, the driver wraps the statements:
 
-- **Consistency** is maintained by checking constraints and rolling back in case
-  of errors.
+```javascript
+// node-postgres (pg)
+const client = await pool.connect();
+try {
+  await client.query('BEGIN');
+  await client.query(
+    'UPDATE accounts SET balance = balance - $1 WHERE id = $2',
+    [amount, from]
+  );
+  await client.query(
+    'UPDATE accounts SET balance = balance + $1 WHERE id = $2',
+    [amount, to]
+  );
+  await client.query('COMMIT');
+} catch (err) {
+  await client.query('ROLLBACK');
+  throw err;
+} finally {
+  client.release();
+}
+```
 
-- **Isolation** levels can be set to prevent other transactions from
-  interfering.
+## Follow-up Questions
 
-- **Durability** ensures that once the transaction commits, the changes persist.
+- What is the default isolation level? Read Committed in PostgreSQL, Oracle and
+  SQL Server; Repeatable Read in MySQL InnoDB.
+- Why not always use Serializable? Transactions fail more often under load and
+  must be retried; for most workloads Read Committed with atomic updates or row
+  locks is enough.
+- What is a deadlock? Two transactions each wait for a row the other has locked.
+  PostgreSQL detects it and aborts one of them; lock rows in a consistent order
+  to avoid it.
+- How long should a transaction be? As short as possible: never wait for user
+  input or an external HTTP call inside one, since it holds locks and old row
+  versions.
 
-## Transaction Isolation Levels
+## Common Mistakes
 
-:::info[Definitions]
+- "Repeatable Read allows phantom reads": the standard allows it, PostgreSQL and
+  InnoDB prevent them.
+- "Serializable locks the whole range of rows": that is one implementation;
+  PostgreSQL uses SSI and aborts a conflicting transaction instead.
+- Expecting the remaining statements to run after an error inside a PostgreSQL
+  transaction.
+- Running the statements of one transaction through different pooled
+  connections: `BEGIN` and `COMMIT` must go through the same client.
+- Not retrying on serialization errors at Repeatable Read or Serializable.
 
-**Dirty Read:** Reading uncommitted changes made by another transaction.
+## See Also
 
-**Non-Repeatable Read:** Data changes between reads within the same transaction
-due to another committed transaction.
-
-**Phantom Read:** New rows added by another transaction are visible when rows
-are re-read within a transaction.
-
-:::
-
-### 1. Read Uncommitted
-
-Allows a transaction to read data that has been modified by other transactions
-but not yet committed. This can lead to dirty reads.
-
-**Use Case:** Rarely used due to potential data inconsistencies.
-
-### 2. Read Committed
-
-Ensures a transaction only reads data that has been committed. Prevents dirty
-reads but allows non-repeatable reads.
-
-**Use Case:** Commonly used in many database systems for a balance between
-performance and consistency.
-
-### 3. Repeatable Read
-
-Ensures that if a transaction reads a row, it will read the same value
-throughout the transaction. Prevents dirty and non-repeatable reads but allows
-phantom reads.
-
-**Use Case:** Used when it’s important to maintain consistency in read
-operations within the same transaction.
-
-### 4. Serializable
-
-The strictest isolation level, ensuring complete isolation from other
-transactions. Prevents dirty reads, non-repeatable reads, and phantom reads by
-locking the entire range of rows.
-
-**Use Case:** Used when full consistency is critical, but can impact performance
-due to increased locking.
+- [SQL Commands](./commands.mdx)
+- [Constraints](./constraints.md)
+- [NoSQL Databases](./nosql.md)

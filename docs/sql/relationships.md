@@ -1,100 +1,139 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
+description:
+  One-to-one, one-to-many and many-to-many relationships, how each is built with
+  foreign keys, junction tables, querying with JOIN
 ---
 
 # Relationships Between Tables
 
-In a relational database, the concept of relationships between tables is crucial
-for organizing and structuring data effectively. Relationships define how tables
-connect and interact with each other, enabling complex queries and data
-integrity.
+A relationship links rows of two tables through a **foreign key**: a column
+whose value is the primary key of a row in another table. There are three kinds.
+**One-to-many** (1:M, the most common): the foreign key is on the "many" side,
+for example `books.author_id`. **One-to-one** (1:1): the same foreign key plus a
+`UNIQUE` constraint, or the foreign key is the primary key itself.
+**Many-to-many** (M:M): it cannot be stored in either table, so a third
+**junction table** holds pairs of foreign keys. Related rows are read back with
+`JOIN`.
 
-There are three types of relationships between tables:
+Applies to: PostgreSQL 18.
 
-1. One-to-One
-2. One-to-Many
-3. Many-to-Many
+## Details
 
-## One-to-One (1:1) Relationship
+| Relationship | Example            | How it is built                                                                   |
+| ------------ | ------------------ | --------------------------------------------------------------------------------- |
+| One-to-one   | User → profile     | FK in the dependent table with `UNIQUE`, or FK that is also its `PRIMARY KEY`     |
+| One-to-many  | Author → books     | FK in the "many" table (`books.author_id`)                                        |
+| Many-to-many | Students ↔ courses | Junction table `enrollments (student_id, course_id)` with a composite primary key |
 
-A one-to-one relationship occurs when a single row in Table A is linked to a
-single row in Table B, and vice versa. This type of relationship is not very
-common but is useful for splitting a table with many columns or separating
-sensitive data.
+- Without `UNIQUE` on the foreign key, a "one-to-one" table is really
+  one-to-many: nothing stops a second profile for the same user.
+- One-to-one is used to split rarely read or sensitive columns from a wide
+  table, or for optional data that most rows do not have.
+- A junction table can carry its own data about the link: `enrolled_at`,
+  `grade`, `role`.
+- `NOT NULL` on the foreign key makes the relationship mandatory (every book has
+  an author); without it the link is optional.
+- Index the foreign key columns: they are used in every `JOIN` and `ON DELETE`
+  check. The composite primary key `(student_id, course_id)` already covers
+  lookups by `student_id`, so only `course_id` needs its own index.
 
-Implementation: Use a primary key in one table and reference it as a foreign key
-in the other table.
+## Example
 
-Suppose you have a `Users` table and a `UserDetails` table. Each user has one
-corresponding detail record. The `UNIQUE` constraint on `UserDetails.UserID`
-ensures that a user cannot have more than one detail record.
-
-```sql
-CREATE TABLE Users (
-    UserID INT PRIMARY KEY,
-    UserName VARCHAR(100)
-);
-
-CREATE TABLE UserDetails (
-    UserDetailID INT PRIMARY KEY,
-    UserID INT UNIQUE,
-    Address VARCHAR(255),
-    PhoneNumber VARCHAR(15),
-    FOREIGN KEY (UserID) REFERENCES Users(UserID)
-);
-```
-
-## One-to-Many (1:M) Relationship
-
-A one-to-many relationship is when a single row in _Table A_ can be related to
-one or more rows in _Table B_, but each row in _Table B_ is related to only one
-row in _Table A_. This is the most common type of relationship.
-
-Implementation: Use a primary key in the parent table (_Table A_) and a foreign
-key in the child table (_Table B_).
-
-Consider an `Authors` table and a `Books` table. One author can write multiple
-books.
+<details>
+<summary>One-to-one</summary>
 
 ```sql
-CREATE TABLE Authors (
-    AuthorID INT PRIMARY KEY,
-    AuthorName VARCHAR(100)
+CREATE TABLE users (
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name text NOT NULL
 );
 
-CREATE TABLE Books (
-    BookID INT PRIMARY KEY,
-    BookTitle VARCHAR(100),
-    AuthorID INT,
-    FOREIGN KEY (AuthorID) REFERENCES Authors(AuthorID)
+CREATE TABLE user_profiles (
+  user_id integer PRIMARY KEY REFERENCES users (id) ON DELETE CASCADE,
+  address text,
+  phone text
 );
+-- user_id is both the primary key and the foreign key: at most one profile per user
 ```
 
-## Many-to-Many (M:M) Relationship
+</details>
 
-A many-to-many relationship occurs when multiple rows in Table A can be related
-to multiple rows in Table B. This requires a junction table (or associative
-table) to manage the relationships.
-
-Implementation: Create a junction table with foreign keys referencing the
-primary keys of the two tables to manage the relationships.
+<details>
+<summary>One-to-many</summary>
 
 ```sql
-CREATE TABLE Students (
-    StudentID INT PRIMARY KEY,
-    StudentName VARCHAR(100)
+CREATE TABLE authors (
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name text NOT NULL
 );
 
-CREATE TABLE Courses (
-    CourseID INT PRIMARY KEY,
-    CourseName VARCHAR(100)
+CREATE TABLE books (
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  title text NOT NULL,
+  author_id integer NOT NULL REFERENCES authors (id)
 );
 
-CREATE TABLE StudentCourses (
-    StudentID INT,
-    CourseID INT,
-    PRIMARY KEY (StudentID, CourseID),
-    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
-    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
-);
+CREATE INDEX ON books (author_id);
 ```
+
+</details>
+
+<details>
+<summary>Many-to-many</summary>
+
+```sql
+CREATE TABLE students (
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name text NOT NULL
+);
+
+CREATE TABLE courses (
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  title text NOT NULL
+);
+
+CREATE TABLE enrollments (
+  student_id integer REFERENCES students (id) ON DELETE CASCADE,
+  course_id integer REFERENCES courses (id) ON DELETE CASCADE,
+  enrolled_at date NOT NULL DEFAULT CURRENT_DATE,
+  PRIMARY KEY (student_id, course_id) -- a student enrolls in a course once
+);
+
+CREATE INDEX ON enrollments (course_id);
+
+-- Who takes which course: two joins through the junction table
+SELECT s.name, c.title
+FROM students s
+JOIN enrollments e ON e.student_id = s.id
+JOIN courses c ON c.id = e.course_id;
+```
+
+</details>
+
+## Follow-up Questions
+
+- Why not store a list of course IDs in a `students` column? The database could
+  not enforce foreign keys on it, and queries "who takes course X" would need to
+  scan and parse every row. An array or `jsonb` column is acceptable only for
+  data that is never joined.
+- What is normalization? Organizing tables so each fact is stored once: no
+  repeating groups in a column (1NF), and no column that depends on only part of
+  the key (2NF) or on another non-key column (3NF). Denormalization trades this
+  for fewer joins on reads.
+- What is the N+1 problem? Loading a list (1 query) and then the related rows
+  for each item separately (N queries). Fix it with a `JOIN` or one
+  `WHERE id = ANY($1)` query; ORMs call it eager loading.
+
+## Common Mistakes
+
+- Calling a table one-to-one when its foreign key has no `UNIQUE` constraint.
+- Modeling many-to-many with a comma-separated string or an array column.
+- A junction table without a primary key or `UNIQUE (a_id, b_id)`: the same pair
+  can be inserted twice.
+- No indexes on foreign key columns.
+
+## See Also
+
+- [Constraints](./constraints.md)
+- [SQL Commands: JOIN](./commands.mdx#join)

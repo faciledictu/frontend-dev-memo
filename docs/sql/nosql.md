@@ -1,105 +1,96 @@
 ---
 sidebar_position: 6
+description:
+  NoSQL data models (key-value, document, wide-column, graph), SQL vs NoSQL,
+  transactions and consistency, CAP theorem, when to choose which
 ---
 
-# Appendix: NoSQL Databases
+# NoSQL Databases
 
-Unlike traditional relational databases (SQL), which use structured tables and
-schemas, NoSQL databases use a variety of data models that allow for more
-dynamic and flexible data storage and retrieval.
+**NoSQL** is an umbrella term for databases that do not use the relational model
+of tables joined by foreign keys. The main models are **key-value** (Redis,
+DynamoDB), **document** (MongoDB), **wide-column** (Cassandra) and **graph**
+(Neo4j). They usually have a **flexible schema** and are built to **scale
+horizontally** across many servers, at the cost of weaker joins and often weaker
+or more limited consistency guarantees. Data is modeled around the queries the
+application runs, often by **denormalizing**: storing related data together
+instead of joining it. "NoSQL" does not mean "no transactions": MongoDB and
+DynamoDB support multi-item ACID transactions.
 
-## Features
+## Details
 
-### Schema Flexibility
+### Data Models
 
-Non-relational databases (for example, MongoDB and DynamoDB) do not require a
-fixed schema, allowing you to store data in a flexible, dynamic format. This is
-particularly useful for applications with rapidly changing requirements.
+| Model       | Data looks like                                        | Examples                      | Good for                                               |
+| ----------- | ------------------------------------------------------ | ----------------------------- | ------------------------------------------------------ |
+| Key-value   | A key and an opaque value                              | Redis, Valkey, DynamoDB       | Caches, sessions, rate limits, queues                  |
+| Document    | JSON-like documents with nested fields, in collections | MongoDB, Couchbase, Firestore | Catalogs, content, user profiles: data read as a whole |
+| Wide-column | Rows with many columns, grouped by a partition key     | Cassandra, ScyllaDB, HBase    | Very high write volume: events, time series, IoT       |
+| Graph       | Nodes and edges with properties                        | Neo4j, Amazon Neptune         | Social graphs, recommendations, fraud detection        |
 
-### Horizontal Scalability
+### SQL vs NoSQL
 
-These databases are designed to scale out by adding more servers (nodes) to the
-cluster, making them suitable for handling large volumes of data and high
-traffic loads.
+|              | Relational (PostgreSQL, MySQL)                         | NoSQL (typical)                                                             |
+| ------------ | ------------------------------------------------------ | --------------------------------------------------------------------------- |
+| Schema       | Fixed, enforced by the database                        | Flexible; the application is responsible for the shape                      |
+| Relations    | Foreign keys and `JOIN`                                | Embedded data or references resolved by the application                     |
+| Queries      | Any ad-hoc query in SQL                                | Efficient only for the access patterns the data was designed for            |
+| Transactions | ACID across any rows and tables                        | Single-item atomicity by default; multi-item transactions exist with limits |
+| Scaling      | Mostly vertical; read replicas, sharding is extra work | Horizontal by design: partitioning and replication built in                 |
 
-### Variety of Data Models
+### Consistency and the CAP Theorem
 
-Non-relational databases support various data models, including key-value,
-document, column-family, and graph models, allowing you to choose the best fit
-for your application's needs.
+- **CAP theorem:** when the network between nodes is partitioned (P), a
+  distributed database must choose between **consistency** (C: every read sees
+  the latest write, or fails) and **availability** (A: every request gets an
+  answer, possibly stale).
+- **Eventual consistency:** replicas converge over time; a read right after a
+  write may return the old value. DynamoDB reads are eventually consistent by
+  default, with a strongly consistent option; Cassandra lets you pick the
+  consistency level per query.
+- **BASE** (basically available, soft state, eventually consistent) is the
+  informal opposite of ACID used to describe such systems.
+- MongoDB has multi-document ACID transactions since 4.0 (replica sets) and 4.2
+  (sharded clusters); DynamoDB has `TransactWriteItems`. Both are designed so
+  that most operations touch a single document or item.
 
-### Distributed Architecture
+### When to Choose What
 
-Most NoSQL databases (for example, MongoDB and DynamoDB) are designed for
-distributed environments, providing high availability and fault tolerance.
+- **Relational by default:** most applications have related data, need
+  constraints and ad-hoc queries, and fit on one server for a long time.
+  PostgreSQL's `jsonb` covers many "flexible schema" needs inside a relational
+  database.
+- **NoSQL** when there is a concrete reason: a cache or session store (Redis),
+  write volume or data size beyond one server (Cassandra, DynamoDB), documents
+  that are always read and written as a whole, or graph traversals.
+- Systems often combine them: PostgreSQL as the source of truth, Redis as a
+  cache, a search engine (Elasticsearch, OpenSearch) for full-text search.
 
-### High-Performance Queries
+## Follow-up Questions
 
-These databases often provide fast read and write operations, especially for
-large datasets, by leveraging in-memory caching and efficient indexing.
+- Is MongoDB schemaless? The database does not require a schema, but the
+  application always has one; MongoDB can enforce it with JSON Schema
+  validation.
+- How do you model a one-to-many relationship in MongoDB? Embed the "many" side
+  when it is small and read together with the parent (order items in an order);
+  reference by ID when it is large or shared.
+- What is sharding? Splitting data across servers by a key; a poor shard key
+  sends most traffic to one server (a hot partition).
+- Why is Redis fast? Data is in memory and commands are executed one at a time
+  on a single thread, without disk I/O on reads.
 
-## Types
+## Common Mistakes
 
-### Key-Value Stores
+- "NoSQL databases have no transactions": MongoDB and DynamoDB do, with limits.
+- "NoSQL is faster": it is faster for the access patterns it was modeled for,
+  and slower or impossible for others.
+- "Schemaless means no schema design": data modeling matters more, because it
+  must follow the queries.
+- Choosing NoSQL for scale the project will never reach and then rebuilding
+  joins in application code.
 
-Data is stored as a collection of key-value pairs.
+## See Also
 
-**Examples:** Redis, Amazon DynamoDB.
-
-**Use Cases:** Caching, session management, and storing user profiles.
-
-### Document Stores
-
-Data is stored in documents, typically in JSON or BSON format.
-
-**Examples:** MongoDB and CouchDB.
-
-**Use Cases:** Content management systems, catalogs, and user data storage.
-
-### Column-Family Stores
-
-Data is stored in columns rather than rows, optimized for read and write
-operations on large datasets.
-
-**Examples:** Apache Cassandra and HBase.
-
-**Use Cases:** Real-time analytics, time-series data, and recommendation
-engines.
-
-### Graph Databases
-
-Data is stored as nodes, edges, and properties, representing complex
-relationships between data points.
-
-**Examples:** Neo4j and Amazon Neptune.
-
-**Use Cases:** Social networks, recommendation engines, and fraud detection.
-
-## Considerations
-
-### Advantages
-
-- Flexibility: Easily handle changes in data structures without requiring schema
-  modifications.
-
-- Scalability: Efficiently manage large volumes of data by scaling horizontally.
-
-- Performance: Provide fast data access and high throughput for specific
-  workloads.
-
-- Diverse Use Cases: Support various data models to fit different application
-  needs.
-
-### Disadvantages
-
-- Limited ACID Transactions: Often sacrifice consistency for availability and
-  partition tolerance.
-
-- Complex Querying: Lack the powerful querying capabilities of SQL, making
-  complex queries more challenging.
-
-- Data Duplication: May require denormalization, leading to potential data
-  duplication and increased storage costs.
-
-- Learning Curve: Different data models and querying languages can present a
-  learning curve for developers accustomed to SQL.
+- [Transactions](./transactions.md)
+- [Data Types: jsonb](./data-types.md#other-types)
+- [Relationships Between Tables](./relationships.md)

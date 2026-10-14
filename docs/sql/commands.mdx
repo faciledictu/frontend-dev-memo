@@ -1,5 +1,8 @@
 ---
-sidebar_position: 4
+sidebar_position: 1
+description:
+  DML, DDL, DCL and TCL, SELECT and the logical order of clauses, JOIN types,
+  GROUP BY and HAVING, subqueries and CTEs, upsert and RETURNING
 ---
 
 import Tabs from '@theme/Tabs';
@@ -7,81 +10,252 @@ import TabItem from '@theme/TabItem';
 
 # SQL Commands
 
-In SQL, commands are grouped into four main categories based on their
-functionality: **DML**, **DDL**, **DCL**, and **TCL**.
+SQL statements fall into four groups. **DML** (data manipulation) reads and
+changes rows: `SELECT`, `INSERT`, `UPDATE`, `DELETE`, the four CRUD operations
+(`SELECT` is sometimes singled out as DQL). **DDL** (data definition) changes
+the structure: `CREATE`, `ALTER`, `DROP`, `TRUNCATE`. **DCL** (data control)
+manages access: `GRANT`, `REVOKE`. **TCL** (transaction control) groups
+statements into transactions: `BEGIN`, `COMMIT`, `ROLLBACK`, `SAVEPOINT`. In
+interviews, most questions are about `SELECT`: **`JOIN`**, **`GROUP BY` /
+`HAVING`** and the order in which clauses are evaluated.
 
-## Data Manipulation Language (DML)
+Applies to: PostgreSQL 18.
 
-These commands are used to manage data within schema objects.
+## Details
 
-:::info
+The examples on this page use two tables:
 
-CRUD is an acronym that stands for Create, Read, Update, and Delete, which are
-the four basic operations that can be performed on data in a database. Each
-operation maps to a DML statement: `INSERT`, `SELECT`, `UPDATE`, and `DELETE`.
+```sql
+CREATE TABLE users (
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name text NOT NULL,
+  email text NOT NULL UNIQUE
+);
 
-:::
+CREATE TABLE orders (
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  user_id integer REFERENCES users (id), -- NULL: a guest order
+  total numeric(10, 2) NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+INSERT INTO users (name, email) VALUES
+  ('Ada', 'ada@example.com'),
+  ('Linus', 'linus@example.com'),
+  ('Grace', 'grace@example.com');   -- Grace has no orders
+
+INSERT INTO orders (user_id, total) VALUES (1, 30), (1, 70), (2, 15), (NULL, 5);
+```
 
 ### SELECT
 
-Retrieves data from a database.
-
-```sql
-SELECT first_name, last_name FROM employees WHERE department = 'Sales';
-```
-
-### INSERT
-
-Adds new data to a table.
-
 <Tabs>
-  <TabItem value="Syntax" label="Syntax" default>
+  <TabItem value="syntax" label="Syntax" default>
 
 ```sql
--- Inserting data into all columns
-INSERT INTO table_name VALUES (value1, value2, value3, ...);
-
--- Inserting data into specific columns
-INSERT INTO table_name (column1, column2, column3, ...)
-VALUES (value1, value2, value3, ...);
+SELECT [DISTINCT] column, expression AS alias, aggregate(column)
+FROM table_a
+[INNER | LEFT | RIGHT | FULL] JOIN table_b ON condition
+WHERE row_condition
+GROUP BY column
+HAVING group_condition
+ORDER BY column [ASC | DESC]
+LIMIT n OFFSET m;
 ```
 
-</TabItem>
-
-<TabItem value="Example" label="Example">
+  </TabItem>
+  <TabItem value="example" label="Example">
 
 ```sql
--- Assuming a table 'users' with columns id, name, and email
-INSERT INTO users (id, name, email)
-VALUES (1, 'John Doe', 'john.doe@example.com');
+SELECT name, email
+FROM users
+WHERE name LIKE 'A%'
+ORDER BY name
+LIMIT 10;
 ```
 
   </TabItem>
 </Tabs>
 
-### UPDATE
+The clauses are written in one order and **evaluated** in another:
 
-Modifies existing data within a table. You can update one or more columns for
-all rows or specific rows that meet a condition.
+| Step | Clause             | What it does                                  |
+| ---- | ------------------ | --------------------------------------------- |
+| 1    | `FROM`, `JOIN`     | Builds the source rows                        |
+| 2    | `WHERE`            | Filters rows (no aggregates here)             |
+| 3    | `GROUP BY`         | Groups rows                                   |
+| 4    | `HAVING`           | Filters groups (aggregates allowed)           |
+| 5    | `SELECT`           | Computes the output columns and their aliases |
+| 6    | `DISTINCT`         | Removes duplicate output rows                 |
+| 7    | `ORDER BY`         | Sorts (can use aliases from `SELECT`)         |
+| 8    | `LIMIT` / `OFFSET` | Cuts the result                               |
+
+That is why an alias from `SELECT` cannot be used in `WHERE`:
+
+```sql
+-- error-next-line
+SELECT name AS n FROM users WHERE n = 'Ada'; -- ERROR: column "n" does not exist
+-- correct-next-line
+SELECT name AS n FROM users WHERE name = 'Ada';
+```
+
+### JOIN
+
+| Join                  | Returns                                                                 |
+| --------------------- | ----------------------------------------------------------------------- |
+| `INNER JOIN` (`JOIN`) | Only pairs of rows that match the condition                             |
+| `LEFT JOIN`           | All rows of the left table; `NULL`s where the right one has no match    |
+| `RIGHT JOIN`          | All rows of the right table; usually rewritten as a `LEFT JOIN`         |
+| `FULL JOIN`           | All rows of both tables, matched where possible                         |
+| `CROSS JOIN`          | Every row with every row (Cartesian product), no condition              |
+| Self join             | A table joined with itself under two aliases, e.g. employee and manager |
+
+<details>
+<summary>Examples</summary>
+
+```sql
+SELECT u.name, o.total
+FROM users u
+JOIN orders o ON o.user_id = u.id;
+-- Ada   | 30.00
+-- Ada   | 70.00
+-- Linus | 15.00
+
+SELECT u.name, o.total
+FROM users u
+LEFT JOIN orders o ON o.user_id = u.id;
+-- Ada   | 30.00
+-- Ada   | 70.00
+-- Grace | NULL      <- no orders
+-- Linus | 15.00
+
+SELECT u.name, o.total
+FROM users u
+FULL JOIN orders o ON o.user_id = u.id;
+-- the same plus: NULL | 5.00  <- the guest order
+```
+
+</details>
+
+- A condition on the right table in `WHERE` turns a `LEFT JOIN` into an inner
+  one: `WHERE o.total > 10` drops the rows where `o.total` is `NULL`. Put it in
+  `ON` to keep all left rows.
+- Rows "without a match": `LEFT JOIN … WHERE o.id IS NULL`, or `NOT EXISTS`.
+
+### GROUP BY and Aggregates
+
+- Aggregates: `count`, `sum`, `avg`, `min`, `max`, `string_agg`, `array_agg`.
+- `count(*)` counts rows; `count(column)` counts non-`NULL` values.
+- Every column in `SELECT` must be in `GROUP BY` or inside an aggregate
+  (PostgreSQL also allows other columns of a table grouped by its primary key).
+- `WHERE` filters rows **before** grouping, `HAVING` filters groups **after**.
+
+<details>
+<summary>Examples</summary>
+
+```sql
+SELECT u.name, count(o.id) AS orders, coalesce(sum(o.total), 0) AS spent
+FROM users u
+LEFT JOIN orders o ON o.user_id = u.id
+GROUP BY u.id, u.name
+HAVING count(o.id) < 2
+ORDER BY spent DESC;
+-- Linus | 1 | 15.00
+-- Grace | 0 | 0
+```
+
+`count(*)` would give Grace 1: the `LEFT JOIN` produced one row for her.
+
+</details>
+
+### Subqueries and CTEs
+
+- A **subquery** is a `SELECT` inside another statement: in `WHERE` (`IN`,
+  `EXISTS`), in `FROM` or as a single value.
+- A **CTE** (`WITH name AS (…)`) names a subquery so the main query reads top to
+  bottom; `WITH RECURSIVE` walks trees (comments, categories).
+- **Window functions** (`row_number() OVER (PARTITION BY … ORDER BY …)`) compute
+  values across related rows without collapsing them into groups.
+
+<details>
+<summary>Examples</summary>
+
+```sql
+WITH spent AS (
+  SELECT user_id, sum(total) AS total
+  FROM orders
+  GROUP BY user_id
+)
+SELECT u.name, s.total
+FROM users u
+JOIN spent s ON s.user_id = u.id
+WHERE s.total > 20;
+-- Ada | 100.00
+
+-- error-next-line
+SELECT name FROM users WHERE id NOT IN (SELECT user_id FROM orders);
+-- 0 rows: the subquery contains NULL, and `x NOT IN (…, NULL)` is never true
+
+-- correct-start
+SELECT name FROM users u
+WHERE NOT EXISTS (SELECT 1 FROM orders o WHERE o.user_id = u.id);
+-- correct-end
+-- Grace
+```
+
+</details>
+
+### INSERT
 
 <Tabs>
-  <TabItem value="Syntax" label="Syntax" default>
+  <TabItem value="syntax" label="Syntax" default>
+
+```sql
+INSERT INTO table_name (column1, column2)
+VALUES (value1, value2), (value3, value4)
+[ON CONFLICT (column) DO NOTHING | DO UPDATE SET column = EXCLUDED.column]
+[RETURNING column];
+```
+
+  </TabItem>
+  <TabItem value="example" label="Example">
+
+```sql
+-- Upsert: insert, or update if the email already exists
+INSERT INTO users (name, email)
+VALUES ('Ada L.', 'ada@example.com')
+ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name
+RETURNING id, name;
+-- 1 | Ada L.
+```
+
+  </TabItem>
+</Tabs>
+
+- `RETURNING` gives back the inserted rows, for example the generated `id`,
+  without a second query. It works with `UPDATE` and `DELETE` too.
+- Always list the columns: `INSERT INTO t VALUES (…)` breaks when a column is
+  added.
+
+### UPDATE
+
+<Tabs>
+  <TabItem value="syntax" label="Syntax" default>
 
 ```sql
 UPDATE table_name
-SET column1 = value1, column2 = value2, ...
+SET column1 = value1, column2 = value2
 WHERE condition;
 ```
 
   </TabItem>
-
-  <TabItem value="Example" label="Example">
+  <TabItem value="example" label="Example">
 
 ```sql
--- Update the email of the user with id 1
-UPDATE users
-SET email = 'john.new@example.com'
-WHERE id = 1;
+UPDATE orders
+SET total = total * 0.9
+WHERE user_id = 1
+RETURNING id, total;
 ```
 
   </TabItem>
@@ -89,56 +263,84 @@ WHERE id = 1;
 
 ### DELETE
 
-Removes data from a database. Be cautious when using `DELETE` without a `WHERE`
-clause, as it will remove all rows from the table.
-
 <Tabs>
-  <TabItem value="Syntax" label="Syntax" default>
+  <TabItem value="syntax" label="Syntax" default>
 
 ```sql
 DELETE FROM table_name WHERE condition;
 ```
 
   </TabItem>
-
-  <TabItem value="Example" label="Example">
+  <TabItem value="example" label="Example">
 
 ```sql
--- Delete the user with id 1
-DELETE FROM users WHERE id = 1;
+DELETE FROM orders WHERE user_id IS NULL;
 ```
 
   </TabItem>
 </Tabs>
 
-## Data Definition Language (DDL)
+Without `WHERE`, `UPDATE` and `DELETE` affect **every row** of the table.
 
-These commands are used to define and modify the database structure.
+### DDL
 
-- `CREATE` Creates a new table, view, index, or other database object.
+| Command    | What it does                                                  |
+| ---------- | ------------------------------------------------------------- |
+| `CREATE`   | Creates a table, index, view, schema and other objects        |
+| `ALTER`    | Changes an object: `ALTER TABLE users ADD COLUMN age integer` |
+| `DROP`     | Deletes an object with its data: `DROP TABLE users`           |
+| `TRUNCATE` | Removes all rows at once, keeping the table                   |
 
-- `ALTER` Modifies an existing database object.
+`DELETE` vs `TRUNCATE` vs `DROP`:
 
-- `DROP` Deletes an existing database object.
+|                     | `DELETE`                   | `TRUNCATE`                             | `DROP`                           |
+| ------------------- | -------------------------- | -------------------------------------- | -------------------------------- |
+| Removes             | Rows matching `WHERE`      | All rows                               | The table itself                 |
+| Speed on big tables | Slow: row by row           | Fast: replaces the data files          | Fast                             |
+| Triggers            | Row `DELETE` triggers fire | Only `TRUNCATE` triggers               | —                                |
+| Identity counter    | Kept                       | Kept, or reset with `RESTART IDENTITY` | Gone with the table              |
+| In a transaction    | Can be rolled back         | Can be rolled back in PostgreSQL       | Can be rolled back in PostgreSQL |
 
-- `TRUNCATE` Removes all records from a table, including all spaces allocated
-  for the records.
+### DCL and TCL
 
-## Data Control Language (DCL)
+| Command          | What it does                                           |
+| ---------------- | ------------------------------------------------------ |
+| `GRANT`          | Gives privileges: `GRANT SELECT ON users TO analyst`   |
+| `REVOKE`         | Takes them back                                        |
+| `BEGIN`          | Starts a transaction                                   |
+| `COMMIT`         | Makes the changes of the current transaction permanent |
+| `ROLLBACK`       | Discards them                                          |
+| `SAVEPOINT name` | A point inside a transaction to roll back to           |
 
-These commands are used to control access to data within the database.
+See [Transactions](./transactions.md).
 
-- `GRANT` Gives users access privileges to the database.
+## Follow-up Questions
 
-- `REVOKE` Takes back permissions granted to a user.
+- What is the difference between `WHERE` and `HAVING`? `WHERE` filters rows
+  before grouping and cannot use aggregates; `HAVING` filters groups after.
+- `INNER JOIN` or `LEFT JOIN`? `LEFT JOIN` when rows of the left table must be
+  kept even without a match (users without orders).
+- How do you find rows that have no related rows? `NOT EXISTS`, or
+  `LEFT JOIN … WHERE right.id IS NULL`. Avoid `NOT IN` with a subquery that can
+  return `NULL`.
+- How do you paginate? `LIMIT … OFFSET …` is simple but slows down on deep
+  pages; keyset pagination (`WHERE id > last_seen_id ORDER BY id LIMIT 20`)
+  stays fast.
+- How do you avoid SQL injection? Parameterized queries (`WHERE id = $1` with
+  the value passed separately), never string concatenation.
 
-## Transaction Control Language (TCL)
+## Common Mistakes
 
-These commands are used to manage transactions in the database.
+- Filtering the right table of a `LEFT JOIN` in `WHERE` and losing the unmatched
+  rows.
+- `count(*)` after a `LEFT JOIN` when the rows without a match should count as
+  0: use `count(right.id)`.
+- `= NULL` instead of `IS NULL`: any comparison with `NULL` is `NULL`, not true.
+- `UPDATE` or `DELETE` without `WHERE`.
+- Using a `SELECT` alias in `WHERE`.
 
-- `COMMIT` Saves all transactions to the database.
+## See Also
 
-- `ROLLBACK` Undoes transactions that have not yet been saved to the database.
-
-- `SAVEPOINT` Sets a point within a transaction to which you can later roll
-  back.
+- [Relationships Between Tables](./relationships.md)
+- [Constraints](./constraints.md)
+- [Transactions](./transactions.md)

@@ -1,94 +1,119 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
+description:
+  NOT NULL, UNIQUE, PRIMARY KEY, FOREIGN KEY with ON DELETE actions, CHECK and
+  DEFAULT, and how NULL interacts with them
 ---
 
 # SQL Constraints
 
-SQL constraints are rules enforced on data columns in a table to ensure data
-integrity and consistency. They restrict the type of data that can go into a
-table.
+**Constraints** are rules on table data that the database enforces on every
+`INSERT` and `UPDATE`: a statement that breaks one fails with an error, so
+invalid data cannot get in regardless of which application writes it. The main
+ones: **`NOT NULL`** (a value is required), **`UNIQUE`** (no duplicates),
+**`PRIMARY KEY`** (`NOT NULL` + `UNIQUE`, one per table, identifies a row),
+**`FOREIGN KEY`** (the value must exist in another table; `ON DELETE` says what
+happens to referencing rows) and **`CHECK`** (an arbitrary condition).
+**`DEFAULT`** is not a constraint but is defined the same way: the value used
+when none is given.
 
-## `NOT NULL`
+Applies to: PostgreSQL 18.
 
-Ensures that a column cannot have a `NULL` value.
+## Details
 
-```sql
-CREATE TABLE employees (
-    id INT NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    age INT
-);
-```
+| Constraint    | Rule                                             | Notes                                                                                                                                    |
+| ------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `NOT NULL`    | The column cannot be `NULL`                      | Make it the default for required fields                                                                                                  |
+| `UNIQUE`      | No two rows have the same value (or combination) | Creates an index. `NULL`s are not equal to each other, so several `NULL`s are allowed, unless `UNIQUE NULLS NOT DISTINCT`                |
+| `PRIMARY KEY` | `UNIQUE` + `NOT NULL`                            | **Only one** per table, but it can span several columns                                                                                  |
+| `FOREIGN KEY` | The value exists in the referenced column        | The referenced column must be `PRIMARY KEY` or `UNIQUE`. `NULL` skips the check. The referencing column is **not** indexed automatically |
+| `CHECK`       | A boolean expression is not false                | `NULL` passes: `CHECK (age >= 18)` accepts `NULL`. Can compare columns of the same row                                                   |
+| `DEFAULT`     | Value used when the column is omitted            | `DEFAULT now()`, `DEFAULT CURRENT_DATE`, `DEFAULT 0`                                                                                     |
 
-## `UNIQUE`
+- Constraints can be written on a column (`email text UNIQUE`) or on the table
+  (`UNIQUE (first_name, last_name)`), and named:
+  `CONSTRAINT employees_age_check CHECK (age >= 18)`.
+- Added later with `ALTER TABLE … ADD CONSTRAINT`; existing rows are checked
+  then.
 
-Ensures that all values in a column are unique.
+### `ON DELETE` and `ON UPDATE` Actions
 
-```sql
-CREATE TABLE employees (
-    id INT NOT NULL UNIQUE,
-    email VARCHAR(100) UNIQUE,
-    name VARCHAR(100)
-);
-```
+What happens to rows that reference a deleted (or changed) parent row:
 
-## `PRIMARY KEY`
+| Action                | Effect                                                                           |
+| --------------------- | -------------------------------------------------------------------------------- |
+| `NO ACTION` (default) | The delete fails if referencing rows exist (checked at the end of the statement) |
+| `RESTRICT`            | The same, checked immediately                                                    |
+| `CASCADE`             | Referencing rows are deleted too (or updated, for `ON UPDATE`)                   |
+| `SET NULL`            | The foreign key column is set to `NULL`                                          |
+| `SET DEFAULT`         | The foreign key column is set to its default                                     |
 
-A combination of `NOT NULL` and `UNIQUE`. It uniquely identifies each row in a
-table. A table can have **only one** primary key.
+`CASCADE` fits rows that cannot exist without the parent (order items of an
+order); `SET NULL` fits optional links (an employee whose department was
+removed); the default protects against accidental deletes.
 
-```sql
-CREATE TABLE employees (
-    id INT PRIMARY KEY,
-    name VARCHAR(100),
-    age INT
-);
-```
+### Constraints vs Application Validation
 
-## `FOREIGN KEY`
+- Validation in the application gives friendly messages; constraints guarantee
+  correctness when there are several writers, race conditions or manual fixes.
+  Use both.
+- Two concurrent requests can both pass an application check "email is free";
+  only a `UNIQUE` constraint stops the second insert.
 
-Ensures referential integrity: values in one table must match values in another
-table.
+## Example
 
 ```sql
 CREATE TABLE departments (
-    id INT PRIMARY KEY,
-    name VARCHAR(100)
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name text NOT NULL UNIQUE
 );
 
 CREATE TABLE employees (
-    id INT PRIMARY KEY,
-    name VARCHAR(100),
-    department_id INT,
-    FOREIGN KEY (department_id) REFERENCES departments(id)
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  email text NOT NULL UNIQUE,
+  age integer CHECK (age >= 18),
+  department_id integer REFERENCES departments (id) ON DELETE CASCADE,
+  start_date date NOT NULL DEFAULT CURRENT_DATE
 );
+
+INSERT INTO departments (name) VALUES ('Sales');
+INSERT INTO employees (email, age, department_id) VALUES ('a@example.com', 30, 1);
+
+-- error-start
+INSERT INTO employees (email, age, department_id) VALUES ('a@example.com', 25, 1);
+-- duplicate key value violates unique constraint "employees_email_key"
+INSERT INTO employees (email, age, department_id) VALUES ('b@example.com', 16, 1);
+-- new row for relation "employees" violates check constraint "employees_age_check"
+INSERT INTO employees (email, age, department_id) VALUES ('c@example.com', 40, 99);
+-- insert or update on table "employees" violates foreign key constraint "employees_department_id_fkey"
+-- error-end
+
+DELETE FROM departments WHERE id = 1; -- also deletes the employee: ON DELETE CASCADE
 ```
 
-Here, `department_id` in the `employees` table must match an `id` in the
-`departments` table.
+## Follow-up Questions
 
-## `CHECK`
+- What is the difference between `PRIMARY KEY` and `UNIQUE`? A table has one
+  primary key and it cannot be `NULL`; it can have many `UNIQUE` constraints,
+  and they allow `NULL`.
+- Natural or surrogate primary key? A surrogate key (identity or UUID) does not
+  change when business data changes; natural candidates such as email become
+  `UNIQUE` constraints.
+- Why index a foreign key column? Joins and `ON DELETE` checks scan the child
+  table by that column; PostgreSQL does not create the index automatically.
+- Can a `CHECK` look at another table? No, only at the current row. Use a
+  foreign key or a trigger.
 
-Ensures that the value in a column meets a specific condition.
+## Common Mistakes
 
-```sql
-CREATE TABLE employees (
-    id INT PRIMARY KEY,
-    name VARCHAR(100),
-    age INT CHECK (age >= 18)
-);
-```
+- Relying only on application checks for uniqueness.
+- Expecting `CHECK` or `UNIQUE` to reject `NULL`: add `NOT NULL`.
+- Using `ON DELETE CASCADE` everywhere: one delete can silently remove large
+  amounts of data.
+- Forgetting the index on a foreign key column.
 
-## `DEFAULT`
+## See Also
 
-Sets a default value for a column when no value is specified.
-
-```sql
-CREATE TABLE employees (
-    id INT PRIMARY KEY,
-    name VARCHAR(100),
-    start_date DATE DEFAULT GETDATE()
-);
-```
-
-If no value is provided for `start_date`, it defaults to the current date.
+- [Relationships Between Tables](./relationships.md)
+- [Data Types](./data-types.md)
+- [Transactions](./transactions.md)
