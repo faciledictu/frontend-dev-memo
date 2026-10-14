@@ -1,142 +1,180 @@
 ---
 sidebar_position: 3
+description:
+  CI vs continuous delivery vs continuous deployment, pipeline stages, caching,
+  preview environments, a GitHub Actions example, CI/CD for mobile apps
 ---
 
-# CI/CD Overview
+# CI/CD
 
-CI/CD stands for Continuous Integration and Continuous Deployment (or Continuous
-Delivery). It's a set of practices and tools designed to improve the speed,
-quality, and reliability of software development and delivery. Here's a brief
-overview of each component:
+**Continuous integration** (CI): every change is merged into the main branch
+often and checked automatically — install, lint, type check, test, build — so
+broken code is caught within minutes. **CD** means one of two things.
+**Continuous delivery**: every change that passes the pipeline is **ready** to
+release, and the release to production is a manual decision (a button).
+**Continuous deployment**: every change that passes goes to production
+**automatically**, with no human step.
 
-## Continuous Integration (CI)
+Applies to: GitHub Actions (`actions/checkout@v7`, `actions/setup-node@v7`,
+`pnpm/action-setup@v6`), Node.js 24.
 
-Developers regularly merge their code changes into a shared repository, usually
-multiple times a day. Each merge triggers an automated build and testing
-process, ensuring that new code changes do not break the existing codebase.
+## Details
 
-## Continuous Deployment (CD)
+### CI vs Delivery vs Deployment
 
-Once the code passes all automated tests, it's automatically deployed to a
-staging or production environment. This ensures that the latest version of the
-application is always ready for release. Continuous Delivery is a slightly
-different concept where the deployment to production is manual but can be done
-at any time.
+|                        | Automated up to                | Release to production        |
+| ---------------------- | ------------------------------ | ---------------------------- |
+| Continuous integration | Build and tests                | Separate process             |
+| Continuous delivery    | A deployable artifact, staging | Manual approval, any time    |
+| Continuous deployment  | Production                     | Automatic after green checks |
 
-## CI/CD for Frontend Applications
+### Pipeline for a Frontend App
 
-For a React application, a CI/CD pipeline can be set up in GitLab to automate
-tasks such as linting, testing, building, and deploying the application.
+1. **Install** from the lockfile: `npm ci`, `pnpm install --frozen-lockfile`,
+   `yarn install --immutable`. Fails if the lockfile does not match
+   `package.json`.
+2. **Lint and type check**: ESLint, `tsc --noEmit`.
+3. **Unit and integration tests**.
+4. **Build** the production bundle; keep it as an artifact.
+5. **E2E tests** against the build or a preview deployment.
+6. **Deploy** to staging or production.
 
-### Key Stages of a Frontend CI/CD Pipeline
+### What Makes a Pipeline Fast and Safe
 
-1. **Linting.** Ensure code quality and consistency.
+- **Dependency cache**: the package manager's store keyed by the lockfile hash
+  (`cache: pnpm` in `actions/setup-node`). `node_modules` itself is usually not
+  cached.
+- **Parallel jobs** for independent checks; only changed packages in a monorepo
+  (Turborepo, Nx).
+- **Preview environments**: every pull request gets its own deployment with a
+  URL (Vercel, Netlify, Cloudflare Pages), so reviewers and E2E tests see the
+  real build.
+- **Secrets** live in the CI secret store, are scoped to environments, and are
+  never printed in logs. OIDC tokens to the cloud instead of long-lived keys
+  where possible.
+- **Branch protection**: merging into `main` requires green checks and a review.
 
-2. **Testing.** Run unit tests to verify the functionality of the code.
+### Mobile Apps (React Native)
 
-3. **Building.** Create a production-ready build of the application.
+The JS part is checked as for the web; release builds add native steps:
 
-4. **Deploying.** Deploy the build to a staging or production environment.
+| Step                  | Tools                                                                      |
+| --------------------- | -------------------------------------------------------------------------- |
+| Build and sign        | EAS Build (signing credentials managed by Expo), fastlane + Gradle / Xcode |
+| E2E on emulators      | Maestro, Detox; cloud device farms for real devices                        |
+| Distribute to testers | TestFlight, Play testing tracks, Firebase App Distribution                 |
+| Store release         | EAS Submit, fastlane `upload_to_app_store` / `upload_to_play_store`        |
+| JS-only fixes         | OTA updates (EAS Update) without a store release                           |
 
-### Example
+iOS builds need macOS runners, which are slower and more expensive.
 
-Here’s a sample `.gitlab-ci.yml` file to illustrate a basic CI/CD pipeline for a
-frontend application.
+## Example
 
-```yaml
-stages:
-  - lint
-  - test
-  - build
-  - deploy
+A GitHub Actions workflow: checks on every pull request, deployment on push to
+`main`.
 
-# Linting Stage
+```yaml title=".github/workflows/ci.yml"
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6 # version from "packageManager" in package.json
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist
+
+  deploy:
+    needs: check
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist
+      - run: npx netlify-cli deploy --prod --dir dist
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+```
+
+<details>
+<summary>The same pipeline in GitLab CI</summary>
+
+```yaml title=".gitlab-ci.yml"
+default:
+  image: node:24
+  cache:
+    key:
+      files: [package-lock.json]
+    paths: [.npm/]
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+
+stages: [check, build, deploy]
+
 lint:
-  stage: lint
-  image: node:14
-  script:
-    - npm install
-    - npm run lint
-  only:
-    - merge_requests
-    - main
+  stage: check
+  script: npm run lint
 
-# Testing Stage
 test:
-  stage: test
-  image: node:14
-  script:
-    - npm install
-    - npm run test
-  only:
-    - merge_requests
-    - main
+  stage: check
+  script: npm test
 
-# Building Stage
 build:
   stage: build
-  image: node:14
-  script:
-    - npm install
-    - npm run build
+  script: npm run build
   artifacts:
-    paths:
-      - build/
-  only:
-    - main
+    paths: [dist/]
 
-# Deploying Stage
 deploy:
   stage: deploy
-  image: node:14
-  script:
-    - npm install -g firebase-tools
-    - firebase deploy --token "$FIREBASE_DEPLOY_TOKEN"
-  only:
-    - main
+  script: npx netlify-cli deploy --prod --dir dist
+  environment: production
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
-## CI/CD for React Native Apps
+</details>
 
-1. **On each commit/PR, run linting and static analysis** (ESLint, TypeScript)
-   and **execute your test suite**. Automatically building on merge to main
-   ensures no breaking code reaches production. Typical pipelines include steps
-   like npm install (or yarn), lint (npm run lint), unit tests (npm test), and
-   code quality checks.
+## Follow-up Questions
 
-2. **Automate builds and signing.** Have your CI produce release APKs/IPAs on
-   demand. Many teams use Fastlane for build automation: e.g., lanes like
-   build_android_release and build_ios_release, which can invoke Gradle or Xcode
-   builds. Sample Fastlane lane loading env vars:
+- Why `npm ci` and not `npm install` in CI? It installs exactly what the
+  lockfile says, fails on a mismatch with `package.json` and never rewrites the
+  lockfile.
+- How to roll back a bad deployment? Redeploy the previous artifact (or switch
+  traffic back on the hosting platform); for continuous deployment, feature
+  flags turn off a broken feature without a deploy.
+- Where do E2E tests run? Against a preview deployment of the pull request or
+  against a build served inside the CI job.
 
-```ruby
-lane :build_android_release do |options|
-  dotenv(env: "production")
-  sh "npm install"
-  gradle(task: "clean assembleRelease")   # Android
-end
+## Common Mistakes
 
-lane :build_ios_release do |options|
-  dotenv(env: "production")
-  sh "npm install"
-  gym(scheme: "MyApp", configuration: "Release")  # iOS
-end
-```
+- Treating "continuous delivery" and "continuous deployment" as the same thing.
+- Caching `node_modules` across Node.js versions or lockfile changes.
+- Secrets in the repository or printed by a debug step.
 
-Popular options include GitHub Actions, or Expo EAS. **GitHub Actions** lets you
-define workflows in `.github/workflows/ci.yml`, and can run on every push or
-pull request. **Expo EAS Workflows** (especially for Expo apps) provide managed
-build servers that handle signing certificates and keystore files automatically.
+## See Also
 
-If you use GitHub Actions, include build artifacts (signed binaries) as pipeline
-outputs or uploads to a distribution service.
-
-:::tip[Automated Deployment]
-
-Configure your pipeline to optionally deploy to beta or production stores. For
-example, with Fastlane’s `deliver` (iOS) and `supply` (Android) actions, you can
-upload the app bundle to TestFlight/App Store or Google Play Console as part of
-the CI process. This closes the loop so that a successful merge can trigger a
-nightly or tagged release.
-
-:::
+- [Package Managers](./package-managers.md)
+- [Testing](./testing.md)
+- [Branching Models](../git/gitflow.md)
+- [Fastlane](../react-native/release/fastlane.md)

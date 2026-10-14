@@ -1,78 +1,119 @@
 ---
 sidebar_position: 2
+description:
+  npm, pnpm, Yarn and Bun, lockfiles, semver ranges, dependency types,
+  workspaces, Corepack, install scripts
 ---
 
-# Package Managers: npm
+# Package Managers: npm, pnpm, Yarn, Bun
 
-## `npm init`
+A package manager installs the dependencies listed in `package.json` (as
+**semver ranges**) and writes a **lockfile** with the exact resolved versions,
+so every machine and CI gets the same tree. The lockfile is committed; CI
+installs strictly from it (`npm ci`, `pnpm install --frozen-lockfile`). **npm**
+ships with Node.js. **pnpm** keeps one copy of each package version in a global
+store and hard-links it into projects, and its `node_modules` is **strict**: a
+package can only import what it declares. **Yarn** 4 installs with Plug'n'Play
+by default, without `node_modules`. **Bun** is a JavaScript runtime with a very
+fast built-in package manager.
 
-Initializes a new Node.js project and creates a _package.json_ file.
+Applies to: npm 12, pnpm 12, Yarn 4, Bun 1.4.
 
-Starts an interactive prompt asking for details like project name, version,
-description, entry point, test command, repository, keywords, author, and
-license.
+## Details
 
-`npm init -y` or `npm init --yes`<br /> Automatically accepts default values for
-all prompts, creating a _package.json_ with default settings.
+### Comparison
 
-## `npm install`
+|                               | npm                            | pnpm                          | Yarn 4                         | Bun                                 |
+| ----------------------------- | ------------------------------ | ----------------------------- | ------------------------------ | ----------------------------------- |
+| Lockfile                      | `package-lock.json`            | `pnpm-lock.yaml`              | `yarn.lock`                    | `bun.lock`                          |
+| `node_modules`                | Flat (hoisted)                 | Symlinks into a global store  | None (PnP) or `nodeLinker`     | Hoisted; isolated in new workspaces |
+| Phantom dependencies          | Possible                       | Not possible                  | Not possible with PnP          | Possible when hoisted               |
+| Workspaces                    | `workspaces` in `package.json` | `pnpm-workspace.yaml`         | `workspaces` in `package.json` | `workspaces` in `package.json`      |
+| Dependencies' install scripts | Off by default, `allowScripts` | Off by default, `allowBuilds` | Run by default                 | Only for `trustedDependencies`      |
 
-Installs all dependencies listed in _package.json_ or a specific package if
-specified.
+A **phantom dependency** is a package the code imports without declaring it,
+which works only because a flat `node_modules` hoisted it from someone else's
+dependencies. It breaks when that other package changes.
 
-By default, it updates _package-lock.json_ and creates a _node_modules_
-directory with the installed packages.
+### Commands
 
-`npm install`<br /> Installs all dependencies defined in _package.json_.
+| Task                             | npm                     | pnpm                             | Yarn                       | Bun                             |
+| -------------------------------- | ----------------------- | -------------------------------- | -------------------------- | ------------------------------- |
+| Install everything               | `npm install`           | `pnpm install`                   | `yarn`                     | `bun install`                   |
+| Install in CI, from the lockfile | `npm ci`                | `pnpm install --frozen-lockfile` | `yarn install --immutable` | `bun install --frozen-lockfile` |
+| Add a dependency                 | `npm install react`     | `pnpm add react`                 | `yarn add react`           | `bun add react`                 |
+| Add a dev dependency             | `npm install -D vitest` | `pnpm add -D vitest`             | `yarn add -D vitest`       | `bun add -d vitest`             |
+| Remove                           | `npm uninstall react`   | `pnpm remove react`              | `yarn remove react`        | `bun remove react`              |
+| Run a script                     | `npm run build`         | `pnpm build`                     | `yarn build`               | `bun run build`                 |
+| Run a package without installing | `npx create-vite`       | `pnpm dlx create-vite`           | `yarn dlx create-vite`     | `bunx create-vite`              |
 
-`npm install <package-name>`<br /> Installs a specific package.
+`npm ci` deletes `node_modules`, installs exactly the lockfile and fails if it
+does not match `package.json`; `npm install` may update the lockfile. The
+`--save` flag is the default since npm 5.
 
-`npm install <package-name>@<version>`<br /> Installs a specific version of a
-package.
+### Semver Ranges
 
-`npm install <package-name> --save`<br /> Installs the package and updates
-_package.json_ under the dependencies field. As of npm 5, --save is the default
-behavior, so this flag is often unnecessary.
+| Range    | Allows                    | `1.2.3` →        |
+| -------- | ------------------------- | ---------------- |
+| `^1.2.3` | Minor and patch (default) | `>=1.2.3 <2.0.0` |
+| `~1.2.3` | Patch                     | `>=1.2.3 <1.3.0` |
+| `1.2.3`  | Exactly this version      | `1.2.3`          |
 
-`npm install <package-name> --save-dev`<br /> Installs the package and updates
-_package.json_ under the devDependencies field. Useful for packages that are
-only needed during development, such as testing frameworks, linters, and build
-tools.
+For `0.x` versions `^` is stricter: `^0.2.3` means `>=0.2.3 <0.3.0`.
 
-## `npm ci`
+### Dependency Types
 
-Stands for "clean install". It installs dependencies from _package-lock.json_
-rather than _package.json_.
+- **`dependencies`**: needed at runtime; installed for the consumers of a
+  library.
+- **`devDependencies`**: build, test and lint tools; not installed for
+  consumers. In an app that is bundled, the split is a convention.
+- **`peerDependencies`**: the host package must provide it (a React component
+  library declares `react`), so the app has one copy. npm 7+ and pnpm install
+  missing peers automatically.
 
-The command ensures that the `node_modules` directory is consistent with the
-`package-lock.json`, deleting any existing node_modules directory and
-reinstalling everything from scratch.
+### Lockfiles
 
-It is faster and more reliable for continuous integration (CI) and continuous
-deployment (CD) workflows.
+- The lockfile of a dependency is ignored: only the root project's lockfile
+  counts. A library is tested against fresh ranges anyway, so its lockfile only
+  pins its own development setup.
+- `npm-shrinkwrap.json` is a lockfile that **is** published with a package and
+  respected on install. Meant for CLI tools and other apps distributed through
+  npm, not for libraries.
 
-## package-lock.json and npm-shrinkwrap.json
+### Pinning the Package Manager
 
-Both _package-lock.json_ and _npm-shrinkwrap.json_ are used in Node.js projects
-to ensure the consistency of installed packages across different environments.
-They help lock down the versions of dependencies, avoiding issues that may arise
-due to version mismatches.
+- The `packageManager` field in `package.json` (`"pnpm@12.11.2"`) declares which
+  manager and version the project uses. pnpm switches to that version by itself;
+  `pnpm/action-setup` reads the field in CI.
+- **Corepack** reads the field and downloads the right Yarn or pnpm on demand.
+  It ships with Node.js up to 24; from Node.js 25 it is no longer bundled and is
+  installed with `npm install -g corepack`.
 
-### package-lock.json
+### Install Scripts
 
-This file is mainly for applications to ensure the environment's consistency.
+`preinstall`, `install` and `postinstall` scripts of dependencies run arbitrary
+code on install, a common supply-chain attack vector. npm 12 and pnpm 10+ no
+longer run them by default: approve the packages that need them (native builds
+like `sharp`, binary downloaders like Playwright) with `npm approve-scripts` or
+`pnpm approve-builds`. The allowlist is committed: `allowScripts` in
+`package.json` for npm, `allowBuilds` in `pnpm-workspace.yaml` for pnpm.
 
-Automatically generated by npm when `npm install` is run. Helps improve the
-speed and reliability of `npm install` by avoiding version resolution each time.
+## Follow-up Questions
 
-### npm-shrinkwrap.json
+- Why is pnpm fast and small on disk? One copy of each version in a
+  content-addressable store, hard-linked into every project; nothing is copied
+  twice.
+- What happens if the lockfile is not committed? Each install resolves the
+  ranges again and can bring different versions: "works on my machine".
+- How to update dependencies? `npm update` within ranges, `npm outdated` to see
+  new majors; pnpm: `pnpm update`, `pnpm update --latest`, `pnpm outdated`.
 
-The file is mainly for libraries/modules to lock down the dependencies for
-consumers. If _npm-shrinkwrap.json_ is present, npm uses it instead of
-_package-lock.json_.
+## Common Mistakes
 
-For modules that will be published, _npm-shrinkwrap.json_ is recommended to
-ensure consumers get the exact dependency tree.
+- `npm install` in CI instead of `npm ci`.
+- Deleting the lockfile to "fix" an install problem: all versions drift at once.
+- Mixing package managers in one repository and committing two lockfiles.
 
-`npm shrinkwrap`<br /> _npm-shrinkwrap.json_ doesn't created automatically, it
-needs to be manually created by running the command above.
+## See Also
+
+- [CI/CD](./ci-cd.md)
