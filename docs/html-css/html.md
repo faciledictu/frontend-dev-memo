@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 1
 description:
   Semantic markup, script loading, block vs inline, data attributes, viewport,
   form validation
@@ -181,5 +181,5 @@ elements come with keyboard support and focus for free.
 
 ## See Also
 
-- [How the Browser Works](./browser-workflow.md)
-- [DOM Events](./events.md)
+- [How the Browser Works](../web-platform/browser/browser-workflow.md)
+- [DOM Events](../web-platform/browser/events.md)

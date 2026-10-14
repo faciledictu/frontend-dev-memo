@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 4
 description: Authentication vs authorization, sessions vs JWT, OAuth and OIDC
 ---
 
@@ -87,5 +87,5 @@ The usual recommendation is an `HttpOnly; Secure; SameSite` cookie. See
 
 ## See Also
 
-- [Authentication in Next.js](../nextjs/authentication.md)
+- [Authentication in Next.js](../../nextjs/authentication.md)
 - [CORS and the Same-Origin Policy](./cors.md)

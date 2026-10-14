@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 2
 description: Console, breakpoints, DevTools panels, React and Redux DevTools
 ---
 
@@ -106,10 +106,10 @@ function findUser(name) {
 
 - How do you find a memory leak? Take a heap snapshot, repeat the action, take
   another one and compare them. See
-  [Garbage Collection](../javascript/garbage-collection.md).
+  [Garbage Collection](../../javascript/garbage-collection.md).
 - How do you find unnecessary re-renders? Record the interaction in the Profiler
   tab of React DevTools. See
-  [Optimization](../react/performance/optimization.md).
+  [Optimization](../../react/performance/optimization.md).
 - How do you debug an error that happens only in production? Use the stack trace
   from an error tracker with source maps, then reproduce it with the same data,
   network throttling and a production build.
@@ -124,4 +124,4 @@ function findUser(name) {
 ## See Also
 
 - [Bundle Optimization](./bundle-optimization.md)
-- [How the Browser Works](./browser-workflow.md)
+- [How the Browser Works](../browser/browser-workflow.md)

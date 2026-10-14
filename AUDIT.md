@@ -163,11 +163,13 @@ prototypes, `typescript/type-casting` → type assertions, `react/concurrent-mod
 | `common/code-review`, `dev-methodologies`                           | `tooling/`                                           |
 | `nodejs/npm`                                                        | `tooling/package-managers.md`                        |
 | `common/gc`                                                         | `javascript/garbage-collection.md`                   |
-| `common/debugging` + `react/devtools`                               | `web-platform/debugging.md`                          |
-| `browser/*`                                                         | `web-platform/*` (`cookies` → `storage`)             |
-| `react/bundle-optimization`                                         | `web-platform/bundle-optimization.md`                |
-| теория из `nextjs/authentication`                                   | `web-platform/authentication.md`                     |
-| `nextjs/styling` + `react-native/styled-components`                 | `css/styling-approaches.md`                          |
+| `common/debugging` + `react/devtools`                               | `web-platform/tools/debugging.md`                    |
+| `browser/http`, `cookies`                                           | `web-platform/network/` (`cookies` → `storage`)      |
+| `browser/browser-workflow`, `events`                                | `web-platform/browser/`                              |
+| `browser/html`                                                      | `html-css/html.md`                                   |
+| `react/bundle-optimization`                                         | `web-platform/tools/bundle-optimization.md`          |
+| теория из `nextjs/authentication`                                   | `web-platform/network/authentication.md`             |
+| `nextjs/styling` + `react-native/styled-components`                 | `react/ecosystem/styling.md`                         |
 | `git/tag` + `git/reset`                                             | `git/commands.md`                                    |
 | `javascript/inheritance`                                            | `javascript/prototypes.md`                           |
 | `typescript/type-casting`                                           | `typescript/type-assertions.md`                      |

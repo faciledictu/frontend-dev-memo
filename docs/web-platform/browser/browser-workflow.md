@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 1
 description:
   From a URL to pixels - DNS, connection, parsing, the rendering pipeline
 ---
@@ -26,7 +26,8 @@ What happens after a user enters a URL:
   both sides agree on encryption keys. HTTP/3 uses QUIC, which combines both
   handshakes.
 - **HTTP.** The request contains the method, the path, headers and cookies. The
-  response contains a status code, headers and the body. See [HTTP](./http.md).
+  response contains a status code, headers and the body. See
+  [HTTP](../network/http.md).
 - Every other resource found in the HTML (styles, scripts, images, fonts) is a
   separate request.
 
@@ -40,7 +41,7 @@ What happens after a user enters a URL:
    parser stops until the script is downloaded and executed, and the script
    itself waits for the stylesheets above it. `defer`, `async` and
    `type="module"` scripts are downloaded without blocking the parser. See
-   [HTML](./html.md#loading-scripts).
+   [HTML](../../html-css/html.md#loading-scripts).
 4. **Style.** The DOM and the CSSOM are combined into the **render tree**: only
    the nodes that take part in rendering, with their computed styles.
    `display: none` elements are not in it.
@@ -94,7 +95,7 @@ for (const item of items) {
   the layout, but it is not painted.
 - How does JavaScript fit into rendering? Rendering happens between tasks, so a
   long task delays the next frame. See
-  [Event Loop](../javascript/event-loop.md).
+  [Event Loop](../../javascript/event-loop.md).
 
 ## Common Mistakes
 
@@ -105,6 +106,6 @@ for (const item of items) {
 
 ## See Also
 
-- [HTTP](./http.md)
-- [HTML](./html.md)
-- [Rendering in React](../react/basics/rendering.md)
+- [HTTP](../network/http.md)
+- [HTML](../../html-css/html.md)
+- [Rendering in React](../../react/basics/rendering.md)

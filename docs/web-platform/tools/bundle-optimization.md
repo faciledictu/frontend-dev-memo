@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 1
 description: Bundle analysis, tree shaking, code splitting and lighter imports
 ---
 
@@ -50,10 +50,12 @@ How the import style affects the bundle, with Lodash as an example:
 - Split **by route** first, then heavy components that are rarely needed:
   modals, editors, charts.
 - In React, `lazy` together with `Suspense` loads a component on first render.
-  Routers can load routes lazily, see [Routing](../react/ecosystem/routing.md).
+  Routers can load routes lazily, see
+  [Routing](../../react/ecosystem/routing.md).
 - Dependencies that rarely change can go into a separate **vendor chunk**
   (`splitChunks` in webpack, `manualChunks` in Rollup), so that the browser
-  keeps it cached between releases. See [HTTP caching](./http.md#caching).
+  keeps it cached between releases. See
+  [HTTP caching](../network/http.md#caching).
 
 ### Other Techniques
 
@@ -97,5 +99,5 @@ function Dashboard() {
 
 ## See Also
 
-- [Optimization in React](../react/performance/optimization.md)
-- [How the Browser Works](./browser-workflow.md)
+- [Optimization in React](../../react/performance/optimization.md)
+- [How the Browser Works](../browser/browser-workflow.md)

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 2
 description:
   Capturing and bubbling, target vs currentTarget, delegation, listener options
 ---
@@ -115,5 +115,5 @@ menu.addEventListener('click', (event) => {
 
 ## See Also
 
-- [Event Loop](../javascript/event-loop.md)
-- [HTML](./html.md)
+- [Event Loop](../../javascript/event-loop.md)
+- [HTML](../../html-css/html.md)

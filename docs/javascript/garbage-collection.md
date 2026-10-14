@@ -64,7 +64,7 @@ b = null; // both objects are unreachable and will be collected
 
 - How do you find a memory leak? Compare heap snapshots in the Memory tab of
   DevTools and look for objects that keep growing. See
-  [Debugging](../web-platform/debugging.md).
+  [Debugging](../web-platform/tools/debugging.md).
 - How do you avoid leaks in a component? Clear timers, remove listeners and
   abort requests when the component is destroyed.
 

@@ -135,7 +135,7 @@ try {
 - How does the server recognize a user if HTTP is stateless? By a cookie or a
   token sent with every request. See [Authentication](./authentication.md).
 - What happens between entering a URL and seeing the page? See
-  [How the Browser Works](./browser-workflow.md).
+  [How the Browser Works](../browser/browser-workflow.md).
 
 ## Common Mistakes
 

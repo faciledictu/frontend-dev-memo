@@ -24,11 +24,11 @@ export const typescript: Category = {
   group: 'main',
 };
 
-export const css: Category = {
-  id: 'css',
-  label: 'CSS',
-  navbarLabel: 'CSS',
-  description: 'Styling web pages and applications',
+export const htmlCss: Category = {
+  id: 'html-css',
+  label: 'HTML & CSS',
+  navbarLabel: 'HTML/CSS',
+  description: 'Markup and styling of web pages',
   group: 'main',
 };
 
@@ -37,7 +37,7 @@ export const webPlatform: Category = {
   label: 'Web Platform',
   navbarLabel: 'Web',
   description:
-    'How the browser works: HTTP, DOM events, storage, security, performance',
+    'How the browser works: network, rendering, DOM events, storage, tools',
   group: 'main',
 };
 
@@ -111,7 +111,7 @@ export const sql: Category = {
 const categories: Category[] = [
   javascript,
   typescript,
-  css,
+  htmlCss,
   webPlatform,
   react,
   nextjs,

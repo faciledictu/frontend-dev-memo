@@ -8,7 +8,7 @@ sidebar_position: 5
 
 Authentication is the process of verification of a user's identity. For the
 general theory see
-[Authentication and Authorization](../web-platform/authentication.md).
+[Authentication and Authorization](../web-platform/network/authentication.md).
 
 To implement authentication in Next.js, you can use various methods. Here is the
 basic email-password authentication system using a custom `signIn` function.
