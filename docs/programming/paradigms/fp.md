@@ -76,6 +76,41 @@ What breaks determinism: reading anything that can change between calls — a
 mutable outer variable, the time (`Date.now()`), randomness (`Math.random()`),
 input from I/O. Reading a constant (`Math.PI`, a deeply frozen config) does not.
 
+### Pure Functions and Closures
+
+"Depends only on its arguments" cannot be taken literally: almost every function
+uses names it did not receive as arguments — `Math.sqrt`, an imported helper, a
+constant from the same module. In JavaScript every function keeps a reference to
+the scope where it was created (that is what a closure is), and it reaches these
+names through it. So closures do not make a function impure; what matters is
+whether **what it refers to can change**:
+
+```javascript
+// Pure: uses Math.sqrt, which it did not receive, but which does not change
+const hypotenuse = (a, b) => Math.sqrt(a * a + b * b);
+
+// Pure: x is captured in a closure, but never changes
+const makeAdder = (x) => (y) => x + y;
+const add5 = makeAdder(5);
+
+// Impure: the captured variable is reassigned
+let rate = 1.2;
+const withTax = (price) => price * rate;
+
+console.log(hypotenuse(3, 4), add5(2), add5(2)); // 5 7 7
+console.log(withTax(10)); // 12
+rate = 1.5;
+console.log(withTax(10)); // 15 — the same argument, a different result
+```
+
+- Captured with `const` is not enough for objects: if a captured object is
+  mutated somewhere, a function that reads it is impure.
+- Strictly speaking, even `Math.sqrt` can be reassigned in JavaScript, and then
+  `hypotenuse` changes behavior. Purity is therefore a promise about the
+  environment: built-ins, imports and module constants are **assumed** not to
+  change. In Haskell this is guaranteed (nothing can be reassigned); in
+  JavaScript it is a convention.
+
 ### Why It Matters
 
 Pure functions are:
