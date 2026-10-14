@@ -74,5 +74,5 @@ URL must be served by only one of them.
 
 - [App Router](./app-router/overview.md)
 - [Server Components](./app-router/server-components.mdx)
-- [Caching](./app-router/caching.md)
+- [Caching](./app-router/caching.mdx)
 - [Pages Router](./page-router/overview.md)

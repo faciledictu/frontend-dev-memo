@@ -62,27 +62,47 @@ In the browser:
 
 ### Rendering Strategies
 
-| Strategy  | When HTML is made                                                             | Happens when                                                                                                         |
-| --------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Static    | At build time or on revalidation; the result is cached and served to everyone | The route uses no request data                                                                                       |
-| Dynamic   | On every request                                                              | The route reads `cookies()`, `headers()`, `searchParams` or `connection()`; with Cache Components also uncached data |
-| Streaming | Parts are sent as they are ready                                              | Slow parts are wrapped in `<Suspense>` or the segment has `loading.tsx`                                              |
+- **Static:** HTML is made at build time or on revalidation, cached and served
+  to everyone.
+- **Dynamic:** HTML is made on every request, because the output depends on the
+  request: `cookies()`, `headers()`, `searchParams`, `connection()`.
+- **Streaming:** the response is sent in parts; each `<Suspense>` boundary shows
+  its fallback first and is replaced when its content is ready. `loading.tsx`
+  wraps the page of its segment in such a boundary.
 
-- In the previous model one dynamic API made the **whole route** dynamic.
-- With **Cache Components** (Next.js 16) the route is split instead: the static
-  and cached parts form a prerendered **static shell**, and only the parts
-  inside `<Suspense>` render on request (**Partial Prerendering**). See
-  [Caching](./caching.md).
-- `loading.tsx` wraps the page of its segment in `<Suspense>` with this file as
-  the fallback, so the layout and the loading UI appear at once while the page
-  is still loading.
+How they combine depends on the caching model:
+
+<Tabs groupId="next-cache-model" queryString>
+<TabItem value="cache-components" label="Cache Components (16.4+)" default>
+
+- The choice is made **per component**, not per route (**Partial
+  Prerendering**). At build time the static markup, the `'use cache'` parts and
+  the `<Suspense>` fallbacks form a prerendered **static shell**; the parts
+  inside `<Suspense>` that read request data or uncached data render on request
+  and stream in.
+- Uncached data or request data outside `<Suspense>` fails the build.
+- See [Caching](./caching.mdx).
+
+</TabItem>
+<TabItem value="previous" label="Previous model (15–16)">
+
+- The choice is made **per route**: one `cookies()`, `headers()`,
+  `searchParams`, `connection()` or `cache: 'no-store'` makes the **whole
+  route** dynamic.
+- A route without them is static, even if it fetches uncached data: the data is
+  fetched at build time.
+- Streaming is visible only in a dynamic route; a static one is sent complete.
+
+</TabItem>
+</Tabs>
 
 ## Example
 
-Streaming with Cache Components: the heading arrives at once, each list replaces
-its fallback when its data is ready. In the previous model this page uses no
-request data, so it is prerendered at build time and the fallbacks are never
-shown.
+Streaming: the heading arrives at once, each list replaces its fallback when its
+data is ready. This is how it works with Cache Components. In the previous model
+the page uses no request data and is prerendered whole at build time; adding
+`await connection()` at the top of `Posts` and `Users` makes them render on
+request.
 
 <Tabs>
 <TabItem value="app/page.tsx" label="app/page.tsx" default>
@@ -172,5 +192,5 @@ export async function Users() {
 
 - [Client Components](./client-components.md)
 - [Data Fetching Patterns](./fetching-patterns.md)
-- [Caching](./caching.md)
+- [Caching](./caching.mdx)
 - [Rendering in React](../../react/basics/rendering.md)
