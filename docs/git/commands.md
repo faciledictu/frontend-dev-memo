@@ -32,8 +32,9 @@ Applies to: Git 2.56.
 | `git commit --amend`           | Replaces the last commit (message or content)                              |
 | `git reflog`                   | Log of where `HEAD` has been; find a "lost" commit and reset to it         |
 
-`git restore <file>` and `git reset --hard` lose uncommitted changes for good:
-the reflog only tracks commits.
+`git restore <file>` and `git reset --hard` discard uncommitted changes, and the
+reflog does not track them: unstaged edits are gone, staged ones can only be dug
+out as dangling blobs with `git fsck --lost-found`.
 
 ### Branches and Syncing
 

@@ -44,7 +44,7 @@ Applies to: Git 2.56.
   possible.
 - **Squash** loses the individual commits of the branch, and Git does not record
   the branch as merged: `git branch -d` refuses to delete it, and continuing to
-  work on it leads to conflicts with its own squashed changes.
+  work on it can lead to conflicts with its own squashed changes.
 
 ### Interactive Rebase
 
@@ -63,8 +63,9 @@ automatically.
   `git rebase --continue`.
 - Give up and return to the state before: `git merge --abort` or
   `git rebase --abort`.
-- `git rerere` remembers how a conflict was resolved and reapplies it — useful
-  when the same branch is rebased many times.
+- `git rerere` (after `git config rerere.enabled true`) remembers how a conflict
+  was resolved and reapplies it — useful when the same branch is rebased many
+  times.
 
 ### Cherry-pick
 
@@ -75,12 +76,12 @@ branch.
 ## Example
 
 ```bash
-# Merge a feature into main
+# Merge a feature into main with a merge commit
 git switch main
 git merge --no-ff feature
 
-# Squash a feature into one commit
-git merge --squash feature
+# Or: squash another feature into one commit
+git merge --squash other-feature
 git commit -m "Add feature"
 
 # Update a feature branch with main, then publish the rewritten branch
@@ -95,7 +96,9 @@ git cherry-pick 3f2a9c1 8b47de0
 ## Follow-up Questions
 
 - Why `--force-with-lease` and not `--force`? It refuses to overwrite the remote
-  branch if someone pushed to it since your last fetch.
+  branch if it has moved since your last fetch. A background fetch (an IDE)
+  updates that reference too, so add `--force-if-includes` (Git 2.30+) to also
+  check that you have integrated the remote changes.
 - How to undo a merge that was already pushed? `git revert -m 1 <merge-commit>`
   creates a commit that reverses it without rewriting history.
 - What is `git pull --rebase`? `fetch` + `rebase` of local commits on top of the
