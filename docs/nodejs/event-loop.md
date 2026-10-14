@@ -85,7 +85,7 @@ is still how the documentation describes it.
   (do not keep the process alive for this timer), `ref()` and `refresh()`.
 - Promise versions are in `node:timers/promises`: `await setTimeout(1000)`,
   `for await (const _ of setInterval(1000))`.
-- `setImmediate` and `process.nextTick` exist only in Node.js.
+- `setImmediate` and `process.nextTick` are not available in browsers.
 - A long callback blocks the thread in both environments: in the browser it
   freezes the page, in Node.js it delays every other request.
 

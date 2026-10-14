@@ -29,7 +29,7 @@ Applies to: Node.js 24 LTS.
 | `res` (`ServerResponse`)  | `res.statusCode = 404`, `res.setHeader(name, value)` | Set the status and headers one by one                          |
 |                           | `res.writeHead(status, headers)`                     | Sets the status and headers at once                            |
 |                           | `res.write(chunk)`                                   | Sends part of the body; headers are sent with the first chunk  |
-|                           | `res.end([data])`                                    | Finishes the response; must be called exactly once             |
+|                           | `res.end([data])`                                    | Finishes the response; must be called on every code path       |
 
 - After headers are sent (by `writeHead`, the first `write` or `end`), changing
   them throws `ERR_HTTP_HEADERS_SENT`. So decide the status first, then write.
@@ -53,7 +53,7 @@ Applies to: Node.js 24 LTS.
   `res.ok`.
 - There is no default timeout that fits a request handler: pass
   `signal: AbortSignal.timeout(5000)`.
-- The body must be consumed (`await res.json()`, `res.text()`) or cancelled,
+- The body must be consumed (`await res.json()`, `res.text()`) or canceled,
   otherwise the connection is not returned to the pool.
 
 ## Example
@@ -104,6 +104,8 @@ console.log(await res.json()); // { received: { name: 'Ada' } }
 Writing the status before the routing decision:
 
 ```javascript
+import http from 'node:http';
+
 http.createServer((req, res) => {
   // error-next-line
   res.writeHead(200);
@@ -126,8 +128,8 @@ http.createServer((req, res) => {
   `await pipeline(fs.createReadStream(file), res)`, see
   [Stream Module](./stream.md).
 - How do you shut a server down gracefully? `server.close()` stops accepting new
-  connections and waits for open ones; `server.closeIdleConnections()` closes
-  idle keep-alive ones.
+  connections, closes idle keep-alive ones and waits for active requests;
+  `server.closeAllConnections()` force-closes the rest after a timeout.
 
 ## Common Mistakes
 

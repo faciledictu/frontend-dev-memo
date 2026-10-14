@@ -11,11 +11,11 @@ description:
 servers, in CLI tools and in build scripts. It is built from the **V8** engine
 (the one in Chrome), which executes JavaScript, and **libuv**, a C library that
 provides the **event loop**, asynchronous I/O and a **thread pool**. JavaScript
-runs on one thread; I/O does not block it: network operations use the operating
-system's non-blocking mechanisms, while file system, DNS lookup and some crypto
-and compression operations run in the libuv thread pool (4 threads by default).
-That makes Node.js good at many concurrent I/O-bound connections and bad at long
-CPU-bound work on the main thread.
+runs on one thread, and I/O does not block it. Network operations use the
+operating system's non-blocking mechanisms, while file system, DNS lookup and
+some crypto and compression operations run in the libuv thread pool (4 threads
+by default). That makes Node.js good at many concurrent I/O-bound connections
+and bad at long CPU-bound work on the main thread.
 
 Applies to: Node.js 24 LTS.
 
@@ -57,8 +57,8 @@ available as `global`), and process information is in `process`.
 ### Versions
 
 - Up to Node.js 26, even-numbered majors become **LTS** (long-term support, 30
-  months) in October; odd-numbered ones live about 6 months. Production uses
-  LTS.
+  months) in October; odd-numbered ones are supported for about 8 months (6 as
+  Current) and never become LTS. Production uses LTS.
 - Starting with Node.js 27 (2027) there is one major release a year, and every
   release becomes LTS.
 

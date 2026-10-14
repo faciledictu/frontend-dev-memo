@@ -29,20 +29,20 @@ Applies to: Node.js 24 LTS.
 
 ### Common Operations
 
-| Task                       | `fs/promises`                                             | Notes                                                              |
-| -------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------ |
-| Read a file                | `readFile(path, 'utf8')`                                  | Without an encoding returns a `Buffer`                             |
-| Write a file               | `writeFile(path, data)`                                   | Creates or **overwrites**                                          |
-| Append                     | `appendFile(path, data)`                                  |                                                                    |
-| Delete a file or directory | `rm(path, { recursive: true, force: true })`              | `unlink` for a single file; `rmdir` only removes empty directories |
-| Create a directory         | `mkdir(path, { recursive: true })`                        | `recursive` also means "no error if it exists"                     |
-| List a directory           | `readdir(path, { withFileTypes: true })`                  | `recursive: true` lists subdirectories too                         |
-| Find files by pattern      | `glob('src/**/*.ts')`                                     | Async iterator; stable since Node.js 24                            |
-| File info                  | `stat(path)`                                              | `size`, `mtime`, `isFile()`, `isDirectory()`                       |
-| Rename or move             | `rename(from, to)`                                        | Atomic within one file system                                      |
-| Copy                       | `copyFile(from, to)`, `cp(from, to, { recursive: true })` | `cp` copies directories                                            |
-| Watch for changes          | `watch(path)`                                             | Async iterator; behavior differs between operating systems         |
-| Low-level access           | `open(path, flags)` → `FileHandle`                        | `read`, `write`, `close()`; always close it                        |
+| Task                       | `fs/promises`                                             | Notes                                                                             |
+| -------------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Read a file                | `readFile(path, 'utf8')`                                  | Without an encoding returns a `Buffer`                                            |
+| Write a file               | `writeFile(path, data)`                                   | Creates or **overwrites**                                                         |
+| Append                     | `appendFile(path, data)`                                  |                                                                                   |
+| Delete a file or directory | `rm(path, { recursive: true, force: true })`              | `unlink` for a single file; `rmdir` only removes empty directories                |
+| Create a directory         | `mkdir(path, { recursive: true })`                        | `recursive` also means "no error if it exists"                                    |
+| List a directory           | `readdir(path, { withFileTypes: true })`                  | `recursive: true` lists subdirectories too                                        |
+| Find files by pattern      | `glob('src/**/*.ts')`                                     | Async iterator; stable since Node.js 24                                           |
+| File info                  | `stat(path)`                                              | `size`, `mtime`, `isFile()`, `isDirectory()`                                      |
+| Rename or move             | `rename(from, to)`                                        | Atomic within one file system on POSIX; may fail on Windows if the target is open |
+| Copy                       | `copyFile(from, to)`, `cp(from, to, { recursive: true })` | `cp` copies directories                                                           |
+| Watch for changes          | `watch(path)`                                             | Async iterator; behavior differs between operating systems                        |
+| Low-level access           | `open(path, flags)` → `FileHandle`                        | `read`, `write`, `close()`; always close it                                       |
 
 ### Paths
 

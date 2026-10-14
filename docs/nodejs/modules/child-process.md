@@ -12,9 +12,9 @@ processes. **`exec`** runs a command in a **shell** and buffers the whole
 output; **`execFile`** runs a file directly, without a shell; **`spawn`**
 streams the output, which suits long-running processes and large output;
 **`fork`** starts another Node.js script with an **IPC channel** for
-`send()`/`'message'`. Each has a blocking `*Sync` version. A child process has
-its own memory and event loop, so a crash or a CPU-heavy task in it does not
-affect the parent.
+`send()`/`'message'`. `exec`, `execFile` and `spawn` also have blocking `*Sync`
+versions. A child process has its own memory and event loop, so a crash or a
+CPU-heavy task in it does not affect the parent.
 
 Applies to: Node.js 24 LTS.
 
@@ -34,8 +34,9 @@ Applies to: Node.js 24 LTS.
   resolve to `{ stdout, stderr }`.
 - `spawn` emits `'error'` if the program cannot be started (for example
   `ENOENT`), and `'exit'` / `'close'` with the exit code when it ends.
-- A child process is a full process: it takes tens of megabytes of memory and
-  some time to start. For CPU-heavy JavaScript inside the same process, use
+- A child process is a full process: a Node.js child (`fork`) takes tens of
+  megabytes of memory and some time to start. For CPU-heavy JavaScript inside
+  the same process, use
   [`worker_threads`](./cluster.md#cluster-vs-worker-threads).
 
 ### Shell Injection
@@ -95,7 +96,7 @@ const ls = spawn('ls', ['-la']);
 
 ls.stdout.on('data', (data) => process.stdout.write(data));
 ls.on('error', (err) => console.error('Failed to start:', err.message));
-ls.on('close', (code) => console.log(`Exited with code ${code}`));
+ls.on('close', (code) => console.log(`Exited with code ${code}`)); // also fires after 'error'
 ```
 
 ## Follow-up Questions

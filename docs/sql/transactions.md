@@ -23,12 +23,12 @@ Applies to: PostgreSQL 18.
 
 ### ACID
 
-| Property    | Guarantee                                                      | Example                                                                     |
-| ----------- | -------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| Atomicity   | All statements of a transaction take effect, or none do        | A transfer never debits one account without crediting the other             |
-| Consistency | A committed transaction leaves every constraint satisfied      | `CHECK (balance >= 0)` cannot be broken by a commit                         |
-| Isolation   | Concurrent transactions behave as the isolation level promises | A report does not see a half-done transfer                                  |
-| Durability  | After `COMMIT` returns, the data survives a crash              | PostgreSQL writes the change to the write-ahead log (WAL) before confirming |
+| Property    | Guarantee                                                      | Example                                                                              |
+| ----------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Atomicity   | All statements of a transaction take effect, or none do        | A transfer never debits one account without crediting the other                      |
+| Consistency | A committed transaction leaves every constraint satisfied      | `CHECK (balance >= 0)` cannot be broken by a commit                                  |
+| Isolation   | Concurrent transactions behave as the isolation level promises | A report does not see a half-done transfer                                           |
+| Durability  | After `COMMIT` returns, the data survives a crash              | PostgreSQL flushes the change to the write-ahead log (WAL) on disk before confirming |
 
 ### Commands
 
@@ -46,7 +46,9 @@ Applies to: PostgreSQL 18.
   statement fails with `current transaction is aborted`, and `COMMIT` performs a
   `ROLLBACK`. To continue after an expected error, use a savepoint.
 - DDL (`CREATE`, `ALTER`, `DROP`) is transactional in PostgreSQL, so a migration
-  can be rolled back as a whole. MySQL commits DDL implicitly.
+  can be rolled back as a whole. Exceptions such as `CREATE INDEX CONCURRENTLY`,
+  `CREATE DATABASE` and `VACUUM` cannot run inside a transaction. MySQL commits
+  DDL implicitly.
 
 ### Read Anomalies
 
@@ -81,12 +83,14 @@ writers):
   tries to update a row that another transaction changed and committed, it fails
   with `could not serialize access due to concurrent update`.
 - **Serializable**: Repeatable Read plus detection of dangerous dependencies
-  between transactions (SSI). It does **not** lock ranges of rows; instead, one
-  of the conflicting transactions fails with a serialization error.
+  between transactions (SSI). Its predicate locks only track what was read and
+  do **not block** anyone; instead, one of the conflicting transactions fails
+  with a serialization error.
 - At Repeatable Read and Serializable the application must be ready to **retry**
   the whole transaction on error code `40001`.
-- Other databases differ: MySQL InnoDB defaults to Repeatable Read and uses
-  locks against phantoms; SQL Server's Serializable uses range locks.
+- Other databases differ: MySQL InnoDB defaults to Repeatable Read: plain reads
+  use a snapshot, locking reads and updates use next-key locks; SQL Server's
+  Serializable uses range locks.
 
 ### Preventing Lost Updates
 
@@ -112,8 +116,10 @@ CREATE TABLE accounts (
 INSERT INTO accounts VALUES (1, 100), (2, 50);
 
 BEGIN;
+-- error-next-line
 UPDATE accounts SET balance = balance - 500 WHERE id = 1;
 -- ERROR: new row for relation "accounts" violates check constraint "accounts_balance_check"
+-- error-next-line
 UPDATE accounts SET balance = balance + 500 WHERE id = 2;
 -- ERROR: current transaction is aborted, commands ignored until end of transaction block
 COMMIT; -- reported as ROLLBACK: no change is saved, balances stay 100 and 50
@@ -159,10 +165,10 @@ try {
 
 ## Common Mistakes
 
-- "Repeatable Read allows phantom reads": the standard allows it, PostgreSQL and
-  InnoDB prevent them.
+- "Repeatable Read allows phantom reads": the standard allows it; PostgreSQL
+  prevents them, and InnoDB prevents them for plain reads.
 - "Serializable locks the whole range of rows": that is one implementation;
-  PostgreSQL uses SSI and aborts a conflicting transaction instead.
+  PostgreSQL uses non-blocking SSI and aborts a conflicting transaction instead.
 - Expecting the remaining statements to run after an error inside a PostgreSQL
   transaction.
 - Running the statements of one transaction through different pooled

@@ -8,14 +8,14 @@ description:
 # SQL Constraints
 
 **Constraints** are rules on table data that the database enforces on every
-`INSERT` and `UPDATE`: a statement that breaks one fails with an error, so
-invalid data cannot get in regardless of which application writes it. The main
-ones: **`NOT NULL`** (a value is required), **`UNIQUE`** (no duplicates),
-**`PRIMARY KEY`** (`NOT NULL` + `UNIQUE`, one per table, identifies a row),
-**`FOREIGN KEY`** (the value must exist in another table; `ON DELETE` says what
-happens to referencing rows) and **`CHECK`** (an arbitrary condition).
-**`DEFAULT`** is not a constraint but is defined the same way: the value used
-when none is given.
+change (`INSERT`, `UPDATE`, and for foreign keys also `DELETE` of the parent
+row): a statement that breaks one fails with an error, so invalid data cannot
+get in regardless of which application writes it. The main ones: **`NOT NULL`**
+(a value is required), **`UNIQUE`** (no duplicates), **`PRIMARY KEY`**
+(`NOT NULL` + `UNIQUE`, one per table, identifies a row), **`FOREIGN KEY`** (the
+value must exist in another table; `ON DELETE` says what happens to referencing
+rows) and **`CHECK`** (an arbitrary condition). **`DEFAULT`** is not a
+constraint but is defined the same way: the value used when none is given.
 
 Applies to: PostgreSQL 18.
 
@@ -34,7 +34,8 @@ Applies to: PostgreSQL 18.
   (`UNIQUE (first_name, last_name)`), and named:
   `CONSTRAINT employees_age_check CHECK (age >= 18)`.
 - Added later with `ALTER TABLE … ADD CONSTRAINT`; existing rows are checked
-  then.
+  then, unless the constraint is added `NOT VALID` and checked later with
+  `VALIDATE CONSTRAINT` (useful on large tables).
 
 ### `ON DELETE` and `ON UPDATE` Actions
 

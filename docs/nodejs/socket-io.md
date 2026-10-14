@@ -27,7 +27,7 @@ Applies to: Socket.IO 4.8.
 | Direction           | Both ways                     | Both ways                                             | Server → client only     |
 | Messages            | Raw strings or binary         | Named events with any serializable arguments, binary  | Text events              |
 | Reconnection        | Write it yourself             | Built in, with backoff; events are buffered meanwhile | Built in (`EventSource`) |
-| Fallback            | None                          | HTTP long-polling                                     | Plain HTTP               |
+| Fallback            | None                          | HTTP long-polling                                     | Not needed: plain HTTP   |
 | Rooms, broadcasting | Write it yourself             | Built in                                              | Write it yourself        |
 | Client size         | 0 (built into browsers)       | A client library                                      | 0                        |
 

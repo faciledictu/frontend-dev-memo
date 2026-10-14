@@ -79,18 +79,20 @@ LIMIT 10;
 
 The clauses are written in one order and **evaluated** in another:
 
-| Step | Clause             | What it does                                  |
-| ---- | ------------------ | --------------------------------------------- |
-| 1    | `FROM`, `JOIN`     | Builds the source rows                        |
-| 2    | `WHERE`            | Filters rows (no aggregates here)             |
-| 3    | `GROUP BY`         | Groups rows                                   |
-| 4    | `HAVING`           | Filters groups (aggregates allowed)           |
-| 5    | `SELECT`           | Computes the output columns and their aliases |
-| 6    | `DISTINCT`         | Removes duplicate output rows                 |
-| 7    | `ORDER BY`         | Sorts (can use aliases from `SELECT`)         |
-| 8    | `LIMIT` / `OFFSET` | Cuts the result                               |
+| Step | Clause             | What it does                                                         |
+| ---- | ------------------ | -------------------------------------------------------------------- |
+| 1    | `FROM`, `JOIN`     | Builds the source rows                                               |
+| 2    | `WHERE`            | Filters rows (no aggregates here)                                    |
+| 3    | `GROUP BY`         | Groups rows                                                          |
+| 4    | `HAVING`           | Filters groups (aggregates allowed)                                  |
+| 5    | `SELECT`           | Computes the output columns and their aliases, then window functions |
+| 6    | `DISTINCT`         | Removes duplicate output rows                                        |
+| 7    | `ORDER BY`         | Sorts (can use aliases from `SELECT`)                                |
+| 8    | `LIMIT` / `OFFSET` | Cuts the result                                                      |
 
-That is why an alias from `SELECT` cannot be used in `WHERE`:
+That is why an alias from `SELECT` cannot be used in `WHERE`, and why a window
+function such as `row_number()` cannot be filtered in `WHERE` (wrap the query in
+a subquery or CTE):
 
 ```sql
 -- error-next-line
@@ -123,7 +125,8 @@ JOIN orders o ON o.user_id = u.id;
 
 SELECT u.name, o.total
 FROM users u
-LEFT JOIN orders o ON o.user_id = u.id;
+LEFT JOIN orders o ON o.user_id = u.id
+ORDER BY u.name, o.total;
 -- Ada   | 30.00
 -- Ada   | 70.00
 -- Grace | NULL      <- no orders
@@ -194,13 +197,39 @@ WHERE s.total > 20;
 
 -- error-next-line
 SELECT name FROM users WHERE id NOT IN (SELECT user_id FROM orders);
--- 0 rows: the subquery contains NULL, and `x NOT IN (…, NULL)` is never true
+-- 0 rows: the subquery contains NULL, and x NOT IN (…, NULL) is never true
 
 -- correct-start
 SELECT name FROM users u
 WHERE NOT EXISTS (SELECT 1 FROM orders o WHERE o.user_id = u.id);
 -- correct-end
 -- Grace
+```
+
+</details>
+
+### UNION, INTERSECT, EXCEPT
+
+Combine the results of two queries with the same number and types of columns:
+
+| Operator    | Returns                                            |
+| ----------- | -------------------------------------------------- |
+| `UNION`     | Rows from either query, **duplicates removed**     |
+| `UNION ALL` | Rows from either query, duplicates kept; faster    |
+| `INTERSECT` | Rows present in both                               |
+| `EXCEPT`    | Rows of the first query that are not in the second |
+
+<details>
+<summary>Examples</summary>
+
+```sql
+SELECT user_id FROM orders WHERE total > 20
+UNION
+SELECT user_id FROM orders WHERE total < 20
+ORDER BY user_id;
+-- 1, 2, NULL
+
+-- the same with UNION ALL: 1, 1, 2, NULL (Ada has two orders over 20)
 ```
 
 </details>
@@ -233,7 +262,9 @@ RETURNING id, name;
 </Tabs>
 
 - `RETURNING` gives back the inserted rows, for example the generated `id`,
-  without a second query. It works with `UPDATE` and `DELETE` too.
+  without a second query. It works with `UPDATE` and `DELETE` too; since
+  PostgreSQL 18, `RETURNING old.total, new.total` returns values before and
+  after the change.
 - Always list the columns: `INSERT INTO t VALUES (…)` breaks when a column is
   added.
 

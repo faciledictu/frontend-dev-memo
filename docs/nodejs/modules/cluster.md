@@ -7,14 +7,14 @@ description:
 
 # Cluster Module
 
-One Node.js process runs JavaScript on one thread, so it uses one CPU core.
-`node:cluster` starts several copies of the application: the **primary** process
-forks **worker** processes (usually one per core), and all workers **share the
-same server port**. By default the primary accepts connections and hands them to
-workers in turn (round-robin; on Windows the OS distributes them). Workers are
-separate processes with separate memory, so shared state (sessions, caches) must
-live outside them, for example in Redis. For CPU-heavy tasks inside one process,
-use **`worker_threads`** instead.
+One Node.js process runs its JavaScript on one thread, so that code uses one CPU
+core. `node:cluster` starts several copies of the application: the **primary**
+process forks **worker** processes (usually one per core), and all workers
+**share the same server port**. By default the primary accepts connections and
+hands them to workers in turn (round-robin; on Windows the OS distributes them).
+Workers are separate processes with separate memory, so shared state (sessions,
+caches) must live outside them, for example in Redis. For CPU-heavy tasks inside
+one process, use **`worker_threads`** instead.
 
 Applies to: Node.js 24 LTS.
 

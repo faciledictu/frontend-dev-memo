@@ -8,13 +8,14 @@ description:
 # Relationships Between Tables
 
 A relationship links rows of two tables through a **foreign key**: a column
-whose value is the primary key of a row in another table. There are three kinds.
-**One-to-many** (1:M, the most common): the foreign key is on the "many" side,
-for example `books.author_id`. **One-to-one** (1:1): the same foreign key plus a
-`UNIQUE` constraint, or the foreign key is the primary key itself.
-**Many-to-many** (M:M): it cannot be stored in either table, so a third
-**junction table** holds pairs of foreign keys. Related rows are read back with
-`JOIN`.
+whose value is the primary key (or another unique key) of a row in another
+table, or of the same table. There are three kinds. **One-to-many** (1:M, the
+most common): the foreign key is on the "many" side, for example
+`books.author_id`. **One-to-one** (1:1): the same foreign key plus a `UNIQUE`
+constraint, or the foreign key is the primary key itself (strictly,
+one-to-zero-or-one: a user may have no profile yet). **Many-to-many** (M:M): it
+cannot be stored in either table, so a third **junction table** holds pairs of
+foreign keys. Related rows are read back with `JOIN`.
 
 Applies to: PostgreSQL 18.
 

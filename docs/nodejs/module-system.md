@@ -41,8 +41,9 @@ Applies to: Node.js 24 LTS.
 2. `.js` → the `"type"` field of the nearest `package.json`: `"module"` or
    `"commonjs"`.
 3. No `"type"` field: CommonJS, but if the file contains `import`/`export`
-   syntax, Node.js re-parses it as ESM and prints a warning. Set `"type"`
-   explicitly instead of relying on this.
+   syntax (or top-level `await`), Node.js re-parses it as ESM. If a
+   `package.json` without `"type"` exists, it also prints a warning. Set
+   `"type"` explicitly instead of relying on this.
 
 ### Mixing the Two
 
@@ -85,12 +86,13 @@ Before running a CommonJS file, Node.js wraps it in a function:
 
 For `require('x')` and `import 'x'`:
 
-1. **Built-in module:** `fs`, `node:fs`. The `node:` prefix makes it explicit
-   and cannot be shadowed by a package; some modules exist only with it
-   (`node:test`, `node:sqlite`).
+1. **Built-in module:** `fs`, `node:fs`. Built-ins win over files and packages
+   with the same name even without the prefix; `node:` makes the intent explicit
+   and bypasses `require.cache`. Some modules exist only with it (`node:test`,
+   `node:sqlite`, `node:sea`).
 2. **Path** (`./`, `../`, `/`): a file; in CommonJS also with the `.js`,
    `.json`, `.node` extensions added, or a directory with `package.json` `main`
-   or `index.js`.
+   or `index.js` (`index.json`, `index.node`).
 3. **Package name:** looked up in `node_modules` of the current directory, then
    of every parent directory up to the root.
 4. If the package has an **`exports`** field in `package.json`, only the paths

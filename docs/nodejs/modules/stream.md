@@ -8,13 +8,14 @@ description:
 # Stream Module
 
 A **stream** processes data **in chunks** as it arrives instead of loading all
-of it into memory: a 10 GB file can be copied with a few dozen kilobytes of
-memory. There are four types: **Readable** (source), **Writable** (destination),
-**Duplex** (both, for example a TCP socket) and **Transform** (a duplex that
-changes data on the way, for example gzip). Streams handle **backpressure**: a
-fast source is paused when the destination cannot keep up. Connect streams with
-**`pipeline()`** from `node:stream/promises`: unlike `.pipe()`, it forwards
-errors and destroys all streams when one fails.
+of it into memory: a 10 GB file can be copied with a small, constant amount of
+memory (a 64 KiB buffer per stream). There are four types: **Readable**
+(source), **Writable** (destination), **Duplex** (both, for example a TCP
+socket) and **Transform** (a duplex that changes data on the way, for example
+gzip). Streams handle **backpressure**: a fast source is paused when the
+destination cannot keep up. Connect streams with **`pipeline()`** from
+`node:stream/promises`: unlike `.pipe()`, it forwards errors and destroys all
+streams when one fails.
 
 Applies to: Node.js 24 LTS.
 
@@ -26,7 +27,7 @@ Applies to: Node.js 24 LTS.
 | --------- | -------------------------------- | ------------------------------------------------------------------ |
 | Readable  | Produces data                    | `fs.createReadStream`, HTTP `req` on the server, `process.stdin`   |
 | Writable  | Consumes data                    | `fs.createWriteStream`, HTTP `res` on the server, `process.stdout` |
-| Duplex    | Independent read and write sides | `net.Socket`, WebSocket connections                                |
+| Duplex    | Independent read and write sides | `net.Socket`, `tls.TLSSocket`                                      |
 | Transform | Output is computed from input    | `zlib.createGzip()`, `crypto.createHash()`                         |
 
 - Chunks are `Buffer`s (or strings with an encoding). In **object mode**
@@ -36,7 +37,7 @@ Applies to: Node.js 24 LTS.
 
 ### Backpressure
 
-- `writable.write(chunk)` returns `false` when the buffer is above
+- `writable.write(chunk)` returns `false` when the buffer has reached
   `highWaterMark`. The producer should stop writing and wait for the
   **`'drain'`** event.
 - Ignoring `false` does not lose data, but everything piles up in memory.
@@ -133,8 +134,9 @@ http
 - How do you write a Transform?
   `new Transform({ transform(chunk, encoding, callback) { callback(null, result) } })`,
   or an async generator in `pipeline`.
-- What does `stream.finished()` do? Resolves when a stream has ended, failed or
-  closed: a reliable way to know it is done.
+- What does `finished()` from `node:stream/promises` do? Resolves when a stream
+  has ended or closed and rejects when it failed: a reliable way to know it is
+  done.
 
 ## Common Mistakes
 

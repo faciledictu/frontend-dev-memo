@@ -34,8 +34,8 @@ Applies to: Node.js 24 LTS, Express 5.
   codes do not.
 - Wrap a low-level error with context instead of losing it:
   `throw new Error('Cannot load config', { cause: err })`.
-- System errors and programmer errors can look alike (`TypeError` from bad input
-  vs from a bug); the difference is whether the program expected it.
+- Operational errors and programmer errors can look alike (`TypeError` from bad
+  input vs from a bug); the difference is whether the program expected it.
 
 ### How Errors Arrive
 
@@ -52,8 +52,9 @@ Applies to: Node.js 24 LTS, Express 5.
   usually crashes the process. Every stream, socket and server needs an
   `'error'` listener, or use `pipeline()` / `await` APIs that turn it into a
   rejection.
-- An `await` that is forgotten loses the error: the rejection is not caught by
-  the surrounding `try`.
+- A forgotten `await` lets the error escape: the rejection is not caught by the
+  surrounding `try` and becomes an unhandled rejection, which terminates the
+  process.
 
 ### Unhandled Errors
 
