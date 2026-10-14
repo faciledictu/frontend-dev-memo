@@ -71,7 +71,7 @@ function show() {
 }
 
 // error-next-line
-// show(); // ReferenceError: Cannot access 'value' before initialization
+show(); // ReferenceError: Cannot access 'value' before initialization
 const value = 1;
 show(); // 1
 

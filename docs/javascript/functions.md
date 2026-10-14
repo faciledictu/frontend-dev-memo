@@ -68,7 +68,7 @@ function sum(a, b) {
 }
 
 // error-next-line
-// multiply(2); // ReferenceError: Cannot access 'multiply' before initialization
+multiply(2); // ReferenceError: Cannot access 'multiply' before initialization
 const multiply = (a, b = 2, ...rest) => a * b + rest.length;
 
 console.log(multiply(3)); // 6

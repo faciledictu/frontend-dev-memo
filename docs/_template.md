@@ -36,8 +36,8 @@ Marking lines in code blocks:
   example, only where it is not obvious.
 - The comment style follows the language: `{/* error-next-line */}` inside JSX,
   `/* … */` in CSS, `#` in bash. Magic comments are removed from the output.
-- A wrong line is not commented out: it is marked and left as code, unless
-  running it would stop the rest of the example.
+- A wrong line is not commented out: it is marked and left as code, even if it
+  would throw and stop the rest of the example when run.
 
 ```typescript
 let score = 100;
