@@ -9,12 +9,12 @@ description:
 
 An **index** is a separate data structure that lets the database find rows by
 the values of some columns without reading the whole table. The default type is
-a **B-tree**: a sorted tree that answers `=`, `<`, `>`, `BETWEEN`, `ORDER BY`
-and prefix searches in logarithmic time. Indexes speed up reads but cost disk
-space and slow down every `INSERT`, `UPDATE` and `DELETE`, because each index
-has to be updated too. `PRIMARY KEY` and `UNIQUE` create an index automatically;
-foreign keys and other filtered columns need one created by hand. Whether an
-index is actually used is shown by **`EXPLAIN`**.
+a **B-tree**: a sorted tree that answers `=`, `<`, `>`, `BETWEEN` and `ORDER BY`
+in logarithmic time. Indexes speed up reads but cost disk space and slow down
+writes: every `INSERT`, and every `UPDATE` of an indexed column, has to update
+the indexes too. `PRIMARY KEY` and `UNIQUE` create an index automatically;
+foreign key columns and other filtered columns need one created by hand. Whether
+an index is actually used is shown by **`EXPLAIN`**.
 
 Applies to: PostgreSQL 18.
 
@@ -22,14 +22,14 @@ Applies to: PostgreSQL 18.
 
 ### Kinds of Indexes
 
-| Index         | Example                                                        | Use for                                                    |
-| ------------- | -------------------------------------------------------------- | ---------------------------------------------------------- |
-| Single column | `CREATE INDEX ON orders (user_id)`                             | Filters and joins on one column, foreign keys              |
-| Composite     | `CREATE INDEX ON orders (user_id, created_at)`                 | Filter by the first column, sort or filter by the next one |
-| Unique        | `CREATE UNIQUE INDEX ON users (email)`                         | The same as a `UNIQUE` constraint                          |
-| Partial       | `CREATE INDEX ON orders (created_at) WHERE status = 'pending'` | Queries on a small subset of rows; the index stays small   |
-| Expression    | `CREATE INDEX ON users (lower(email))`                         | Queries that filter by the same expression                 |
-| Covering      | `CREATE INDEX ON orders (user_id) INCLUDE (total)`             | Index-only scans: the answer is read from the index alone  |
+| Index         | Example                                                        | Use for                                                                                 |
+| ------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Single column | `CREATE INDEX ON orders (user_id)`                             | Filters and joins on one column, foreign keys                                           |
+| Composite     | `CREATE INDEX ON orders (user_id, created_at)`                 | Filter by the first column, sort or filter by the next one                              |
+| Unique        | `CREATE UNIQUE INDEX ON users (email)`                         | Enforces uniqueness like a `UNIQUE` constraint; can also be partial or on an expression |
+| Partial       | `CREATE INDEX ON orders (created_at) WHERE status = 'pending'` | Queries on a small subset of rows; the index stays small                                |
+| Expression    | `CREATE INDEX ON users (lower(email))`                         | Queries that filter by the same expression                                              |
+| Covering      | `CREATE INDEX ON orders (user_id) INCLUDE (total)`             | Index-only scans: the answer is read from the index                                     |
 
 Index types other than B-tree:
 
@@ -66,12 +66,12 @@ Put columns compared with `=` first and the range or sort column last.
 
 ### Reading `EXPLAIN`
 
-| Plan node        | Meaning                                                                           |
-| ---------------- | --------------------------------------------------------------------------------- |
-| Seq Scan         | Reads the whole table                                                             |
-| Index Scan       | Finds rows through the index, then reads them from the table                      |
-| Index Only Scan  | Answers from the index without touching the table                                 |
-| Bitmap Heap Scan | Collects matching row locations from the index, then reads them in physical order |
+| Plan node        | Meaning                                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------------------------- |
+| Seq Scan         | Reads the whole table                                                                                |
+| Index Scan       | Finds rows through the index, then reads them from the table                                         |
+| Index Only Scan  | Answers from the index; visits the table only for pages that `VACUUM` has not yet marked all-visible |
+| Bitmap Heap Scan | Collects matching row locations from the index, then reads them in physical order                    |
 
 `EXPLAIN` shows the plan and estimates; `EXPLAIN ANALYZE` also runs the query
 and shows the actual time and row counts.
@@ -98,7 +98,8 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 42;
 CREATE INDEX orders_user_id_created_at_idx ON orders (user_id, created_at);
 
 EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 42;
--- Bitmap Index Scan on orders_user_id_created_at_idx … Execution Time: 0.08 ms
+-- Bitmap Heap Scan on orders -> Bitmap Index Scan on orders_user_id_created_at_idx
+-- … Execution Time: 0.08 ms
 
 EXPLAIN SELECT * FROM orders WHERE user_id = 42 ORDER BY created_at DESC LIMIT 10;
 -- Index Scan Backward using orders_user_id_created_at_idx: no separate sort
@@ -111,9 +112,10 @@ EXPLAIN SELECT * FROM orders WHERE user_id = 42 ORDER BY created_at DESC LIMIT 1
 - How do you add an index to a large table in production?
   `CREATE INDEX CONCURRENTLY`: it does not block writes, but takes longer and
   cannot run inside a transaction.
-- What is a clustered index? In MySQL InnoDB and SQL Server, the table itself is
-  stored in primary key order. PostgreSQL tables are heaps; all indexes are
-  separate.
+- What is a clustered index? The table itself is stored as a B-tree ordered by
+  the clustered key: always the primary key in MySQL InnoDB, the primary key by
+  default in SQL Server. PostgreSQL tables are heaps; all indexes are separate,
+  and the one-time `CLUSTER` command does not keep the order.
 - How do you find slow queries? `pg_stat_statements` for the most expensive
   queries, then `EXPLAIN ANALYZE` on them.
 

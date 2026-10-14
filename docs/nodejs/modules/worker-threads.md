@@ -8,7 +8,7 @@ description:
 # Worker Threads
 
 `node:worker_threads` runs JavaScript in **additional threads** of the same
-process. Each worker has its own V8 instance, event loop and memory; the main
+process. Each worker has its own V8 isolate, event loop and memory; the main
 thread and workers communicate by **messages** (`postMessage`, values are copied
 with the structured clone algorithm), and can share memory explicitly through
 `SharedArrayBuffer`. Workers are meant for **CPU-heavy** work (image processing,
@@ -30,23 +30,24 @@ Applies to: Node.js 24 LTS.
 | `worker.terminate()`                        | Stops the worker                                                                    |
 | `SharedArrayBuffer` + `Atomics`             | Memory visible to several threads; `Atomics` for safe access                        |
 
-- Starting a worker takes time and memory (a full V8 instance), so do not create
-  one per request: keep a **pool** of workers and send them tasks. Libraries
-  such as Piscina do this.
-- An uncaught error ends the worker and emits `'error'` on the `Worker` object;
-  the main thread keeps running.
-- Values that cannot be cloned (functions, class instances with methods,
-  sockets) cannot be sent in a message.
+- Starting a worker takes time and memory (a separate V8 isolate and Node.js
+  environment), so do not create one per request: keep a **pool** of workers and
+  send them tasks. Libraries such as Piscina do this.
+- An uncaught error ends the worker and emits `'error'` on the `Worker` object.
+  With an `'error'` listener the main thread keeps running; without one, the
+  error is rethrown in the main thread and the whole process crashes.
+- Functions and sockets cannot be sent in a message (`DataCloneError`); class
+  instances arrive as plain objects without their methods.
 
 ### Worker Threads vs Cluster vs Child Process
 
-|         | `worker_threads`                                                        | `cluster` / `child_process`                                      |
-| ------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Unit    | A **thread** inside the same process                                    | A separate **process**                                           |
-| Memory  | Own heap; `SharedArrayBuffer` can be shared, `ArrayBuffer`s transferred | Fully separate; messages are copied over IPC                     |
-| Cost    | Lighter, still a full V8 instance per thread                            | Tens of MB and a slower start per process                        |
-| A crash | Ends the thread, emits `'error'` on the `Worker`                        | Ends one process                                                 |
-| Use for | CPU-heavy tasks                                                         | Scaling a server across cores, isolation, running other programs |
+|         | `worker_threads`                                                                         | `cluster` / `child_process`                                      |
+| ------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Unit    | A **thread** inside the same process                                                     | A separate **process**                                           |
+| Memory  | Own heap; `SharedArrayBuffer` can be shared, `ArrayBuffer`s transferred                  | Fully separate; messages are copied over IPC                     |
+| Cost    | Lighter, still a separate V8 isolate per thread                                          | Tens of MB per Node.js process, slower start                     |
+| A crash | Ends the thread, emits `'error'` on the `Worker` (crashes the process if nobody listens) | Ends one process                                                 |
+| Use for | CPU-heavy tasks                                                                          | Scaling a server across cores, isolation, running other programs |
 
 ## Example
 
@@ -84,6 +85,7 @@ if (isMainThread) {
 ## Common Mistakes
 
 - Creating a new worker for every request instead of using a pool.
+- No `'error'` listener on a `Worker`: one failed task crashes the process.
 - Using workers for I/O-bound work.
 - Sending large data back and forth by copying instead of transferring an
   `ArrayBuffer`.
