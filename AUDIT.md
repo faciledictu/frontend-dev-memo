@@ -153,46 +153,46 @@ prototypes, `typescript/type-casting` → type assertions, `react/concurrent-mod
 Этап 2 выполнен. Таблицы разделов ниже описывают страницы по старым путям; где
 они теперь:
 
-| Было                                                                | Стало                                                |
-| ------------------------------------------------------------------- | ---------------------------------------------------- |
-| `common/best-practices/*`                                           | `programming/best-practices.md`                      |
-| `common/paradigms`, `fp`, `oop/*`                                   | `programming/paradigms/*` (`paradigms` → `overview`) |
-| `common/patterns`, `data-structures`                                | `programming/`                                       |
-| `common/testing` + общая часть `react/testing` + RN `other/testing` | `tooling/testing.md`                                 |
-| `common/ci-cd` + RN `other/ci-cd`                                   | `tooling/ci-cd.md`                                   |
-| `common/code-review`, `dev-methodologies`                           | `tooling/`                                           |
-| `nodejs/npm`                                                        | `tooling/package-managers.md`                        |
-| `common/gc`                                                         | `javascript/garbage-collection.md`                   |
-| `common/debugging` + `react/devtools`                               | `web-platform/tools/debugging.md`                    |
-| `browser/http`, `cookies`                                           | `web-platform/network/` (`cookies` → `storage`)      |
-| `browser/browser-workflow`, `events`                                | `web-platform/browser/`                              |
-| `browser/html`                                                      | `html-css/html.md`                                   |
-| `react/bundle-optimization`                                         | `web-platform/tools/bundle-optimization.md`          |
-| теория из `nextjs/authentication`                                   | `web-platform/network/authentication.md`             |
-| `nextjs/styling` + `react-native/styled-components`                 | `react/ecosystem/styling.md`                         |
-| `git/tag` + `git/reset`                                             | `git/commands.md`                                    |
-| `javascript/inheritance`                                            | `javascript/prototypes.md`                           |
-| `typescript/type-casting`                                           | `typescript/type-assertions.md`                      |
-| `react/virtual-dom` + `fiber`                                       | `react/basics/rendering.md`                          |
-| классы из `react/components` + `lifecycle`                          | `react/basics/class-components.md`                   |
-| `react/react-fragment`                                              | `react/basics/components.md`                         |
-| `react/memoization`                                                 | `react/performance/optimisation.md`                  |
-| `react/reselect`                                                    | `react/ecosystem/redux.md`                           |
-| `react/concurrent-mode`                                             | `react/performance/concurrent-rendering.md`          |
-| остальные `react/*`                                                 | `react/basics`, `hooks`, `performance`, `ecosystem`  |
-| `app-router/navigation` + `redirecting`                             | `app-router/navigation.md`                           |
-| `app-router/rendering-strategies`                                   | `app-router/server-components.mdx`                   |
-| `app-router/forms`                                                  | `app-router/server-actions.mdx`                      |
-| `page-router/navigation`, `redirecting`                             | `page-router/overview.md`                            |
-| `page-router/ssg`, `ssr`, `csr`                                     | `page-router/rendering-strategies.md`                |
-| `react-native/scroll-view`                                          | `react-native/lists.md`                              |
-| `react-native/fonts`                                                | `react-native/stylesheet.md`                         |
-| `react-native/timers`                                               | `react-native/animations/animated.md`                |
-| `react-native/native-libraries`                                     | `react-native/rn-architecture.md`                    |
-| `react-native/code-splitting`                                       | `react-native/platform-specific-code.md`             |
-| `react-native/other/*`, `distribution`                              | `react-native/release/*`                             |
-| `nodejs/modules/timer`                                              | `nodejs/event-loop.md`                               |
-| `sql/crud`                                                          | `sql/commands.mdx`                                   |
+| Было                                                                | Стало                                                             |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `common/best-practices/*`                                           | `programming/best-practices.md`                                   |
+| `common/paradigms`, `fp`, `oop/*`                                   | `programming/paradigms/*` (`paradigms` → `overview`)              |
+| `common/patterns`, `data-structures`                                | `programming/`                                                    |
+| `common/testing` + общая часть `react/testing` + RN `other/testing` | `tooling/testing.md`                                              |
+| `common/ci-cd` + RN `other/ci-cd`                                   | `tooling/ci-cd.md`                                                |
+| `common/code-review`, `dev-methodologies`                           | `tooling/`                                                        |
+| `nodejs/npm`                                                        | `tooling/package-managers.md`                                     |
+| `common/gc`                                                         | `javascript/garbage-collection.md`                                |
+| `common/debugging` + `react/devtools`                               | `web-platform/tools/debugging.md`                                 |
+| `browser/http`, `cookies`                                           | `web-platform/network/` (`cookies` → `storage`, CORS → `cors.md`) |
+| `browser/browser-workflow`, `events`                                | `web-platform/browser/`                                           |
+| `browser/html`                                                      | `html-css/html.md`                                                |
+| `react/bundle-optimization`                                         | `web-platform/tools/bundle-optimization.md`                       |
+| теория из `nextjs/authentication`                                   | `web-platform/network/authentication.md`                          |
+| `nextjs/styling` + `react-native/styled-components`                 | `react/ecosystem/styling.md`                                      |
+| `git/tag` + `git/reset`                                             | `git/commands.md`                                                 |
+| `javascript/inheritance`                                            | `javascript/prototypes.md`                                        |
+| `typescript/type-casting`                                           | `typescript/type-assertions.md`                                   |
+| `react/virtual-dom` + `fiber`                                       | `react/basics/rendering.md`                                       |
+| классы из `react/components` + `lifecycle`                          | `react/basics/class-components.md`                                |
+| `react/react-fragment`                                              | `react/basics/components.md`                                      |
+| `react/memoization`                                                 | `react/performance/optimization.md`                               |
+| `react/reselect`                                                    | `react/ecosystem/redux.md`                                        |
+| `react/concurrent-mode`                                             | `react/performance/concurrent-rendering.md`                       |
+| остальные `react/*`                                                 | `react/basics`, `hooks`, `performance`, `ecosystem`               |
+| `app-router/navigation` + `redirecting`                             | `app-router/navigation.md`                                        |
+| `app-router/rendering-strategies`                                   | `app-router/server-components.mdx`                                |
+| `app-router/forms`                                                  | `app-router/server-actions.mdx`                                   |
+| `page-router/navigation`, `redirecting`                             | `page-router/overview.md`                                         |
+| `page-router/ssg`, `ssr`, `csr`                                     | `page-router/rendering-strategies.md`                             |
+| `react-native/scroll-view`                                          | `react-native/lists.md`                                           |
+| `react-native/fonts`                                                | `react-native/stylesheet.md`                                      |
+| `react-native/timers`                                               | `react-native/animations/animated.md`                             |
+| `react-native/native-libraries`                                     | `react-native/rn-architecture.md`                                 |
+| `react-native/code-splitting`                                       | `react-native/platform-specific-code.md`                          |
+| `react-native/other/*`, `distribution`                              | `react-native/release/*`                                          |
+| `nodejs/modules/timer`                                              | `nodejs/event-loop.md`                                            |
+| `sql/crud`                                                          | `sql/commands.mdx`                                                |
 
 Удалены: `react/recompose`, `nextjs/other`, `nextjs/app-router/other`,
 `react-native/setting-up`.

@@ -37,7 +37,7 @@ export const webPlatform: Category = {
   label: 'Web Platform',
   navbarLabel: 'Web',
   description:
-    'How the browser works: network, rendering, DOM events, storage, tools',
+    'Network, how the browser renders a page, DOM events, build and debugging tools',
   group: 'main',
 };
 
