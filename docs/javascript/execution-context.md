@@ -65,6 +65,7 @@ Creation phase:
 ```javascript
 console.log(a); // undefined
 console.log(typeof f); // 'function'
+// error-next-line
 console.log(b); // ReferenceError: Cannot access 'b' before initialization
 
 var a = 1;

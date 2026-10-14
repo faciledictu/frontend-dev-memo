@@ -72,11 +72,14 @@ A condition goes inside the hook, not around it:
 import { useEffect } from 'react';
 
 function Chat({ roomId, isOnline }) {
+  // error-start
   // Wrong: the hook is skipped on some renders
   if (isOnline) {
     useEffect(() => connect(roomId), [roomId]);
   }
+  // error-end
 
+  // correct-start
   // Right: the hook is always called, the condition is inside
   useEffect(() => {
     if (!isOnline) {
@@ -85,6 +88,7 @@ function Chat({ roomId, isOnline }) {
 
     return connect(roomId);
   }, [roomId, isOnline]);
+  // correct-end
 
   return <p>Room: {roomId}</p>;
 }

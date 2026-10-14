@@ -61,8 +61,10 @@ enum Status {
 }
 
 const current: Status = Status.Active;
-// const other: Status = 'ACTIVE';
+// error-start
+const other: Status = 'ACTIVE';
 // Error: Type '"ACTIVE"' is not assignable to type 'Status'.
+// error-end
 ```
 
 The same without an enum:

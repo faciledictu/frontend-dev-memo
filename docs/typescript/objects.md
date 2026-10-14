@@ -30,6 +30,7 @@ obj = { key: 'value' }; // Valid
 obj = []; // Valid
 obj = function () {}; // Valid
 
+// error-next-line
 obj = 42; // Error, 42 is a primitive type
 ```
 
@@ -143,6 +144,7 @@ const alice: User = {
   name: 'Alice',
 };
 
+// error-next-line
 bob.id = 3; // Error: Cannot assign to 'id' because it is a read-only property.
 ```
 

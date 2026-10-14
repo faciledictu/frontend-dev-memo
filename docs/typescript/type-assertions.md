@@ -59,6 +59,7 @@ const theme = {
   gap: 8,
 } satisfies Theme;
 
+// correct-next-line
 theme.gap.toFixed(); // OK: `gap` is still a number, not `string | number`
 ```
 

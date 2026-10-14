@@ -64,6 +64,7 @@ function tryToGetAccess(age) {
 
 tryToGetAccess(20); // Access granted, Done
 tryToGetAccess(16); // Denied: You must be at least 18 years old, Done
+// error-next-line
 tryToGetAccess('16'); // Done, then Uncaught TypeError: Age must be a number
 ```
 

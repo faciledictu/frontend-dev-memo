@@ -25,6 +25,26 @@ appears, it is a separate page and a link.
 // The language of the code block matches its content.
 ```
 
+Marking lines in code blocks:
+
+- `// error-next-line` or `// error-start` … `// error-end` — a red line: code
+  that throws, does not compile or is the wrong way. Keep the error message in a
+  comment next to it.
+- `// correct-next-line` or `// correct-start` … `// correct-end` — a green
+  line: the right way, shown next to the wrong one.
+- `// highlight-next-line` or `{1,3-4}` after the language — the key line of an
+  example, only where it is not obvious.
+- The comment style follows the language: `{/* error-next-line */}` inside JSX,
+  `/* … */` in CSS, `#` in bash. Magic comments are removed from the output.
+- A wrong line is not commented out: it is marked and left as code, unless
+  running it would stop the rest of the example.
+
+```typescript
+let score = 100;
+// error-next-line
+score = 'high'; // Error: Type 'string' is not assignable to type 'number'.
+```
+
 ## Follow-up Questions
 
 - What an interviewer asks next to go deeper.

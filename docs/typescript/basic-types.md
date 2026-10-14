@@ -164,6 +164,7 @@ no annotation. A `const` gets a literal type, a `let` gets the wider one.
 let score = 100; // inferred as number
 const max = 100; // inferred as 100
 
+// error-next-line
 score = 'high'; // Error: Type 'string' is not assignable to type 'number'.
 ```
 

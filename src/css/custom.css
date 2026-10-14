@@ -22,3 +22,34 @@
   --ifm-color-primary-lightest: #74aeff;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Code block lines marked with error-* and correct-* magic comments */
+:root {
+  --code-block-error-line-bg: rgba(255, 0, 0, 0.1);
+  --code-block-error-line-border: #e5484d;
+  --code-block-correct-line-bg: rgba(0, 160, 0, 0.1);
+  --code-block-correct-line-border: #30a46c;
+}
+
+[data-theme='dark'] {
+  --code-block-error-line-bg: rgba(255, 80, 80, 0.15);
+  --code-block-correct-line-bg: rgba(80, 220, 120, 0.12);
+}
+
+.code-block-error-line,
+.code-block-correct-line {
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding) 0 calc(var(--ifm-pre-padding) - 3px);
+  border-left: 3px solid;
+}
+
+.code-block-error-line {
+  background-color: var(--code-block-error-line-bg);
+  border-left-color: var(--code-block-error-line-border);
+}
+
+.code-block-correct-line {
+  background-color: var(--code-block-correct-line-bg);
+  border-left-color: var(--code-block-correct-line-border);
+}

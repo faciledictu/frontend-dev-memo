@@ -73,17 +73,21 @@ After the first render, a change reruns the pipeline from the step it affects:
 ## Example
 
 ```javascript
+// error-start
 // Bad: reads after a write, so every iteration forces a layout
 for (const item of items) {
   item.style.width = `${container.offsetWidth / 2}px`;
 }
+// error-end
 
+// correct-start
 // Good: one read, then only writes
 const width = container.offsetWidth / 2;
 
 for (const item of items) {
   item.style.width = `${width}px`;
 }
+// correct-end
 ```
 
 ## Follow-up Questions

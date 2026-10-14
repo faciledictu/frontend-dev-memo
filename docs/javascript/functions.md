@@ -67,12 +67,14 @@ function sum(a, b) {
   return a + b;
 }
 
+// error-next-line
 // multiply(2); // ReferenceError: Cannot access 'multiply' before initialization
 const multiply = (a, b = 2, ...rest) => a * b + rest.length;
 
 console.log(multiply(3)); // 6
 console.log(multiply(3, 3, 'x', 'y')); // 11
 
+// error-next-line
 new multiply(1); // TypeError: multiply is not a constructor
 ```
 

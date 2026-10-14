@@ -72,6 +72,7 @@ console.log(Object.hasOwn(rex, 'bark')); // false
 console.log('bark' in rex); // true
 
 const dictionary = Object.create(null);
+// error-next-line
 dictionary.toString(); // TypeError: dictionary.toString is not a function
 ```
 

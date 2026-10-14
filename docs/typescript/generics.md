@@ -43,8 +43,10 @@ function getProp<T, K extends keyof T>(obj: T, key: K): T[K] {
 const user = { id: 1, name: 'Ann' };
 
 const userName = getProp(user, 'name'); // string
-// getProp(user, 'age');
+// error-start
+getProp(user, 'age');
 // Error: Argument of type '"age"' is not assignable to parameter of type '"name" | "id"'.
+// error-end
 
 interface ApiResponse<T = unknown> {
   data: T;

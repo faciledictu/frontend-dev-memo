@@ -70,12 +70,15 @@ function show() {
   console.log(value);
 }
 
+// error-next-line
 // show(); // ReferenceError: Cannot access 'value' before initialization
 const value = 1;
 show(); // 1
 
 const user = { name: 'Ann' };
+// correct-next-line
 user.name = 'Bob'; // OK: the same object is mutated
+// error-next-line
 user = {}; // TypeError: Assignment to constant variable.
 ```
 
