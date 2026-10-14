@@ -22,7 +22,7 @@ React Native projects.
 2. Beta Deployment
 
    - Publish builds to beta testers using TestFlight, Play Store internal track,
-     or other services like Firebase App Distribution, HockeyApp, etc.
+     or other services like Firebase App Distribution, etc.
    - Automates: version bumping, code signing, building the app, uploading
      builds, setting changelogs
 
@@ -54,7 +54,7 @@ end
 
 ```ruby
 lane :release_android do
-  gradle(task: "clean assembleRelease")
+  gradle(task: "clean bundleRelease")
   upload_to_play_store(track: "beta") # Push to Google Play beta track
 end
 ```
@@ -63,7 +63,7 @@ end
 
 - **Repeatable:** Makes the release process predictable across teams.
 - **Reliable:** Cuts down on human error in releases.
-- **Time-saving:** Automates the boring bits so you can focus on writing
+- **Time-saving:** Automates repetitive steps so you can focus on writing
   features.
 - **Cross-platform:** Works equally well for iOS and Android in React Native
   projects.

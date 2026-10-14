@@ -49,7 +49,7 @@ performance of your app, especially when dealing with large datasets.
 
 - Incremental rendering
 
-  Virtualized lists are optimized for fast scrolling
+  Virtualized lists are optimized for fast scrolling.
 
   Items that are far from the visible area are rendered incrementally with low
   priority, ensuring that the app's main interactions (such as user touches and

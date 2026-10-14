@@ -40,7 +40,7 @@ React Native provides basic facilities for interacting with permissions, though
 it may not cover all complex scenarios. The `PermissionsAndroid` module, for
 example, helps request permissions on Android platforms.
 
-Example for requesting permission in Android:
+Example of requesting a permission on Android:
 
 ```javascript
 import { PermissionsAndroid } from 'react-native';
@@ -51,7 +51,7 @@ async function requestCameraPermission() {
       PermissionsAndroid.PERMISSIONS.CAMERA,
       {
         title: 'Camera Permission',
-        message: 'This app needs access to your camera ',
+        message: 'This app needs access to your camera.',
         buttonNeutral: 'Ask Me Later',
         buttonNegative: 'Cancel',
         buttonPositive: 'OK',
@@ -84,6 +84,7 @@ libraries are available:
 Example using react-native-permissions:
 
 ```javascript
+import { Platform } from 'react-native';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 // Example for accessing location

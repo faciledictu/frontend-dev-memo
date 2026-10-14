@@ -19,26 +19,26 @@ Service (APNs) for iOS or Firebase Cloud Messaging (FCM) for Android).
 
 2. Device Registration:
 
-- The app registers itself with a push notification service (APNs for iOS, FCM
-  for Android).
-- The service returns a Device Token (iOS) or a Registration Token (Android),
-  which uniquely identifies the app instance on the device.
+   - The app registers itself with a push notification service (APNs for iOS,
+     FCM for Android).
+   - The service returns a Device Token (iOS) or a Registration Token (Android),
+     which uniquely identifies the app instance on the device.
 
 3. Server Configuration:
 
-- The backend server securely stores the device tokens and is configured to
-  communicate with the respective push notification services.
+   - The backend server securely stores the device tokens and is configured to
+     communicate with the respective push notification services.
 
 4. Push Notification Sending:
 
-- The backend server sends a notification request (with a payload and token) to
-  APNs/FCM.
-- The service routes the notification to the target device using the token.
+   - The backend server sends a notification request (with a payload and token)
+     to APNs/FCM.
+   - The service routes the notification to the target device using the token.
 
 5. Notification Received:
 
-- The app receives the notification via an event listener or displays it in the
-  notification center.
+   - The app receives the notification via an event listener or displays it in
+     the notification center.
 
 ## How to set up notifications
 
@@ -65,10 +65,10 @@ Service (APNs) for iOS or Firebase Cloud Messaging (FCM) for Android).
 
      - Add your iOS app in Firebase Console
      - Download `GoogleService-Info.plist` and add it using Xcode
-     - Go to project target, then _Signing & Capabilities_ and Enable
+     - Go to project target, then _Signing & Capabilities_ and enable
        _Notifications & Background Modes_ -> 'Remote Notifications' in the Xcode
        project settings
-     - Setup APNs and upload the key to Firebase
+     - Set up APNs and upload the key to Firebase
      - In the app: request user permissions for iOS 10+ on app start:
 
        ```typescript
@@ -170,7 +170,7 @@ const fcmToken = await messaging().getToken();
 // fcmToken: 'dXzlLpz...abc123' ← This is your device token
 ```
 
-**The BE sends the notification like that:**
+**The backend sends the notification like this:**
 
 ```json
 {

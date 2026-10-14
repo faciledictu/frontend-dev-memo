@@ -12,10 +12,10 @@ You can create platform-specific files by naming them accordingly:
 
 - `Component.android.js` for Android-specific code.
 
-- `Component.native.js` picked up by the React Native bundler for both Android
-  and iOS (Metro).
+- `Component.native.js` is picked up by the React Native bundler for both
+  Android and iOS (Metro).
 
-- `Component.js` picked up by webpack, Rollup or any other Web bundler.
+- `Component.js` is picked up by webpack, Rollup or any other Web bundler.
 
 When you import `Component` without the extension, React Native will
 automatically pick the correct file based on the platform.
@@ -72,7 +72,7 @@ const usePlatformSpecificLogic = () => {
 
 ### Specific Components
 
-```javascript
+```jsx
 import { Platform } from 'react-native';
 import IOSComponent from './IOSComponent';
 import AndroidComponent from './AndroidComponent';

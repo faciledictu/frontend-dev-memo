@@ -6,7 +6,7 @@ sidebar_position: 1
 
 Publishing and distributing React Native apps involves several steps and
 requires meeting the guidelines of both the Apple App Store and Google Play
-Store. Here’s an explanation of the key aspects you mentioned.
+Store.
 
 | Aspect                 | iOS                                             | Android                                        |
 | ---------------------- | ----------------------------------------------- | ---------------------------------------------- |
@@ -15,7 +15,7 @@ Store. Here’s an explanation of the key aspects you mentioned.
 | Review Time            | Longer 1–7 days (review required), stricter     | Shorter, more automated (A few hours to 1 day) |
 | Distribution Options   | App Store, Ad-Hoc, Enterprise                   | Google Play, APK sharing                       |
 | Submission Tool        | Xcode or Transporter                            | Google Play Console                            |
-| Staged Rollout         | Not officially supported                        | Supported                                      |
+| Staged Rollout         | Phased Release (7 days)                         | Supported                                      |
 | Pricing & Availability | Configured in App Store Connect                 | Configured in Play Console                     |
 | App File Type          | .ipa                                            | .apk or .aab                                   |
 
@@ -32,16 +32,16 @@ Store. Here’s an explanation of the key aspects you mentioned.
    - Sign it with the appropriate provisioning profile and distribution
      certificate.
 
-:::info
+   :::info
 
-Xcode includes an app validation step when you archive your app for
-distribution. It checks:
+   Xcode includes an app validation step when you archive your app for
+   distribution. It checks:
 
-- Provisioning profiles and certificates.
-- App Store guidelines compliance.
-- Missing or invalid settings in the app’s metadata.
+   - Provisioning profiles and certificates.
+   - App Store guidelines compliance.
+   - Missing or invalid settings in the app’s metadata.
 
-:::
+   :::
 
 3. Upload the app binary. Now you can find it in the App Store Connect under
    TestFlight.
@@ -107,9 +107,9 @@ Developer Account.
 1. In Google Play Console, create your app entry and configure app details
    (name, description, graphics, etc.).
 
-2. Android requires signing with a release key. Generate one with `keytool`
+2. Android requires signing with a release key. Generate one with `keytool`:
 
-   ```sh
+   ```bash
    keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
    ```
 
@@ -120,9 +120,9 @@ Developer Account.
    - `validity`: The duration for which the key is valid (10000 days, ~27
      years).
 
-   This creates my-upload-key.keystore (valid ~27 years). Keep the keystore and
-   passwords safe. Place the `.keystore` in `android/app/` and reference it in
-   ~/.gradle/gradle.properties to avoid committing.
+   This creates `my-release-key.keystore`. Keep the keystore and passwords safe.
+   Place the `.keystore` in `android/app/` and put the credentials in
+   `~/.gradle/gradle.properties` so they are not committed.
 
    ```properties
    MYAPP_RELEASE_STORE_FILE=my-release-key.keystore
@@ -131,8 +131,9 @@ Developer Account.
    MYAPP_RELEASE_KEY_PASSWORD=your_key_password
    ```
 
-3. Generate a Signed App Bundle. Use tools like Android Studio to build a signed
-   release **APK** (not recommended) or **AAB** (Android App Bundle, preferred).
+3. Generate a signed build. Use Android Studio or Gradle to build a signed
+   release **AAB** (Android App Bundle, required for new apps on Google Play) or
+   an **APK** (not recommended).
 
 4. Upload signed build to Play Console. Fill in release notes etc.
 
@@ -148,7 +149,7 @@ Developer Account.
 
 ## Tools for Simplifying Distribution
 
-1. **Expo:** If using Expo Managed Workflow, you can use expo build and eas
-   submit for app creation and submission.
+1. **Expo:** If using Expo Managed Workflow, you can use `eas build` and
+   `eas submit` for app creation and submission.
 2. **Fastlane:** Automate the app building, signing, and submission process for
    both platforms.

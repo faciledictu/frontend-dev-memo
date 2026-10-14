@@ -37,7 +37,7 @@ Aligns children along **the primary axis** (direction defined by
 
 Aligns children along **the cross axis** (perpendicular to the `flexDirection`).
 
-- `stretch`<br /> Children stretch to fill the container (default for column
+- `stretch`<br /> Children stretch to fill the container (default for any
   direction).
 - `flex-start`<br /> Children are aligned at the start of the cross axis.
 - `center`<br /> Children are centered on the cross axis.
@@ -45,9 +45,9 @@ Aligns children along **the cross axis** (perpendicular to the `flexDirection`).
 
 ### `flex`
 
-Controls how much space a child should take up relative to its siblings
+Controls how much space a child should take up relative to its siblings.
 
-Example:
+For example:
 
 - `flex: 1`: The child will expand to fill available space, dividing it equally
   if other children also have `flex: 1`.
@@ -58,8 +58,8 @@ Example:
 
 Allows individual child elements to override the `alignItems` of their parent.
 
-- `auto` (default)<br /> Inherits the parent's alignItems.
-- `flex-start`, `center`, `flex-end`, `stretch`<br /> Same as alignItems.
+- `auto` (default)<br /> Inherits the parent's `alignItems`.
+- `flex-start`, `center`, `flex-end`, `stretch`<br /> Same as `alignItems`.
 
 ### `flexWrap`
 

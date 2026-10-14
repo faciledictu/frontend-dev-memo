@@ -26,7 +26,8 @@ Animated.timing(value, {
 ### Spring
 
 Mimics natural spring-like motion, ideal for bounce effects. Configurable with
-properties like `friction`, `tension`, and `stiffness`.
+properties like either `friction` and `tension` or `stiffness`, `damping` and
+`mass` (the two sets cannot be mixed).
 
 _Example:_ UI components following user interactions, like a button press that
 scales and then springs back to its original size.
@@ -101,7 +102,8 @@ Animated.stagger(200, [
 
 - Use the `Animated` components (e.g., `Animated.View`, `Animated.Text`) to
   attach animated values and execute animations on them.
-- Understand how to interpolate values for smoother transitions.
+- Use `interpolate` to map an animated value to another range, such as `0..1` to
+  `0..100` px or to a color.
 
 ## The Native Driver
 
@@ -109,8 +111,7 @@ The `useNativeDriver` option allows animations to be offloaded to the native
 layer, which reduces the JavaScript/Main thread's workload, resulting in
 smoother animations:
 
-- **Advantages**: Increased performance, especially for animations involving
-  non-essential UI threads.
+- **Advantages**: Increased performance, especially when the JS thread is busy.
 - **Limitations**: Only supports transform and opacity properties.
 
 ## Performance Optimization
@@ -126,7 +127,7 @@ smoother animations:
 
 - **Clean Up**: Ensure that animated values or listeners are properly cleared to
   prevent memory leaks.
-- **Profiling Tools**: Use React Native Debugger or similar tools to monitor
+- **Profiling Tools**: Use React Native DevTools or similar tools to monitor
   memory usage and performance.
 
 ## Timers and requestAnimationFrame
@@ -157,7 +158,7 @@ animations by scheduling updates for the next frame. It integrates with the UI
 rendering cycle, ensuring high performance and synchronizing with the screen
 refresh rate.
 
-```javascript
+```jsx
 import React, { useRef, useState, useEffect } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 

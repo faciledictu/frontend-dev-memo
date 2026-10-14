@@ -75,9 +75,8 @@ const combinedStyle = StyleSheet.flatten([styles.base, styles.bold]);
 // combinedStyle = { fontSize: 16, color: 'black', fontWeight: 'bold' }
 ```
 
-`compose` convenience method provided by React Native to combine two styles into
-a single style. Unlike `flatten`, it is specifically designed to handle _exactly
-two styles_ and returns a single merged style.
+`compose` is a convenience method that combines two styles into a single style.
+Unlike `flatten`, it handles _exactly two styles_.
 
 ## Properties
 
@@ -171,7 +170,7 @@ native code. This is done differently based on the React Native version you're
 using.
 
 Add the following to your react-native.config.js file in the root of your
-project
+project:
 
 ```javascript
 module.exports = {
@@ -179,9 +178,9 @@ module.exports = {
 };
 ```
 
-And run the following command
+And run the following command:
 
-```sh
+```bash
 npx react-native-asset
 ```
 
@@ -189,7 +188,7 @@ npx react-native-asset
 
 Once the fonts are linked, you can use them in your React Native components.
 
-```javascript
+```jsx
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 

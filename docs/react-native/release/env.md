@@ -4,22 +4,22 @@ sidebar_position: 3
 
 # Environment Configuration and Secrets
 
-Use .env files and libraries. React Native does not natively support
-`process.env` (except `NODE_ENV`), so use a special library to inject
-environment-specific values
+Use `.env` files and a library. React Native does not natively support
+`process.env` (except `NODE_ENV`), so use a library to inject
+environment-specific values:
 
-- `react-native-config` (for use env variables in JS and native code)
-- `react-native-dotenv` (for only use env variables in JS).
+- `react-native-config` (env variables in both JS and native code)
+- `react-native-dotenv` (env variables in JS only)
 
 For example, create `.env.dev` and `.env.prod` files with API endpoints, feature
 flags, etc., and load them in code.
 
-You can access variables in JS via import `Config` from `react-native-config`
-and also in native code via `BuildConfig` on Android or `Info.plist` on iOS.
+In JS, import `Config` from `react-native-config`. In native code, use
+`BuildConfig` on Android or `Info.plist` on iOS.
 
 ## Examples
 
-**In Javascript code**
+### In JavaScript code
 
 ```javascript
 import Config from 'react-native-config';
@@ -27,7 +27,7 @@ import Config from 'react-native-config';
 console.log(Config.API_URL);
 ```
 
-**In native code**
+### In native code
 
 ```java
 public HttpURLConnection getApiUrl(){
@@ -60,10 +60,10 @@ Sensitive keys (API secrets, certificates) should not be hardcoded or checked
 into Git.
 
 Instead, store secrets in secure places. Common practices include using CI/CD
-variables (so keys are only in your build environment) or a secret manager (e.g.
-AWS Secrets Manager). For build-time secrets (like certificate passwords), use
-Gradle/Mac Keychain for Android and Xcode build settings for iOS (again from CI
-secrets or keychain) to avoid exposing them in source.
+variables (so keys are only in your build environment) or a secret manager
+(e.g., AWS Secrets Manager). For build-time secrets (like certificate
+passwords), use Gradle/Mac Keychain for Android and Xcode build settings for iOS
+(again from CI secrets or keychain) to avoid exposing them in source.
 
 :::tip[Inject only one config per build.]
 
