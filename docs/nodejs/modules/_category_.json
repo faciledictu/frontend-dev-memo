@@ -3,6 +3,6 @@
   "position": 2,
   "link": {
     "type": "generated-index",
-    "description": "Reusable code components in Node.js, imported and exported using require or ES6 import/export"
+    "description": "Built-in Node.js modules asked about in interviews: HTTP, file system, events, streams, child processes and cluster"
   }
 }

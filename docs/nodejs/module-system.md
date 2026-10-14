@@ -1,111 +1,185 @@
 ---
 sidebar_position: 4
+description:
+  CommonJS vs ES modules in Node.js, how Node.js picks the module type,
+  require(esm), module.exports vs exports, resolution and caching
 ---
 
 # Module System in Node.js
 
-The module system in Node.js is fundamental to its design and allows developers
-to break down their code into manageable, reusable pieces called modules. Each
-module is a separate file with its own scope.
+Node.js has two module systems. **CommonJS** (CJS) is the original one:
+`require()` and `module.exports`, loaded **synchronously**, at run time. **ES
+modules** (ESM) are the JavaScript standard: `import` and `export`, analyzed
+**statically** before the code runs, with live bindings and top-level `await`. A
+file is ESM if it ends in `.mjs`, or ends in `.js` and the nearest
+`package.json` has `"type": "module"`; `.cjs` is always CommonJS. ESM can import
+CommonJS, and since Node.js 22.12 CommonJS can `require()` an ES module too, as
+long as it has no top-level `await`.
 
-## CommonJS Modules
+Applies to: Node.js 24 LTS.
 
-CommonJS module system allows you to structure and organize your code into
-separate files, or modules, that can be required and reused across your
-application.
+## Details
 
-### Defining a CommonJS Module
+### CommonJS vs ES Modules
 
-A module is defined in its own file and makes use of the `exports` or
-`module.exports` objects to expose functions, objects, or values to other files.
+|                                  | CommonJS                                                                     | ES modules                                                    |
+| -------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Syntax                           | `require()`, `module.exports`, `exports`                                     | `import`, `export`, `import()`                                |
+| Loading                          | Synchronous, when `require()` is reached                                     | Graph is parsed and linked first, then executed               |
+| Imported values                  | Properties of the `module.exports` object; destructured values do not update | **Live bindings**: an import sees later changes of the export |
+| Conditional / dynamic import     | `require()` anywhere, with any expression                                    | `import` only at the top level; `import()` returns a promise  |
+| Top-level `await`                | No                                                                           | Yes                                                           |
+| File extension in relative paths | Optional (`./utils` finds `./utils.js`)                                      | Required (`./utils.js`)                                       |
+| JSON                             | `require('./data.json')`                                                     | `import data from './data.json' with { type: 'json' }`        |
+| Current file and directory       | `__filename`, `__dirname`                                                    | `import.meta.filename`, `import.meta.dirname`                 |
+| Top-level `this`                 | `module.exports`                                                             | `undefined`                                                   |
+| Strict mode                      | Only with `'use strict'`                                                     | Always                                                        |
+
+### How Node.js Decides the Module Type
+
+1. `.mjs` → ESM, `.cjs` → CommonJS.
+2. `.js` → the `"type"` field of the nearest `package.json`: `"module"` or
+   `"commonjs"`.
+3. No `"type"` field: CommonJS, but if the file contains `import`/`export`
+   syntax, Node.js re-parses it as ESM and prints a warning. Set `"type"`
+   explicitly instead of relying on this.
+
+### Mixing the Two
+
+- **ESM imports CommonJS:** `import pkg from './lib.cjs'` gives `module.exports`
+  as the default export. Named imports work when Node.js can detect them
+  statically (`exports.name = …`).
+- **CommonJS requires ESM** (`require(esm)`): returns the module **namespace
+  object** (the default export is in `.default`). If the module or its imports
+  use top-level `await`, it throws `ERR_REQUIRE_ASYNC_MODULE`; use `import()`
+  instead. Unflagged in Node.js 22.12 and 20.19, no longer experimental since
+  Node.js 24.15.
+- **CommonJS loads ESM asynchronously:** `await import('./esm.mjs')` works in
+  every version.
+
+### The CommonJS Module Wrapper
+
+Before running a CommonJS file, Node.js wraps it in a function:
 
 ```javascript
-// myModule.js
-function greet(name) {
-  return `Hello, ${name}!`;
-}
-
-module.exports = greet;
+(function (exports, require, module, __filename, __dirname) {
+  // module code
+});
 ```
 
-In this example, `greet` is a function defined in _myModule.js_ and is exported
-using `module.exports`.
+- That is why each file has its own scope and why `require`, `module`,
+  `exports`, `__filename` and `__dirname` are available: they are **parameters
+  of the wrapper**, not globals. In ESM they do not exist.
+- Real globals are `globalThis` (also `global`), `process`, `Buffer`, timers,
+  `console`, `fetch`, `URL` and others.
 
-:::tip
+### `module.exports` vs `exports`
 
-`module.exports` is a shorthand for module.exports a shorthand `exports`. Both
-refer to the same object initially. However, if you reassign `exports` directly,
-it will break the reference to `module.exports`.
+- `exports` is a variable that initially points to the same object as
+  `module.exports`. `require()` returns **`module.exports`**.
+- Adding properties works through either: `exports.greet = …`.
+- Reassigning `exports = …` only changes the local variable; the module still
+  exports the old object. To export a single value, assign `module.exports = …`.
+
+### Resolution
+
+For `require('x')` and `import 'x'`:
+
+1. **Built-in module:** `fs`, `node:fs`. The `node:` prefix makes it explicit
+   and cannot be shadowed by a package; some modules exist only with it
+   (`node:test`, `node:sqlite`).
+2. **Path** (`./`, `../`, `/`): a file; in CommonJS also with the `.js`,
+   `.json`, `.node` extensions added, or a directory with `package.json` `main`
+   or `index.js`.
+3. **Package name:** looked up in `node_modules` of the current directory, then
+   of every parent directory up to the root.
+4. If the package has an **`exports`** field in `package.json`, only the paths
+   listed there can be imported, with different files for `import` and `require`
+   (conditional exports). `imports` with `#` defines private aliases inside the
+   package.
+
+### Caching
+
+- A module is executed **once**, on the first `require` or `import`; later
+  imports get the same object. That is why a module-level object works as a
+  singleton.
+- CommonJS caches by resolved file path in `require.cache`; ESM has its own
+  module map that cannot be cleared.
+- Circular dependencies do not throw: in CommonJS the second module gets the
+  partially filled `module.exports`; in ESM reading a `let`, `const` or `class`
+  export before its module has run throws a `ReferenceError` (function
+  declarations are hoisted and work).
+
+## Example
+
+Live bindings vs a copy:
 
 ```javascript
-exports = function () {
-  console.log('This will not work as expected');
+// counter.mjs
+export let count = 0;
+export function increment() {
+  count++;
+}
+```
+
+```javascript
+// counter.cjs
+let count = 0;
+module.exports = {
+  count,
+  increment() {
+    count++;
+  },
 };
 ```
 
-:::
-
-### Using a CommonJS Module
-
-To use a module in another file, you use the require function to import it.
-
 ```javascript
-// app.js
-const greet = require('./myModule');
+// main.mjs
+import { count, increment } from './counter.mjs';
+import counterCjs from './counter.cjs';
 
-console.log(greet('Node.js'));
+increment();
+console.log(count); // 1: the binding is live
+
+counterCjs.increment();
+console.log(counterCjs.count); // 0: the property was copied at export time
 ```
 
-### Globals
-
-Node.js has several global objects available in all modules, making it
-unnecessary to require them explicitly.
-
-`global`<br /> The global namespace object.
-
-`process`<br /> Provides information and control over the current Node.js
-process.
-
-`__dirname`<br /> The directory name of the current module.
-
-`__filename`<br /> The file name of the current module.
-
-`require`<br /> Function to import modules.
-
-`module`<br /> Reference to the current module.
-
-`exports`<br /> Shortcut to module.exports.
-
-## ES6 Modules
-
-Node.js also supports ES6 (ECMAScript 2015) modules, which use import and export
-syntax. This requires using the _.mjs_ file extension or setting
-`"type": "module"` in the _package.json_ file.
-
-### Defining an ES6 Module
+The `exports` trap:
 
 ```javascript
-// myModule.mjs
-export function greet(name) {
-  return `Hello, ${name}!`;
-}
+// greet.cjs
+// error-next-line
+exports = function greet() {}; // require('./greet.cjs') returns {}
+
+// correct-next-line
+module.exports = function greet() {};
 ```
 
-### Using an ES6 Module
+## Follow-up Questions
 
-```javascript
-// app.mjs
-import { greet } from './myModule.mjs';
+- Why can't CommonJS just `require` any ES module? `require` is synchronous, and
+  an ES module with top-level `await` may finish evaluating only later.
+- How do you publish a package that works for both? The `exports` field with
+  `import` and `require` conditions, or ESM only now that `require(esm)` works
+  in all supported Node.js versions.
+- What is tree shaking and why does it need ESM? Bundlers remove unused exports;
+  this needs static `import`/`export`, which `require()` is not.
+- How do you get `__dirname` in ESM? `import.meta.dirname` (Node.js 20.11+), or
+  `fileURLToPath(new URL('.', import.meta.url))` in older versions.
 
-console.log(greet('Node.js'));
-```
+## Common Mistakes
 
-## Module Resolution
+- "`__dirname`, `require` and `module` are globals." They are parameters of the
+  CommonJS wrapper and do not exist in ESM.
+- "`module.exports` and `exports` are the same." Only until one of them is
+  reassigned; `require` returns `module.exports`.
+- "ESM imports are copies, like `require`." They are live bindings, read-only
+  for the importer.
+- Omitting the extension in a relative ESM import: `import './utils'` throws
+  `ERR_MODULE_NOT_FOUND`.
 
-_Core Modules_<br/> If the module is a core module, Node.js returns it.
+## See Also
 
-_File Modules_<br/> If the module is a relative path (e.g., _./module_), Node.js
-resolves it to a file or directory.
-
-_Node Modules_<br/> If the module is not a core module or relative path, Node.js
-searches the node_modules directories.
+- [What Is Node.js](./overview.md)
+- [Package Managers](../tooling/package-managers.md)

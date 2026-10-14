@@ -1,197 +1,147 @@
 ---
 sidebar_position: 6
+description:
+  Socket.IO vs WebSocket, transports, events and acknowledgements, rooms and
+  namespaces, scaling with adapters
 ---
 
-# Socket.io
+# Socket.IO
 
-Socket.io is a JavaScript library that enables real-time, bidirectional, and
-event-based communication between web clients and servers. It is built on top of
-_WebSockets API_.
+**Socket.IO** is a library for real-time, bidirectional, event-based
+communication between a client and a Node.js server. It is **not** a WebSocket
+implementation: it has its own protocol on top of **Engine.IO**, which connects
+over HTTP long-polling or WebSocket (and WebTransport) and upgrades to the best
+available transport. On top of that it adds **named events**,
+**acknowledgements**, **automatic reconnection**, **rooms** and **namespaces**.
+Because of the protocol, a plain `WebSocket` client cannot talk to a Socket.IO
+server, and the Socket.IO client cannot talk to a plain WebSocket server.
 
-## Use Cases
+Applies to: Socket.IO 4.8.
 
-Socket.io is used for various real-time applications such as:
+## Details
 
-- Real-time analytics
-- Instant messaging
-- Live chat
-- Collaborative editing
-- Online gaming
+### Socket.IO vs WebSocket vs SSE
 
-## Principles
+|                     | WebSocket (browser API, `ws`) | Socket.IO                                             | Server-Sent Events       |
+| ------------------- | ----------------------------- | ----------------------------------------------------- | ------------------------ |
+| Direction           | Both ways                     | Both ways                                             | Server → client only     |
+| Messages            | Raw strings or binary         | Named events with any serializable arguments, binary  | Text events              |
+| Reconnection        | Write it yourself             | Built in, with backoff; events are buffered meanwhile | Built in (`EventSource`) |
+| Fallback            | None                          | HTTP long-polling                                     | Plain HTTP               |
+| Rooms, broadcasting | Write it yourself             | Built in                                              | Write it yourself        |
+| Client size         | 0 (built into browsers)       | A client library                                      | 0                        |
 
-Socket.io consists of two parts:
+Use plain WebSocket when the protocol is simple or the other side is not
+Socket.IO; Socket.IO when you need rooms, acknowledgements and reconnection
+without writing them.
 
-- Client-side library: Runs in the browser and is available as a Node.js module.
+### Events
 
-- Server-side library: For Node.js, enabling communication between the server
-  and clients.
+- Custom events: `socket.emit('chat:message', data)` on one side,
+  `socket.on('chat:message', handler)` on the other. Any number of arguments,
+  objects are serialized automatically.
+- **Acknowledgements:** the last argument of `emit` can be a callback that the
+  other side calls to confirm receipt; or `await socket.emitWithAck(…)`.
+- Reserved events (cannot be emitted by the application):
 
-Socket.io uses _WebSockets when possible_, but it can also fall back to other
-techniques like _HTTP long-polling_ for environments where WebSockets are not
-supported. This makes it reliable and adaptable to different environments and
-network conditions.
+| Where  | Event                                     | When                                                  |
+| ------ | ----------------------------------------- | ----------------------------------------------------- |
+| Server | `connection` (on `io` or a namespace)     | A client has connected                                |
+| Server | `disconnecting`, `disconnect` (on socket) | The client is leaving (still in its rooms) / has left |
+| Client | `connect`, `disconnect`                   | Connected / disconnected                              |
+| Client | `connect_error`                           | Connection failed or was rejected by middleware       |
 
-## Events
+- `message` is not a reserved event: it is the event name used by
+  `socket.send()`.
+- Delivery is **at most once** by default and in order. For guaranteed delivery,
+  use acknowledgements with retries (`io({ retries: 3, ackTimeout: 10000 })` on
+  the client) or connection state recovery.
 
-Socket.io provides a set of built-in events for basic operations:
+### Rooms and Namespaces
 
-- `connection`: Fired when a client connects to the server.
-- `disconnect`: Fired when a client disconnects from the server.
-- `message`: A general event for sending messages.
-- `connect_error`: Fired when the connection encounters an error.
+| Task                                   | Code                                                   |
+| -------------------------------------- | ------------------------------------------------------ |
+| Join / leave a room                    | `socket.join('room1')`, `socket.leave('room1')`        |
+| Send to everyone in a room             | `io.to('room1').emit('event', data)`                   |
+| Send to a room, except the sender      | `socket.to('room1').emit('event', data)`               |
+| Send to everyone except the sender     | `socket.broadcast.emit('event', data)`                 |
+| Rooms of a socket                      | `socket.rooms` (a `Set`, includes its own `socket.id`) |
+| Separate channel with its own handlers | `io.of('/admin').on('connection', …)`                  |
 
-## Creating Your Own Events
+- **Rooms** exist only on the server: the client does not know which rooms it is
+  in. Each socket is automatically in a room named after its `socket.id`, which
+  is how you message one client. On disconnect, a socket leaves all its rooms.
+- **Namespaces** split one connection into channels (`/`, `/admin`) with their
+  own handlers, rooms and middleware.
+- **Middleware** `io.use((socket, next) => …)` runs on connection: the place for
+  authentication (`socket.handshake.auth`).
 
-You can create custom events to handle specific logic in your application.
+### Scaling
 
-On server:
+- Several Node.js servers do not see each other's sockets: `io.to(room).emit`
+  reaches only clients connected to the same server. An **adapter** (Redis,
+  Postgres, cluster) forwards broadcasts between servers.
+- With HTTP long-polling, every request of a session must reach the same server:
+  configure **sticky sessions** in the load balancer, or allow only the
+  WebSocket transport.
+
+## Example
 
 ```javascript
-const io = require('socket.io')(3000);
+// server.mjs
+import { Server } from 'socket.io';
+
+const io = new Server(3000, { cors: { origin: 'http://localhost:5173' } });
 
 io.on('connection', (socket) => {
-  console.log('A user connected');
-
-  // Listening to a custom event
-  socket.on('myCustomEvent', (data) => {
-    console.log('Received myCustomEvent:', data);
-
-    // Emitting a custom event
-    socket.emit('myResponseEvent', { message: 'Hello from server!' });
+  socket.on('room:join', (room, ack) => {
+    socket.join(room);
+    ack({ ok: true });
   });
 
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
+  socket.on('chat:message', (room, text) => {
+    io.to(room).emit('chat:message', { from: socket.id, text });
   });
 });
 ```
 
-Using on client:
-
 ```javascript
+// client.mjs (browser or Node.js)
+import { io } from 'socket.io-client';
+
 const socket = io('http://localhost:3000');
 
-// Emitting a custom event
-socket.emit('myCustomEvent', { message: 'Hello from client!' });
+socket.on('chat:message', ({ from, text }) => console.log(`${from}: ${text}`));
 
-// Listening to a custom event
-socket.on('myResponseEvent', (data) => {
-  console.log('Received myResponseEvent:', data);
-});
+const { ok } = await socket.emitWithAck('room:join', 'general');
+if (ok) socket.emit('chat:message', 'general', 'Hello!');
 ```
 
-## Rooms
+## Follow-up Questions
 
-Rooms are a way to group multiple sockets together, allowing for efficient
-broadcast and targeted messaging within a subset of connected clients. Each
-socket can join and leave multiple rooms, enabling flexible and scalable
-communication patterns.
+- Can you connect to a Socket.IO server with `new WebSocket(url)`? No: Socket.IO
+  has its own handshake and packet format; you need the Socket.IO client.
+- Why start with long-polling? It works through proxies and firewalls that block
+  WebSocket; the connection then upgrades. It can be disabled with
+  `transports: ['websocket']`.
+- How do you authenticate a socket? Pass a token in
+  `io(url, { auth: { token } })` and check it in `io.use()` middleware; reject
+  with `next(new Error(…))`, which arrives on the client as `connect_error`.
+- How do you scale to several servers? An adapter for broadcasts plus sticky
+  sessions or WebSocket-only transport.
 
-### Use Cases for Rooms
+## Common Mistakes
 
-- Chat Applications: Grouping users into different chat rooms.
-- Collaborative Applications: Different groups working on different documents or
-  projects.
-- Online Gaming: Players grouped into different game sessions or lobbies.
-- Notifications: Sending targeted notifications to specific groups of users.
+- "Socket.IO is a WebSocket library." It uses WebSocket as one of the transports
+  under its own protocol.
+- "`message` is a built-in event." It is the name used by `send()`, nothing
+  more.
+- Expecting `io.emit` to reach clients connected to another server instance
+  without an adapter.
+- Treating events as guaranteed to arrive: without acknowledgements, an event
+  sent during a disconnect can be lost.
 
-### Creating and Managing Rooms
+## See Also
 
-To add a socket to a room, use the join method. This method adds the socket to
-the specified room, creating the room if it does not exist.
-
-```javascript
-io.on('connection', (socket) => {
-  // Automatically join a room on connection
-  socket.join('room1');
-
-  // Join a specific room
-  socket.on('joinRoom', (room) => {
-    socket.join(room);
-    console.log(`Socket ${socket.id} joined room ${room}`);
-  });
-});
-```
-
-#### Leaving a Room
-
-To remove a socket from a room, use the leave method. This method removes the
-socket from the specified room.
-
-```javascript
-io.on('connection', (socket) => {
-  // Leave a specific room
-  socket.on('leaveRoom', (room) => {
-    socket.leave(room);
-    console.log(`Socket ${socket.id} left room ${room}`);
-  });
-});
-```
-
-### Checking Room Membership
-
-To check if a socket is in a specific room or to get a list of rooms a socket is
-in, you can use the rooms property of the socket.
-
-```javascript
-io.on('connection', (socket) => {
-  console.log(`Socket ${socket.id} is in rooms:`, socket.rooms);
-});
-```
-
-### Broadcasting to Rooms
-
-To send a message to all clients in a specific room, use the `to` or `in`
-method.
-
-```javascript
-io.on('connection', (socket) => {
-  socket.on('sendMessageToRoom', (room, message) => {
-    io.to(room).emit('message', message);
-    console.log(`Message sent to room ${room}: ${message}`);
-  });
-});
-```
-
-To broadcast a message to all clients in a room except the sender, use the
-`broadcast.to` method.
-
-```javascript
-io.on('connection', (socket) => {
-  socket.on('broadcastToRoom', (room, message) => {
-    socket.broadcast.to(room).emit('message', message);
-    console.log(
-      `Message broadcast to room ${room} excluding sender: ${message}`
-    );
-  });
-});
-```
-
-### Handling Disconnections
-
-When a socket disconnects, it automatically leaves all the rooms it was a part
-of. You can handle additional logic during the disconnect event.
-
-### Client-Side Implementation
-
-```html
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  const socket = io('http://localhost:3000');
-
-  // Join a room
-  socket.emit('joinRoom', 'room1');
-
-  // Leave a room
-  socket.emit('leaveRoom', 'room1');
-
-  // Send a message to a room
-  socket.emit('sendMessageToRoom', 'room1', 'Hello, Room 1!');
-
-  // Listen for messages from the server
-  socket.on('message', (message) => {
-    console.log('Received message:', message);
-  });
-</script>
-```
+- [HTTP Module](./modules/http.md)
+- [Events Module](./modules/events.md)

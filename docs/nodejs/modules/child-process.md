@@ -1,89 +1,126 @@
 ---
 sidebar_position: 5
+description:
+  exec, execFile, spawn and fork, buffered vs streamed output, shell injection,
+  IPC with fork
 ---
 
 # Child Process Module
 
-The `child_process` module allows you to spawn new processes and communicate
-with them. It provides four different methods for creating child processes.
+`node:child_process` starts other programs as separate operating system
+processes. **`exec`** runs a command in a **shell** and buffers the whole
+output; **`execFile`** runs a file directly, without a shell; **`spawn`**
+streams the output, which suits long-running processes and large output;
+**`fork`** starts another Node.js script with an **IPC channel** for
+`send()`/`'message'`. Each has a blocking `*Sync` version. A child process has
+its own memory and event loop, so a crash or a CPU-heavy task in it does not
+affect the parent.
 
-## Methods for Creating Child Processes
+Applies to: Node.js 24 LTS.
 
-1. `exec` method runs shell commands.
+## Details
 
-   This method runs a command in a shell and buffers the output. It is suitable
-   for short-lived processes where you need the entire output once the process
-   completes.
+### Methods
 
-   ```javascript
-   import { exec } from 'child_process';
+| Method                                  | Shell                                | Output                                | Use for                                        |
+| --------------------------------------- | ------------------------------------ | ------------------------------------- | ---------------------------------------------- |
+| `exec(command, cb)`                     | Yes                                  | Buffered, `maxBuffer` 1 MB by default | Short shell commands with pipes, `*`, `&&`     |
+| `execFile(file, args, cb)`              | No                                   | Buffered                              | Running a program with arguments safely        |
+| `spawn(command, args)`                  | No by default (`shell: true` option) | Streams `stdout`, `stderr`, `stdin`   | Long-running processes, large output           |
+| `fork(modulePath, args)`                | No                                   | Inherited by default; IPC channel     | Another Node.js script that exchanges messages |
+| `execSync`, `execFileSync`, `spawnSync` | As above                             | Returned value                        | CLI scripts; they block the event loop         |
 
-   exec('ls -la', (error, stdout, stderr) => {
-     if (error) {
-       console.error(`exec error: ${error}`);
-       return;
-     }
-     console.log(`stdout: ${stdout}`);
-     console.error(`stderr: ${stderr}`);
-   });
-   ```
+- Promise versions: `util.promisify(exec)` and `util.promisify(execFile)`
+  resolve to `{ stdout, stderr }`.
+- `spawn` emits `'error'` if the program cannot be started (for example
+  `ENOENT`), and `'exit'` / `'close'` with the exit code when it ends.
+- A child process is a full process: it takes tens of megabytes of memory and
+  some time to start. For CPU-heavy JavaScript inside the same process, use
+  [`worker_threads`](./cluster.md#cluster-vs-worker-threads).
 
-2. `execFile` method runs a file directly.
+### Shell Injection
 
-   This method is similar to `exec()`, but it directly executes a file without
-   using a shell, making it slightly more efficient and secure.
+`exec` passes the string to a shell, so user input inside it can run arbitrary
+commands. Pass arguments as an array to `execFile` or `spawn`.
 
-   ```javascript
-   import { execFile } from 'child_process';
+```javascript
+import { exec, execFile } from 'node:child_process';
 
-   execFile('node', ['--version'], (error, stdout, stderr) => {
-     if (error) {
-       console.error(`execFile error: ${error}`);
-       return;
-     }
-     console.log(`stdout: ${stdout}`);
-     console.error(`stderr: ${stderr}`);
-   });
-   ```
+const name = 'photo.jpg; rm -rf ~'; // user input
 
-3. `spawn` method launches a process and streams its I/O.
+// error-next-line
+exec(`convert ${name} out.png`); // the shell runs `rm -rf ~`
 
-   This method launches a new process with a given command. It is suitable for
-   long-running processes where you need to handle the process's I/O streams
-   (stdout, stderr, stdin) in a non-blocking way.
+// correct-next-line
+execFile('convert', [name, 'out.png']); // the name is one argument
+```
 
-   ```javascript
-   import { spawn } from 'child_process';
+### Running TypeScript in `fork`
 
-   const ls = spawn('ls', ['-la']);
+Node.js 24 can `fork('./worker.ts')` directly: type stripping removes types
+before running. Only erasable syntax works (no `enum`, no parameter properties),
+and types are not checked. Otherwise compile to JavaScript and fork the `.js`
+file.
 
-   ls.stdout.on('data', (data) => {
-     console.log(`stdout: ${data}`);
-   });
+## Example
 
-   ls.stderr.on('data', (data) => {
-     console.error(`stderr: ${data}`);
-   });
+```javascript
+// parent.mjs
+import { fork } from 'node:child_process';
 
-   ls.on('close', (code) => {
-     console.log(`child process exited with code ${code}`);
-   });
-   ```
+const child = fork('./child.mjs');
 
-4. `fork` method spawns a new Node.js process with an IPC channel.
+child.on('message', (result) => {
+  console.log('Sum from child:', result);
+  child.disconnect(); // close the IPC channel so both processes can exit
+});
 
-   This method is designed for spawning new Node.js processes. It has built-in
-   communication channels (IPC) for sending messages between the parent and
-   child processes.
+child.send({ numbers: [1, 2, 3, 4] });
+```
 
-   ```javascript
-   import { fork } from 'child_process';
+```javascript
+// child.mjs
+process.on('message', ({ numbers }) => {
+  const sum = numbers.reduce((a, b) => a + b, 0); // CPU work off the parent's thread
+  process.send(sum);
+});
+```
 
-   const child = fork('./child.ts');
+Streaming output with `spawn`:
 
-   child.on('message', (message) => {
-     console.log(`Message from child: ${message}`);
-   });
+```javascript
+import { spawn } from 'node:child_process';
 
-   child.send('Hello from parent process');
-   ```
+const ls = spawn('ls', ['-la']);
+
+ls.stdout.on('data', (data) => process.stdout.write(data));
+ls.on('error', (err) => console.error('Failed to start:', err.message));
+ls.on('close', (code) => console.log(`Exited with code ${code}`));
+```
+
+## Follow-up Questions
+
+- `exec` or `spawn`? `exec` for a short command whose output fits in memory;
+  `spawn` for long-running processes or large output, since it streams.
+- How do a parent and a forked child communicate? Through the IPC channel:
+  `child.send()` and `process.on('message')`; messages are serialized, not
+  shared.
+- How is `fork` different from `cluster`? `cluster` uses `fork` under the hood
+  and adds sharing of a server port between workers.
+- How do you stop a child process? `child.kill()` (sends `SIGTERM`), or pass an
+  `AbortSignal` in the `signal` option.
+
+## Common Mistakes
+
+- Building an `exec` command string from user input.
+- Using `exec` for a command with large output: it fails with
+  `ERR_CHILD_PROCESS_STDIO_MAXBUFFER` after 1 MB.
+- No `'error'` listener on a spawned process: a missing program crashes the
+  parent.
+- Using `execSync` in a server request handler: it blocks the event loop.
+
+## See Also
+
+- [Cluster Module](./cluster.md)
+- [Stream Module](./stream.md)
+- [Events Module](./events.md)

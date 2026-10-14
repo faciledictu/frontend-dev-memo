@@ -1,205 +1,150 @@
 ---
 sidebar_position: 4
+description:
+  Readable, Writable, Duplex and Transform streams, backpressure, pipeline vs
+  pipe, async iteration, stream events
 ---
 
 # Stream Module
 
-Streams are a powerful concept in Node.js that allow you to work with large
-amounts of data efficiently. They provide a way to process data piece-by-piece,
-without having to load the entire dataset into memory.
+A **stream** processes data **in chunks** as it arrives instead of loading all
+of it into memory: a 10 GB file can be copied with a few dozen kilobytes of
+memory. There are four types: **Readable** (source), **Writable** (destination),
+**Duplex** (both, for example a TCP socket) and **Transform** (a duplex that
+changes data on the way, for example gzip). Streams handle **backpressure**: a
+fast source is paused when the destination cannot keep up. Connect streams with
+**`pipeline()`** from `node:stream/promises`: unlike `.pipe()`, it forwards
+errors and destroys all streams when one fails.
 
-:::tip
+Applies to: Node.js 24 LTS.
 
-Streams are particularly useful for handling large files or data sources, like
-reading or writing files, handling HTTP requests and responses, or processing
-data from a database.
+## Details
 
-:::
+### Types
 
-:::note[Key Concepts]
+| Type      | Role                             | Examples                                                           |
+| --------- | -------------------------------- | ------------------------------------------------------------------ |
+| Readable  | Produces data                    | `fs.createReadStream`, HTTP `req` on the server, `process.stdin`   |
+| Writable  | Consumes data                    | `fs.createWriteStream`, HTTP `res` on the server, `process.stdout` |
+| Duplex    | Independent read and write sides | `net.Socket`, WebSocket connections                                |
+| Transform | Output is computed from input    | `zlib.createGzip()`, `crypto.createHash()`                         |
 
-**Chunks.** Streams process data in chunks, which are small pieces of data.
+- Chunks are `Buffer`s (or strings with an encoding). In **object mode**
+  (`objectMode: true`) a chunk can be any JavaScript value.
+- `highWaterMark` is the size of the internal buffer: 64 KiB by default (16
+  objects in object mode). It is a threshold, not a hard limit.
 
-**Piping.** A mechanism to connect the output of one stream directly to another
-stream.
+### Backpressure
 
-**Events.** Streams are instances of EventEmitter and emit several events at
-different stages of their operation, such as `data`, `end`, `error`, and
-`finish`.
+- `writable.write(chunk)` returns `false` when the buffer is above
+  `highWaterMark`. The producer should stop writing and wait for the
+  **`'drain'`** event.
+- Ignoring `false` does not lose data, but everything piles up in memory.
+- `pipeline()`, `.pipe()` and `for await` handle backpressure for you.
 
-:::
+### `pipeline` vs `pipe`
 
-Streams are implemented in the `stream` module, which is a core Node.js module.
+|                               | `readable.pipe(writable)`                                   | `await pipeline(a, b, c)` |
+| ----------------------------- | ----------------------------------------------------------- | ------------------------- |
+| Backpressure                  | Yes                                                         | Yes                       |
+| Errors from any stream        | Not forwarded: each stream needs its own `'error'` listener | One rejection             |
+| Cleanup when one stream fails | No: the others stay open (file descriptor leaks)            | All streams are destroyed |
+| Async generators as steps     | No                                                          | Yes                       |
 
-## Types of Streams
+### Reading
 
-There are four main types of streams in Node.js:
+- **Async iteration** is the simplest way:
+  `for await (const chunk of readable)`. Errors become exceptions, and
+  backpressure is respected.
+- **Flowing mode:** a `'data'` listener or `.pipe()` makes the stream push
+  chunks as fast as they come. **Paused mode:** chunks are pulled with `read()`
+  on `'readable'`.
+- Web Streams (`ReadableStream`, used by `fetch`) are a separate API; convert
+  with `Readable.fromWeb()` and `Readable.toWeb()`.
 
-1. `stream.Readable`: Used for reading data.
+### Events
 
-2. `stream.Writable`: Used for writing data.
+| Stream   | Event      | When                                                             |
+| -------- | ---------- | ---------------------------------------------------------------- |
+| Readable | `data`     | A chunk is available (flowing mode)                              |
+|          | `end`      | No more data                                                     |
+|          | `readable` | Data can be pulled with `read()` (paused mode)                   |
+| Writable | `drain`    | The buffer has emptied; writing can continue                     |
+|          | `finish`   | `end()` was called and all data was flushed                      |
+| Both     | `error`    | Something failed; without a listener it is thrown                |
+|          | `close`    | The stream and its resource (file descriptor, socket) are closed |
 
-3. `stream.Duplex`: Used for both reading and writing data.
+## Example
 
-4. `stream.Transform`: A type of duplex stream where the output is computed
-   based on the input.
-
-## Event Emitters
-
-Streams are instances of `EventEmitter` so you can use methods such as `on()`
-and `once()`. They emit various events.
-
-<details>
-<summary>Event Types and Examples</summary>
-
-### Readable Stream Events
-
-- `data`: Emitted when data is available to be read from the stream. This event
-  is only emitted in flowing mode.
-- `end`: Emitted when there is no more data to be consumed from the stream.
-- `error`: Emitted if an error occurs while reading data.
-- `readable`: Emitted when there is data available to be read, but it is not in
-  flowing mode. This allows you to manually read the data.
-- `close`: Emitted when the stream and any of its underlying resources (like a
-  file descriptor) have been closed. Not all streams will emit this event.
-
-### Writable Stream Events
-
-- `drain`: Emitted when the writable stream's internal buffer is emptied,
-  indicating that more data can be written.
-- `finish`: Emitted after the `end()` method has been called and all data has
-  been flushed to the underlying system.
-- `pipe`: Emitted when the `pipe()` method is called on a readable stream,
-  adding this writable stream to its set of destinations.
-- `unpipe`: Emitted when the `unpipe()` method is called on a readable stream,
-  removing this writable stream from its set of destinations.
-- `error`: Emitted if an error occurs while writing data.
-- `close`: Emitted when the stream and any of its underlying resources have been
-  closed.
-
-### Duplex and Transform Streams
-
-Inherit events from both Readable and Writable streams.
+Compress a file and count its lines, with a custom step as an async generator:
 
 ```javascript
-import fs from 'fs';
+import { createReadStream, createWriteStream } from 'node:fs';
+import { pipeline } from 'node:stream/promises';
+import { createGzip } from 'node:zlib';
 
-// Create a readable stream
-const readableStream = fs.createReadStream('input.txt');
+let lines = 0;
 
-// Attaching event listeners
-readableStream.on('data', (chunk) => {
-  console.log(`Received ${chunk.length} bytes of data.`);
-});
+await pipeline(
+  createReadStream('access.log'),
+  async function* (source) {
+    for await (const chunk of source) {
+      for (const byte of chunk) if (byte === 10) lines++; // '\n'
+      yield chunk; // pass the chunk on unchanged
+    }
+  },
+  createGzip(),
+  createWriteStream('access.log.gz')
+);
 
-readableStream.on('end', () => {
-  console.log('No more data to read.');
-});
-
-readableStream.on('error', (err) => {
-  console.error('An error occurred:', err);
-});
-
-readableStream.on('close', () => {
-  console.log('Stream has been closed.');
-});
-
-// Create a writable stream
-const writableStream = fs.createWriteStream('output.txt');
-
-// Attaching event listeners
-writableStream.on('finish', () => {
-  console.log('All data has been written to the file.');
-});
-
-writableStream.on('error', (err) => {
-  console.error('An error occurred:', err);
-});
-
-writableStream.on('close', () => {
-  console.log('Stream has been closed.');
-});
-
-// Writing data to the writable stream
-writableStream.write('Hello, world!\n');
-writableStream.end();
+console.log(`Compressed ${lines} lines`);
 ```
 
-</details>
-
-## Methods
-
-:::note[Flow Modes]
-
-**Flowing mode**: Data is read from the stream automatically and provided to the
-application via events as soon as it is available.
-
-**Paused mode**: Data must be explicitly read from the stream using methods like
-`read()`.
-
-:::
-
-`readableStream.read([size])`<br/>Reads data from the stream.
-
-`readableStream.pause()`<br/>Pauses the flowing of data.
-
-`readableStream.resume()`<br/>Resumes the flowing of data.
-
-`writableStream.write(chunk, [encoding], [callback])`<br/>Writes data to the
-stream.
-
-`writableStream.end([chunk], [encoding], [callback])`<br/>Signals that no more
-data will be written to the stream.
-
-`readableStream.pipe(writable)`<br/>Used to pass data from a readable stream to
-a writable stream. This simplifies the process of reading from one stream and
-writing to another.
-
-## Backpressure
-
-Backpressure occurs when the writable stream cannot consume data as fast as the
-readable stream produces it. Streams handle it by pausing the source until the
-destination catches up.
-
-Node.js streams manage this using the `highWaterMark` option and the `drain`
-event.
-
-## Usage
-
-### Reading and Writing Files
-
-Streams can be used to read from and write to files efficiently.
+Streaming a file to an HTTP response:
 
 ```javascript
-import { createReadStream, createWriteStream } from 'fs';
+import { createReadStream } from 'node:fs';
+import http from 'node:http';
+import { pipeline } from 'node:stream/promises';
 
-// Create readable and writable streams
-const readableStream = createReadStream('input.txt');
-const writableStream = createWriteStream('output.txt');
+http
+  .createServer(async (req, res) => {
+    // error-next-line
+    createReadStream('big.txt').pipe(res); // a missing file crashes the process
 
-// Pipe the readable stream into the writable stream
-readableStream.pipe(writableStream);
+    // correct-start
+    try {
+      await pipeline(createReadStream('big.txt'), res);
+    } catch (err) {
+      console.error(err); // ENOENT or a client disconnect; res is destroyed too
+    }
+    // correct-end
+  })
+  .listen(3000);
 ```
 
-### Handling HTTP Requests/Responses
+## Follow-up Questions
 
-Streams are useful for handling large HTTP requests or responses.
+- Why use streams instead of `readFile`? Memory stays constant regardless of the
+  data size, and processing starts with the first chunk.
+- What is backpressure and what happens without it? The producer is faster than
+  the consumer; without backpressure the unwritten data grows in memory until
+  the process runs out of it.
+- How do you write a Transform?
+  `new Transform({ transform(chunk, encoding, callback) { callback(null, result) } })`,
+  or an async generator in `pipeline`.
+- What does `stream.finished()` do? Resolves when a stream has ended, failed or
+  closed: a reliable way to know it is done.
 
-```javascript
-import { createServer } from 'http';
-import { createReadStream } from 'fs';
+## Common Mistakes
 
-// Create an HTTP server
-const server = createServer((req, res) => {
-  // Create a readable stream for a large file
-  const readableStream = createReadStream('bigfile.txt');
+- Using `.pipe()` without `'error'` listeners on every stream.
+- Ignoring the return value of `write()` in a loop.
+- Mixing `'data'` listeners and `for await` on the same stream.
+- Reading a whole file with `readFile` to send it in an HTTP response.
 
-  // Pipe the readable stream into the HTTP response
-  readableStream.pipe(res);
-});
+## See Also
 
-// Start the server on port 3000
-server.listen(3000, () => {
-  console.log('Server is listening on port 3000');
-});
-```
+- [File System Module](./filesystem.md)
+- [HTTP Module](./http.md)
+- [Events Module](./events.md)

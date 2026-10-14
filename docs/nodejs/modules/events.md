@@ -1,94 +1,128 @@
 ---
 sidebar_position: 3
+description:
+  EventEmitter, synchronous listeners, the special error event, once and
+  promises, listener leaks, EventEmitter vs EventTarget
 ---
 
 # Events Module
 
-## Event-Based Approach
+`EventEmitter` from `node:events` implements the **observer pattern**: an object
+emits named events, and listeners subscribed with `on()` react to them. Streams,
+HTTP servers, sockets and child processes are all emitters. `emit()` calls the
+listeners **synchronously**, in the order they were added, and returns only
+after all of them have run; the asynchrony comes from the code that calls
+`emit()` (for example, an I/O callback), not from the emitter. The **`'error'`**
+event is special: if it is emitted and there is no listener, the error is
+**thrown**.
 
-An event-based approach is a programming paradigm where the flow of the program
-is determined by events, such as user actions (clicks, key presses), sensor
-outputs, or messages from other programs or threads. In this model, a program
-listens for and responds to events as they occur.
+Applies to: Node.js 24 LTS.
 
-:::info[Key Characteristics]
+## Details
 
-1. Synchronous Dispatch: `emit()` calls all listeners synchronously, in the
-   order they were registered. Asynchrony comes from the place where `emit()` is
-   called (for example, an I/O callback), not from the emitter itself.
-2. Event Emitters and Listeners: An event emitter generates and dispatches
-   events, while listeners (or event handlers) respond to these events.
-3. Decoupling: This approach decouples the event producer (emitter) from the
-   event consumer (listener), promoting a more modular and maintainable
-   codebase.
+### Methods
 
-:::
+| Method                                | What it does                                                        |
+| ------------------------------------- | ------------------------------------------------------------------- |
+| `on(name, fn)` / `addListener`        | Adds a listener to the end of the list                              |
+| `once(name, fn)`                      | Adds a listener that is removed after the first call                |
+| `prependListener(name, fn)`           | Adds a listener to the beginning of the list                        |
+| `off(name, fn)` / `removeListener`    | Removes one listener (the same function reference)                  |
+| `removeAllListeners([name])`          | Removes all listeners of an event or of all events                  |
+| `emit(name, ...args)`                 | Calls the listeners synchronously; returns `true` if there were any |
+| `listenerCount(name)`, `eventNames()` | Introspection                                                       |
+| `setMaxListeners(n)`                  | Changes the leak warning threshold (10 by default)                  |
 
-## Methods and Examples
+Static helpers:
 
-The events module provides a way to emit and handle named events.
+- `await events.once(emitter, 'ready')`: a promise of the next event; rejects if
+  `'error'` is emitted first.
+- `for await (const [data] of events.on(emitter, 'data'))`: events as an async
+  iterator.
 
-1. Create an `EventEmitter` instance
+### The `'error'` Event
 
-   ```javascript
-   import { EventEmitter } from 'events';
+- An emitter reports failures with `emit('error', err)`.
+- No `'error'` listener → `emit` **throws** the error. In an I/O callback this
+  is an uncaught exception, and the process exits.
+- So every stream, socket, server or child process needs an `'error'` listener,
+  or it must be used through an API that turns errors into rejections
+  (`pipeline`, `events.once`).
 
-   const myEmitter = new EventEmitter();
-   ```
+### Listener Leaks
 
-2. Set up an event listener
+- More than 10 listeners for one event prints `MaxListenersExceededWarning`.
+  Usually it means a listener is added on every request and never removed.
+- Fix the leak (`off`, `once`, or an `AbortSignal`) rather than raising the
+  limit.
 
-   ```javascript
-   myEmitter.on('greet', () => {
-     console.log('Hello! Someone greeted!');
-   });
-   ```
+### `EventEmitter` vs `EventTarget`
 
-3. Trigger (emit) the event
+|                   | `EventEmitter` (`node:events`) | `EventTarget` (Web API, global in Node.js) |
+| ----------------- | ------------------------------ | ------------------------------------------ |
+| Subscribe         | `on(name, fn)`                 | `addEventListener(type, fn)`               |
+| Listener receives | Any arguments of `emit`        | One `Event` object                         |
+| `'error'`         | Throws if nobody listens       | No special handling                        |
+| Used by           | Node.js core APIs              | `AbortSignal`, browser-compatible code     |
 
-   ```javascript
-   myEmitter.emit('greet');
-   ```
+## Example
 
-   When the `greet` event is emitted, the listener is triggered, and the message
-   _"Hello! Someone greeted!"_ is logged to the console.
+```javascript
+import { EventEmitter, once } from 'node:events';
 
-## Real-World Use Case
-
-Imagine you are building a chat application. You can use the event-based
-approach to handle new messages. When a user sends a message, an event is
-emitted. Listeners can then pick up this event and broadcast the message to
-other users, save it to a database, or even log it for moderation.
-
-```typescript
-import { EventEmitter } from 'events';
-
-interface Message {
-  user: string;
-  content: string;
-}
-
-class ChatEmitter extends EventEmitter {
-  sendMessage(message: Message): void {
-    this.emit('newMessage', message);
+class Chat extends EventEmitter {
+  send(user, text) {
+    if (!text) {
+      this.emit('error', new Error('Empty message'));
+      return;
+    }
+    this.emit('message', { user, text });
   }
 }
 
-const chatEmitter = new ChatEmitter();
+const chat = new Chat();
 
-chatEmitter.on('newMessage', (message: Message) => {
-  console.log(`${message.user} says: ${message.content}`);
-  // Additional logic to handle the message
-});
+chat.on('message', ({ user, text }) => console.log(`${user}: ${text}`));
+chat.on('error', (err) => console.error('Chat error:', err.message));
 
-chatEmitter.sendMessage({ user: 'Alice', content: 'Hello, World!' });
-chatEmitter.sendMessage({ user: 'Bob', content: 'Hi, Alice!' });
+console.log('before');
+chat.send('Ada', 'Hello'); // the listener runs right here, synchronously
+console.log('after');
+chat.send('Ada', ''); // without the 'error' listener this line would throw
+
+setTimeout(() => chat.emit('ready'), 10);
+await once(chat, 'ready');
+console.log('ready');
+
+// before
+// Ada: Hello
+// after
+// Chat error: Empty message
+// ready
 ```
 
-1. We define an `interface Message` to type our message objects.
-2. We create a `class ChatEmitter` that extends `EventEmitter` and includes a
-   method `sendMessage` to emit `newMessage` events.
-3. We set up a listener for the `newMessage` event, which logs the message to
-   the console and could include additional logic like broadcasting the message
-   or saving it to a database.
-4. We emit a couple of `newMessage` events to demonstrate the functionality.
+## Follow-up Questions
+
+- Are listeners called asynchronously? No, `emit` calls them one by one before
+  it returns. Use `setImmediate` or `queueMicrotask` inside a listener to defer
+  work.
+- What happens if a listener throws? The exception propagates out of `emit`, and
+  the remaining listeners are not called.
+- How do you remove a listener added with an arrow function? Keep a reference to
+  the function, or pass `{ signal }` from an `AbortController` to `events.on` /
+  `addEventListener`.
+
+## Common Mistakes
+
+- "Events are processed asynchronously." `emit` is synchronous.
+- Not listening for `'error'`: one failed connection crashes the process.
+- Adding listeners inside a request handler without removing them: memory leak
+  and `MaxListenersExceededWarning`.
+- `off(name, () => …)` with a new function: it removes nothing, the reference
+  must be the same.
+
+## See Also
+
+- [Stream Module](./stream.md)
+- [Error Handling in Node.js](../errors.md)
+- [Event Loop in Node.js](../event-loop.md)

@@ -1,93 +1,123 @@
 ---
 sidebar_position: 6
+description:
+  Using all CPU cores with cluster, how workers share a port, cluster vs
+  worker_threads vs child_process
 ---
 
 # Cluster Module
 
-The cluster module is a core Node.js module that allows you to create child
-processes (workers) that share the same server port. It is especially useful for
-taking advantage of multi-core systems to handle a high number of requests more
-efficiently.
+One Node.js process runs JavaScript on one thread, so it uses one CPU core.
+`node:cluster` starts several copies of the application: the **primary** process
+forks **worker** processes (usually one per core), and all workers **share the
+same server port**. By default the primary accepts connections and hands them to
+workers in turn (round-robin; on Windows the OS distributes them). Workers are
+separate processes with separate memory, so shared state (sessions, caches) must
+live outside them, for example in Redis. For CPU-heavy tasks inside one process,
+use **`worker_threads`** instead.
 
-:::info[Why Use the Cluster Module?]
+Applies to: Node.js 24 LTS.
 
-Node.js is single-threaded, meaning it runs on a single core by default. This
-can be a limitation when you want to scale your application to handle more
-traffic. The `cluster` module helps you distribute the load across multiple
-cores, making your application more efficient and scalable.
+## Details
 
-:::
+- `cluster.isPrimary` tells whether the code runs in the primary process.
+  `isMaster` is a deprecated alias from before Node.js 16.
+- `cluster.fork()` starts a worker with `child_process.fork()`: the same script
+  runs again, now with `isPrimary === false`.
+- The primary and workers talk over IPC: `worker.send()` and
+  `process.on('message')`.
+- If a worker crashes, the others keep serving. The primary should listen for
+  `'exit'` and fork a replacement.
+- In production, the same job is often done by **PM2**
+  (`pm2 start app.js -i max`) or by running one process per container and
+  scaling containers (Kubernetes, ECS); then `cluster` is not needed.
 
-The cluster module works with two kinds of processes:
+### Cluster vs Worker Threads
 
-1. Primary Process: This is the main process that spawns worker processes.
-2. Worker Processes: These are the child processes that handle the actual
-   workload.
+|         | `cluster` / `child_process`                    | `worker_threads`                                                                       |
+| ------- | ---------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Unit    | A separate **process**                         | A **thread** inside the same process                                                   |
+| Memory  | Separate; messages are copied over IPC         | Separate V8 heap, but `SharedArrayBuffer` can be shared and `ArrayBuffer`s transferred |
+| Cost    | Tens of MB and slower start per worker         | Lighter, still a full V8 instance per thread                                           |
+| A crash | Kills one worker                               | An uncaught error ends the thread and emits `'error'` on the `Worker`                  |
+| Use for | Scaling an HTTP server across cores, isolation | CPU-heavy work: image processing, parsing, hashing                                     |
 
-## Creating the Clustered Server
+Neither helps with I/O-bound work: a single process already handles thousands of
+concurrent connections.
 
-Workers can share any TCP connection. Here is an example of how to create a
-basic HTTP server.
+## Example
 
 ```javascript
-import cluster from 'cluster';
-import { cpus } from 'os';
-import http from 'http';
+// server.mjs
+import cluster from 'node:cluster';
+import http from 'node:http';
+import { availableParallelism } from 'node:os';
 
-const numCPUs = cpus().length;
-
-// Initialize Primary Process
-const initPrimaryProcess = () => {
+if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running`);
 
-  // Fork workers
-  for (let i = 0; i < numCPUs; i++) {
+  for (let i = 0; i < availableParallelism(); i++) {
     cluster.fork();
   }
 
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died`);
+  cluster.on('exit', (worker, code) => {
+    console.log(`Worker ${worker.process.pid} exited with code ${code}`);
+    cluster.fork(); // replace it
   });
-};
+} else {
+  http
+    .createServer((req, res) => res.end(`Handled by ${process.pid}\n`))
+    .listen(8000); // every worker listens on the same port
 
-// Initialize Worker Process
-const initWorkerProcess = () => {
-  const server = http.createServer((req, res) => {
-    res.writeHead(200);
-    res.end('Hello, world!\n');
-  });
-
-  server.listen(8000, () => {
-    console.log(`Worker ${process.pid} started and listening on port 8000`);
-  });
-};
-
-// Main function to start the cluster
-const startCluster = () => {
-  if (cluster.isPrimary) {
-    initPrimaryProcess();
-  } else {
-    initWorkerProcess();
-  }
-};
-
-// Start the cluster
-startCluster();
+  console.log(`Worker ${process.pid} started`);
+}
 ```
 
-1. Primary Process
+CPU work in a worker thread:
 
-   - The process checks `cluster.isPrimary` to determine whether it is the
-     primary process.
-   - It then forks (creates) a number of worker processes equal to the number of
-     CPU cores.
+```javascript
+// hash.mjs
+import {
+  Worker,
+  isMainThread,
+  parentPort,
+  workerData,
+} from 'node:worker_threads';
+import { pbkdf2Sync } from 'node:crypto';
 
-2. Worker Processes
+if (isMainThread) {
+  const worker = new Worker(new URL(import.meta.url), { workerData: 'secret' });
+  worker.on('message', (hash) => console.log('Hash:', hash));
+  worker.on('error', (err) => console.error(err));
+} else {
+  // Blocks only this thread; the main event loop stays responsive
+  const hash = pbkdf2Sync(workerData, 'salt', 500_000, 32, 'sha256');
+  parentPort.postMessage(hash.toString('hex'));
+}
+```
 
-   - Each worker process runs the code inside the else block.
-   - Each worker creates an HTTP server that listens on port 8000.
+## Follow-up Questions
 
-3. Inter-process Communication
+- How do workers share one port? The primary owns the listening socket and
+  passes connections to workers; workers do not bind the port themselves.
+- Where do you keep sessions with several workers? Outside the process: Redis, a
+  database, or stateless JWTs. A worker's memory is not visible to others.
+- Should every Node.js app use `cluster`? Not when it runs in containers that
+  are scaled horizontally; one process per container is simpler.
+- Why not create a new worker thread per request? Starting a thread is costly;
+  use a pool (for example Piscina) and only for CPU-heavy tasks.
 
-   The primary and worker processes can communicate with each other using the
-   cluster module's messaging API, though it's not shown in this basic example.
+## Common Mistakes
+
+- Using `cluster.isMaster`: deprecated, use `isPrimary`.
+- Keeping in-memory state (sessions, rate limits, WebSocket rooms) and expecting
+  every worker to see it.
+- Using `worker_threads` for database or HTTP calls: they are already
+  non-blocking.
+- Forking more workers than cores: they compete for CPU and only add memory.
+
+## See Also
+
+- [Child Process Module](./child-process.md)
+- [What Is Node.js](../overview.md)
+- [Event Loop in Node.js](../event-loop.md)
