@@ -45,7 +45,7 @@ export const react: Category = {
   id: 'react',
   label: 'React',
   navbarLabel: 'React',
-  description: 'An overview of React and Redux',
+  description: 'Components, hooks, rendering, performance and ecosystem',
   group: 'main',
 };
 
