@@ -17,15 +17,17 @@ There are three types of relationships between tables:
 
 ## One-to-One (1:1) Relationship
 
-It occurs when a single row in Table A is linked to a single row in Table B, and
-vice versa. This type of relationship is not very common but can be useful for
-dividing a table with many columns or sensitive data.
+A one-to-one relationship occurs when a single row in Table A is linked to a
+single row in Table B, and vice versa. This type of relationship is not very
+common but is useful for splitting a table with many columns or separating
+sensitive data.
 
-Organization: Use a primary key in one table and reference it as a foreign key
+Implementation: Use a primary key in one table and reference it as a foreign key
 in the other table.
 
-Suppose you have a Users table and a UserDetails table. Each user has one
-corresponding detail record.
+Suppose you have a `Users` table and a `UserDetails` table. Each user has one
+corresponding detail record. The `UNIQUE` constraint on `UserDetails.UserID`
+ensures that a user cannot have more than one detail record.
 
 ```sql
 CREATE TABLE Users (
@@ -35,7 +37,7 @@ CREATE TABLE Users (
 
 CREATE TABLE UserDetails (
     UserDetailID INT PRIMARY KEY,
-    UserID INT,
+    UserID INT UNIQUE,
     Address VARCHAR(255),
     PhoneNumber VARCHAR(15),
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
@@ -48,10 +50,10 @@ A one-to-many relationship is when a single row in _Table A_ can be related to
 one or more rows in _Table B_, but each row in _Table B_ is related to only one
 row in _Table A_. This is the most common type of relationship.
 
-Organization: Use a primary key in the parent table (_Table A_) and a foreign
+Implementation: Use a primary key in the parent table (_Table A_) and a foreign
 key in the child table (_Table B_).
 
-Consider an Authors table and a Books table. One author can write multiple
+Consider an `Authors` table and a `Books` table. One author can write multiple
 books.
 
 ```sql
@@ -68,14 +70,14 @@ CREATE TABLE Books (
 );
 ```
 
-## One-to-Many (M:M) Relationship
+## Many-to-Many (M:M) Relationship
 
 A many-to-many relationship occurs when multiple rows in Table A can be related
 to multiple rows in Table B. This requires a junction table (or associative
 table) to manage the relationships.
 
-Organization: Create a junction table with foreign keys referencing the primary
-keys of the two tables to manage the relationships.
+Implementation: Create a junction table with foreign keys referencing the
+primary keys of the two tables to manage the relationships.
 
 ```sql
 CREATE TABLE Students (

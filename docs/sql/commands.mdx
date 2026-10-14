@@ -8,11 +8,11 @@ import TabItem from '@theme/TabItem';
 # SQL Commands
 
 In SQL, commands are grouped into four main categories based on their
-functionality: **DML**, **DCL**, **TCL**, and **DDL**.
+functionality: **DML**, **DDL**, **DCL**, and **TCL**.
 
 ## Data Manipulation Language (DML)
 
-These commands are used for managing data within schema objects.
+These commands are used to manage data within schema objects.
 
 :::info
 
@@ -48,7 +48,7 @@ VALUES (value1, value2, value3, ...);
 
 </TabItem>
 
-<TabItem value="Example" label="Example" default>
+<TabItem value="Example" label="Example">
 
 ```sql
 -- Assuming a table 'users' with columns id, name, and email
@@ -75,7 +75,7 @@ WHERE condition;
 
   </TabItem>
 
-  <TabItem value="Example" label="Example" default>
+  <TabItem value="Example" label="Example">
 
 ```sql
 -- Update the email of the user with id 1
@@ -101,7 +101,7 @@ DELETE FROM table_name WHERE condition;
 
   </TabItem>
 
-  <TabItem value="Example" label="Example" default>
+  <TabItem value="Example" label="Example">
 
 ```sql
 -- Delete the user with id 1
@@ -128,7 +128,7 @@ These commands are used to define and modify the database structure.
 
 These commands are used to control access to data within the database.
 
-- `GRANT` Gives user's access privileges to the database.
+- `GRANT` Gives users access privileges to the database.
 
 - `REVOKE` Takes back permissions granted to a user.
 

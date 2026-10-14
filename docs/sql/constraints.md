@@ -34,8 +34,8 @@ CREATE TABLE employees (
 
 ## `PRIMARY KEY`
 
-A combination of NOT NULL and UNIQUE. It uniquely identifies each row in a
-table. A table can have `only one` primary key.
+A combination of `NOT NULL` and `UNIQUE`. It uniquely identifies each row in a
+table. A table can have **only one** primary key.
 
 ```sql
 CREATE TABLE employees (
@@ -47,8 +47,8 @@ CREATE TABLE employees (
 
 ## `FOREIGN KEY`
 
-Ensures the referential integrity of the data in one table to match values in
-another table.
+Ensures referential integrity: values in one table must match values in another
+table.
 
 ```sql
 CREATE TABLE departments (

@@ -5,17 +5,17 @@ sidebar_position: 5
 # Child Process Module
 
 The `child_process` module allows you to spawn new processes and communicate
-with them. It provides four different methods for creating child processes:
+with them. It provides four different methods for creating child processes.
 
 ## Methods for Creating Child Processes
 
-1. `exec` method is useful for running shell commands.
+1. `exec` method runs shell commands.
 
-   This method runs a command in a shell and buffers the output. It's suitable
+   This method runs a command in a shell and buffers the output. It is suitable
    for short-lived processes where you need the entire output once the process
    completes.
 
-   ```typescript
+   ```javascript
    import { exec } from 'child_process';
 
    exec('ls -la', (error, stdout, stderr) => {
@@ -28,12 +28,12 @@ with them. It provides four different methods for creating child processes:
    });
    ```
 
-2. `execFile` method is used to run a file directly.
+2. `execFile` method runs a file directly.
 
    This method is similar to `exec()`, but it directly executes a file without
    using a shell, making it slightly more efficient and secure.
 
-   ```typescript
+   ```javascript
    import { execFile } from 'child_process';
 
    execFile('node', ['--version'], (error, stdout, stderr) => {
@@ -46,13 +46,13 @@ with them. It provides four different methods for creating child processes:
    });
    ```
 
-3. `spawn` method
+3. `spawn` method launches a process and streams its I/O.
 
    This method launches a new process with a given command. It is suitable for
    long-running processes where you need to handle the process's I/O streams
    (stdout, stderr, stdin) in a non-blocking way.
 
-   ```typescript
+   ```javascript
    import { spawn } from 'child_process';
 
    const ls = spawn('ls', ['-la']);
@@ -70,13 +70,13 @@ with them. It provides four different methods for creating child processes:
    });
    ```
 
-4. `fork` method
+4. `fork` method spawns a new Node.js process with an IPC channel.
 
    This method is designed for spawning new Node.js processes. It has built-in
    communication channels (IPC) for sending messages between the parent and
    child processes.
 
-   ```typescript
+   ```javascript
    import { fork } from 'child_process';
 
    const child = fork('./child.ts');

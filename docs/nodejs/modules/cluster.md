@@ -18,27 +18,27 @@ cores, making your application more efficient and scalable.
 
 :::
 
-Here's a basic structure of how the cluster module works:
+The cluster module works with two kinds of processes:
 
-1. Master Process: This is the main process that spawns worker processes.
+1. Primary Process: This is the main process that spawns worker processes.
 2. Worker Processes: These are the child processes that handle the actual
    workload.
 
 ## Creating the Clustered Server
 
-Workers can share any TCP connection. Here's an example how to create a basic
-HTTP server.
+Workers can share any TCP connection. Here is an example of how to create a
+basic HTTP server.
 
-```typescript
+```javascript
 import cluster from 'cluster';
 import { cpus } from 'os';
 import http from 'http';
 
 const numCPUs = cpus().length;
 
-// Initialize Master Process
-const initMasterProcess = () => {
-  console.log(`Master ${process.pid} is running`);
+// Initialize Primary Process
+const initPrimaryProcess = () => {
+  console.log(`Primary ${process.pid} is running`);
 
   // Fork workers
   for (let i = 0; i < numCPUs; i++) {
@@ -64,8 +64,8 @@ const initWorkerProcess = () => {
 
 // Main function to start the cluster
 const startCluster = () => {
-  if (cluster.isMaster) {
-    initMasterProcess();
+  if (cluster.isPrimary) {
+    initPrimaryProcess();
   } else {
     initWorkerProcess();
   }
@@ -75,9 +75,10 @@ const startCluster = () => {
 startCluster();
 ```
 
-1. Master Process
+1. Primary Process
 
-   - The master process checks if it is the primary process.
+   - The process checks `cluster.isPrimary` to determine whether it is the
+     primary process.
    - It then forks (creates) a number of worker processes equal to the number of
      CPU cores.
 
@@ -88,5 +89,5 @@ startCluster();
 
 3. Inter-process Communication
 
-   The master and worker processes can communicate with each other using the
+   The primary and worker processes can communicate with each other using the
    cluster module's messaging API, though it's not shown in this basic example.

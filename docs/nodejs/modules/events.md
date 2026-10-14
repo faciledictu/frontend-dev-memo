@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 ---
 
 # Events Module
@@ -15,7 +15,7 @@ listens for and responds to events as they occur.
 
 1. Synchronous Dispatch: `emit()` calls all listeners synchronously, in the
    order they were registered. Asynchrony comes from the place where `emit()` is
-   called (e.g. an I/O callback), not from the emitter itself.
+   called (for example, an I/O callback), not from the emitter itself.
 2. Event Emitters and Listeners: An event emitter generates and dispatches
    events, while listeners (or event handlers) respond to these events.
 3. Decoupling: This approach decouples the event producer (emitter) from the
@@ -28,17 +28,17 @@ listens for and responds to events as they occur.
 
 The events module provides a way to emit and handle named events.
 
-1. Creating an Event Emitter instance
+1. Create an `EventEmitter` instance
 
-   ```typescript
+   ```javascript
    import { EventEmitter } from 'events';
 
    const myEmitter = new EventEmitter();
    ```
 
-2. Setting up an event listener
+2. Set up an event listener
 
-   ```typescript
+   ```javascript
    myEmitter.on('greet', () => {
      console.log('Hello! Someone greeted!');
    });
@@ -46,19 +46,19 @@ The events module provides a way to emit and handle named events.
 
 3. Trigger (emit) the event
 
-   ```typescript
+   ```javascript
    myEmitter.emit('greet');
    ```
 
-   When we emit the greet event, the listener is triggered, and the message
+   When the `greet` event is emitted, the listener is triggered, and the message
    _"Hello! Someone greeted!"_ is logged to the console.
 
 ## Real-World Use Case
 
-Imagine you're building a chat application. You can use the event-based approach
-to handle new messages. When a user sends a message, an event is emitted.
-Listeners can then pick up this event and broadcast the message to other users,
-save it to a database, or even log it for moderation.
+Imagine you are building a chat application. You can use the event-based
+approach to handle new messages. When a user sends a message, an event is
+emitted. Listeners can then pick up this event and broadcast the message to
+other users, save it to a database, or even log it for moderation.
 
 ```typescript
 import { EventEmitter } from 'events';
@@ -85,7 +85,7 @@ chatEmitter.sendMessage({ user: 'Alice', content: 'Hello, World!' });
 chatEmitter.sendMessage({ user: 'Bob', content: 'Hi, Alice!' });
 ```
 
-1. We define a `interface Message` to type our message objects.
+1. We define an `interface Message` to type our message objects.
 2. We create a `class ChatEmitter` that extends `EventEmitter` and includes a
    method `sendMessage` to emit `newMessage` events.
 3. We set up a listener for the `newMessage` event, which logs the message to

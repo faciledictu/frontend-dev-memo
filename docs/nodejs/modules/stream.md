@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 4
 ---
 
 # Stream Module
@@ -10,7 +10,7 @@ without having to load the entire dataset into memory.
 
 :::tip
 
-Streams particularly useful for handling large files or data sources, like
+Streams are particularly useful for handling large files or data sources, like
 reading or writing files, handling HTTP requests and responses, or processing
 data from a database.
 
@@ -24,7 +24,8 @@ data from a database.
 stream.
 
 **Events.** Streams are instances of EventEmitter and emit several events at
-different stages of their operation, like data, end, error, and finish.
+different stages of their operation, such as `data`, `end`, `error`, and
+`finish`.
 
 :::
 
@@ -32,7 +33,7 @@ Streams are implemented in the `stream` module, which is a core Node.js module.
 
 ## Types of Streams
 
-There are four main types of streams in Node.js
+There are four main types of streams in Node.js:
 
 1. `stream.Readable`: Used for reading data.
 
@@ -45,11 +46,11 @@ There are four main types of streams in Node.js
 
 ## Event Emitters
 
-Streams are instances of `EventEmitter` so you can use methods such as on, once
-etc. They emit various events.
+Streams are instances of `EventEmitter` so you can use methods such as `on()`
+and `once()`. They emit various events.
 
 <details>
-<summary>Events Types and Examples</summary>
+<summary>Event Types and Examples</summary>
 
 ### Readable Stream Events
 
@@ -64,26 +65,26 @@ etc. They emit various events.
 
 ### Writable Stream Events
 
-- `drain`: Emitted when the writable stream’s internal buffer is emptied,
+- `drain`: Emitted when the writable stream's internal buffer is emptied,
   indicating that more data can be written.
-- `finish`: Emitted after the end method has been called and all data has been
-  flushed to the underlying system.
-- `pipe`: Emitted when the pipe method is called on a readable stream, adding
-  this writable stream to its set of destinations.
-- `unpipe`: Emitted when the unpipe method is called on a readable stream,
+- `finish`: Emitted after the `end()` method has been called and all data has
+  been flushed to the underlying system.
+- `pipe`: Emitted when the `pipe()` method is called on a readable stream,
+  adding this writable stream to its set of destinations.
+- `unpipe`: Emitted when the `unpipe()` method is called on a readable stream,
   removing this writable stream from its set of destinations.
 - `error`: Emitted if an error occurs while writing data.
 - `close`: Emitted when the stream and any of its underlying resources have been
   closed.
 
-### Duplex and Transform streams
+### Duplex and Transform Streams
 
 Inherit events from both Readable and Writable streams.
 
-```typescript
+```javascript
 import fs from 'fs';
 
-// Creating a readable stream
+// Create a readable stream
 const readableStream = fs.createReadStream('input.txt');
 
 // Attaching event listeners
@@ -103,7 +104,7 @@ readableStream.on('close', () => {
   console.log('Stream has been closed.');
 });
 
-// Creating a writable stream
+// Create a writable stream
 const writableStream = fs.createWriteStream('output.txt');
 
 // Attaching event listeners
@@ -156,9 +157,9 @@ writing to another.
 
 ## Backpressure
 
-Streams handle backpressure, which occurs when the writable stream cannot handle
-the amount of data being written to it as quickly as it is being produced by the
-readable stream.
+Backpressure occurs when the writable stream cannot consume data as fast as the
+readable stream produces it. Streams handle it by pausing the source until the
+destination catches up.
 
 Node.js streams manage this using the `highWaterMark` option and the `drain`
 event.
@@ -169,7 +170,7 @@ event.
 
 Streams can be used to read from and write to files efficiently.
 
-```typescript
+```javascript
 import { createReadStream, createWriteStream } from 'fs';
 
 // Create readable and writable streams
@@ -184,7 +185,7 @@ readableStream.pipe(writableStream);
 
 Streams are useful for handling large HTTP requests or responses.
 
-```typescript
+```javascript
 import { createServer } from 'http';
 import { createReadStream } from 'fs';
 
