@@ -42,10 +42,12 @@ Applies to: React Native 0.87, Expo SDK 57.
 
 ### Expo vs Bare React Native
 
-**Expo** is the framework the React Native docs recommend for new apps. It adds
-a set of native modules (`expo-camera`, `expo-notifications`, …), file-based
-routing (Expo Router) and cloud services (**EAS Build**, **EAS Submit**, **EAS
-Update**).
+**Expo** is the open-source framework the React Native docs recommend for new
+apps. It adds a set of native modules (`expo-camera`, `expo-notifications`, …),
+file-based routing (Expo Router), the dev tooling and prebuild. **EAS** (Build,
+Submit, Update) is a separate, optional cloud service by the same company (free
+tier and paid plans): many teams use Expo without it and build the generated
+native projects with Xcode, Gradle, fastlane or their own CI.
 
 | Approach             | What it means                                                                                                                 |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------- |

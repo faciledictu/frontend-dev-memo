@@ -13,8 +13,9 @@ Console**. iOS signs with a **distribution certificate** and a **provisioning
 profile**; Android signs with an **upload key** from a keystore, and Google
 re-signs the app with the **app signing key** it keeps (Play App Signing).
 Builds go to testers first (**TestFlight**, Play **testing tracks**), then to
-review and a gradual rollout. In Expo projects, `eas build` and `eas submit` do
-all of this in the cloud.
+review and a gradual rollout. An Expo project is released the same way after
+`npx expo prebuild` generates `ios/` and `android/`; EAS Build and EAS Submit
+can do it in the cloud instead, but they are optional.
 
 ## Details
 

@@ -12,9 +12,10 @@ a store release: the app downloads the new bundle from an update server and runs
 it, usually **on the next launch**. Native code (new native modules,
 permissions, SDK upgrades) cannot change this way and needs a store build. An
 update must target builds with compatible native code, which is what the
-**runtime version** is for. The standard tool is **EAS Update** (`expo-updates`,
-works in bare apps too); Microsoft's **CodePush** was shut down with App Center
-on March 31, 2025.
+**runtime version** is for. The standard client is **`expo-updates`** (works in
+bare apps too); updates are served by **EAS Update** (Expo's cloud service) or
+by your own server implementing the open Expo Updates protocol. Microsoft's
+**CodePush** was shut down with App Center on March 31, 2025.
 
 Applies to: Expo SDK 57.
 
@@ -42,8 +43,8 @@ Applies to: Expo SDK 57.
   `react-native-code-push` SDK was archived.
 - The SDK never supported the New Architecture, so it cannot be used with React
   Native 0.82+.
-- Alternatives: EAS Update, a self-hosted server for `expo-updates` (it uses an
-  open protocol), or community forks.
+- Alternatives: `expo-updates` with EAS Update or a self-hosted server, or
+  community forks of CodePush.
 
 ### Store Rules
 
