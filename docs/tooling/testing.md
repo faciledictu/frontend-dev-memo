@@ -41,8 +41,7 @@ Applies to: Vitest 5, Jest 30, Playwright 1.64.
 | Playwright | E2E in Chromium, Firefox and WebKit, auto-waiting, parallel runs, traces   |
 | Cypress    | E2E running inside the browser, interactive runner with time travel        |
 
-Enzyme, which tested React component internals, has no official adapter for
-React 17 and later. Component testing is covered in
+Component testing (Testing Library, queries, `userEvent`) is covered in
 [Testing React Components](../react/ecosystem/testing.md).
 
 ### Test Doubles
@@ -60,11 +59,12 @@ under test: the more is mocked, the less the test proves.
 ### Coverage
 
 - Shows which lines, branches and functions ran during the tests
-  (`vitest --coverage`, `jest --coverage`).
+  (`vitest --coverage` with the `@vitest/coverage-v8` provider installed,
+  `jest --coverage`).
 - It proves that code **ran**, not that the result was **checked**: a test
   without assertions still gives coverage.
-- 100 % is not a goal: the last percent costs the most and pushes toward testing
-  implementation details. Teams set a threshold (often 70–80 %) to catch drops.
+- 100% is not a goal: the last percent costs the most and pushes toward testing
+  implementation details. Teams set a threshold (often 70–80%) to catch drops.
 
 ### Properties of a Good Unit Test (F.I.R.S.T.)
 
@@ -93,14 +93,18 @@ under test: the more is mocked, the less the test proves.
 
 ### React Native
 
-| Layer     | Tools                                                                        |
-| --------- | ---------------------------------------------------------------------------- |
-| Static    | TypeScript, ESLint (both in the default template)                            |
-| Unit      | Jest (in the default template, `jest-expo` preset in Expo)                   |
-| Component | React Native Testing Library: renders without a device, user-centric queries |
-| E2E       | Maestro (YAML flows) or Detox (gray-box, JS tests) on emulators or devices   |
+| Layer     | Tools                                                                          |
+| --------- | ------------------------------------------------------------------------------ |
+| Static    | TypeScript, ESLint (both in the default template)                              |
+| Unit      | Jest (in the React Native template; added with the `jest-expo` preset in Expo) |
+| Component | React Native Testing Library: renders without a device, user-centric queries   |
+| E2E       | Maestro (YAML flows) or Detox (gray-box, JS tests) on emulators or devices     |
 
 ## Example
+
+A unit test can replace `fetch` with a spy; for integration tests, MSW is the
+better choice: it intercepts real requests, so the code under test stays
+unchanged.
 
 ```javascript
 import { afterEach, expect, test, vi } from 'vitest';
@@ -142,9 +146,10 @@ Feature: User Login
 
 ## Follow-up Questions
 
-- Pyramid or trophy? The trophy (Kent C. Dodds) argues that integration tests
-  give the best confidence for the cost in UI code; the pyramid comes from
-  backend code, where units are larger and cheaper to isolate.
+- Pyramid or trophy? The pyramid (Mike Cohn, 2009) puts many fast unit tests at
+  the bottom and few slow, brittle UI tests at the top. The trophy (Kent C.
+  Dodds) argues that in UI code integration tests give the best confidence for
+  the cost, because units alone rarely break the way users notice.
 - Why are E2E tests flaky? Real network, timing, shared test data. Mitigated by
   auto-waiting locators instead of sleeps, isolated data and retries in CI.
 - How to test code with `setTimeout` or dates? With fake timers:

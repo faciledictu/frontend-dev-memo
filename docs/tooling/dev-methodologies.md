@@ -63,7 +63,7 @@ Per the Scrum Guide (2020 edition):
 | ----------- | --------------------------------------- | -------------------------------------------- |
 | Cadence     | Fixed sprints                           | Continuous flow                              |
 | Roles       | Product Owner, Scrum Master, Developers | Not prescribed                               |
-| Changes     | Not into a running sprint (as a rule)   | Any time, by reordering the queue            |
+| Changes     | None that endanger the Sprint Goal      | Any time, by reordering the queue            |
 | Limits work | By sprint capacity                      | By WIP limits per column                     |
 | Fits        | Product development with planning       | Support, operations, a stream of small tasks |
 

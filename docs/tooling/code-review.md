@@ -44,7 +44,7 @@ correctness, design and readability. Good reviews are **small**, **fast** and
 - Praise good solutions too.
 - Review quickly: a pull request waiting for days blocks the author.
 
-### Receiving Feedback
+### As the Author
 
 - Keep pull requests small (a few hundred lines): large ones get shallow
   reviews.

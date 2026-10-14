@@ -16,7 +16,8 @@ release, and the release to production is a manual decision (a button).
 **automatically**, with no human step.
 
 Applies to: GitHub Actions (`actions/checkout@v7`, `actions/setup-node@v7`,
-`pnpm/action-setup@v6`), Node.js 24.
+`pnpm/action-setup@v6`, `actions/upload-artifact@v7`,
+`actions/download-artifact@v8`), Node.js 24.
 
 ## Details
 
@@ -81,6 +82,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -93,6 +97,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      - run: pnpm typecheck # tsc --noEmit
       - run: pnpm test
       - run: pnpm build
       - uses: actions/upload-artifact@v7
@@ -110,7 +115,7 @@ jobs:
         with:
           name: dist
           path: dist
-      - run: npx netlify-cli deploy --prod --dir dist
+      - run: npx netlify-cli deploy --prod --no-build --dir dist
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
@@ -147,7 +152,7 @@ build:
 
 deploy:
   stage: deploy
-  script: npx netlify-cli deploy --prod --dir dist
+  script: npx netlify-cli deploy --prod --no-build --dir dist
   environment: production
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
