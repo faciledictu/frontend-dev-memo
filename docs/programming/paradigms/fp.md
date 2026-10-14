@@ -123,9 +123,9 @@ expressed with **recursion** or with higher-order functions (`map`, `reduce`).
 Each recursive call takes a frame on the call stack, so the depth is limited. A
 **tail call** is a call that is the very last action of a function
 (`return f(x)`); with **proper tail calls** the engine reuses the frame, and the
-depth is unlimited. The ECMAScript spec requires them, but only Safari
-implements them, so deep recursion in Chrome, Node.js and Firefox overflows the
-stack (`RangeError: Maximum call stack size exceeded` in V8,
+depth is unlimited. The ECMAScript spec requires them in strict mode, but only
+Safari implements them, so deep recursion in Chrome, Node.js and Firefox
+overflows the stack (`RangeError: Maximum call stack size exceeded` in V8,
 `InternalError: too much recursion` in Firefox). Use `reduce` or a loop for long
 sequences.
 
@@ -166,9 +166,10 @@ appear in everyday code (`Array`, `Promise`, optional values).
 - A **functor** is, intuitively, a container with a `map` that applies a
   function to the value(s) inside and returns a container of the same kind.
   Strictly, it is any type with a `map` that obeys two laws, so it need not be a
-  container (a `Promise` or a function can be mapped too). Laws:
-  `x.map((a) => a)` ≡ `x` (identity) and `x.map(f).map(g)` ≡
-  `x.map((a) => g(f(a)))` (composition). `Array` is a functor.
+  container: a function can be mapped by composition,
+  `map(g, f) = (x) => g(f(x))`. Laws: `x.map((a) => a)` ≡ `x` (identity) and
+  `x.map(f).map(g)` ≡ `x.map((a) => g(f(a)))` (composition). `Array` is a
+  functor.
 - A **monad** is a functor with two more operations: `of` puts a plain value
   into the container, and `flatMap` (also `chain`, `bind`) applies a function
   that itself **returns a container**, without nesting the result
@@ -286,9 +287,11 @@ console.log(city(2)); // Maybe { value: undefined }
   each time.
 - How to update nested state immutably? Copy each level on the path:
   `{ ...state, user: { ...state.user, name } }`, or use Immer.
-- Pure vs idempotent? Idempotent means that repeating an operation gives the
-  same result as doing it once (`DELETE /users/1`, `Math.abs(Math.abs(x))`). An
-  idempotent operation can still have side effects; a pure function has none.
+- Pure vs idempotent? Idempotent means that repeating an operation has the same
+  effect as doing it once: a second `DELETE /users/1` leaves the server in the
+  same state (even if it answers 404); in math, `Math.abs(Math.abs(x))` is
+  `Math.abs(x)`. An idempotent operation can still have side effects; a pure
+  function has none.
 - How to write a memoize helper? Cache results by argument: it is only correct
   for pure functions.
 

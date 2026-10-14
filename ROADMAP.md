@@ -160,7 +160,9 @@
 - [x] 5. Next.js (Next.js 16.4; Pages Router помечен как legacy).
 - [x] 6. React Native (RN 0.87, Expo SDK 57; страницы про жесты слиты в
       `animations/gestures`).
-- [ ] 7. `programming`, `tooling`, `git`.
+- [x] 7. `programming`, `tooling`, `git` (npm 12, pnpm 12, Git 2.56;
+      `programming` — теоретический раздел: строгие определения с объяснением
+      для новичка, ограничение объёма не действует).
 - [ ] 8. `nodejs`, `sql` — только ошибки.
 
 Справочные страницы (`javascript/arrays`, `javascript/objects`) оформлены

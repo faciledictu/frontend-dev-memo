@@ -37,11 +37,11 @@ Code is read far more often than it is written, so the goal is code that is
 
 ### DRY, KISS, YAGNI
 
-| Principle | Origin                                             | Means                                                                                                                                 | Overdone, it becomes                                   |
-| --------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| DRY       | Hunt and Thomas, "The Pragmatic Programmer" (1999) | "Every piece of knowledge must have a single, unambiguous, authoritative representation" — about knowledge, not about identical lines | A shared abstraction over code that only looks similar |
-| KISS      | Attributed to aircraft engineer Kelly Johnson      | The simplest solution that solves the problem                                                                                         | Rarely harmful                                         |
-| YAGNI     | Extreme Programming (XP), late 1990s               | Build only what is needed now                                                                                                         | Ignoring requirements that are already known           |
+| Principle | Origin                                             | Means                                                                                                                                                 | Overdone, it becomes                                   |
+| --------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| DRY       | Hunt and Thomas, "The Pragmatic Programmer" (1999) | "Every piece of knowledge must have a single, unambiguous, authoritative representation within a system" — about knowledge, not about identical lines | A shared abstraction over code that only looks similar |
+| KISS      | Attributed to aircraft engineer Kelly Johnson      | The simplest solution that solves the problem                                                                                                         | Rarely harmful                                         |
+| YAGNI     | Extreme Programming (XP), late 1990s               | Build only what is needed now                                                                                                                         | Ignoring requirements that are already known           |
 
 **When DRY hurts.** Two pieces of code that look the same but change for
 different reasons are not duplication. Merging them into one function leads to

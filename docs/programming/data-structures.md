@@ -200,7 +200,8 @@ Average case unless stated.
 | TimSort        | O(_n_)         | O(_n_ log _n_) | O(_n_ log _n_) | O(_n_)       | Yes    | Find sorted runs, extend short ones with insertion sort, merge runs; V8 since 2018 |
 
 \* Quicksort's stack is O(log _n_) on average, or always when it recurses into
-the smaller part first; otherwise O(_n_) in the worst case.
+the smaller part and loops over the larger one; otherwise O(_n_) in the worst
+case.
 
 - A **stable** sort keeps equal elements in their original order: sort users by
   name, then stably by age — users of the same age stay sorted by name.
@@ -289,8 +290,8 @@ function shortestPath(graph, start, goal) {
     const node = queue[head]; // a head index instead of shift(): O(1)
     if (node === goal) {
       const path = [];
-      for (let v = goal; v !== null; v = parent.get(v)) path.unshift(v);
-      return path;
+      for (let v = goal; v !== null; v = parent.get(v)) path.push(v);
+      return path.reverse();
     }
 
     for (const next of graph[node]) {
