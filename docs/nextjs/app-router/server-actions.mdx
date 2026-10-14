@@ -1,208 +1,144 @@
 ---
 sidebar_position: 5
+description:
+  "'use server', forms and useActionState, validation, revalidation, why an
+  action is a public endpoint"
 ---
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 # Server Actions
 
-:::note
+A **Server Action** is an `async` function marked with **`'use server'`** that
+runs on the server but can be called from a component: passed to
+`<form action>`, called from an event handler, or passed as a prop. Next.js
+turns each action into a **POST endpoint** with a generated ID. React 19 calls
+them **Server Functions**; "Server Action" is one used for a mutation. Because
+anyone can call that endpoint, an action must **check authorization and validate
+its input** itself.
 
-Next.js **extends** the native `fetch` Web API primarily through the use of its
-server-side rendering (SSR) capabilities and server-side data fetching
-strategies. It adds caching and revalidating behavior.
+Applies to: Next.js 16, React 19.
 
-React extends `fetch` to memoize fetch requests while rendering a React
-component tree.
+## Details
 
-You can use `fetch` with `async/await` in Server Components, in Route Handlers,
-and in Server Actions.
+### Defining and Calling
 
-:::
+- `'use server'` at the top of a file makes every export of the file an action;
+  this file can be imported from Client Components.
+- `'use server'` at the start of a function body defines an inline action inside
+  a Server Component.
+- Ways to call: `<form action={fn}>` and `<button formAction={fn}>`, event
+  handlers, `useEffect`, or a prop passed to a Client Component.
+- Arguments and the return value must be **serializable**.
+- Actions are called one at a time per client and are meant for mutations, not
+  for fetching data: read data in Server Components.
 
-Server Actions allow you to define asynchronous server functions that can be
-invoked directly from your components without manually creating API routes.
+### Forms
 
-By running Server Actions on the server, you can keep sensitive information
-secure and avoid the complexities of client-server communication.
+- With `<form action={fn}>` the function receives `FormData`. The form works
+  **before JavaScript loads** (progressive enhancement) when it is rendered by a
+  Server Component; in a Client Component the submit waits for hydration.
+- **`useActionState(action, initialState)`** (from `react`) returns
+  `[state, formAction, isPending]`; the action then receives
+  `(prevState, formData)`. Use it to return validation errors.
+- **`useFormStatus()`** (from `react-dom`) gives `pending` in a component
+  rendered inside the `<form>`, such as a submit button.
+- To submit from code, call `formRef.current.requestSubmit()`: it runs
+  validation and the submit handlers like a real submit.
 
-## Server Components
+### After a Mutation
 
-Server Actions can be called directly in Server Components.
+| Task                               | How                                                                     |
+| ---------------------------------- | ----------------------------------------------------------------------- |
+| Show the new data                  | `updateTag(tag)`, `revalidateTag(tag, 'max')` or `revalidatePath(path)` |
+| Go to another page                 | `redirect('/posts/1')`, called outside `try/catch`                      |
+| Return validation or server errors | Return an object and read it with `useActionState`                      |
+| Optimistic UI                      | `useOptimistic`                                                         |
 
-```javascript
-// Server Component
-export default function Page() {
-  // Server Action
-  async function create() {
-    'use server'
+## Example
 
-    // ...
-  }
+<details>
+<summary>An action with authorization, validation and revalidation</summary>
 
-  return (
-    // ...
-  )
-}
-```
-
-## Client Components
-
-To use Server Actions in Client Components, ensure that the Server Action
-function is prefixed with `'use server'` to indicate that it should run on the
-server.
-
-You need to import and call them as you would any asynchronous function.
-
-<Tabs>
-  <TabItem value="app/ui/button.tsx" label="app/ui/button.tsx" default>
-
-```typescript
-import { create } from '@/app/actions'
-
-export function Button() {
-  return (
-    // ...
-  )
-}
-```
-
-  </TabItem>
-
-  <TabItem value="app/actions.ts" label="app/actions.ts">
-
-```typescript
+```typescript title="app/posts/actions.ts"
 'use server';
 
-export async function create() {
-  // ...
-}
-```
+import { z } from 'zod';
+import { updateTag } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { verifySession } from '@/lib/dal';
+import { db } from '@/lib/db';
 
-</TabItem>
-</Tabs>
+const PostSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  body: z.string().max(5000),
+});
 
-Or you can use the Server Action as a prop to pass it to any component.
+export type State = { errors?: Record<string, string[] | undefined> };
 
-```tsx
-export default function Page() {
-  async function create() {
-    'use server';
+export async function createPost(
+  _prev: State,
+  formData: FormData
+): Promise<State> {
+  const { userId } = await verifySession(); // the endpoint is public
 
-    // ...
+  const result = PostSchema.safeParse(Object.fromEntries(formData));
+  if (!result.success) {
+    return { errors: z.flattenError(result.error).fieldErrors };
   }
 
-  return <ClientComponent create={create} />;
+  const post = await db.post.create({
+    data: { ...result.data, authorId: userId },
+  });
+  updateTag('posts');
+  redirect(`/posts/${post.id}`);
 }
 ```
 
-:::warning
+</details>
 
-The arguments and return value of Server Actions must be serializable by React.
-
-:::
-
-Server Actions can be invoked from event handlers (from elements like
-`<button>`), `useEffect`, third-party libraries, and `<form>` submissions.
-
-## Forms
-
-React extends the HTML `<form>` element to allow Server Actions to be invoked
-with the `action` prop.
-
-```tsx
-export default function Page() {
-  async function createInvoice(formData: FormData) {
-    'use server';
-
-    const rawFormData = {
-      customerId: formData.get('customerId'),
-      amount: formData.get('amount'),
-      status: formData.get('status'),
-    };
-
-    // mutate data
-    // revalidate cache
-  }
-
-  return <form action={createInvoice}>...</form>;
-}
-```
-
-### Handling Form State
-
-To check if the form is submitting in React, use the `useFormStatus` hook. This
-hook returns the status for a specific `<form>` and must be defined as a child
-of the `<form>` element.
-
-```tsx
+```tsx title="app/posts/new/post-form.tsx"
 'use client';
 
-import { useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { createPost, type State } from '../actions';
 
-export function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <button type="submit" disabled={pending}>
-      Add
-    </button>
+export function PostForm() {
+  const [state, formAction, isPending] = useActionState(
+    createPost,
+    {} as State
   );
-}
-```
-
-Since `useFormStatus` is a React hook, it should be used within a Client
-Component.
-
-### Submit a Form Programmatically
-
-The `requestSubmit` method allows you to trigger the form's submit event,
-including validation and event listeners, as if the form had been submitted by a
-user.
-
-```jsx
-// app/page.js
-'use client';
-
-import { useRef, useState } from 'react';
-import { submitForm } from './actions';
-
-export default function HomePage() {
-  const [formData, setFormData] = useState({ name: '', email: '' });
-  const formRef = useRef(null);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
-
-  const handleProgrammaticSubmit = async (e) => {
-    e.preventDefault();
-    formRef.current.requestSubmit();
-  };
 
   return (
-    <form ref={formRef} action={submitForm}>
-      <input
-        type="text"
-        name="name"
-        value={formData.name}
-        onChange={handleChange}
-        placeholder="Name"
-      />
-      <input
-        type="email"
-        name="email"
-        value={formData.email}
-        onChange={handleChange}
-        placeholder="Email"
-      />
-      <button type="button" onClick={handleProgrammaticSubmit}>
-        Submit Programmatically
-      </button>
-      <button type="submit">Submit Normally</button>
+    <form action={formAction}>
+      <input name="title" />
+      {state.errors?.title && <p>{state.errors.title[0]}</p>}
+      <textarea name="body" />
+      <button disabled={isPending}>Publish</button>
     </form>
   );
 }
 ```
+
+## Follow-up Questions
+
+- Is a Server Action secure because it is not exposed as a URL? No: it is a POST
+  to the page with an action ID that can be found in the client bundle. Check
+  the session and validate every argument.
+- Server Action or Route Handler? An action for mutations from your own UI; a
+  Route Handler for webhooks, other clients and non-POST methods. See
+  [Route Handlers](./route-handlers.md#route-handler-vs-server-action).
+- What happens to the page after an action? Next.js returns the updated RSC
+  Payload in the same response when the action revalidates or redirects, so
+  there is no extra round trip.
+
+## Common Mistakes
+
+- Trusting the user ID or the role from `FormData` instead of the session.
+- Calling `redirect()` inside `try/catch`: it works by throwing.
+- Fetching data with an action from a Client Component instead of reading it in
+  a Server Component.
+
+## See Also
+
+- [Forms in React](../../react/basics/forms.md#actions)
+- [Caching](./caching.md#on-demand-revalidation)
+- [Authentication](../authentication.md)

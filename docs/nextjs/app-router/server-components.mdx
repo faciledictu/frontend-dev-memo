@@ -1,5 +1,8 @@
 ---
 sidebar_position: 3
+description:
+  RSC vs SSR, what Server Components can't do, static and dynamic rendering,
+  streaming
 ---
 
 import Tabs from '@theme/Tabs';
@@ -7,205 +10,110 @@ import TabItem from '@theme/TabItem';
 
 # Server Components
 
-One of the key features of the App Router system is the ability to use Server
-Components.
+**React Server Components** (RSC) run **only on the server**: their code never
+reaches the browser, they can be `async` and read a database or secrets
+directly. In the App Router every component is a Server Component unless it is
+under a `'use client'` boundary. The server renders them into the **RSC
+Payload**, a serialized tree that also holds references to Client Components;
+Next.js then turns it into HTML. RSC is not the same as SSR: SSR is about
+producing HTML, RSC is about where a component runs.
 
-Server Components allow you to offload the rendering of components to the
-server, improving performance by reducing the amount of JavaScript that needs to
-be sent to the client.
+Applies to: Next.js 16, React 19.
 
-All components are treated as React Server Components by default.
+## Details
 
-In the following example, the `UsersPage` component fetches data on the server
-and renders a list of users. This approach ensures that the user data is
-available immediately when the page loads, improving both performance and SEO.
+### RSC vs SSR
 
-```jsx title="app/users/page.js"
-import { fetchUsers } from '../lib/api';
+|                           | Server Components (RSC)                       | SSR                                       |
+| ------------------------- | --------------------------------------------- | ----------------------------------------- |
+| What it is                | A kind of component                           | A way to produce the initial HTML         |
+| JavaScript in the browser | None for these components                     | The code of all components, for hydration |
+| Output                    | RSC Payload (and HTML from it)                | HTML                                      |
+| On client navigation      | Rendered again on the server; payload is sent | Not involved: the client renders          |
+| Hydration                 | Not hydrated                                  | Hydrated                                  |
 
-export default async function UsersPage() {
-  const users = await fetchUsers();
+Client Components are rendered to HTML on the server too (this is SSR) and then
+hydrated. A Pages Router app has SSR but no RSC.
 
-  return (
-    <div>
-      <h1>Users</h1>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>{user.name}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-```
+### What Server Components Cannot Do
 
-## When to Use
+- Use state, effects or other client hooks (`useState`, `useEffect`,
+  `useReducer`), and context (`useContext`).
+- Have event handlers (`onClick`, `onChange`).
+- Use browser APIs (`window`, `localStorage`).
+- Pass functions to Client Components as props, except Server Actions: props
+  must be serializable.
 
-- **When your component relies on data that can be fetched on the server**, such
-  as from a database or an external API, using a Server Component can reduce
-  client-side JavaScript and improve performance.
+For any of that, move the part into a
+[Client Component](./client-components.md).
 
-- **For pages that require better SEO**, server-side rendering ensures that the
-  content is fully rendered when the page is served to the client, making it
-  more accessible to search engines.
-
-- **For reducing the initial load time** of your page since the server can send
-  fully rendered HTML to the client.
-
-- **When results can be cached** and used again on future requests and across
-  users.
-
-- **When you need to handle sensitive data** or perform operations that should
-  not be exposed to the client.
-
-## How Rendering Works
+### How a Route Is Rendered
 
 On the server:
 
-- React renders Server Components into a special data format called the React
-  Server Component Payload (RSC Payload), which includes references to Client
-  Components.
-- Next.js uses the RSC Payload and Client Component JavaScript instructions to
-  render HTML for the route on the server.
+1. React renders Server Components into the RSC Payload.
+2. Next.js uses the payload and the Client Component code to render HTML.
 
-Then, on the client:
+In the browser:
 
-- The HTML is used to immediately show a fast non-interactive initial preview of
-  the route.
-- The React Server Components Payload is used to reconcile the Client and Server
-  Component trees, and update the DOM.
-- The JavaScript instructions are used to hydrate Client Components and make
-  their UI interactive.
+1. The HTML is shown immediately, not yet interactive.
+2. The RSC Payload is used to reconcile the Server and Client Component trees.
+3. Client Components are hydrated and become interactive.
 
-## Rendering Strategies
+### Rendering Strategies
 
-There are three different server rendering strategies:
+| Strategy  | When HTML is made                                                             | Happens when                                                                              |
+| --------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Static    | At build time or on revalidation; the result is cached and served to everyone | The route uses no request data                                                            |
+| Dynamic   | On every request                                                              | The route reads `cookies()`, `headers()`, `searchParams`, `connection()` or uncached data |
+| Streaming | Parts are sent as they are ready                                              | Slow parts are wrapped in `<Suspense>` or the segment has `loading.tsx`                   |
 
-- Static Rendering
-- Dynamic Rendering on Server
-- Streaming
+- In the previous model one dynamic API made the **whole route** dynamic.
+- With **Cache Components** (Next.js 16) the route is split instead: the static
+  and cached parts form a prerendered **static shell**, and only the parts
+  inside `<Suspense>` render on request (**Partial Prerendering**). See
+  [Caching](./caching.md).
+- `loading.tsx` wraps the page of its segment in `<Suspense>` with this file as
+  the fallback, so the layout and the loading UI appear at once while the page
+  is still loading.
 
-### Static Rendering
+## Example
 
-With static rendering, routes are pre-rendered **at build time** and the results
-are cached.
-
-This approach is suitable for content that doesn't change frequently, like blog
-posts or product pages. The pre-rendered HTML is served quickly, enhancing
-performance and reducing server load.
-
-### Dynamic Rendering
-
-Dynamic rendering occurs **at request time**, providing personalized content or
-data that changes frequently.
-
-If **a dynamic function** or **uncached data request** is found during
-rendering, Next.js will render the whole route dynamically.
-
-:::note
-
-Dynamic functions use information known at request time, such as cookies and
-headers (`cookies()` and `headers()` functions), or search parameters
-(`searchParams` prop).
-
-:::
-
-#### Instant Loading State
-
-:::info[How Does Server-Side Rendering Work]
-
-With SSR, there's a series of steps that need to be completed before a user can
-see and interact with a page:
-
-1. All data for a given page is fetched on the server.
-2. The server then renders the HTML for the page.
-3. The HTML, CSS, and JavaScript for the page are sent to the client.
-4. A non-interactive user interface is shown using the generated HTML and CSS.
-5. Finally, React hydrates the user interface to make it interactive.
-
-:::
-
-Instant Loading State allows us to show the user a non-interactive version of
-the route as soon as possible, and replace it with an interactive version as
-soon as the actual data is prepared.
-
-To implement this you need to create a file `loading.js` in the route folder.
-
-```jsx
-export default function Loading() {
-  // You can add any UI inside Loading, including a Skeleton.
-  return <LoadingSkeleton />;
-}
-```
-
-The file `loading.js` will be nested inside `layout.js`. It will automatically
-wrap the `page.js` file and any children below in a `<Suspense>` boundary. It
-can be represented this way:
-
-```plaintext title="Component Hierarchy"
-  <Layout>                            <- export from layout.js
-    <Header />
-    <SideNav />
-    <Suspense fallback={<Loading />}> <- export from loading.js
-      <Page />                        <- export from page.js
-    </Suspense>
-  </Layout>
-```
-
-However, the user won't be able to see the actual content of the page until all
-the fetches in the `page.js` have been performed on the server.
-
-### Streaming
-
-Streaming allows you to progressively render the page component by component.
-The work is split into chunks, which are streamed to the client as they are
-ready.
-
-Streaming is built into the Next.js App Router by default.
-
-Using Suspense boundaries, developers can show fallback UI and swap in the
-actual content once it loads, enhancing user experience and interaction speed.
-
-Streaming allows us to send parts of the page to the client progressively as
-they are rendered on the server.
+Streaming: the heading arrives at once, each list replaces its fallback when its
+data is ready.
 
 <Tabs>
+<TabItem value="app/page.tsx" label="app/page.tsx" default>
 
-<TabItem value="app/page.js" label="app/page.js" default>
-
-```jsx
+```tsx
 import { Suspense } from 'react';
-import Posts from 'components/Posts';
-import Users from 'components/Users';
-import Placeholder from 'components/Placeholder';
+import { Posts } from './posts';
+import { Users } from './users';
 
 export default function Page() {
   return (
-    <div>
-      <h1>My Blog</h1>
-      <Suspense fallback={<Placeholder />}>
+    <main>
+      <h1>Dashboard</h1>
+      <Suspense fallback={<p>Loading posts...</p>}>
         <Posts />
       </Suspense>
-      <Suspense fallback={<Placeholder />}>
+      <Suspense fallback={<p>Loading users...</p>}>
         <Users />
       </Suspense>
-    </div>
+    </main>
   );
 }
 ```
 
 </TabItem>
+<TabItem value="app/posts.tsx" label="app/posts.tsx">
 
-<TabItem value="components/Posts.js" label="components/Posts.js">
+```tsx
+type Post = { id: number; title: string };
 
-```jsx
-async function fetchPosts() {
-  const res = await fetch('https://api.example.com/posts');
-  return res.json();
-}
-
-export default async function Posts() {
-  const posts = await fetchPosts();
+export async function Posts() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+  const posts: Post[] = await res.json();
 
   return (
     <ul>
@@ -218,17 +126,13 @@ export default async function Posts() {
 ```
 
 </TabItem>
+<TabItem value="app/users.tsx" label="app/users.tsx">
 
-<TabItem value="components/Users.js" label="components/Users.js">
+```tsx
+import { db } from '@/lib/db';
 
-```jsx
-async function fetchUsers() {
-  const res = await fetch('https://jsonplaceholder.typicode.com/users');
-  return res.json();
-}
-
-export default async function Users() {
-  const users = await fetchUsers();
+export async function Users() {
+  const users = await db.user.findMany(); // direct database access
 
   return (
     <ul>
@@ -241,19 +145,30 @@ export default async function Users() {
 ```
 
 </TabItem>
-
-<TabItem value="components/Placeholder.js" label="components/Placeholder.js">
-
-```jsx
-export default function Placeholder() {
-  return <p>Loading...</p>;
-}
-```
-
-</TabItem>
-
 </Tabs>
 
-This approach reduces Time to First Byte (TTFB), First Contentful Paint (FCP)
-and Time to Interactive (TTI) and allows users to see and interact with parts of
-the page sooner, even before other data is fetched and rendered.
+## Follow-up Questions
+
+- Can a Client Component import a Server Component? No: everything a client
+  module imports becomes client code. Pass the Server Component as `children` or
+  another prop instead.
+- Are Server Components the same as SSR? No, see the table above. SSR exists
+  without RSC, and RSC also works on client navigation without producing HTML.
+- What does streaming improve? The user sees the page shell and the fast parts
+  sooner instead of waiting for the slowest query.
+- How do you keep server-only code out of the client? Import `server-only` in
+  the module: importing it from a Client Component becomes a build error.
+
+## Common Mistakes
+
+- "Server Components replace SSR" or "Client Components render only in the
+  browser": Client Components are prerendered on the server as well.
+- Adding `'use client'` to a whole page because of one button: the boundary
+  should be as low in the tree as possible.
+
+## See Also
+
+- [Client Components](./client-components.md)
+- [Data Fetching Patterns](./fetching-patterns.md)
+- [Caching](./caching.md)
+- [Rendering in React](../../react/basics/rendering.md)

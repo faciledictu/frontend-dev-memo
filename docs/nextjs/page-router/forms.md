@@ -1,150 +1,120 @@
 ---
 sidebar_position: 4
+description:
+  API Routes in pages/api, submitting a form to an API Route, validation and
+  errors
 ---
 
-# Working with Forms
+# API Routes and Forms
 
-## API Routes
+An **API Route** is a file in **`pages/api/`** that exports a
+`handler(req, res)` in the Node.js style: `req.method`, `req.query`, `req.body`,
+`req.cookies`, and `res.status().json()`. A form in the Pages Router is
+submitted from the client with `fetch` to such a route; the route **validates**
+the body and returns errors with a `4xx` status. In the App Router the same is
+done with Route Handlers and Server Actions.
 
-Next.js allows you to create API routes where you can define server-side
-functions to handle data fetching and mutations. API routes are typically
-created inside the `pages/api` directory, and each file within this directory
-defines a separate route.
+Applies to: Next.js 16 (Pages Router).
 
-These routes can handle requests, perform operations like database queries, and
-return data to the client.
+## Details
 
-```javascript title="pages/api/hello.js"
-export default function handler(req, res) {
-  res.status(200).json({ message: 'Hello, world!' });
-}
-```
+- One file handles all methods: branch on `req.method` and respond with `405` to
+  the rest.
+- `req.body` is parsed automatically for JSON and URL-encoded bodies. A
+  `FormData` object is sent as `multipart/form-data`, which is **not** parsed:
+  send JSON or turn off `bodyParser` and use a multipart parser.
+- Validate on the server with a schema (Zod), even if the form has `required`
+  and `type="email"`: client checks are only for UX.
+- API Routes are server-only code: secrets and database access are safe here.
+- Do not call your own API Route from `getStaticProps` or `getServerSideProps`:
+  import the function directly.
 
-## Server-Only Forms
+## Example
 
-You need to create an API endpoint to handle the received data on the server.
-
-```typescript title="api/submit.ts"
-import type { NextApiRequest, NextApiResponse } from 'next';
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const data = req.body;
-  const id = await createItem(data);
-  res.status(200).json({ id });
-}
-```
-
-Then create the form and handle the submission.
-
-```tsx
-import { FormEvent } from 'react';
-
-export default function Page() {
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const response = await fetch('/api/submit', {
-      method: 'POST',
-      body: formData,
-    });
-
-    // Handle response if necessary
-    const data = await response.json();
-    // ...
-  }
-
-  return (
-    <form onSubmit={onSubmit}>
-      <input type="text" name="name" />
-      <button type="submit">Submit</button>
-    </form>
-  );
-}
-```
-
-## Data Validation
-
-If you need to validate the data on the client, you can use HTML attributes like
-`required` and `type="email"`.
-
-For more complex data, you may consider validating it on the server using schema
-validation libraries like _zod_.
-
-Here is the updated API endpoint.
-
-```typescript title="api/submit.ts"
+```typescript title="pages/api/register.ts"
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { z } from 'zod';
+import { createUser } from '@/lib/users';
 
 const schema = z.object({
-  // ...
+  email: z.email(),
+  password: z.string().min(8),
 });
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const parsed = schema.parse(req.body);
-  // ...
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const parsed = schema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: 'Invalid email or password' });
+  }
+
+  await createUser(parsed.data);
+  return res.status(201).json({ ok: true });
 }
 ```
 
-## Error Handling
+<details>
+<summary>The form with loading and error states</summary>
 
-You can use React state to set an error message if the form submission request
-fails.
+```tsx title="components/RegisterForm.tsx"
+import { useState, type FormEvent } from 'react';
 
-```tsx
-import { FormEvent, useState } from 'react';
-
-function RegisterForm() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+export function RegisterForm() {
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsLoading(true);
     setError(null);
-    setIsSuccess(false);
 
     try {
-      const formData = new FormData(event.currentTarget);
+      const body = Object.fromEntries(new FormData(event.currentTarget));
       const response = await fetch('/api/register', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) {
-        const { error } = await response.json();
-        setError(error);
+        const data = await response.json();
+        setError(data.error);
         return;
       }
-
       setIsSuccess(true);
-    } catch (error) {
-      setError('Something went wrong');
+    } catch {
+      setError('Network error, try again');
     } finally {
       setIsLoading(false);
     }
-  };
+  }
+
+  if (isSuccess) return <p>Registration successful!</p>;
 
   return (
     <form onSubmit={handleSubmit}>
-      {error && <p>{error}</p>}
-      {isSuccess && <p>Registration successful!</p>}
-      <input type="email" name="email" placeholder="Email" />
-      <input type="password" name="password" placeholder="Password" />
+      {error && <p role="alert">{error}</p>}
+      <input type="email" name="email" required />
+      <input type="password" name="password" required minLength={8} />
       <button type="submit" disabled={isLoading}>
         Register
       </button>
     </form>
   );
 }
-
-export default RegisterForm;
 ```
+
+</details>
+
+## See Also
+
+- [Route Handlers](../app-router/route-handlers.md)
+- [Server Actions](../app-router/server-actions.mdx)
+- [Forms in React](../../react/basics/forms.md)

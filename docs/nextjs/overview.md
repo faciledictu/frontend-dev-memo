@@ -1,124 +1,78 @@
 ---
 sidebar_position: 1
+description:
+  What Next.js adds to React, App Router vs Pages Router, when not to use it
 ---
 
 # Next.js Overview
 
-Next.js is a popular React framework created by Vercel. It is designed to enable
-developers to build server-side rendering (SSR) and static web applications with
-ease. Next.js offers a range of features that streamline the development
-process, enhance performance, and provide a seamless developer experience.
+**Next.js** is a React framework by Vercel. It adds what React leaves to you:
+**file-based routing**, **server rendering** (static prerendering, rendering on
+request, streaming), data fetching and caching, **server code next to the UI**
+(Server Components, Server Actions, Route Handlers) and a build with code
+splitting and image, font and script optimization. There are two routers: the
+current **App Router** (`app/`) and the legacy **Pages Router** (`pages/`).
 
-## Key Features
+Applies to: Next.js 16.
 
-- Server-Side Rendering (SSR): Next.js allows pages to be rendered on the server
-  before being sent to the client, improving initial load times and SEO
-  performance.
+## Details
 
-- Static Site Generation (SSG): Next.js can generate static pages at build time,
-  which can then be served to users with minimal server overhead. This is ideal
-  for content that doesn't change frequently.
+### What Next.js Adds to React
 
-- Hybrid Mode: You can mix SSR and SSG within the same application, choosing the
-  best rendering method for each page.
+| Area         | What it gives                                                                                                         |
+| ------------ | --------------------------------------------------------------------------------------------------------------------- |
+| Routing      | A folder or file is a route; nested layouts, dynamic segments                                                         |
+| Rendering    | Static prerendering, rendering on request, streaming, ISR (regenerating a static page in the background)              |
+| Server code  | Server Components, Server Actions, Route Handlers (HTTP endpoints), Proxy (code that runs before a request is routed) |
+| Optimization | Code splitting per route, `next/image`, `next/font`, `next/script`                                                    |
+| Tooling      | Turbopack bundler, TypeScript, CSS Modules, Sass, Tailwind                                                            |
 
-- Incremental Static Regeneration (ISR): ISR allows you to update static content
-  after it's been deployed, making it possible to have the best of both static
-  and dynamic content.
+### App Router vs Pages Router
 
-- API Routes: Next.js allows you to create API endpoints within your
-  application. This simplifies backend logic by integrating it within the same
-  project structure.
+|                 | App Router (`app/`)                          | Pages Router (`pages/`)                                           |
+| --------------- | -------------------------------------------- | ----------------------------------------------------------------- |
+| Status          | Recommended, stable since 13.4               | Legacy, still supported                                           |
+| Components      | Server Components by default                 | Client components only (prerendered on the server, then hydrated) |
+| Data fetching   | `async` components, `fetch`, `'use cache'`   | `getStaticProps`, `getServerSideProps`                            |
+| Layouts         | Nested `layout.js`, kept between navigations | One `_app.js`                                                     |
+| Loading, errors | `loading.js`, `error.js`, streaming          | Written by hand                                                   |
+| Mutations       | Server Actions                               | API Routes and `fetch`                                            |
+| HTTP endpoints  | Route Handlers (`route.js`)                  | API Routes (`pages/api`)                                          |
 
-- Automatic Code Splitting: Each page only loads the necessary JavaScript and
-  CSS, resulting in faster page loads and better performance.
+Both routers can live in one project, which allows a gradual migration, but one
+URL must be served by only one of them.
 
-- Image Optimization: Next.js provides an image component that optimizes images
-  for faster loading, supporting responsive images and automatic resizing.
+### Recent Versions
 
-- Built-in CSS and Sass Support: Next.js supports importing CSS and Sass files,
-  and you can also use CSS-in-JS libraries like styled-components or emotion.
+| Version | What changed                                                                                                                                               |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 15      | `fetch` and `GET` Route Handlers are no longer cached by default; `params`, `searchParams`, `cookies()`, `headers()` became async; React 19                |
+| 16      | Turbopack is the default bundler; `middleware` renamed to `proxy`; Cache Components (`'use cache'`); synchronous request APIs removed; `next lint` removed |
+| 16.4    | Cache Components recommended for all apps and enabled in new projects; it becomes the default in Next.js 17                                                |
 
-- File-based Routing: Pages in Next.js are based on the filesystem. Each file in
-  the pages directory becomes a route in the application.
+### When Next.js Is Not Needed
 
-- TypeScript Support: Next.js has excellent TypeScript support, making it easier
-  to catch errors early and improve code quality.
+- **An app behind a login** (admin panel, dashboard), where SEO and the first
+  load matter less: a client-side SPA on Vite is simpler to build and host.
+- **A content site with little interactivity**: Astro or another static site
+  generator ships less JavaScript.
+- **No Node.js hosting**: only a static export (`output: 'export'`) is possible,
+  and it loses everything that needs a server.
 
-:::tip
+## Follow-up Questions
 
-Next.js supports Hot Module Replacement (HMR). This feature enables developers
-to see changes in real-time without needing to refresh the entire page,
-enhancing the development experience.
+- What is the difference between SSR and SSG? SSR renders HTML on every request;
+  SSG renders it once at build time and serves the same file. See
+  [Rendering Strategies](./app-router/server-components.mdx#rendering-strategies).
+- Why is Next.js called a full-stack framework? Server Components, Server
+  Actions and Route Handlers run on the server and can read a database directly.
+- Why are `params` and `cookies()` async since Next.js 15? So that the part of a
+  page that does not depend on the request can be prerendered, and only the part
+  that awaits them waits for the request.
 
-:::
+## See Also
 
-## When to Use
-
-Next.js is a good choice if you need:
-
-- Improved SEO and performance through SSR or SSG.
-- A hybrid application with both static and dynamic content.
-- Integrated backend API routes within your application.
-- An easy setup with built-in optimizations for images and code splitting.
-
-## Creating a New Project
-
-To create a new Next.js project, run one of the following commands.
-
-```sh
-npx create-next-app@latest
-```
-
-```sh
-yarn create next-app
-```
-
-On installation, you'll see the following prompts.
-
-```plaintext
-What is your project named? my-app
-Would you like to use TypeScript? No / Yes
-Would you like to use ESLint? No / Yes
-Would you like to use Tailwind CSS? No / Yes
-Would you like to use `src/` directory? No / Yes
-Would you like to use App Router? (recommended) No / Yes
-Would you like to customize the default import alias (@/*)? No / Yes
-What import alias would you like configured? @/*
-```
-
-:::tip[Manual Installation]
-
-To manually create a new Next.js app in existing project, install the required
-packages.
-
-```sh
-npm install next@latest react@latest react-dom@latest
-```
-
-And then, add necessary scripts to `package.json`
-
-```json
-{
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  }
-}
-```
-
-:::
-
-Navigate to your project directory and start the development server.
-
-```sh
-cd my-next-app
-npm run dev
-```
-
-```sh
-cd my-next-app
-yarn dev
-```
+- [App Router](./app-router/overview.md)
+- [Server Components](./app-router/server-components.mdx)
+- [Caching](./app-router/caching.md)
+- [Pages Router](./page-router/overview.md)

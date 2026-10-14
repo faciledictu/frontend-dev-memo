@@ -1,231 +1,106 @@
 ---
 sidebar_position: 3
+description: Code splitting and next/dynamic, next/image, next/font, next/script
 ---
 
 # Optimization Tools
 
-## Code Splitting
+Next.js optimizes out of the box: it **splits code per route**, keeps Server
+Component code out of the browser, and provides components for the usual causes
+of slow pages: **`next/image`** (resized, lazy-loaded images in modern formats
+with reserved space, against CLS and for LCP), **`next/font`** (self-hosted
+fonts without layout shift), **`next/script`** (third-party scripts with a
+loading strategy) and **`next/dynamic`** (lazy-loaded client components).
 
-:::info
+Applies to: Next.js 16.
 
-Code splitting is the practice of breaking up your JavaScript into smaller
-chunks, which can be loaded on demand. This helps improve the initial load time
-by only loading the necessary code for the current page.
+## Details
 
-:::
+### Code Splitting
 
-Next.js automatically splits your code into separate bundles for each page
-(using Page Router) or for every Server Component (for App Router), reducing the
-amount of JavaScript that needs to be loaded initially.
+- Each route segment gets its own client bundle; shared code goes into common
+  chunks.
+- Server Components are not sent to the browser at all; only Client Components
+  add JavaScript.
+- `next/dynamic` (or `React.lazy` with `Suspense`) moves a Client Component into
+  a separate chunk that loads when it is rendered.
+- `ssr: false` skips the server render of a component that needs browser APIs.
+  It is allowed only inside a Client Component.
+- A library can be loaded on demand with `await import('lib')` in an event
+  handler.
 
-You can use dynamic imports to load components only when they are needed. There
-are two ways to achieve this:
+### `next/image`
 
-- Using dynamic imports with `next/dynamic`
-- Using `React.lazy()` with `Suspense`
+| Prop              | What it does                                                                                                                |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `src`, `alt`      | Required. A static import gives `width`, `height` and a blur placeholder automatically                                      |
+| `width`, `height` | Reserve space before loading (no CLS). Required for remote images unless `fill` is set                                      |
+| `fill`            | The image fills a positioned parent; used with `sizes` and CSS `object-fit`                                                 |
+| `sizes`           | How wide the image is at each breakpoint; without it the browser assumes `100vw` and may download a bigger file than needed |
+| `loading`         | `lazy` by default; `eager` for images visible on the first screen                                                           |
+| `preload`         | Adds a `<link rel="preload">` in `<head>` for the LCP image. Replaces `priority`, deprecated in 16                          |
+| `placeholder`     | `empty` (default), `blur` (with `blurDataURL` for remote images) or a `data:image/...` URL                                  |
+| `quality`         | 75 by default; allowed values are listed in `images.qualities`                                                              |
 
-```jsx
-import dynamic from 'next/dynamic';
+- Images are resized on demand and served as WebP (AVIF if enabled in
+  `images.formats`) depending on the browser's `Accept` header.
+- Remote hosts must be allowed in `images.remotePatterns`.
+- For the LCP image use `preload`, or `loading="eager"` with
+  `fetchPriority="high"`; never leave it lazy.
 
-const DynamicComponent = dynamic(
-  () => import('../components/DynamicComponent')
-);
+### `next/font`
 
-const AdditionalComponent = dynamic(
-  () => import('../components/ConditionalComponent')
-);
+- Google Fonts and local files are downloaded at build time and **served from
+  your own domain**: no request to Google, no extra connection.
+- A fallback font with adjusted metrics is generated, so swapping fonts does not
+  shift the layout.
+- The font is imported by name:
+  `Roboto({ weight: ['400', '700'], subsets: ['latin'] })`.
 
-export default function Components({ showMore }) {
-  return (
-    <>
-      {/* Load immediately, but in a separate client bundle */}
-      <DynamicComponent />
-      {/* Load on demand, only if `showMore` prop is true */}
-      {showMore && <AdditionalComponent />}
-    </>
-  );
-}
-```
+### `next/script`
 
-### Lazy Loads on Client Side
+| `strategy`                   | When the script loads                                                       |
+| ---------------------------- | --------------------------------------------------------------------------- |
+| `beforeInteractive`          | Before hydration; only in the root layout (`_document` in the Pages Router) |
+| `afterInteractive` (default) | After some hydration on the page                                            |
+| `lazyOnload`                 | When the browser is idle                                                    |
+| `worker`                     | In a web worker through Partytown; experimental, Pages Router only          |
 
-When using React.lazy() and Suspense, Client Components will be pre-rendered
-(SSR) by default.
+## Example
 
-If you want to disable pre-rendering for a Client Component, you can use the
-`ssr` option set to `false`:
+<details>
+<summary>Examples</summary>
 
-```javascript
-const ComponentC = dynamic(() => import('../components/C'), { ssr: false });
-```
-
-### Loading External Libraries
-
-External libraries can be loaded on demand using the import() function.
-
-In this
-[example](https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading#loading-external-libraries),
-the module `fuse.js` is only loaded on the client after the user types in the
-search input.
-
-```jsx
-'use client';
-
-import { useState } from 'react';
-
-const names = ['Tim', 'Joe', 'Bel', 'Lee'];
+```tsx title="app/page.tsx"
+import Image from 'next/image';
+import hero from './hero.jpg';
 
 export default function Page() {
-  const [results, setResults] = useState();
-
-  return (
-    <div>
-      <input
-        type="text"
-        placeholder="Search"
-        onChange={async (e) => {
-          const { value } = e.currentTarget;
-          // Dynamically load fuse.js
-          const Fuse = (await import('fuse.js')).default;
-          const fuse = new Fuse(names);
-
-          setResults(fuse.search(value));
-        }}
-      />
-      <pre>Results: {JSON.stringify(results, null, 2)}</pre>
-    </div>
-  );
-}
-```
-
-## Image Optimization
-
-The `next/image` module automatically optimizes images on demand, providing
-features like lazy loading, resizing, and serving modern formats like WebP.
-
-- `src` contains the link to the image file. The image source can be either a
-  local file (statically imported) or a remote resource (URL). The module
-  supports `.jpg`, `.png`, and `.webp` formats.
-
-- `width` and `height` properties allow a browser to allocate the necessary
-  space in the layout before the image loads. Next.js can determine these
-  properties automatically for statically imported images. For remote images you
-  need to specify them explicitly, because Next.js does not have access to them.
-
-- `fill` property indicates that the image fills the parent container. With
-  `fill`, we don't need to specify `width` and `height`.
-
-- `placeholder` is an optional property that specifies the content that will be
-  displayed until the original file is downloaded.
-  - When `empty`, the image container will be empty
-  - When `blur`, the container will be filled with a blurred image. If the image
-    is statically imported, the blurred version will be generated automatically.
-    Otherwise, you should provide it using `blurDataURL` property.
-  - When `data:image/...`, the provided `Data URL` will be used as the
-    placeholder.
-
-:::tip
-
-The `priority` prop gives the image a higher loading priority. This means the
-browser will start loading it sooner, even before other lower-priority
-resources.
-
-This is useful for above-the-fold images (hero images or key visual elements).
-It's recommended to use this property with images detected as the Largest
-Contentful Paint (LCP) elements.
-
-:::
-
-```jsx
-import Image from 'next/image';
-
-export default function HomePage() {
-  return (
-    <div>
-      <h1>Welcome to the Home Page</h1>
-      <Image
-        src="/path/to/important-image.jpg"
-        width={800}
-        height={600}
-        alt="Important description"
-        priority
-      />
-      <p>Other content on the page...</p>
-      <Image
-        src="/path/to/image.jpg"
-        width={300}
-        height={300}
-        alt="Description"
-      />
-    </div>
-  );
-}
-```
-
-## Font Optimization
-
-The `next/font` module allows you to load and optimize fonts from Google Fonts
-or local sources with built-in support for optimizing font loading and reducing
-layout shifts.
-
-Fonts imported by `next/font` are self-hosted. This means that the files are
-stored on your server, and the browser requests them from the same domain as
-your deployment, rather than from external services such as Google Fonts.
-
-```jsx
-import { Roboto } from 'next/font/google';
-
-const roboto = Roboto({
-  weight: ['400', '700'],
-  style: ['normal', 'italic'],
-  subsets: ['latin'],
-});
-
-export default function HomePage() {
-  return (
-    <div className={roboto.className}>
-      <p>Hello, world!</p>
-    </div>
-  );
-}
-```
-
-## Script Optimization
-
-The `next/script` module helps you optimize loading third-party scripts. You can
-control how and when scripts are loaded using strategies like
-`beforeInteractive`, `afterInteractive`, and `lazyOnload`.
-
-```jsx
-import Script from 'next/script';
-
-export default function HomePage() {
   return (
     <>
-      <Script src="https://example.com/script.js" strategy="lazyOnload" />
-      <p>Content</p>
+      {/* LCP image: preloaded, size and blur placeholder from the import */}
+      <Image src={hero} alt="Mountains at sunrise" preload placeholder="blur" />
+
+      {/* Responsive image in a grid: sizes keeps the download small */}
+      <div style={{ position: 'relative', aspectRatio: '4 / 3' }}>
+        <Image
+          src="https://images.example.com/card.jpg"
+          alt="Product photo"
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+          style={{ objectFit: 'cover' }}
+        />
+      </div>
     </>
   );
 }
 ```
 
-### Strategies
-
-By default, `next/script` loads third-party scripts on any page or layout.
-However, you can customize its behavior via the `strategy` property:
-
-- `beforeInteractive`: Loads the script before any Next.js code and before any
-  page hydration occurs.
-
-- `afterInteractive`: (default) Loads the script earlier, but after some
-  hydration on the page occurs.
-
-- `lazyOnload`: Loads the script later while the browser is idle.
-
-- `worker`: Loads the script in a web worker.
-
-```tsx
+```tsx title="app/layout.tsx"
+import { Roboto } from 'next/font/google';
 import Script from 'next/script';
+
+const roboto = Roboto({ weight: ['400', '700'], subsets: ['latin'] });
 
 export default function RootLayout({
   children,
@@ -233,15 +108,46 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={roboto.className}>
       <body>
         {children}
-        <Script
-          src="https://example.com/script.js"
-          strategy="beforeInteractive"
-        />
+        <Script src="https://example.com/analytics.js" strategy="lazyOnload" />
       </body>
     </html>
   );
 }
 ```
+
+```tsx title="app/dashboard/chart-panel.tsx"
+'use client';
+
+import dynamic from 'next/dynamic';
+
+// A heavy chart that uses window: separate chunk, no server render
+const Chart = dynamic(() => import('./chart'), {
+  ssr: false,
+  loading: () => <p>Loading chart...</p>,
+});
+
+export function ChartPanel({ show }: { show: boolean }) {
+  return show ? <Chart /> : null;
+}
+```
+
+</details>
+
+## Follow-up Questions
+
+- How does `next/image` help Core Web Vitals? Reserved width and height prevent
+  CLS; `preload` or `fetchPriority="high"` on the hero image improves LCP; lazy
+  loading of the rest saves bandwidth.
+- Why is `sizes` important with `fill`? Without it the generated `srcset`
+  assumes the image is as wide as the viewport, and a small card downloads a
+  full-width file.
+- Why self-host fonts? No extra connection to another origin and no layout shift
+  when the font arrives.
+
+## See Also
+
+- [Bundle Optimization](../web-platform/tools/bundle-optimization.md)
+- [Performance in React](../react/performance/optimization.md)

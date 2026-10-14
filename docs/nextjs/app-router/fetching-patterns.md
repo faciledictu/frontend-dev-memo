@@ -1,132 +1,119 @@
 ---
 sidebar_position: 6
+description:
+  Fetching in Server Components, waterfalls, parallel requests, streaming,
+  preload, passing a promise to the client
 ---
 
-# Best Practices for Working with Data
+# Data Fetching Patterns
 
-## Fetch Data on the Server
+In the App Router data is fetched **on the server, in the component that needs
+it**: an `async` Server Component awaits `fetch` or a database query directly.
+The same request in several components is **deduplicated** within one render
+(`fetch` automatically, other functions with React `cache`), so data does not
+have to be passed down through props. The main risk is a **waterfall**: start
+independent requests in parallel and wrap slow parts in `<Suspense>` so they do
+not block the page.
 
-- **Direct Access.** Gain direct access to backend data resources (e.g.,
-  databases).
+Applies to: Next.js 16, React 19.
 
-- **Enhanced Security.** Prevent exposure of sensitive information (e.g., access
-  tokens, API keys) to the client.
+## Details
 
-- **Efficient Data Handling.** Fetch data and render in the same environment,
-  reducing client-server communication and main thread work on the client.
+### Why on the Server
 
-- **Optimized Data Fetching.** Perform multiple data fetches in a single round
-  trip instead of making multiple individual requests from the client.
+- Direct access to the database and secrets without an extra API.
+- Fewer round trips: the server is close to the data, the client gets the result
+  in one response.
+- Less JavaScript: the fetching code is not sent to the browser.
 
-- **Improved Performance.** Reduce client-server waterfalls and latency by
-  fetching data closer to the data source.
+### Patterns
 
-## Fetch Data in the Components That Need It
+| Pattern               | How                                                                              | When                                             |
+| --------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Sequential            | `const user = await getUser(); await getOrders(user.id)`                         | The second request needs the result of the first |
+| Parallel              | Start both, then `await Promise.all([a, b])`                                     | Independent requests                             |
+| Streaming             | Each slow component in its own `<Suspense>`                                      | Show the fast parts first                        |
+| Preload               | Call `void getItem(id)` early, read it later; the function is wrapped in `cache` | A request can start before a blocking check      |
+| Promise to the client | Pass an unawaited promise as a prop; read it with `use()` in a Client Component  | Data needed in an interactive component          |
+| Deduplication         | `fetch` is memoized; wrap ORM calls in React `cache`                             | The same data in several components              |
 
-You don't need to fetch data globally and pass props to child components when
-using the same data in multiple components. Instead, you can use `fetch` or
-React `cache` in each component that needs the data.
+- Nested `async` components that each await their own data form a waterfall: the
+  child starts only after the parent has finished.
+- `Promise.all` waits for the slowest request; with `<Suspense>` around each
+  part they appear independently.
+- Client-side fetching (SWR, TanStack Query) is still useful for data that
+  changes after the page has loaded: polling, infinite lists.
 
-This approach doesn't affect performance because `fetch` requests are
-automatically memoized.
+## Example
 
-## Working with Multiple Data Fetches
+Parallel requests; the slow part streams in its own boundary. With Cache
+Components the segment also needs a `loading.tsx`, because the page awaits
+`params`:
 
-### Sequential Fetching
+```tsx title="app/artists/[id]/page.tsx"
+import { Suspense } from 'react';
+import { getArtist, getAlbums, getPlaylists } from '@/lib/music';
+import { Playlists } from './playlists';
 
-In sequential data fetching, requests are made one after the other. If you have
-nested components, then data fetching will happen sequentially if those data
-requests are different (this doesn't apply to requests for the same data, as
-they are automatically memoized).
-
-To implement this, you typically use `await` in an `async` function to ensure
-that each request completes before the next one starts.
-
-```tsx
-// ...
-
-async function Playlists({ artistID }: { artistID: string }) {
-  // Wait for the playlists
-  const playlists = await getArtistPlaylists(artistID);
-
-  return (
-    <ul>
-      {playlists.map((playlist) => (
-        <li key={playlist.id}>{playlist.name}</li>
-      ))}
-    </ul>
-  );
-}
-
-export default async function Page({
-  params: { username },
+export default async function ArtistPage({
+  params,
 }: {
-  params: { username: string };
+  params: Promise<{ id: string }>;
 }) {
-  // Wait for the artist
-  const artist = await getArtist(username);
+  const { id } = await params;
+
+  // Both requests start at once
+  const [artist, albums] = await Promise.all([getArtist(id), getAlbums(id)]);
 
   return (
     <>
       <h1>{artist.name}</h1>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Playlists artistID={artist.id} />
+      <p>{albums.length} albums</p>
+      <Suspense fallback={<p>Loading playlists...</p>}>
+        <Playlists playlistsPromise={getPlaylists(id)} />
       </Suspense>
     </>
   );
 }
 ```
 
-:::tip
+```tsx title="app/artists/[id]/playlists.tsx"
+'use client';
 
-Use `loading.js` or React `<Suspense>` to show an instant loading state while
-React fetches the result. This will prevent the whole route from being blocked
-and the user can interact with the parts of the page that are not blocked.
+import { use } from 'react';
 
-:::
+type Playlist = { id: string; name: string };
 
-### Parallel Fetching
-
-An approach to prevent waterfalls is using parallel data fetching.
-
-To fetch data in parallel, define requests outside the components that use the
-data and call them from inside the component. This saves time by initiating both
-requests in parallel, but the user won't see the result until both promises are
-resolved.
-
-The `getArtist` and `getArtistAlbums` functions are defined outside the Page
-component. Inside it we call them in parallel and wait for both promises to
-resolve.
-
-```tsx
-import Albums from './albums';
-
-async function getArtist(username: string) {
-  const res = await fetch(`https://api.example.com/artist/${username}`);
-  return res.json();
-}
-
-async function getArtistAlbums(username: string) {
-  const res = await fetch(`https://api.example.com/artist/${username}/albums`);
-  return res.json();
-}
-
-export default async function Page({
-  params: { username },
+export function Playlists({
+  playlistsPromise,
 }: {
-  params: { username: string };
+  playlistsPromise: Promise<Playlist[]>;
 }) {
-  const artistData = getArtist(username);
-  const albumsData = getArtistAlbums(username);
-
-  // Wait for the promises to resolve
-  const [artist, albums] = await Promise.all([artistData, albumsData]);
+  const playlists = use(playlistsPromise); // suspends until resolved
 
   return (
-    <>
-      <h1>{artist.name}</h1>
-      <Albums list={albums}></Albums>
-    </>
+    <ul>
+      {playlists.map((p) => (
+        <li key={p.id}>{p.name}</li>
+      ))}
+    </ul>
   );
 }
 ```
+
+## Follow-up Questions
+
+- How do you avoid a waterfall? Start independent requests together, move the
+  awaits down to the components that need the data, and wrap slow parts in
+  `<Suspense>`.
+- Why not fetch from your own Route Handler in a Server Component? It is an
+  extra HTTP request to the same server; call the data function directly.
+- How is the same request in a layout and a page not made twice? `fetch` calls
+  with the same URL and options are memoized for one render; for other functions
+  use React `cache`.
+
+## See Also
+
+- [Server Components](./server-components.mdx)
+- [Caching](./caching.md)
+- [`use` and Suspense in React](../../react/performance/concurrent-rendering.md#suspense)

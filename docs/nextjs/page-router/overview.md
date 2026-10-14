@@ -1,239 +1,95 @@
 ---
 sidebar_position: 1
+description:
+  pages/ routing, dynamic routes, _app and _document, navigation and redirects
 ---
 
-# Page Router
+# Pages Router
 
-:::tip
+The **Pages Router** is the original Next.js router: every file in **`pages/`**
+is a route, and **`[param]`** in a file name makes a dynamic route. All
+components are client components that are prerendered on the server and
+hydrated; data comes from **`getStaticProps`** / **`getServerSideProps`**.
+App-wide wrappers live in **`_app`** and **`_document`**. It is **legacy**:
+supported, but new projects use the [App Router](../app-router/overview.md).
 
-For new applications, the App Router is recommended. This router allows you to
-use React's latest features and is an evolution of the Pages Router based on
-community feedback.
+Applies to: Next.js 16 (Pages Router).
 
-:::
+## Details
 
-The Next.js Page Router is a routing mechanism that maps URL paths to React
-components. It allows for easy creation of dynamic, server-rendered, and
-statically generated pages. Each file in the `pages/` directory corresponds to a
-route.
+### Routes
 
-## Features
+| File                        | URL                | `router.query`         |
+| --------------------------- | ------------------ | ---------------------- |
+| `pages/index.js`            | `/`                |                        |
+| `pages/blog/first-post.js`  | `/blog/first-post` |                        |
+| `pages/posts/[id].js`       | `/posts/a`         | `{ id: 'a' }`          |
+| `pages/shop/[...slug].js`   | `/shop/a/b`        | `{ slug: ['a', 'b'] }` |
+| `pages/shop/[[...slug]].js` | `/shop` and deeper | `{}` on `/shop`        |
+| `pages/api/users.js`        | `/api/users`       | API Route, not a page  |
 
-- **File-based Routing**. Automatically creates routes based on the file
-  structure within the `pages/` directory.
-- **Dynamic Routing**. Supports dynamic routes using square brackets (e.g.,
-  `[id].js`).
-- **Nested Routes**. Easily create nested routes by organizing files into
-  folders within the `pages/` directory.
-- **Automatic Code Splitting**. Each page only loads the JavaScript and CSS
-  necessary for that page, improving performance.
+A catch-all `[...slug]` does not match `/shop`; the optional one `[[...slug]]`
+does.
 
-## Project Structure
+### Special Files
 
-Routes are based on the file system, where each file in the `pages/` directory
-corresponds to a route in the application.
+- **`_app.js`** wraps every page: global CSS, providers, a shared layout. It
+  receives `Component` (the current page) and `pageProps` (from the data
+  fetching functions).
+- **`_document.js`** customizes the `<html>` and `<body>` markup. It is rendered
+  only on the server, so it has no event handlers or state.
+- **`404.js`**, **`500.js`**: custom error pages.
 
-The router will automatically route files named `index` to the root of the
-directory.
+### Navigation
 
-| Filepath                 | Route            |
-| ------------------------ | ---------------- |
-| pages/index.js           | /                |
-| pages/about.js           | /about           |
-| pages/blog/first-post.js | /blog/first-post |
+- `<Link href="/about">` navigates on the client and prefetches the page in
+  production when the link is in the viewport.
+- `useRouter()` from **`next/router`** (not `next/navigation`) gives `push`,
+  `replace`, `back`, `query`, `pathname`, `isFallback`. `withRouter` is the HOC
+  version for class components.
 
-### Dynamic Routes
+### Redirects
 
-Dynamic routes allow pages to be created dynamically based on the parameters of
-the URL.
+| Where                     | How                                                                         |
+| ------------------------- | --------------------------------------------------------------------------- |
+| `next.config` `redirects` | `{ source, destination, permanent }` for known URLs                         |
+| Proxy (`proxy.ts`)        | `NextResponse.redirect(new URL('/new-page', request.url))`: an absolute URL |
+| `getServerSideProps`      | Return `{ redirect: { destination, permanent } }`                           |
+| `getStaticProps`          | The same, but not during the build; works on ISR revalidation               |
+| Client                    | `router.push()` / `router.replace()`                                        |
 
-```jsx
+## Example
+
+```jsx title="pages/posts/[id].js"
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-export default function Page() {
+export default function Post() {
   const router = useRouter();
-  return <p>Post: {router.query.id}</p>;
-}
-```
+  const { id } = router.query;
 
-| Filepath                        | Route       | `params`                      |
-| ------------------------------- | ----------- | ----------------------------- |
-| **Dynamic Routes**              |             |                               |
-| pages/posts/\[id\].js           | /posts/a    | `{ id: 'a' }`                 |
-| pages/posts/\[id\].js           | /posts/b    | `{ id: 'b' }`                 |
-| pages/posts/\[id\].js           | /posts/c    | `{ id: 'c' }`                 |
-| **Catch-all Segments**          |             |                               |
-| pages/shop/\[...params\].js     | /shop/a/b   | `{ params: ['a', 'b'] }`      |
-| pages/shop/\[...params\].js     | /shop/a/b/c | `{ params: ['a', 'b', 'c'] }` |
-| **Optional Catch-all Segments** |             |                               |
-| pages/shop/\[\[...params\]\].js | /shop       | `{ params: [] }`              |
-| pages/shop/\[\[...params\]\].js | /shop/a/b   | `{ params: ['a', 'b'] }`      |
-
-:::note
-
-The difference between catch-all and optional catch-all segments is that with
-optional, the route without the parameter is also matched (/shop in the example
-above).
-
-:::
-
-### Templates
-
-The `pages/_app.js` file customizes the default App component, allowing you to
-initialize pages. It is used to keep state when navigating between pages, inject
-global CSS, and provide layout components.
-
-```tsx
-import type { AppProps } from 'next/app';
-
-export default function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
-}
-```
-
-- The `Component` prop contains the current page component, so it changes when
-  you navigate between routes. Any props you send to `Component` will be
-  received by the page.
-- `pageProps` is an object with the initial props that were preloaded for your
-  page by using one of the fetching methods. Otherwise, it's an empty object.
-
-The `pages/_document.js` file customizes the HTML document that Next.js uses to
-render pages. It is only rendered on the server side and is used to augment the
-`<html>` and `<body>` tags.
-
-```tsx
-import { Html, Head, Main, NextScript } from 'next/document';
-
-export default function Document() {
   return (
-    <Html lang="en">
-      <Head />
-      <body>
-        <Main />
-        <NextScript />
-      </body>
-    </Html>
+    <>
+      <h1>Post {id}</h1>
+      <Link href="/posts">Back</Link>
+      <button onClick={() => router.push(`/posts/${Number(id) + 1}`)}>
+        Next
+      </button>
+    </>
   );
 }
 ```
 
-## Navigation
+## Follow-up Questions
 
-- **Client-side Navigation**. Handles client-side navigation between pages using
-  Next.js's optimized `<Link>` component, which preloads linked pages for faster
-  navigation.
+- Why is `router.query` empty on the first render of a static page? The page is
+  prerendered without the query; it is filled after hydration
+  (`router.isReady`).
+- How do you share a layout between pages? Render it in `_app`, or use the
+  per-page `getLayout` pattern to keep the layout's state between pages.
 
-- The `useRouter` hook allows you to access the router object and navigate
-  programmatically. It's part of the `next/router` package.
+## See Also
 
-```jsx
-import { useRouter } from 'next/router';
-
-const MyComponent = () => {
-  const router = useRouter();
-
-  const handleClick = () => {
-    router.push('/another-page');
-  };
-
-  return <button onClick={handleClick}>Go to Another Page</button>;
-};
-```
-
-- `withRouter` is a higher-order component (HOC) that provides the router object
-  as a prop to the wrapped component.
-
-```jsx
-import { withRouter } from 'next/router';
-
-const MyComponent = ({ router }) => {
-  const handleClick = () => {
-    router.push('/another-page');
-  };
-
-  return <button onClick={handleClick}>Go to Another Page</button>;
-};
-
-export default withRouter(MyComponent);
-```
-
-## Redirecting
-
-### Client-Side Redirection
-
-Client-side redirection is typically used for user-triggered actions, such as
-form submissions or button clicks. It leverages the `useRouter` hook from
-`next/router`.
-
-```jsx
-import { useRouter } from 'next/router';
-
-const MyComponent = () => {
-  const router = useRouter();
-
-  const handleRedirect = () => {
-    router.push('/new-page'); // or router.replace('/new-page') for replacing history
-  };
-
-  return <button onClick={handleRedirect}>Go to new page</button>;
-};
-```
-
-### Server-Side Redirection
-
-#### `getServerSideProps` and `getStaticProps`
-
-For server-side redirection, you can use `getServerSideProps` to handle
-redirections before the page loads on the client or `getStaticProps` to redirect
-to another page during the build process.
-
-```jsx
-export async function getServerSideProps(context) {
-  return {
-    redirect: {
-      destination: '/new-page',
-      permanent: false, // Set to true for permanent redirect
-    },
-  };
-}
-
-const MyPage = () => {
-  return <div>Redirecting...</div>;
-};
-
-export default MyPage;
-```
-
-#### Middleware Redirection
-
-With middleware, you can intercept requests and redirect them before they reach
-the intended page.
-
-```javascript
-import { NextResponse } from 'next/server';
-
-export function middleware(request) {
-  if (request.nextUrl.pathname === '/old-page') {
-    return NextResponse.redirect('/new-page');
-  }
-}
-```
-
-#### Global Redirections
-
-This method is suitable for defining redirects that apply to all requests
-matching a certain pattern. It's configured in `next.config.js`.
-
-```javascript
-module.exports = {
-  async redirects() {
-    return [
-      {
-        source: '/old-page',
-        destination: '/new-page',
-        permanent: true, // Set to false for temporary redirect
-      },
-    ];
-  },
-};
-```
+- [Rendering Strategies](./rendering-strategies.md)
+- [Data Fetching](./data-fetching.mdx)
+- [App Router vs Pages Router](../overview.md#app-router-vs-pages-router)

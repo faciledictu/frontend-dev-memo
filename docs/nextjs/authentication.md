@@ -1,302 +1,161 @@
 ---
 sidebar_position: 4
+description:
+  Sessions in cookies, Data Access Layer, Proxy, protecting Server Actions
 ---
 
-# Authentication
+# Authentication in Next.js
 
-## Authentication Process
+Next.js has no built-in authentication: you use a library (Auth.js, Better Auth,
+Clerk) or keep your own session. The session lives in an **`HttpOnly` cookie**.
+The main rule: **check access on the server, next to the data**: in a **Data
+Access Layer** that every page, Server Action and Route Handler goes through.
+**Proxy** (formerly Middleware) does only an optimistic check and a redirect; it
+is not protection on its own.
 
-Authentication is the process of verification of a user's identity. For the
-general theory see
+Applies to: Next.js 16, App Router.
+
+The general theory (sessions vs JWT, OAuth, where to keep a token) is in
 [Authentication and Authorization](../web-platform/network/authentication.md).
 
-To implement authentication in Next.js, you can use various methods. Here is the
-basic email-password authentication system using a custom `signIn` function.
+## Details
 
-### Using Page Router
+### Where to Check Access
 
-#### API Route for Authentication
+| Place                          | What it does                                                                                   | Enough on its own?                                          |
+| ------------------------------ | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Proxy (`proxy.ts`)             | Optimistic check: is there a session cookie? If not, redirect to `/login`. No database queries | No: a matcher can miss a path, and it does not see the data |
+| Data Access Layer              | `verifySession()` before every query; returns only what this user may see                      | Yes, this is the real check                                 |
+| Server Actions, Route Handlers | Call `verifySession()` and check the rights at the start of each one                           | Yes, they are public HTTP endpoints                         |
+| Layout                         | Nothing: a layout is not re-rendered on client navigation, so a check there can be skipped     | No                                                          |
+| Client components              | Hide buttons and links                                                                         | No, this is UX                                              |
 
-Handles the login request and authenticates the user.
+### Session
 
-```jsx title="pages/api/auth/login.js"
-import { NextApiRequest, NextApiResponse } from 'next';
-import { signIn } from '@/auth';
+- **Stateless:** the session data (user ID, expiration) is signed or encrypted
+  into the cookie itself, for example a JWT made with `jose`. Nothing to store,
+  but hard to revoke.
+- **Database session:** the cookie holds only a random session ID; the data is
+  in a database. Easy to revoke, one query per check.
+- Cookie flags: `HttpOnly`, `Secure`, `SameSite=Lax`, an expiration date.
+- `cookies()` from `next/headers` is async. Cookies can be **set or deleted only
+  in Server Actions and Route Handlers**, not while rendering a Server
+  Component.
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  try {
-    const { email, password } = req.body;
-    await signIn({ email, password });
+### Pages Router
 
-    res.status(200).json({ status: 'success', message: null });
-  } catch (error) {
-    if (error.type === 'CredentialsSignin') {
-      res
-        .status(401)
-        .json({ status: 'error', message: 'Invalid credentials.' });
-    } else {
-      res
-        .status(500)
-        .json({ status: 'error', message: 'Something went wrong.' });
-    }
-  }
+- Check the session in `getServerSideProps` and return
+  `{ redirect: { destination: '/login', permanent: false } }`.
+- In API Routes read `req.cookies` and respond with `401`.
+- A client-side check (a HOC with `useEffect` and `router.push`) renders the
+  protected page before redirecting and protects nothing.
+
+## Example
+
+A session check reused by the whole Data Access Layer. `cache` from React runs
+it once per request, however many components call it:
+
+```typescript title="lib/dal.ts"
+import 'server-only';
+import { cache } from 'react';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { decrypt } from './session'; // verifies the signature, e.g. with jose
+import { db } from './db';
+
+export const verifySession = cache(async () => {
+  const token = (await cookies()).get('session')?.value;
+  const session = await decrypt(token);
+  if (!session) redirect('/login');
+  return { userId: session.userId };
+});
+
+export async function getInvoices() {
+  const { userId } = await verifySession();
+  return db.invoice.findMany({ where: { ownerId: userId } });
 }
 ```
 
-It calls the `signIn` function, which should authenticate the user with the
-provided credentials.
+<details>
+<summary>Login with a Server Action and Proxy</summary>
 
-If the credentials are incorrect, it sends a 401 status with an error message.
-For other errors, it sends a 500 status.
-
-#### Sign-In Page
-
-Provides a form for users to enter their credentials and submit them to the
-login API.
-
-```jsx title="pages/auth/signin.js"
-import { useRouter } from 'next/router';
-
-const SignIn = () => {
-  const router = useRouter();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (response.ok) {
-      router.push('/profile');
-    } else {
-      // Handle errors
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Email:
-        <input type="email" name="email" required />
-      </label>
-      <label>
-        Password:
-        <input type="password" name="password" required />
-      </label>
-      <button type="submit">Sign In</button>
-    </form>
-  );
-};
-
-export default SignIn;
-```
-
-When the form is submitted, the handleSubmit function is called. This function
-sends a POST request to the `/api/auth/login` endpoint with the email and
-password
-
-### Using App Router
-
-#### Server Action
-
-Implement a Server Action to handle authentication process
-
-```jsx
+```typescript title="app/actions/auth.ts"
 'use server';
 
-import { signIn } from '@/auth';
+import { redirect } from 'next/navigation';
+import { createSession } from '@/lib/session'; // sets the HttpOnly cookie
+import { findUser } from '@/lib/users';
 
-export async function authenticate(_currentState: unknown, formData: FormData) {
-  try {
-    await signIn('credentials', formData);
-  } catch (error) {
-    if (error.type === 'CredentialsSignin') {
-      return 'Invalid credentials.';
-    }
-    return 'Something went wrong.';
-  }
+export async function login(_prev: string | undefined, formData: FormData) {
+  const email = String(formData.get('email'));
+  const password = String(formData.get('password'));
+
+  const user = await findUser(email, password);
+  if (!user) return 'Invalid email or password.';
+
+  await createSession(user.id);
+  redirect('/dashboard');
 }
 ```
 
-#### Sign-In Page
-
-```jsx
+```tsx title="app/login/login-form.tsx"
 'use client';
 
-import { authenticate } from '@/app/lib/actions';
 import { useActionState } from 'react';
+import { login } from '@/app/actions/auth';
 
-export default function Page() {
-  const [errorMessage, dispatch] = useActionState(authenticate, null);
+export function LoginForm() {
+  const [error, formAction, isPending] = useActionState(login, undefined);
 
   return (
-    <form action={dispatch}>
-      <input type="email" name="email" placeholder="Email" required />
-      <input type="password" name="password" placeholder="Password" required />
-      <div>{errorMessage && <p>{errorMessage}</p>}</div>
-      <button type="submit">Login</button>
+    <form action={formAction}>
+      <input name="email" type="email" required />
+      <input name="password" type="password" required />
+      {error && <p role="alert">{error}</p>}
+      <button disabled={isPending}>Log in</button>
     </form>
   );
 }
 ```
 
-The form uses `action={dispatch}`, meaning the `dispatch` function will be
-called when the form is submitted. errorMessage is used to display error
-messages returned from the authentication process.
+```typescript title="proxy.ts"
+import { NextResponse, type NextRequest } from 'next/server';
 
-## Authorization
-
-This is the process of determining what an authenticated user is allowed to do.
-
-### Public Routes
-
-Routes accessible to all users, regardless of authentication status.
-
-These routes do not require any authentication checks and are typically used for
-pages like home, about, or contact pages.
-
-All routes are public by default. Simply create pages without any authentication
-checks.
-
-### Private Routes
-
-Private Routes are accessible only to authenticated users. These routes require
-users to be logged in before accessing the content. In Next.js, private routes
-can be implemented using middleware to check for authentication tokens before
-rendering the page. If the user is not authenticated, they are redirected to a
-login page.
-
-:::info[Restricted Routes]
-
-Some of private routes can be restricted. Restricted routers are accessible by
-authenticated users but may restrict access based on user roles or permissions.
-For example, an admin dashboard might be a restricted route that only
-authenticated users with an admin role can access.
-
-:::
-
-#### HOC-Based Route Protection
-
-Use a higher-order component (HOC) or middleware to check authentication status
-before rendering the component.
-
-```jsx title="hoc/withAuth.js"
-import { useAuth } from '../context/AuthContext';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-
-const withAuth = (WrappedComponent) => {
-  return (props) => {
-    const { user } = useAuth();
-    const router = useRouter();
-
-    useEffect(() => {
-      if (!user) {
-        router.push('/login');
-      }
-    }, [user, router]);
-
-    return <WrappedComponent {...props} />;
-  };
-};
-
-export default withAuth;
-```
-
-Wrap protected components:
-
-```jsx title="pages/dashboard.js"
-import withAuth from '../hoc/withAuth';
-
-const Dashboard = () => {
-  return <h1>Welcome to the Dashboard</h1>;
-};
-
-export default withAuth(Dashboard);
-```
-
-:::tip
-
-If the authentication check takes time, ensure a loading state is managed to
-prevent flashing of unauthorized content.
-
-:::
-
-#### Middleware-Based Route Protection
-
-Middleware allows you to run code before a request is completed. Then, based on
-the incoming request, you can modify the response by rewriting, redirecting,
-modifying the request or response headers, or responding directly.
-
-In Next.js 13 and later, middleware can be placed in the middleware.js or
-middleware.ts file in the root or specific directories of your project.
-
-Example of Route Protection Middleware
-
-```jsx
-// middleware.ts
-import { NextRequest, NextResponse } from 'next/server';
-
-export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-
-  // Example: Protect routes that start with "/dashboard"
-  if (pathname.startsWith('/dashboard')) {
-    // Check for authentication (e.g., check cookies or headers)
-    const isAuthenticated = Boolean(req.cookies.get('auth-token'));
-
-    if (!isAuthenticated) {
-      // Redirect to login if not authenticated
-      return NextResponse.redirect(new URL('/login', req.url));
-    }
+export function proxy(request: NextRequest) {
+  // Optimistic: only checks that the cookie exists
+  if (!request.cookies.has('session')) {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
-
-  // Continue processing if authenticated or if route does not need protection
-  return NextResponse.next();
 }
 
-// Define which paths the middleware should apply to
-export const config = {
-  matcher: ['/dashboard/:path*', '/profile/:path*'], // Apply middleware to these paths
-};
+export const config = { matcher: ['/dashboard/:path*'] };
 ```
 
-:::info
+</details>
 
-`NextResponse` and `NextRequest` extend the Web Request API with additional
-convenience methods.
+## Follow-up Questions
 
-:::
+- Why is Proxy not enough? It runs before routing and only for paths in its
+  matcher. A Server Action is a POST request to the page that uses it, so a
+  matcher change or a moved action silently loses the check. In March 2025 a
+  vulnerability (CVE-2025-29927) let a special header skip Middleware entirely.
+- How do you protect a Server Action? Check the session and the rights inside
+  it, validate the arguments (Zod), and never take the user ID from the form.
+- Why not check auth in a layout? On client navigation between pages a shared
+  layout is not re-rendered, so the check does not run for the new page.
+- Where is the user ID taken from in a mutation? From the session on the server,
+  not from the request body.
 
-- `matcher` option in middleware configuration allows you to specify which paths
-  the middleware should apply to, providing control over where and how route
-  protection is enforced.
+## Common Mistakes
 
-### Protecting Server Actions
+- Only checking in Proxy or only hiding links in the UI.
+- Reading a token from `FormData` or `localStorage` and trusting it.
+- Returning whole database records to the client: the Data Access Layer should
+  return DTOs with only the fields the user may see.
+- Importing `useActionState` from `react-dom`: it is exported from `react`.
 
-To protect these actions, you can use logic within the server action itself.
+## See Also
 
-```jsx title="lib/actions.ts"
-import { verifyJwtToken } from './auth';
-
-export async function authenticate(formData) {
-  const email = formData.get('email');
-  const password = formData.get('password');
-  // Authentication logic here
-
-  // Example of token verification inside the action
-  const token = formData.get('token');
-  if (!token || !verifyJwtToken(token)) {
-    throw new Error('Unauthorized');
-  }
-
-  // Proceed with the action if authenticated
-}
-```
+- [Server Actions](./app-router/server-actions.mdx)
+- [Route Handlers](./app-router/route-handlers.md)
+- [Authentication and Authorization](../web-platform/network/authentication.md)
