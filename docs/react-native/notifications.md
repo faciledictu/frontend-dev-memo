@@ -57,6 +57,7 @@ Settings.
 | `expo-notifications`               | Permissions, tokens (Expo or native), foreground display, local and scheduled notifications. Works in bare apps too |
 | `@react-native-firebase/messaging` | FCM on both platforms (FCM forwards to APNs on iOS); does not display foreground notifications on Android           |
 | Notifee                            | Was the usual pair for Firebase to display local notifications; archived, its authors point to `expo-notifications` |
+| `react-native-push-notification`   | Common in older projects; last release in 2021, the repository is archived                                          |
 
 ### Credentials
 

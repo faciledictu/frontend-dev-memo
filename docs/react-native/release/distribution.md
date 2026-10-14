@@ -34,6 +34,9 @@ can do it in the cloud instead, but they are optional.
 New personal Google Play accounts must run a closed test with at least 12
 testers for 14 days before the first production release.
 
+Older Expo projects used `expo build:ios` / `expo build:android` (classic
+builds); that service was shut down in January 2023.
+
 ### iOS Signing
 
 - **Certificate**: proves who built the app. A development certificate for

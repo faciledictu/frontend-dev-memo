@@ -35,13 +35,14 @@ In a style array, later entries override earlier ones; `false`, `null` and
 
 ### API
 
-| Member                     | What it does                                                                                      |
-| -------------------------- | ------------------------------------------------------------------------------------------------- |
-| `StyleSheet.create(obj)`   | Returns `obj` as is; freezes it in development and gives type checking and autocompletion         |
-| `StyleSheet.flatten(arr)`  | Merges an array of styles into one object; later entries win                                      |
-| `StyleSheet.compose(a, b)` | Returns `[a, b]`; if one is `null` / `undefined`, returns the other unchanged without a new array |
-| `StyleSheet.hairlineWidth` | The thinnest line the screen can draw, for borders and separators                                 |
-| `StyleSheet.absoluteFill`  | `{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }`, for overlays                    |
+| Member                          | What it does                                                                                      |
+| ------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `StyleSheet.create(obj)`        | Returns `obj` as is; freezes it in development and gives type checking and autocompletion         |
+| `StyleSheet.flatten(arr)`       | Merges an array of styles into one object; later entries win                                      |
+| `StyleSheet.compose(a, b)`      | Returns `[a, b]`; if one is `null` / `undefined`, returns the other unchanged without a new array |
+| `StyleSheet.hairlineWidth`      | The thinnest line the screen can draw, for borders and separators                                 |
+| `StyleSheet.absoluteFill`       | `{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }`, for overlays                    |
+| `StyleSheet.absoluteFillObject` | Removed in 0.85; older code spreads it, use `absoluteFill` instead                                |
 
 ### Screen Size
 
