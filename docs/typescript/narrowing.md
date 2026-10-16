@@ -51,11 +51,11 @@ Applies to: TypeScript 7.0.
 ### User-Defined Type Guards
 
 - A **type predicate**: a function returning `value is Type`. The compiler does
-  not check its body, it trusts the result. A wrong predicate is as unsafe as
+  not check its body; it trusts the result. A wrong predicate is as unsafe as
   [`as`](./type-assertions.md).
 - Since TypeScript 5.5 a predicate is **inferred** for simple functions without
-  a return type annotation: `(x) => x !== undefined` is `x is T`. That is why
-  `items.filter((x) => x !== undefined)` returns `T[]`.
+  a return type annotation: `(x) => x !== undefined` gets the predicate
+  `x is T`. That is why `items.filter((x) => x !== undefined)` returns `T[]`.
 - An **assertion function** returns `asserts value is Type` or
   `asserts condition`. It throws if the check fails, and after the call the type
   is narrowed for the rest of the scope. It must be called through a name with
