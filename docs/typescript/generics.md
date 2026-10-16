@@ -37,12 +37,14 @@ function first<T>(items: T[]): T | undefined {
 const a = first([1, 2, 3]); // number | undefined, T is inferred
 const b = first<string>([]); // string | undefined, T is passed explicitly
 
+// highlight-next-line
 function getProp<T, K extends keyof T>(obj: T, key: K): T[K] {
   return obj[key];
 }
 
 const user = { id: 1, name: 'Ann' };
 
+// correct-next-line
 const userName = getProp(user, 'name'); // string
 // error-start
 getProp(user, 'age');

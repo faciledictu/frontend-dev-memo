@@ -25,19 +25,17 @@ appears, it is a separate page and a link.
 // The language of the code block matches its content.
 ```
 
-Marking lines in code blocks:
-
-Use these tools wherever they apply:
+Mark lines in code blocks wherever it applies:
 
 - `// error-next-line` or `// error-start` … `// error-end` — a red line: code
-  that throws, does not compile or is the wrong way, even if it compiles. Keep
-  the error message, copied from the compiler or the console, in a comment next
-  to it.
+  that throws, does not compile, or compiles but is the wrong way. Keep the
+  error message, copied from the compiler or the console, in a comment next to
+  it; if the code compiles, say in the comment why it is wrong.
 - `// correct-next-line` or `// correct-start` … `// correct-end` — a green
-  line: the right way, shown next to the wrong one.
+  line: the right way, only as the counterpart of a red line in the same block.
 - `// highlight-next-line`, `// highlight-start` … `// highlight-end` or
-  `{1,3-4}` after the language — the key line of an example: the line the
-  example is about.
+  `{1,3-4}` after the language — the key line or lines of an example, usually
+  one per example.
 - `title="path/to/file.ts"` after the language — for a block that is a whole
   file or a config (`tsconfig.json`, `app/page.tsx`).
 - The comment style follows the language: `{/* error-next-line */}` inside JSX,

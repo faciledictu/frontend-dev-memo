@@ -87,11 +87,13 @@ interface Animal {
   species: string;
 }
 
+// highlight-next-line
 interface Dog extends Animal {
   breed: string;
   bark(): void;
 }
 
+// highlight-next-line
 type Cat = Animal & { indoor: boolean };
 
 const myDog: Dog = {

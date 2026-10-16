@@ -173,6 +173,7 @@ type CounterContextValue = {
   dispatch: (action: Action) => void;
 };
 
+// highlight-next-line
 const CounterContext = createContext<CounterContextValue | null>(null);
 
 function useCounter() {
