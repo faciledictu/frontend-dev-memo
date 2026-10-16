@@ -21,13 +21,15 @@ including arrays, functions, and plain objects created with `{}`.
 ```typescript
 let obj: object;
 
-obj = {}; // Valid
-obj = { key: 'value' }; // Valid
-obj = []; // Valid
-obj = function () {}; // Valid
+// correct-start
+obj = {};
+obj = { key: 'value' };
+obj = [];
+obj = function () {};
+// correct-end
 
 // error-next-line
-obj = 42; // Error, 42 is a primitive type
+obj = 42; // Error: Type 'number' is not assignable to type 'object'.
 ```
 
 :::note

@@ -105,6 +105,7 @@ function area(shape: Shape): number {
       return 1;
     default: {
       // A compile error appears here if a new variant is added to Shape
+      // highlight-next-line
       const unreachable: never = shape;
       return unreachable;
     }

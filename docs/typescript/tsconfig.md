@@ -91,7 +91,7 @@ ten times faster. TypeScript 6.0 prepared for it by changing defaults:
 
 A config for a React app built with Vite:
 
-```json
+```json title="tsconfig.json" {6,8-10}
 {
   "compilerOptions": {
     "target": "es2022",
