@@ -38,9 +38,8 @@ Applies to: React 19.3.
 | ----------------------------------------------------------------- | ----------------------------------------------------------------- |
 | `onChange` fires on every input, like `input`                     | `change` fires when the value is committed (text fields: on blur) |
 | `onFocus`, `onBlur` bubble (`focusin`, `focusout` under the hood) | `focus`, `blur` don't bubble                                      |
-| `onScroll` does not bubble (since React 17)                       | `scroll` does not bubble                                          |
+| `onScroll` does not bubble (React 16 bubbled it)                  | `scroll` does not bubble                                          |
 | `onMouseEnter`, `onMouseLeave` don't bubble                       | The same                                                          |
-| `onDoubleClick`                                                   | `dblclick`                                                        |
 | Propagates through the React tree (portals)                       | Propagates through the DOM tree                                   |
 
 - **No event pooling** since React 17: the event object can be read in a timeout
@@ -140,3 +139,4 @@ export default function App() {
 
 - [Portals](./portals.md)
 - [Events in the Browser](../../web-platform/browser/events.md)
+- [Typing React: Events](../../typescript/react.md#events)

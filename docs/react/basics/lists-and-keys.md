@@ -13,7 +13,8 @@ which item is which between renders: it matches old and new children by key, so
 it can **move** an item together with its DOM node and state instead of
 recreating it. A key must be **stable** (an item keeps its key) and **unique
 among siblings**. An ID from the data is the usual choice; the **array index**
-is safe only for a list that never changes order.
+is safe only for a static list: never reordered, filtered or added to at the
+top.
 
 Applies to: React 19.3.
 
@@ -124,6 +125,9 @@ export default function TodoList() {
   inserted into.
 - Why not generate the key in render? A new key on every render remounts every
   item: state, focus and input values are lost, and the work grows.
+- What if the items have no ID? Generate one when the item is created
+  (`crypto.randomUUID()` in the handler) or on the server, never in render. An
+  index only if the list is static.
 - How to reset the state of a component? Change its `key`.
 
 ## Common Mistakes

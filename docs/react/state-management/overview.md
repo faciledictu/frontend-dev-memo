@@ -22,18 +22,18 @@ Applies to: React 19.3, Zustand 5.
 
 ### Kinds of State
 
-| Kind                          | Example                                 | Where                                                                             |
-| ----------------------------- | --------------------------------------- | --------------------------------------------------------------------------------- |
-| Local UI state                | An open dropdown, the text of an input  | `useState` in the component                                                       |
-| Shared by nearby components   | The selected tab and its panel          | [Lifted](../basics/state.md#where-state-lives) to the closest common parent       |
-| Derived                       | A filtered list, a total                | Computed during render, not stored                                                |
-| Form                          | Field values, validation errors         | Uncontrolled fields and [Actions](../basics/forms.md#actions), or React Hook Form |
-| URL                           | Filters, sorting, page, the selected ID | Search and route params, see [React Router](../ecosystem/routing.md)              |
-| Server                        | A user profile, a product list          | [TanStack Query](./tanstack-query.md), RTK Query, SWR, or framework loaders       |
-| Global client, rarely changes | Theme, locale, the current user         | [Context](../hooks/context.md)                                                    |
-| Global client, changes often  | An editor, a cart, a multi-step wizard  | A store: Zustand, [Redux Toolkit](./redux.md), Jotai                              |
-| Not shown in the UI           | A timer ID, the previous value          | [Ref](../hooks/refs.md)                                                           |
-| Persisted on the device       | A draft, user settings                  | `localStorage` behind a store (Zustand `persist`) or `useSyncExternalStore`       |
+| Kind                          | Example                                                        | Where                                                                             |
+| ----------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Local UI state                | An open dropdown, the text of an input                         | `useState` in the component                                                       |
+| Shared by nearby components   | The selected tab and its panel                                 | [Lifted](../basics/state.md#where-state-lives) to the closest common parent       |
+| Derived                       | A filtered list, a total                                       | Computed during render, not stored                                                |
+| Form                          | Field values, validation errors                                | Uncontrolled fields and [Actions](../basics/forms.md#actions), or React Hook Form |
+| URL                           | Filters, sorting, page, the selected ID                        | Search and route params, see [React Router](../ecosystem/routing.md)              |
+| Server                        | A user profile, a product list                                 | [TanStack Query](./tanstack-query.md), RTK Query, SWR, or framework loaders       |
+| Global client, rarely changes | Theme, locale, the current user                                | [Context](../hooks/context.md)                                                    |
+| Global client, changes often  | An unsaved canvas, a selection in a table, a multi-step wizard | A store: Zustand, [Redux Toolkit](./redux.md), Jotai                              |
+| Not shown in the UI           | A timer ID, the previous value                                 | [Ref](../hooks/refs.md)                                                           |
+| Persisted on the device       | A draft, user settings                                         | `localStorage` behind a store (Zustand `persist`) or `useSyncExternalStore`       |
 
 ### Client and Server State
 

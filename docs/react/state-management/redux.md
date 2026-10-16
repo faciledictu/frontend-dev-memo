@@ -83,13 +83,10 @@ Applies to: Redux Toolkit 2, React Redux 9, Reselect 5.
 
 ### Redux and Alternatives
 
-| Tool                           | Fits                                                                                             |
-| ------------------------------ | ------------------------------------------------------------------------------------------------ |
-| Component state                | State used by one component or a small subtree                                                   |
-| [Context](../hooks/context.md) | Rarely changing values (theme, locale, user). No selectors: every consumer re-renders            |
-| Redux                          | A lot of shared client state with complex update logic; DevTools with action history, middleware |
-| Zustand                        | A shared store with selectors and almost no boilerplate, no provider                             |
-| TanStack Query, RTK Query      | Server state: caching, deduplication, background refetching                                      |
+| Tool      | Fits                                                                                             |
+| --------- | ------------------------------------------------------------------------------------------------ |
+| Redux     | A lot of shared client state with complex update logic; DevTools with action history, middleware |
+| RTK Query | Server state in a project that already uses Redux                                                |
 
 Redux is not needed when the state is local or when most of it is a cache of
 server data. How to choose: [Where to Keep State](./overview.md).

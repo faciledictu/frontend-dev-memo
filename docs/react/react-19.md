@@ -14,8 +14,7 @@ context, **`ref` as a regular prop** instead of `forwardRef`, **`<Context>` as a
 provider**, document metadata rendered from components, and stable **Server
 Components**. Minor versions added `<Activity>` and `useEffectEvent` (19.2),
 `<ViewTransition>` and Fragment refs (19.3). **React Compiler** is a separate
-build tool, stable since October 2025. Removed: `propTypes`, `defaultProps` for
-function components, string refs, legacy context, `ReactDOM.render`.
+build tool, stable since October 2025.
 
 Applies to: React 19.3.
 
@@ -44,11 +43,11 @@ Applies to: React 19.3.
 
 ### Minor Versions
 
-| Version               | What was added                                                                                                                                                                                                                                                                               |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 19.1 (March 2025)     | Owner Stack: `captureOwnerStack()` in development shows which components rendered the one that failed                                                                                                                                                                                        |
-| 19.2 (October 2025)   | `<Activity mode="hidden">` hides a subtree but keeps its state; [`useEffectEvent`](./hooks/side-effects.md#dependencies); React Performance Tracks; `cacheSignal` and partial pre-rendering for the server                                                                                   |
-| 19.3 (September 2026) | `<ViewTransition>` and `addTransitionType`: animations through the View Transition API; Fragment refs; `use(browser())` from `react-dom` inside `<Suspense>` renders a subtree only in the browser; Trusted Types; transitions render independently instead of being batched into one render |
+| Version               | What was added                                                                                                                                                                                                                                                                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 19.1 (March 2025)     | Owner Stack: `captureOwnerStack()` in development shows which components rendered the one that failed                                                                                                                                                                                                                                                  |
+| 19.2 (October 2025)   | `<Activity mode="hidden">` hides a subtree but keeps its state; [`useEffectEvent`](./hooks/side-effects.md#dependencies); React Performance Tracks; `cacheSignal` and partial pre-rendering for the server                                                                                                                                             |
+| 19.3 (September 2026) | `<ViewTransition>` and `addTransitionType`: animations through the View Transition API; Fragment refs; `use(browser())` from `react-dom` inside `<Suspense>` renders a subtree only in the browser; Trusted Types; transitions render independently instead of being entangled into one render, so a slow transition no longer holds up unrelated ones |
 
 ### React Compiler
 
@@ -74,7 +73,8 @@ Applies to: React 19.3.
 - No longer needed and planned for deprecation: `forwardRef`,
   `<Context.Provider>`.
 - Deprecated: `react-test-renderer`, reading `element.ref` (the ref is now
-  `element.props.ref`).
+  `element.props.ref`), `useFormState` from `react-dom` (renamed to
+  `useActionState` in `react`).
 - The new JSX transform is required.
 - Type changes (`useRef` needs an argument, no implicit `children`) are in
   [Typing React](../typescript/react.md).

@@ -10,10 +10,11 @@ description:
 **TanStack Query** (formerly React Query) is a **cache of server state**.
 `useQuery({ queryKey, queryFn })` loads data and stores it under the **query
 key**: identical requests are **deduplicated**, cached data is shown at once,
-and **stale** data is refetched in the background (on mount, window focus,
-reconnect). `useMutation` changes data on the server; then the related queries
-are **invalidated** and refetched. It replaces hand-written loading in
-`useEffect`, with its race conditions and no cache.
+and data counts as **stale** after `staleTime` (0 by default) and is then
+refetched in the background (on mount, window focus, reconnect). `useMutation`
+changes data on the server; then the related queries are **invalidated** and
+refetched. It replaces hand-written loading in `useEffect`, with its race
+conditions and no cache.
 
 Applies to: TanStack Query 5.
 
@@ -67,6 +68,9 @@ Applies to: TanStack Query 5.
   meant what `isPending` means now.
 - `placeholderData: keepPreviousData` shows the previous page while the next one
   loads.
+- `useInfiniteQuery` with `getNextPageParam` and `fetchNextPage` for infinite
+  scroll; `select: (data) => …` derives or picks a part of the data without a
+  second query.
 
 ### Mutations
 
@@ -76,7 +80,9 @@ Applies to: TanStack Query 5.
   stale and refetches the active ones, or `queryClient.setQueryData` writes the
   response into the cache.
 - **Optimistic update**, the simple way: render `mutation.variables` as a
-  pending item while `isPending`, and invalidate in `onSettled`.
+  pending item while `isPending`, and **return** `invalidateQueries()` from
+  `onSettled`: the mutation stays pending until the refetch finishes, so the
+  item does not flicker.
 - Through the cache: `onMutate` cancels the queries, saves the current data and
   writes the expected data; `onError` restores the saved data; `onSettled`
   invalidates.
@@ -140,6 +146,7 @@ function Todos() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text }),
       }),
+    // The returned promise keeps isPending true until the refetch finishes
     // highlight-next-line
     onSettled: () => client.invalidateQueries({ queryKey: ['todos'] }),
   });
@@ -195,6 +202,8 @@ function Todo({ id }) {
 - Does TanStack Query replace Redux? For server state, yes. The client state
   that is left is usually small enough for `useState`, context or Zustand.
 - How to make a query wait for another one? `enabled: Boolean(userId)`.
+- How to do infinite scroll? `useInfiniteQuery`: the pages are stored under one
+  key, and `fetchNextPage` appends the next one.
 
 ## Common Mistakes
 
