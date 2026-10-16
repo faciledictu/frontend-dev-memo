@@ -65,6 +65,7 @@ notSure = false;
 ```typescript
 let value: unknown;
 value = 'Hello';
+// highlight-next-line
 if (typeof value === 'string') {
   console.log(value.toUpperCase()); // Safe to use as string
 }

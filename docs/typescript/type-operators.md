@@ -99,6 +99,7 @@ type B = Unwrap<number>; // number
 type ToArray<T> = T extends unknown ? T[] : never;
 type C = ToArray<string | number>; // string[] | number[]
 
+// highlight-next-line
 type ToArrayWhole<T> = [T] extends [unknown] ? T[] : never;
 type D = ToArrayWhole<string | number>; // (string | number)[]
 ```

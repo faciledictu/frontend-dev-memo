@@ -141,9 +141,10 @@ const c: Uncolored = { kind: 'circle', radius: 1 }; // Error: Object literal may
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown
   ? Omit<T, K>
   : never;
-
-const ok: DistributiveOmit<Shape, 'color'> = { kind: 'circle', radius: 1 };
 // correct-end
+
+// correct-next-line
+const ok: DistributiveOmit<Shape, 'color'> = { kind: 'circle', radius: 1 };
 ```
 
 </details>

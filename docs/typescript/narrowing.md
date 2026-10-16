@@ -155,7 +155,7 @@ function getRoot() {
 // Narrowing in a callback
 function scheduleLog(value: string | null) {
   if (value === null) return;
-  // correct-next-line
+  // highlight-next-line
   setTimeout(() => console.log(value.length)); // OK: value is never reassigned
 }
 ```

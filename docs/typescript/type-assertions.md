@@ -57,7 +57,6 @@ const theme = {
   // highlight-next-line
 } satisfies Theme;
 
-// correct-next-line
 theme.gap.toFixed(); // OK: `gap` is still a number, not `string | number`
 ```
 
@@ -69,6 +68,7 @@ interface User {
   name: string;
 }
 
+// highlight-next-line
 function isUser(value: unknown): value is User {
   return (
     typeof value === 'object' &&

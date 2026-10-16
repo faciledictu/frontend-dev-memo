@@ -86,8 +86,8 @@ interface Dog extends Animal {
 //   Types of property 'id' are incompatible.
 // error-end
 
-// error-next-line
-type Cat = Animal & { id: number }; // no error here: `id` becomes `never`
+// highlight-next-line
+type Cat = Animal & { id: number }; // compiles, but `id` is now `never`
 
 // error-next-line
 const cat: Cat = { name: 'Tom', id: 1 }; // Error: Type 'number' is not assignable to type 'never'.
