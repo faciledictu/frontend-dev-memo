@@ -230,8 +230,14 @@
       `tsconfig` (6 страниц: `type-vs-interface`, `narrowing`, `type-operators`,
       `utility-types`, `react`, `tsconfig`; TypeScript 7.0, `@types/react`
       19.3).
-- [ ] 3. React: когда компонент перерисовывается, списки и `key`, React 19,
-      серверное состояние и «где хранить состояние».
+- [x] 3. React: когда компонент перерисовывается, списки и `key`, React 19,
+      серверное состояние и «где хранить состояние»; по аудиту добавлены
+      синтетические события (6 страниц: `basics/lists-and-keys`,
+      `basics/events`, `rendering/re-renders`, `react-19`,
+      `state-management/overview`, `state-management/tanstack-query`; React
+      19.3, TanStack Query 5, Zustand 5). Раздел перегруппирован: новые
+      подгруппы `rendering` (`react-in-browser`, `rendering` → `reconciliation`,
+      `re-renders`) и `state-management` (туда же `redux`).
 - [ ] 4. Web Platform: безопасность (XSS, CSRF, CSP), Web Vitals и critical
       rendering path, доступность, воркеры и service worker, WebSocket / SSE.
 - [ ] 5. HTML & CSS: специфичность и каскад, box model, flexbox и grid,
