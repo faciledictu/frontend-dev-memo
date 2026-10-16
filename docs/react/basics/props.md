@@ -31,7 +31,7 @@ Applies to: React 19.
 ### Typing
 
 - Props are typed with **TypeScript**: a `type` or an `interface` for the props
-  object.
+  object. See [Typing React](../../typescript/react.md).
 - The **`prop-types`** package checked props at runtime in development. React 19
   ignores `propTypes` silently, so it remains only in legacy code.
 

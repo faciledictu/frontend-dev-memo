@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 7
 description: Type parameters, constraints, defaults and generic React components
 ---
 
@@ -20,9 +20,10 @@ checks off. In most calls the type argument is **inferred**.
   inferred.
 - **Generic types**: interfaces, type aliases and classes take parameters too:
   `ApiResponse<User>`, `Map<string, number>`, `Promise<void>`.
-- **Utility types** such as `Partial<T>` and `Pick<T, K>` are generics.
+- **[Utility types](./utility-types.md)** such as `Partial<T>` and `Pick<T, K>`
+  are generics.
 - **In React**: `useState<User | null>(null)`, generic components and custom
-  hooks.
+  hooks; see [Typing React](./react.md).
 - In a `.tsx` file a generic arrow function is written as `<T,>(value: T) => …`,
   otherwise `<T>` is parsed as a JSX tag.
 
