@@ -223,8 +223,11 @@
       `WeakMap`, итераторы и генераторы, debounce / throttle (5 страниц:
       `map-set`, `iterators-generators`, `modules`, `promises`,
       `debounce-throttle`).
-- [ ] 2. TypeScript: utility types, сужение типов и type guards, `type` vs
-      `interface`, типизация React.
+- [x] 2. TypeScript: utility types, сужение типов и type guards, `type` vs
+      `interface`, типизация React; по аудиту добавлены операторы типов и
+      `tsconfig` (6 страниц: `type-vs-interface`, `narrowing`, `type-operators`,
+      `utility-types`, `react`, `tsconfig`; TypeScript 7.0, `@types/react`
+      19.3).
 - [ ] 3. React: когда компонент перерисовывается, списки и `key`, React 19,
       серверное состояние и «где хранить состояние».
 - [ ] 4. Web Platform: безопасность (XSS, CSRF, CSP), Web Vitals и critical
