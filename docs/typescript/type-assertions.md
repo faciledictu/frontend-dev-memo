@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 description:
   The as syntax, as const, satisfies, non-null assertion and type guards
 ---
@@ -35,12 +35,9 @@ DOM element). For external data, prefer **type guards** or validation.
 ### Type Guards Instead of Assertions
 
 A type guard performs a real runtime check, and the compiler narrows the type
-from it:
-
-- `typeof value === 'string'`, `value instanceof Date`, `'id' in value`;
-- a custom guard: a function that returns `value is Type` (the compiler trusts
-  its body);
-- a schema validator such as Zod for API responses.
+from it: `typeof`, `instanceof`, `in`, a function returning `value is Type`, or
+a schema validator such as Zod for API responses. See
+[Type Narrowing and Type Guards](./narrowing.md).
 
 ## Example
 

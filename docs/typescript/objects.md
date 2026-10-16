@@ -1,6 +1,7 @@
 ---
 sidebar_position: 2
-description: Object shapes, type vs interface, optional and readonly properties
+description:
+  Object shapes, interfaces, optional and readonly properties, index signatures
 ---
 
 # Objects and Interfaces
@@ -9,13 +10,8 @@ The shape of an object is described with a **type alias** or an **interface**.
 TypeScript is **structurally typed**: a value fits a type if it has the required
 properties, regardless of how it was declared.
 
-`type` vs `interface`:
-
-- For object shapes they are almost interchangeable; pick one and be consistent.
-- Only an **interface** supports **declaration merging**: two declarations with
-  the same name are combined. It is extended with `extends`.
-- Only a **type alias** can name unions, tuples, primitives, and mapped or
-  conditional types. Object types are combined with `&`.
+For object shapes the two are almost interchangeable; the differences are on a
+separate page: [Type vs Interface](./type-vs-interface.md).
 
 ## `object` Type
 
@@ -105,20 +101,9 @@ const myDog: Dog = {
 };
 ```
 
-Declaration merging works only for interfaces. It is used to add fields to types
-from libraries and to globals such as `Window`.
-
-```typescript
-interface Settings {
-  theme: string;
-}
-
-interface Settings {
-  locale: string;
-}
-
-const settings: Settings = { theme: 'dark', locale: 'en' };
-```
+Only interfaces support declaration merging, which is used to add fields to
+library types and globals such as `Window`; see
+[Type vs Interface](./type-vs-interface.md#declaration-merging).
 
 ## Property Modifiers
 
