@@ -37,8 +37,8 @@ Applies to: React 19, `@types/react` 19.3, TypeScript 7.0.
 | props plus `children`     | `PropsWithChildren<Props>`      |
 
 - The return type of a component is usually inferred. If written, it is
-  `ReactNode`: since TypeScript 5.1 a component may return a string, `null` or
-  an array. `JSX.Element` is narrower.
+  `ReactNode`: since TypeScript 5.1 a component may return a string or an array,
+  not only an element or `null`. `React.JSX.Element` is narrower.
 - The global `JSX` namespace is gone in `@types/react` 19: write `React.JSX`.
 - `React.FC<Props>` does not add `children` since `@types/react` 18 and can't
   declare a generic component. Most code uses a plain function with typed props.
@@ -61,7 +61,7 @@ Applies to: React 19, `@types/react` 19.3, TypeScript 7.0.
 
 - These are React's synthetic events, imported from `react`, not the DOM
   `MouseEvent`.
-- `FormEvent` is deprecated in `@types/react` 19.3: use `SubmitEvent`,
+- `FormEvent` is deprecated (since `@types/react` 19.2.10): use `SubmitEvent`,
   `ChangeEvent` or `InputEvent` for what the event really is.
 - `e.currentTarget` is the element the handler is attached to and has its type.
   `e.target` may be a nested element; it is typed precisely only for change
@@ -189,7 +189,7 @@ function CounterProvider({ children }: { children: ReactNode }) {
 function Counter() {
   const { state, dispatch } = useCounter();
   // error-next-line
-  dispatch({ type: 'set' }); // Error: Property 'value' is missing in type '{ type: "set"; }'
+  dispatch({ type: 'set' }); // Error: Argument of type '{ type: "set"; }' is not assignable to parameter of type 'Action'.
   return (
     <button onClick={() => dispatch({ type: 'increment' })}>
       {state.count}
@@ -216,8 +216,8 @@ function Counter() {
 
 ## Common Mistakes
 
-- `children: JSX.Element` instead of `ReactNode`: strings, numbers and arrays
-  are rejected.
+- `children: React.JSX.Element` instead of `ReactNode`: strings, numbers and
+  arrays are rejected.
 - Importing `MouseEvent` from the DOM types instead of `react`.
 - Typing context as `createContext<Value>({} as Value)`: a missing provider is
   then a runtime error that the compiler can't see.

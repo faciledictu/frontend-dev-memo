@@ -13,8 +13,8 @@ interchangeable. The differences:
 
 - only an **interface** supports **declaration merging**: two declarations with
   the same name are combined into one;
-- only a **type alias** can name **unions**, tuples, primitives, functions and
-  **mapped or conditional types**;
+- only a **type alias** can name **unions**, tuples, primitives and **mapped or
+  conditional types**;
 - an interface is extended with **`extends`**, a type with an **intersection
   `&`**; `extends` reports conflicting properties, `&` silently turns them into
   `never`.
@@ -26,16 +26,16 @@ Applies to: TypeScript 7.0.
 
 ## Details
 
-|                                   | `interface`                     | `type`                                |
-| --------------------------------- | ------------------------------- | ------------------------------------- |
-| Object shape                      | yes                             | yes                                   |
-| Union, tuple, primitive, mapped   | no                              | yes                                   |
-| Extending                         | `extends`, conflicts are errors | `&`, conflicts become `never`         |
-| Declaration merging               | yes                             | no: `Duplicate identifier`            |
-| `implements` in a class           | yes                             | yes, if it is an object type          |
-| Assignable to `Record<string, …>` | no: no implicit index signature | yes                                   |
-| Name in error messages and hover  | always the interface name       | sometimes expanded into the structure |
-| Recursive definitions             | yes                             | yes                                   |
+|                                         | `interface`                     | `type`                                |
+| --------------------------------------- | ------------------------------- | ------------------------------------- |
+| Object shape                            | yes                             | yes                                   |
+| Union, tuple, primitive, mapped         | no                              | yes                                   |
+| Extending                               | `extends`, conflicts are errors | `&`, conflicts become `never`         |
+| Declaration merging                     | yes                             | no: `Duplicate identifier`            |
+| `implements` in a class                 | yes                             | yes, if it is an object type          |
+| Assignable to `Record<string, unknown>` | no: no implicit index signature | yes                                   |
+| Name in error messages and hover        | always the interface name       | sometimes expanded into the structure |
+| Recursive definitions                   | yes                             | yes                                   |
 
 ### Declaration Merging
 
@@ -44,7 +44,9 @@ This is how library and global types are extended:
 
 - adding a property to `Window` (`declare global { interface Window { … } }`);
 - **module augmentation**: adding fields to a library type, for example a theme
-  type in a styling library or the `Request` type in Express.
+  type in a styling library
+  (`declare module 'library' { interface Theme { … } }`) or `Express.Request`
+  (`declare global { namespace Express { … } }`).
 
 The flip side: an interface can be extended by accident if another file declares
 the same global name.

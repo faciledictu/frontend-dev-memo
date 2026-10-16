@@ -17,8 +17,9 @@ original. The most commonly used:
 - for unions: **`Exclude`**, **`Extract`**, **`NonNullable`**;
 - for functions and promises: **`ReturnType`**, **`Parameters`**, **`Awaited`**.
 
-They are ordinary types written with
-[mapped and conditional types](./type-operators.md), not compiler magic.
+Most of them are ordinary types written with
+[mapped and conditional types](./type-operators.md); a few, such as `NoInfer`
+and the string helpers, are built into the compiler.
 
 Applies to: TypeScript 7.0.
 

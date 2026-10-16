@@ -54,7 +54,7 @@ Applies to: TypeScript 7.0.
 - `T extends U ? X : Y` picks `X` if `T` is assignable to `U`.
 - **Distributive**: when `T` is a bare type parameter and receives a union, the
   condition is applied to each member separately, and the results are joined.
-  `NonNullable` and `Exclude` rely on this.
+  `Exclude` and `Extract` rely on this.
 - To switch distribution off, wrap both sides in a tuple: `[T] extends [U]`.
 - A bare type parameter that receives `never` gives `never`, because `never` is
   an empty union.
@@ -131,7 +131,7 @@ type ApiMethods = MethodKeys<Api>; // 'get' | 'post'
   `T extends (infer E)[] ? E : never`.
 - What is the difference between `keyof typeof obj` and `keyof obj`? `keyof`
   works on types, so a value needs `typeof` first: `keyof typeof obj`.
-  `keyof obj` is a syntax error.
+  `keyof obj` is an error: `obj` is a value used as a type.
 - How do you remove a key in a mapped type? Remap it to `never` with `as`.
 
 ## Common Mistakes
