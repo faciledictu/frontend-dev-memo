@@ -66,6 +66,7 @@ type ListProps<T> = {
   renderItem: (item: T) => React.ReactNode;
 };
 
+// highlight-next-line
 function List<T>({ items, getKey, renderItem }: ListProps<T>) {
   return (
     <ul>

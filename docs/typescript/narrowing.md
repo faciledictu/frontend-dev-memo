@@ -88,6 +88,7 @@ function area(shape: Shape): number {
     case 'square':
       return shape.size ** 2;
     default:
+      // highlight-next-line
       return shape satisfies never; // error if a new kind is added
   }
 }
@@ -120,6 +121,7 @@ interface Bird {
   fly(): void;
 }
 
+// highlight-next-line
 function isFish(pet: Fish | Bird): pet is Fish {
   return 'swim' in pet;
 }
@@ -139,6 +141,7 @@ const ids = [1, undefined, 3].filter((id) => id !== undefined); // number[]
 function assertDefined<T>(
   value: T,
   message: string
+  // highlight-next-line
 ): asserts value is NonNullable<T> {
   if (value == null) throw new Error(message);
 }
@@ -152,6 +155,7 @@ function getRoot() {
 // Narrowing in a callback
 function scheduleLog(value: string | null) {
   if (value === null) return;
+  // correct-next-line
   setTimeout(() => console.log(value.length)); // OK: value is never reassigned
 }
 ```

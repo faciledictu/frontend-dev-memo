@@ -86,7 +86,8 @@ interface Dog extends Animal {
 //   Types of property 'id' are incompatible.
 // error-end
 
-type Cat = Animal & { id: number }; // no error here
+// error-next-line
+type Cat = Animal & { id: number }; // no error here: `id` becomes `never`
 
 // error-next-line
 const cat: Cat = { name: 'Tom', id: 1 }; // Error: Type 'number' is not assignable to type 'never'.
@@ -119,6 +120,7 @@ interface PointInterface {
 const p1: PointType = { x: 1, y: 2 };
 const p2: PointInterface = { x: 1, y: 2 };
 
+// correct-next-line
 logAll(p1);
 // error-start
 logAll(p2);

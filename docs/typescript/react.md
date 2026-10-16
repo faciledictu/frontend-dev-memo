@@ -105,6 +105,7 @@ import {
 } from 'react';
 
 // A wrapper around a native element; ref is a regular prop in React 19
+// highlight-next-line
 type ButtonProps = ComponentProps<'button'> & {
   variant?: 'primary' | 'secondary';
 };
@@ -127,6 +128,7 @@ function NameForm() {
   const [tags, setTags] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // highlight-next-line
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setName(e.target.value);
   }
@@ -174,8 +176,10 @@ type CounterContextValue = {
 const CounterContext = createContext<CounterContextValue | null>(null);
 
 function useCounter() {
+  // highlight-start
   const value = use(CounterContext);
   if (!value) throw new Error('useCounter must be used inside CounterProvider');
+  // highlight-end
   return value; // CounterContextValue, no null
 }
 

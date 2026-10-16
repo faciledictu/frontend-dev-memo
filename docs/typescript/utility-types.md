@@ -101,10 +101,12 @@ type FetchUserArgs = Parameters<typeof fetchUser>; // [id: number]
 type FetchedUser = Awaited<ReturnType<typeof fetchUser>>; // { id: number; name: string }
 
 // NoInfer: the default must be one of the options, not widen them
+// highlight-next-line
 function pick<T extends string>(options: T[], fallback: NoInfer<T>) {
   return options[0] ?? fallback;
 }
 
+// correct-next-line
 pick(['s', 'm', 'l'], 'm');
 // error-next-line
 pick(['s', 'm', 'l'], 'xl'); // Error: Argument of type '"xl"' is not assignable to parameter of type '"l" | "m" | "s"'.
@@ -120,6 +122,7 @@ interface User {
 }
 
 // A wrong key in Omit is not an error: K is not checked against the keys
+// error-next-line
 type WithoutName = Omit<User, 'fullName'>; // still has `name`
 
 // Omit on a union is not distributive: it keeps only the common keys
@@ -127,17 +130,20 @@ type Shape =
   | { kind: 'circle'; radius: number; color: string }
   | { kind: 'square'; size: number; color: string };
 
+// error-next-line
 type Uncolored = Omit<Shape, 'color'>; // { kind: 'circle' | 'square' }
 
 // error-next-line
 const c: Uncolored = { kind: 'circle', radius: 1 }; // Error: Object literal may only specify known properties, and 'radius' does not exist in type 'Uncolored'.
 
 // A distributive version applies Omit to each member
+// correct-start
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown
   ? Omit<T, K>
   : never;
 
 const ok: DistributiveOmit<Shape, 'color'> = { kind: 'circle', radius: 1 };
+// correct-end
 ```
 
 </details>

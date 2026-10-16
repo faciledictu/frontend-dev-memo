@@ -54,6 +54,7 @@ type Theme = Record<string, string | number>;
 const theme = {
   color: 'red',
   gap: 8,
+  // highlight-next-line
 } satisfies Theme;
 
 // correct-next-line

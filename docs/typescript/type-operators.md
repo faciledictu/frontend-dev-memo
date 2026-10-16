@@ -84,11 +84,13 @@ type Role = (typeof ROLES)[number]; // 'admin' | 'editor' | 'viewer'
 
 // Mapped type with key remapping
 type Getters<T> = {
+  // highlight-next-line
   [K in keyof T as `get${Capitalize<K & string>}`]: () => T[K];
 };
 type UserGetters = Getters<User>; // { getId: () => number; getName: …; getEmail: … }
 
 // Conditional type with infer
+// highlight-next-line
 type Unwrap<T> = T extends Promise<infer V> ? V : T;
 type A = Unwrap<Promise<string>>; // string
 type B = Unwrap<number>; // number

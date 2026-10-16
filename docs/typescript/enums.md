@@ -60,6 +60,7 @@ enum Status {
   Blocked = 'BLOCKED',
 }
 
+// correct-next-line
 const current: Status = Status.Active;
 // error-start
 const other: Status = 'ACTIVE';
