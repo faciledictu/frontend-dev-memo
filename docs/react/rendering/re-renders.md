@@ -62,8 +62,8 @@ to reveal impure code: a `console.log` printed twice is not a bug. See
 - **React DevTools → Profiler** with "Record why each component rendered while
   profiling" enabled shows the reason for every render: "The parent component
   rendered", "Props changed: (onSelect)", "Hook 2 changed".
-- **Components → "Highlight updates when components render"** outlines each
-  component as it renders.
+- **Settings → General → "Highlight updates when components render"** outlines
+  each component as it renders.
 - **React Performance Tracks** (React 19.2) show renders on the timeline of the
   browser's Performance panel.
 - How to fix: [Optimizing React Components](../performance/optimization.md).

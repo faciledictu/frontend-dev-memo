@@ -34,14 +34,14 @@ Applies to: React 19.3.
 
 ### Differences from DOM Events
 
-| React                                                             | DOM                                               |
-| ----------------------------------------------------------------- | ------------------------------------------------- |
-| `onChange` fires on every input, like `input`                     | `change` fires when the value is committed (blur) |
-| `onFocus`, `onBlur` bubble (`focusin`, `focusout` under the hood) | `focus`, `blur` don't bubble                      |
-| `onScroll` does not bubble (since React 17)                       | `scroll` does not bubble                          |
-| `onMouseEnter`, `onMouseLeave` don't bubble                       | The same                                          |
-| `onDoubleClick`                                                   | `dblclick`                                        |
-| Propagates through the React tree (portals)                       | Propagates through the DOM tree                   |
+| React                                                             | DOM                                                               |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `onChange` fires on every input, like `input`                     | `change` fires when the value is committed (text fields: on blur) |
+| `onFocus`, `onBlur` bubble (`focusin`, `focusout` under the hood) | `focus`, `blur` don't bubble                                      |
+| `onScroll` does not bubble (since React 17)                       | `scroll` does not bubble                                          |
+| `onMouseEnter`, `onMouseLeave` don't bubble                       | The same                                                          |
+| `onDoubleClick`                                                   | `dblclick`                                                        |
+| Propagates through the React tree (portals)                       | Propagates through the DOM tree                                   |
 
 - **No event pooling** since React 17: the event object can be read in a timeout
   or after `await`; `e.persist()` does nothing.
@@ -52,8 +52,9 @@ Applies to: React 19.3.
 ### Delegation
 
 - `createRoot` attaches listeners for all supported events to the root container
-  in both phases. When an event reaches the root, React finds the fiber of the
-  target and calls the handlers along the React tree.
+  (in both phases for events that bubble, in the capture phase for the rest).
+  When an event reaches the root, React finds the fiber of the target and calls
+  the handlers along the React tree.
 - Why the root and not `document` (React 17): several React apps and versions on
   one page don't interfere, and `e.stopPropagation()` in React really stops the
   event before it reaches `document`.

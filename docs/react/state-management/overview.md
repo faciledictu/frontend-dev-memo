@@ -96,6 +96,7 @@ function AddButton({ product }) {
 function CartSummary() {
   // error-start
   // A new object on every call: an infinite loop in Zustand 5
+  // Error: Maximum update depth exceeded.
   const { items, clear } = useCartStore((state) => ({
     items: state.items,
     clear: state.clear,

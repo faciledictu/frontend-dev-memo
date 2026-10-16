@@ -44,11 +44,11 @@ Applies to: React 19.3.
 
 ### Minor Versions
 
-| Version               | What was added                                                                                                                                                                                             |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 19.1 (March 2025)     | Owner Stack: `captureOwnerStack()` in development shows which components rendered the one that failed                                                                                                      |
-| 19.2 (October 2025)   | `<Activity mode="hidden">` hides a subtree but keeps its state; [`useEffectEvent`](./hooks/side-effects.md#dependencies); React Performance Tracks; `cacheSignal` and partial pre-rendering for the server |
-| 19.3 (September 2026) | `<ViewTransition>` and `addTransitionType`: animations through the View Transition API; Fragment refs; `use(browser())` from `react-dom` renders a subtree only in the browser; Trusted Types              |
+| Version               | What was added                                                                                                                                                                                                                                                                               |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 19.1 (March 2025)     | Owner Stack: `captureOwnerStack()` in development shows which components rendered the one that failed                                                                                                                                                                                        |
+| 19.2 (October 2025)   | `<Activity mode="hidden">` hides a subtree but keeps its state; [`useEffectEvent`](./hooks/side-effects.md#dependencies); React Performance Tracks; `cacheSignal` and partial pre-rendering for the server                                                                                   |
+| 19.3 (September 2026) | `<ViewTransition>` and `addTransitionType`: animations through the View Transition API; Fragment refs; `use(browser())` from `react-dom` inside `<Suspense>` renders a subtree only in the browser; Trusted Types; transitions render independently instead of being batched into one render |
 
 ### React Compiler
 
@@ -60,16 +60,16 @@ Applies to: React 19.3.
 
 ### Removed and Deprecated
 
-| Removed in 19                                      | Instead                                   |
-| -------------------------------------------------- | ----------------------------------------- |
-| `propTypes` (silently ignored)                     | TypeScript                                |
-| `defaultProps` for function components             | Default parameter values                  |
-| String refs (`ref="input"`)                        | `useRef` or a callback ref                |
-| Legacy context (`contextTypes`, `getChildContext`) | `createContext`                           |
-| `ReactDOM.render`, `ReactDOM.hydrate`              | `createRoot`, `hydrateRoot`               |
-| `unmountComponentAtNode`, `findDOMNode`            | `root.unmount()`, refs                    |
-| `react-dom/test-utils`                             | `act` from `react`, React Testing Library |
-| UMD builds                                         | An ESM CDN such as esm.sh                 |
+| Removed in 19                                      | Instead                                            |
+| -------------------------------------------------- | -------------------------------------------------- |
+| `propTypes` (silently ignored)                     | TypeScript                                         |
+| `defaultProps` for function components             | Default parameter values                           |
+| String refs (`ref="input"`)                        | `useRef` or a callback ref                         |
+| Legacy context (`contextTypes`, `getChildContext`) | `createContext` with `contextType` or `useContext` |
+| `ReactDOM.render`, `ReactDOM.hydrate`              | `createRoot`, `hydrateRoot`                        |
+| `unmountComponentAtNode`, `findDOMNode`            | `root.unmount()`, refs                             |
+| `react-dom/test-utils`                             | `act` from `react`, React Testing Library          |
+| UMD builds                                         | An ESM CDN such as esm.sh                          |
 
 - No longer needed and planned for deprecation: `forwardRef`,
   `<Context.Provider>`.
@@ -124,6 +124,7 @@ function BlogPost({ post }) {
   return (
     <article>
       {/* React moves these tags to <head> */}
+      {/* highlight-next-line */}
       <title>{post.title}</title>
       <meta name="description" content={post.excerpt} />
       <h1>{post.title}</h1>
@@ -144,7 +145,7 @@ function BlogPost({ post }) {
 - Are Server Components part of React 19? The React APIs are stable; bundling
   and routing are done by a framework such as Next.js.
 - What breaks when upgrading from 18? The removed APIs above, the type changes,
-  and error reporting that relied on caught errors being re-thrown.
+  and error reporting that relied on render errors being re-thrown.
 
 ## Common Mistakes
 

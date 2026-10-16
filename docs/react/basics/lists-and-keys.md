@@ -96,15 +96,15 @@ export default function TodoList() {
     <>
       <button onClick={addFirst}>Add to the top</button>
       <ul>
-        {/* error-next-line */}
         {todos.map((todo, index) => (
-          <Todo key={index} todo={todo} />
+          // error-next-line
+          <Todo key={index} todo={todo} /> // the note stays in the first row
         ))}
       </ul>
       <ul>
-        {/* correct-next-line */}
         {todos.map((todo) => (
-          <Todo key={todo.id} todo={todo} />
+          // correct-next-line
+          <Todo key={todo.id} todo={todo} /> // the note moves with its task
         ))}
       </ul>
     </>

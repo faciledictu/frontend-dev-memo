@@ -37,7 +37,7 @@ Applies to: TanStack Query 5.
 - Objects in a key are hashed deterministically: the order of their properties
   does not matter.
 - Keys are hierarchical: `invalidateQueries({ queryKey: ['todos'] })` matches
-  every key that starts with `'todos'`.
+  every key whose first element is `'todos'`.
 - `queryOptions({ queryKey, queryFn })` keeps the key and the function together
   for reuse and typing.
 
@@ -50,8 +50,9 @@ Applies to: TanStack Query 5.
 
 - With `staleTime: 0` every new mount, window focus and reconnect starts a
   background refetch, while the cached data is already on the screen.
-- Data that rarely changes gets a `staleTime` of minutes; static data gets
-  `Infinity` (no automatic refetch, but invalidation still works).
+- Data that rarely changes gets a `staleTime` of minutes. `Infinity`: no
+  automatic refetch, but invalidation still works; `'static'`: not even
+  invalidation refetches.
 - **Structural sharing**: if the refetched data is equal to the cached data, the
   old references are kept, so components and memoized values don't update.
 
