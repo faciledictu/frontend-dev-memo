@@ -14,7 +14,7 @@ of checks, the main ones being **`strictNullChecks`** (`null` and `undefined`
 are separate types) and **`noImplicitAny`**. Since TypeScript 6.0 `strict` is
 **on by default**.
 
-Some useful checks are **not** part of `strict`, most of all
+Some useful checks are **not** part of `strict`, most notably
 **`noUncheckedIndexedAccess`**. In an app built with a bundler, `tsc` only
 checks types (`noEmit`), and the bundler compiles the code.
 
@@ -33,7 +33,7 @@ Applies to: TypeScript 7.0.
 | `strictPropertyInitialization` | class fields must be set in the constructor or declared with `!`            |
 | `noImplicitThis`               | `this` with an implicit `any` type is an error                              |
 | `useUnknownInCatchVariables`   | `catch (e)` gives `e: unknown` instead of `any`                             |
-| `strictBuiltinIteratorReturn`  | built-in iterators return `undefined` when done, not `any` (TS 5.6)         |
+| `strictBuiltinIteratorReturn`  | built-in iterators return `undefined` when done, not `any` (TypeScript 5.6) |
 
 - Each flag can be turned off separately: `"strict": true` plus
   `"strictPropertyInitialization": false`.
@@ -67,7 +67,7 @@ Applies to: TypeScript 7.0.
 | `target`, `lib`        | the JavaScript version to emit and the built-in APIs available                 |
 | `types`                | global type packages to load: `["node"]`, `["vite/client"]`                    |
 | `paths`                | import aliases such as `@/components`                                          |
-| `skipLibCheck`         | do not check `.d.ts` files of dependencies: faster, hides conflicts there      |
+| `skipLibCheck`         | does not check `.d.ts` files of dependencies: faster, hides conflicts there    |
 
 `erasableSyntaxOnly` matters for running `.ts` files directly in Node.js, which
 strips types without compiling them; see [Enums](./enums.md).
@@ -139,8 +139,8 @@ for (const user of users) user.toUpperCase(); // iteration is not affected
   excluded but imported from an included file is still checked.
 - How do you share a config between projects? `"extends"`, for example from the
   `@tsconfig/*` packages, and project references for monorepos.
-- Why can't `tsc` run with `noEmit` and still build the app? It only checks; the
-  bundler compiles each file separately, which is why `isolatedModules` or
+- Why can't `tsc` with `noEmit` build the app? It only checks; the bundler
+  compiles each file separately, which is why `isolatedModules` or
   `verbatimModuleSyntax` is needed.
 
 ## Common Mistakes

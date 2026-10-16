@@ -70,8 +70,8 @@ Applies to: React 19, `@types/react` 19.3, TypeScript 7.0.
 ### Hooks
 
 - **`useState`**: `useState(0)` is `number`. An empty array is inferred as
-  `never[]` and an empty `null` as `null`, so write the type:
-  `useState<string[]>([])`, `useState<User | null>(null)`.
+  `never[]` and `null` as `null`, so write the type: `useState<string[]>([])`,
+  `useState<User | null>(null)`.
 - **`useRef`**: for a DOM element, `useRef<HTMLInputElement>(null)`; for a
   mutable value, `useRef<number | null>(null)`. In React 19 the argument is
   required and `current` is always writable (`MutableRefObject` is deprecated).

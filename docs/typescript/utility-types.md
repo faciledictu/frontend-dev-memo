@@ -10,7 +10,7 @@ tags: [junior, middle]
 
 **Utility types** are built-in generic types that transform other types, so a
 related type is derived instead of written by hand and stays in sync with the
-original. The most used:
+original. The most commonly used:
 
 - for objects: **`Partial`**, **`Required`**, **`Readonly`**, **`Pick`**,
   **`Omit`**, **`Record`**;
@@ -26,14 +26,14 @@ Applies to: TypeScript 7.0.
 
 ### Objects
 
-| Type           | What it does                             | Typical use                                  |
-| -------------- | ---------------------------------------- | -------------------------------------------- |
-| `Partial<T>`   | all properties optional                  | update payloads, options with defaults       |
-| `Required<T>`  | all properties required (removes `?`)    | config after defaults are applied            |
-| `Readonly<T>`  | all properties `readonly`                | props, state, values that must not change    |
-| `Pick<T, K>`   | only the keys `K`; `K` must be keys of T | a smaller view of a type                     |
-| `Omit<T, K>`   | all keys except `K`; `K` is not checked  | input types without `id` or server fields    |
-| `Record<K, V>` | an object with keys `K` and values `V`   | dictionaries, a lookup by every union member |
+| Type           | What it does                               | Typical use                                  |
+| -------------- | ------------------------------------------ | -------------------------------------------- |
+| `Partial<T>`   | all properties optional                    | update payloads, options with defaults       |
+| `Required<T>`  | all properties required (removes `?`)      | config after defaults are applied            |
+| `Readonly<T>`  | all properties `readonly`                  | props, state, values that must not change    |
+| `Pick<T, K>`   | only the keys `K`; `K` must be keys of `T` | a smaller view of a type                     |
+| `Omit<T, K>`   | all keys except `K`; `K` is not checked    | input types without `id` or server fields    |
+| `Record<K, V>` | an object with keys `K` and values `V`     | dictionaries, a lookup by every union member |
 
 - `Partial` and `Readonly` are **shallow**: nested objects keep their types.
 - `Readonly` is compile-time only. At runtime the object can still be changed;
@@ -55,14 +55,14 @@ Applies to: TypeScript 7.0.
 
 ### Functions and Promises
 
-| Type                       | What it does                                  |
-| -------------------------- | --------------------------------------------- |
-| `ReturnType<F>`            | the return type of a function type            |
-| `Parameters<F>`            | the parameter types as a tuple                |
-| `Awaited<T>`               | the value of a promise, unwrapped recursively |
-| `ConstructorParameters<C>` | the parameters of a class constructor         |
-| `InstanceType<C>`          | the type of an instance of a class            |
-| `NoInfer<T>`               | blocks inference from this position (TS 5.4)  |
+| Type                       | What it does                                         |
+| -------------------------- | ---------------------------------------------------- |
+| `ReturnType<F>`            | the return type of a function type                   |
+| `Parameters<F>`            | the parameter types as a tuple                       |
+| `Awaited<T>`               | the value of a promise, unwrapped recursively        |
+| `ConstructorParameters<C>` | the parameters of a class constructor                |
+| `InstanceType<C>`          | the type of an instance of a class                   |
+| `NoInfer<T>`               | blocks inference from this position (TypeScript 5.4) |
 
 - They take a **type**, so a function value needs `typeof`:
   `ReturnType<typeof fetchUser>`.
