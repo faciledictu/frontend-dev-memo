@@ -44,11 +44,11 @@ Applies to: React 19.3.
 
 ### Minor Versions
 
-| Version        | What was added                                                                                                                                                                                             |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 19.1 (03.2025) | Owner Stack: `captureOwnerStack()` in development shows which components rendered the one that failed                                                                                                      |
-| 19.2 (10.2025) | `<Activity mode="hidden">` hides a subtree but keeps its state; [`useEffectEvent`](./hooks/side-effects.md#dependencies); React Performance Tracks; `cacheSignal` and partial pre-rendering for the server |
-| 19.3 (09.2026) | `<ViewTransition>` and `addTransitionType`: animations through the View Transition API; Fragment refs; `use(browser())` from `react-dom` renders a subtree only in the browser; Trusted Types              |
+| Version               | What was added                                                                                                                                                                                             |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 19.1 (March 2025)     | Owner Stack: `captureOwnerStack()` in development shows which components rendered the one that failed                                                                                                      |
+| 19.2 (October 2025)   | `<Activity mode="hidden">` hides a subtree but keeps its state; [`useEffectEvent`](./hooks/side-effects.md#dependencies); React Performance Tracks; `cacheSignal` and partial pre-rendering for the server |
+| 19.3 (September 2026) | `<ViewTransition>` and `addTransitionType`: animations through the View Transition API; Fragment refs; `use(browser())` from `react-dom` renders a subtree only in the browser; Trusted Types              |
 
 ### React Compiler
 
@@ -71,7 +71,8 @@ Applies to: React 19.3.
 | `react-dom/test-utils`                             | `act` from `react`, React Testing Library |
 | UMD builds                                         | An ESM CDN such as esm.sh                 |
 
-- Not needed and planned for deprecation: `forwardRef`, `<Context.Provider>`.
+- No longer needed and planned for deprecation: `forwardRef`,
+  `<Context.Provider>`.
 - Deprecated: `react-test-renderer`, reading `element.ref` (the ref is now
   `element.props.ref`).
 - The new JSX transform is required.

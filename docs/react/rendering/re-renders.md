@@ -25,7 +25,7 @@ Applies to: React 19.3.
 | ----------------------------------------- | ------------------------------------------------------------------------------------ |
 | `setState` or `dispatch` with a new value | The same value by `Object.is` is a bailout: no re-render of the children             |
 | The parent re-rendered                    | All children re-render, whether or not their props changed, unless wrapped in `memo` |
-| The value of a context it reads changed   | Every consumer re-renders, `memo` does not stop it                                   |
+| The value of a context it reads changed   | Every consumer re-renders; `memo` does not stop it                                   |
 | The snapshot of an external store changed | With a selector, only when the selected value changed                                |
 | A custom hook it calls updated its state  | A hook's state is the component's state                                              |
 

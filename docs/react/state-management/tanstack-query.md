@@ -88,7 +88,7 @@ Applies to: TanStack Query 5.
   error boundary, `data` is always defined.
 - SSR: the data is prefetched on the server (`queryClient.prefetchQuery`),
   serialized with `dehydrate` and restored with `<HydrationBoundary>`. In the
-  Next.js App Router data is often loaded in
+  Next.js App Router, data is often loaded in
   [Server Components](../../nextjs/app-router/fetching-patterns.md) instead.
 - `queryFn` receives an `AbortSignal` (`{ signal }`); passed to `fetch`, it
   cancels a request that is no longer needed.

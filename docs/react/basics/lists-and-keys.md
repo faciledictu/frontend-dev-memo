@@ -33,7 +33,7 @@ Applies to: React 19.3.
 - With duplicate keys React warns, and items can be duplicated or lost on
   update.
 - Several elements per item without a wrapper: `<Fragment key={id}>`. The short
-  syntax `<>` can't take a key, see [Fragments](./components.md#fragments).
+  syntax `<>` can't take a key; see [Fragments](./components.md#fragments).
 
 ### Choosing a Key
 

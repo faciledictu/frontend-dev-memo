@@ -12,9 +12,9 @@ An event handler is a prop in camelCase that takes a function:
 wrapper with the interface of the native event (`target`, `preventDefault()`,
 `stopPropagation()`); the native event is in `e.nativeEvent`. React does not
 attach a listener to every element: it uses **event delegation**, one listener
-per event type on the **root container** (since React 17; on `document` before).
-Events propagate through the **React tree**, so an event inside a portal reaches
-its React parents.
+per event type on the **root container** (since React 17; before that, on
+`document`). Events propagate through the **React tree**, so an event inside a
+portal reaches its React parents.
 
 Applies to: React 19.3.
 
@@ -65,8 +65,8 @@ Applies to: React 19.3.
     the root;
   - `e.stopPropagation()` in a native listener inside the root stops the event
     before the root, so the React handlers in the bubble phase don't run.
-- Events of `window` and `document` (`resize`, `keydown` on the whole page) are
-  subscribed to with `addEventListener` in an effect, with cleanup.
+- Subscribe to events of `window` and `document` (`resize`, `keydown` on the
+  whole page) with `addEventListener` in an effect, with cleanup.
 
 ## Example
 
