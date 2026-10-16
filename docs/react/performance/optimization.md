@@ -73,8 +73,8 @@ Applies to: React 19, React Compiler 1.0.
 ### Doing Less Work
 
 - [Virtualization](./virtualization.md) for long lists.
-- [Transitions and `useDeferredValue`](./concurrent-rendering.md) to keep the UI
-  responsive during a slow render.
+- [Transitions and `useDeferredValue`](../rendering/concurrent-rendering.md) to
+  keep the UI responsive during a slow render.
 - [Code splitting](../../web-platform/tools/bundle-optimization.md) with `lazy`.
 - [Debounce or throttle](../../javascript/debounce-throttle.md) for frequent
   events.

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 description: Render and commit phases, virtual DOM, diffing heuristics and Fiber
 ---
 
@@ -80,9 +80,8 @@ node: one unit of work.
   recursion and can stop after any fiber and continue later.
 - React builds a **work-in-progress** tree next to the **current** one and swaps
   them at commit.
-- This is the base for
-  [concurrent rendering](../performance/concurrent-rendering.md), `Suspense` and
-  error boundaries.
+- This is the base for [concurrent rendering](./concurrent-rendering.md),
+  `Suspense` and error boundaries.
 
 ## Example
 

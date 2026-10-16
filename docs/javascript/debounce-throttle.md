@@ -59,7 +59,7 @@ throttle:  *  *  *  *       once per 300 ms while the events come
   heavy `scroll` handlers.
 - In React, `useDeferredValue` and `startTransition` keep typing responsive
   without a fixed delay; they don't reduce the number of requests. See
-  [Concurrent Rendering](../react/performance/concurrent-rendering.md).
+  [Concurrent Rendering](../react/rendering/concurrent-rendering.md).
 
 ## Example
 

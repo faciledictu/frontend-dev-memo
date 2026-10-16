@@ -3,6 +3,6 @@
   "position": 3,
   "link": {
     "type": "generated-index",
-    "description": "How React renders to the DOM, reconciliation and re-renders"
+    "description": "Reconciliation, re-renders, concurrent rendering and react-dom"
   }
 }

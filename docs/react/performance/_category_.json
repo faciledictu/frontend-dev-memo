@@ -3,6 +3,6 @@
   "position": 4,
   "link": {
     "type": "generated-index",
-    "description": "Memoization, virtualization and concurrent rendering"
+    "description": "Memoization, React Compiler and virtualization"
   }
 }

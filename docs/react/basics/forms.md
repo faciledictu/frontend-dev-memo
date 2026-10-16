@@ -201,4 +201,4 @@ export default function ProfileForm() {
 ## See Also
 
 - [Refs](../hooks/refs.md)
-- [Concurrent Rendering](../performance/concurrent-rendering.md#transitions)
+- [Concurrent Rendering](../rendering/concurrent-rendering.md#transitions)

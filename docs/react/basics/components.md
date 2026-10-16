@@ -41,7 +41,7 @@ a component.
   [effects](../hooks/side-effects.md).
 - The reason: React can call a component several times, pause a render or throw
   its result away (`StrictMode`,
-  [concurrent rendering](../performance/concurrent-rendering.md)).
+  [concurrent rendering](../rendering/concurrent-rendering.md)).
 - Local mutation is fine: creating an array during render and pushing into it.
 
 ### Fragments

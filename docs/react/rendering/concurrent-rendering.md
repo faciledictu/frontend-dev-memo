@@ -171,7 +171,7 @@ export default function App() {
   itself; `useDeferredValue` is for a value you only receive.
 - Why is the commit phase not interruptible? A partially applied update would
   show an inconsistent UI, see
-  [Rendering and Reconciliation](../rendering/reconciliation.md#render-and-commit).
+  [Rendering and Reconciliation](./reconciliation.md#render-and-commit).
 
 ## Common Mistakes
 
@@ -183,6 +183,6 @@ export default function App() {
 
 ## See Also
 
-- [Optimizing React Components](./optimization.md)
+- [Optimizing React Components](../performance/optimization.md)
 - [Forms: Actions](../basics/forms.md#actions)
 - [`useDeferredValue` reference](https://react.dev/reference/react/useDeferredValue)

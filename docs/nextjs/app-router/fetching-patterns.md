@@ -116,4 +116,4 @@ export function Playlists({
 
 - [Server Components](./server-components.mdx)
 - [Caching](./caching.mdx)
-- [`use` and Suspense in React](../../react/performance/concurrent-rendering.md#suspense)
+- [`use` and Suspense in React](../../react/rendering/concurrent-rendering.md#suspense)
