@@ -3,6 +3,6 @@
   "position": 1,
   "link": {
     "type": "generated-index",
-    "description": "Components, props, state and how React renders them"
+    "description": "Components, props, state, lists, events and forms"
   }
 }

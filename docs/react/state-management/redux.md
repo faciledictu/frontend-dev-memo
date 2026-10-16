@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 3
 description:
   Store, actions and reducers, Redux Toolkit slices, React Redux hooks and
   memoized selectors
@@ -92,7 +92,7 @@ Applies to: Redux Toolkit 2, React Redux 9, Reselect 5.
 | TanStack Query, RTK Query      | Server state: caching, deduplication, background refetching                                      |
 
 Redux is not needed when the state is local or when most of it is a cache of
-server data.
+server data. How to choose: [Where to Keep State](./overview.md).
 
 ## Example
 
@@ -245,3 +245,4 @@ export default function App() {
 - [State](../basics/state.md#usereducer) — `useReducer` uses the same reducer
   idea locally.
 - [React Context](../hooks/context.md)
+- [Where to Keep State](./overview.md)

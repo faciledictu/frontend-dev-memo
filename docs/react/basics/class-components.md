@@ -32,7 +32,7 @@ is an [error boundary](./patterns.md#error-boundaries).
   must be pure.
 - Methods before `render` belong to the **render phase**, `componentDid…` and
   `componentWillUnmount` to the **commit phase**, see
-  [Rendering](./rendering.md#render-and-commit).
+  [Rendering](../rendering/reconciliation.md#render-and-commit).
 - `componentWillMount`, `componentWillReceiveProps` and `componentWillUpdate`
   are deprecated and renamed to `UNSAFE_…`; the old names still work with a
   warning.

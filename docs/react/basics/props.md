@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 2
 description:
   Passing data and callbacks, default values, children, typing and prop drilling
 ---
@@ -50,7 +50,7 @@ reach a deep child. Ways to avoid it:
 - composition: pass a ready element (`children` or another prop) instead of the
   data for it;
 - [context](../hooks/context.md);
-- a store such as [Redux](../ecosystem/redux.md).
+- a store such as [Redux](../state-management/redux.md).
 
 ## Example
 

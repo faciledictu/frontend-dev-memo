@@ -111,4 +111,4 @@ skip the JS thread.
 
 - [What Is React Native](./overview.md)
 - [Reanimated](./animations/reanimated.md)
-- [Rendering and Reconciliation in React](../react/basics/rendering.md)
+- [Rendering and Reconciliation in React](../react/rendering/reconciliation.md)

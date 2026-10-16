@@ -171,7 +171,7 @@ export default function App() {
   itself; `useDeferredValue` is for a value you only receive.
 - Why is the commit phase not interruptible? A partially applied update would
   show an inconsistent UI, see
-  [Rendering and Reconciliation](../basics/rendering.md#render-and-commit).
+  [Rendering and Reconciliation](../rendering/reconciliation.md#render-and-commit).
 
 ## Common Mistakes
 

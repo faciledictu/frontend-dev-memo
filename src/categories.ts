@@ -45,7 +45,8 @@ export const react: Category = {
   id: 'react',
   label: 'React',
   navbarLabel: 'React',
-  description: 'Components, hooks, rendering, performance and ecosystem',
+  description:
+    'Components, hooks, rendering, performance, state management and ecosystem',
   group: 'main',
 };
 

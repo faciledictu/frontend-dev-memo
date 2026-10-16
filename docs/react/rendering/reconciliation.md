@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 2
 description: Render and commit phases, virtual DOM, diffing heuristics and Fiber
 ---
 
@@ -24,12 +24,8 @@ touched.
    effects, all in one synchronous pass. `useEffect` callbacks run later,
    usually after the browser paints.
 
-A component re-renders when:
-
-- its state changed;
-- its parent re-rendered (whether or not the props changed, unless it is wrapped
-  in [`memo`](../performance/optimization.md#memoization));
-- a context it reads changed.
+What triggers a re-render: see
+[When Does a Component Re-render?](./re-renders.md)
 
 ### Virtual DOM
 
@@ -59,9 +55,8 @@ Consequences:
 - The same type at the same position keeps the DOM node and the component state;
   only the changed attributes and props are updated.
 - An index as a `key` breaks when the list is reordered, filtered or prepended
-  to: state and DOM (input values, focus) stay with the position, not with the
-  item. A key must be stable and unique among siblings, such as an ID from the
-  data.
+  to: state and DOM stay with the position, not with the item. How to choose a
+  key: [Lists and `key`](../basics/lists-and-keys.md).
 - Changing the `key` on purpose resets a component.
 - Trees are compared level by level: a subtree moved to another parent is
   recreated.
@@ -134,8 +129,6 @@ export default function Form() {
   the commit phase changes nothing.
 - Why is the commit phase synchronous? A partially applied update would show an
   inconsistent UI.
-- Why is an index a bad `key`? See the consequences above; it is acceptable only
-  for a static list that is never reordered.
 - What is the difference between the virtual DOM and Fiber? The virtual DOM is
   the idea of describing the UI with objects; Fiber is the implementation of the
   reconciler that processes them.
@@ -143,12 +136,11 @@ export default function Form() {
 ## Common Mistakes
 
 - "The virtual DOM is faster than the real DOM."
-- "A component re-renders when its props change": it re-renders when the parent
-  does.
-
 - `key={Math.random()}` or `key={index}` for a dynamic list.
 
 ## See Also
 
+- [When Does a Component Re-render?](./re-renders.md)
+- [Lists and `key`](../basics/lists-and-keys.md)
 - [Optimizing React Components](../performance/optimization.md)
 - [React Fiber Architecture](https://github.com/acdlite/react-fiber-architecture)
