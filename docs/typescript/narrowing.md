@@ -65,10 +65,12 @@ Applies to: TypeScript 7.0.
 
 - **In callbacks**, for a `let` variable or a parameter that is reassigned after
   the callback is created: the callback may run later, after the value changed.
-  A `const`, or a `let` that is not reassigned afterwards, stays narrowed (since
-  TypeScript 5.4).
-- **Through an intermediate function** that only returns `boolean`: the compiler
-  does not look inside, so `isString(x)` without `x is string` narrows nothing.
+  A `const` always stays narrowed; since TypeScript 5.4 so does a `let` or a
+  parameter that is not reassigned after the callback is created.
+- **Through a function annotated as returning `boolean`**: the compiler does not
+  look inside, so `isString(x): boolean` narrows nothing. Without the annotation
+  a simple check gets an inferred predicate (TypeScript 5.5); a complex body
+  does not.
 - **For the object when a property is checked**: `if (res.data !== null)`
   narrows `res.data`, but not `res` itself. The object is narrowed only when it
   is a union and the property is its discriminant.

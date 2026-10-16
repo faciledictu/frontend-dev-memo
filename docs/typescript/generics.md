@@ -46,7 +46,7 @@ const user = { id: 1, name: 'Ann' };
 const userName = getProp(user, 'name'); // string
 // error-start
 getProp(user, 'age');
-// Error: Argument of type '"age"' is not assignable to parameter of type '"name" | "id"'.
+// Error: Argument of type '"age"' is not assignable to parameter of type '"id" | "name"'.
 // error-end
 
 interface ApiResponse<T = unknown> {

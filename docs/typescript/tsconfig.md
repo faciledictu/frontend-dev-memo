@@ -39,8 +39,8 @@ Applies to: TypeScript 7.0.
   `"strictPropertyInitialization": false`.
 - New strict checks are added to the family in new versions, so an upgrade of
   TypeScript can bring new errors. That is by design.
-- `alwaysStrict` (emit `"use strict"`) used to be in the family too; since
-  TypeScript 6.0 it can't be turned off.
+- `alwaysStrict` (emit `"use strict"`) used to be in the family too;
+  `alwaysStrict: false` is deprecated in TypeScript 6.0 and removed in 7.0.
 
 ### Useful Checks Beyond `strict`
 
@@ -55,19 +55,19 @@ Applies to: TypeScript 7.0.
 
 ### Modules and Emit
 
-| Flag                   | Meaning                                                                        |
-| ---------------------- | ------------------------------------------------------------------------------ |
-| `noEmit`               | only check types; a bundler (Vite, Next.js) produces the JavaScript            |
-| `module`               | the module format: `esnext` or `preserve` with a bundler, `nodenext` for Node  |
-| `moduleResolution`     | `bundler` with a bundler, `nodenext` for Node.js                               |
-| `verbatimModuleSyntax` | type-only imports must be written as `import type`; others are kept as is      |
-| `isolatedModules`      | forbids code a single-file compiler (esbuild, SWC) can't handle                |
-| `erasableSyntaxOnly`   | forbids `enum`, `namespace` and parameter properties: code with runtime output |
-| `jsx`                  | `react-jsx` for React 17+                                                      |
-| `target`, `lib`        | the JavaScript version to emit and the built-in APIs available                 |
-| `types`                | global type packages to load: `["node"]`, `["vite/client"]`                    |
-| `paths`                | import aliases such as `@/components`                                          |
-| `skipLibCheck`         | does not check `.d.ts` files of dependencies: faster, hides conflicts there    |
+| Flag                   | Meaning                                                                                          |
+| ---------------------- | ------------------------------------------------------------------------------------------------ |
+| `noEmit`               | only check types; a bundler (Vite, Next.js) produces the JavaScript                              |
+| `module`               | the module format: `esnext` or `preserve` with a bundler, `nodenext` for Node                    |
+| `moduleResolution`     | `bundler` with a bundler, `nodenext` for Node.js                                                 |
+| `verbatimModuleSyntax` | type-only imports must be written as `import type`; others are kept as is                        |
+| `isolatedModules`      | forbids code a single-file compiler (esbuild, SWC) can't handle                                  |
+| `erasableSyntaxOnly`   | forbids `enum`, `namespace` and parameter properties: code with runtime output                   |
+| `jsx`                  | `react-jsx` for React 17+                                                                        |
+| `target`, `lib`        | the JavaScript version to emit and the built-in APIs available                                   |
+| `types`                | global type packages to load: `["node"]`, `["vite/client"]`                                      |
+| `paths`                | import aliases such as `@/components`                                                            |
+| `skipLibCheck`         | does not check any `.d.ts` files, including those of dependencies: faster, hides conflicts there |
 
 `erasableSyntaxOnly` matters for running `.ts` files directly in Node.js, which
 strips types without compiling them; see [Enums](./enums.md).
