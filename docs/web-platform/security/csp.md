@@ -13,8 +13,9 @@ Once `script-src` is set, **inline scripts**, `on*` attributes and `eval` are
 blocked unless the policy allows them. That makes CSP the **second layer of
 defense against XSS**: an injected script does not run even if escaping was
 missed somewhere. The recommended form is a **strict CSP**: scripts are allowed
-by a random **nonce** or a **hash**, not by a list of hosts. CSP also replaces
-`X-Frame-Options` against clickjacking with `frame-ancestors`.
+by a random **nonce** or a **hash**, not by a list of hosts, and it is rolled
+out with **Report-Only** first. `frame-ancestors` also protects against
+clickjacking.
 
 ## Details
 
@@ -46,7 +47,7 @@ by a random **nonce** or a **hash**, not by a list of hosts. CSP also replaces
 | `'nonce-<random>'`                  | elements with the matching `nonce` attribute                                                                                                   |
 | `'sha256-<hash>'`                   | an inline script or style with exactly this content                                                                                            |
 | `'strict-dynamic'`                  | scripts that a trusted script creates (`createElement`, not `document.write`); hosts, schemes, `'self'` and `'unsafe-inline'` are then ignored |
-| `'unsafe-inline'`                   | any inline code; it disables the protection against XSS                                                                                        |
+| `'unsafe-inline'`                   | any inline code; it disables the protection against XSS. Ignored when a nonce or a hash is present                                             |
 | `'unsafe-eval'`                     | `eval`, `new Function`, `setTimeout` with a string                                                                                             |
 
 ### Strict CSP vs Allowlist
@@ -128,14 +129,20 @@ app.use((req, res, next) => {
   any page and copied into the injected script.
 - How do you protect against clickjacking? `frame-ancestors 'none'` (or
   `'self'`). It replaces the older `X-Frame-Options: DENY`.
+- Why does a React, Vite or Next.js app break under a strict CSP? Bundlers and
+  CSS-in-JS libraries inject inline `<script>` and `<style>` tags. Pass the
+  nonce to the framework (Next.js and Vite support it) and allow it in
+  `style-src` too, or accept `'unsafe-inline'` for styles only.
+- How do you find out what CSP blocked? The console message names the directive;
+  Report-Only with `report-to` collects violations from users; the page can
+  listen to the `securitypolicyviolation` event.
 - Does CSP replace escaping and sanitization? No, it is the second layer. See
   [XSS](./xss.md).
 
 ## Common Mistakes
 
 - `'unsafe-inline'` in `script-src` "to make it work": it turns off the main
-  protection. With a nonce or a hash present, modern browsers ignore it, so it
-  only serves as a fallback for very old browsers.
+  protection.
 - An allowlist with large CDNs or `https:`: easy to bypass.
 - Turning on the enforcing header without a Report-Only period: it breaks the
   site for users.

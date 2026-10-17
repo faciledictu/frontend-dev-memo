@@ -22,12 +22,12 @@ To make a page load faster:
 
 ### What Blocks the First Paint
 
-| Resource                              | Blocks                                   | Fix                                                                                     |
-| ------------------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------- |
-| `<link rel="stylesheet">` in `<head>` | rendering                                | inline the critical CSS, load the rest without blocking; `media` for conditional CSS    |
-| `<script>` without attributes         | the parser                               | `defer`, `async` or `type="module"`. See [HTML](../../html-css/html.md#loading-scripts) |
-| CSS `@import`                         | rendering, one more round trip           | `<link>` tags instead                                                                   |
-| Web fonts                             | the text (invisible for up to about 3 s) | `font-display: swap` or `optional`, preload the main font                               |
+| Resource                              | Blocks                            | Fix                                                                                     |
+| ------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------- |
+| `<link rel="stylesheet">` in `<head>` | rendering                         | inline the critical CSS, load the rest without blocking; `media` for conditional CSS    |
+| `<script>` without attributes         | the parser                        | `defer`, `async` or `type="module"`. See [HTML](../../html-css/html.md#loading-scripts) |
+| CSS `@import`                         | rendering, one more round trip    | `<link>` tags instead                                                                   |
+| Web fonts                             | hide the text for up to about 3 s | `font-display: swap` or `optional`, preload the main font                               |
 
 A stylesheet whose `media` does not match (`media="print"`) is still downloaded,
 but with a low priority and without blocking the render.
@@ -91,7 +91,8 @@ The `<head>` and the first screen of an optimized page:
     type="font/woff2"
     crossorigin
   />
-  <!-- Critical CSS inline, the rest does not block rendering -->
+  <!-- Critical CSS inline, the rest does not block rendering.
+       onload is an inline handler: under a strict CSP it needs a nonce -->
   <style>
     /* styles of the first screen */
   </style>
@@ -134,15 +135,19 @@ The `<head>` and the first screen of an optimized page:
   current page, with the priority of its `as` type (high for fonts and styles,
   low for images unless `fetchpriority="high"`); `prefetch` is for a future
   navigation, with the lowest priority.
-- How do you find what slows down the load? The **Network** panel (waterfall,
-  priorities), the **Performance** panel, Lighthouse. See
+- What do you do first on a slow page? Measure: find the LCP element and the
+  request waterfall in front of it (Lighthouse, WebPageTest, the **Network**
+  panel), then shorten the longest chain. See
   [Debugging](../tools/debugging.md).
-- Why does the `media="print" onload` trick break under a strict CSP? The
-  `onload` attribute is an inline handler, and CSP blocks it. See
-  [Content Security Policy](../security/csp.md).
+- How did HTTP/2 change the advice? Many small files are cheap over one
+  multiplexed connection, so domain sharding, sprites and inlining everything
+  are no longer needed. Bundling still helps compression and tree shaking.
 
 ## Common Mistakes
 
+- "Put scripts at the end of `<body>`." That is the advice from before `defer`:
+  `<script defer>` in `<head>` starts the download earlier and still runs after
+  parsing.
 - Preloading everything: priorities stop meaning anything.
 - `loading="lazy"` on every image, including the hero image.
 - Measuring only on a fast laptop and a fast network: use CPU and network

@@ -12,7 +12,7 @@ the network**: a programmable proxy for all requests of its **scope**. It
 intercepts the `fetch` event and decides what to answer: from the network, from
 **Cache Storage**, or something generated. This gives **offline mode**, instant
 repeat loads, **push notifications** and background sync. It is event-driven,
-lives separately from the tabs, and the browser stops it when it is idle. It
+lives independently of the tabs, and the browser stops it when it is idle. It
 works only over **HTTPS** (and on `localhost`). Lifecycle: **register → install
 → waiting → activate**, after which it controls the pages.
 
@@ -49,6 +49,8 @@ works only over **HTTPS** (and on `localhost`). Lifecycle: **register → instal
   reload" instead.
 - `event.waitUntil(promise)` keeps the worker alive until the work is done;
   `event.respondWith(promise)` gives the response to a request.
+- **Debugging**: DevTools → Application → Service workers ("Update on reload",
+  "Bypass for network", "Unregister").
 
 ### Caching Strategies
 
@@ -65,7 +67,7 @@ works only over **HTTPS** (and on `localhost`). Lifecycle: **register → instal
 - **Workbox** implements these strategies, precaching with revisions and cache
   expiration.
 
-### Limits
+### Pitfalls
 
 - No DOM, no `localStorage`; state between events goes to IndexedDB or Cache
   Storage, because the worker can be stopped at any moment and global variables
@@ -75,8 +77,6 @@ works only over **HTTPS** (and on `localhost`). Lifecycle: **register → instal
 - A broken service worker survives deploys. Keep a way out: deploy a new `sw.js`
   that unregisters itself (`self.registration.unregister()`), or send the
   `Clear-Site-Data: "storage"` header.
-- **Debugging**: DevTools → Application → Service workers ("Update on reload",
-  "Bypass for network", "Unregister").
 
 ### PWA
 
@@ -143,6 +143,10 @@ self.addEventListener('fetch', (event) => {
   intercepts network requests of all its pages and lives without them.
 - Why does the new version not activate after a deploy? The old one still
   controls open tabs; it waits until they are closed, or until `skipWaiting()`.
+- How do you tell the user that a new version is ready? On `updatefound`, wait
+  until the new worker's state is `installed` and show "Reload to update". On
+  click, send it a message that calls `skipWaiting()`, and reload the page on
+  the `controllerchange` event.
 - Why HTTPS only? A worker that can rewrite every response would let a network
   attacker take over the site permanently.
 - Does a service worker replace the HTTP cache? No: requests from it go through
@@ -150,6 +154,9 @@ self.addEventListener('fetch', (event) => {
   controlled from code.
 
 ## Common Mistakes
+
+- Registering `/static/sw.js` and expecting it to control the whole site: the
+  scope is the script's directory.
 
 - Serving HTML cache first and forgetting to version the caches: users never get
   the new release.

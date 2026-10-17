@@ -10,11 +10,11 @@ description:
 **XSS** is an injection of the attacker's script into a page of your site. The
 script runs in **your origin**, with all the rights of the page: it reads the
 DOM and `localStorage`, sends requests as the user, changes what the user sees.
-Types: **stored** (saved on the server and shown to other users), **reflected**
-(the server puts part of the URL into the response), **DOM-based** (client code
-puts untrusted data into a dangerous sink such as `innerHTML`). The defense is
-to treat every external string as text: **escape output** for its context,
-**sanitize** HTML that must be rendered, and add **CSP** as the second layer.
+Types: **stored** (in the database, shown to other users), **reflected** (the
+server echoes part of the URL), **DOM-based** (client code puts untrusted data
+into a sink such as `innerHTML`). The defense is to treat every external string
+as text: **escape output** for its context, **sanitize** HTML that must be
+rendered, and add **CSP** as the second layer.
 
 ## Details
 
@@ -49,8 +49,7 @@ Dangerous sinks in the browser: `innerHTML` / `outerHTML`, `insertAdjacentHTML`,
 - **Trusted Types** (the CSP directive `require-trusted-types-for 'script'`)
   make the browser reject plain strings in `innerHTML` and other sinks: only
   values created by a reviewed policy are accepted. This finds DOM-based XSS in
-  the whole codebase at once. Supported in all major browsers since 2026
-  (Firefox 148).
+  the whole codebase at once.
 
 ### XSS in React
 
@@ -117,7 +116,8 @@ function safeUrl(value) {
 
 safeUrl('javascript:alert(1)'); // 'about:blank'
 safeUrl('/profile'); // 'https://your-site.example/profile'
-safeUrl('//evil.example'); // 'https://evil.example/': the scheme is checked, the host is not
+// Only the scheme is checked, not the host:
+safeUrl('//evil.example'); // 'https://evil.example/'
 ```
 
 ## Follow-up Questions
@@ -128,6 +128,14 @@ safeUrl('//evil.example'); // 'https://evil.example/': the scheme is checked, th
 - Does an `HttpOnly` cookie protect from XSS? It protects the cookie from being
   read. The injected script can still make requests with it, so the session is
   used without being stolen.
+- What is the difference between escaping and sanitizing? Escaping turns markup
+  into text (`<` → `&lt;`), so nothing is rendered as HTML. Sanitizing keeps the
+  allowed markup and removes the dangerous parts (scripts, handlers,
+  `javascript:` URLs). Escape by default; sanitize only when HTML must be
+  rendered.
+- Where do you look for XSS in a React code review? `dangerouslySetInnerHTML`,
+  `href` and `src` built from user data, `ref.current.innerHTML`, user objects
+  spread into props, server state serialized into `<script>`.
 - Is escaping on input enough? No: the same data goes to different contexts
   (HTML, attributes, JSON, URLs), so it is escaped on output, where the context
   is known. Validation on input is an extra layer.
@@ -141,6 +149,9 @@ safeUrl('//evil.example'); // 'https://evil.example/': the scheme is checked, th
   versions.
 - "We strip `<script>` tags." Event handlers, `javascript:` URLs, SVG and many
   other vectors remain. Use a real sanitizer.
+- "XSS is a server problem." DOM-based XSS happens entirely in the client.
+- Relying on the `X-XSS-Protection` header: browsers removed the XSS filter it
+  controlled, so it does nothing today.
 - "CSP replaces escaping." It is the second layer for the holes that were
   missed, not the first one.
 

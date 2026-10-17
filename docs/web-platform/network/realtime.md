@@ -10,15 +10,14 @@ description:
 HTTP is request–response: the server cannot send anything until the client asks.
 Ways to get updates without a reload:
 
-- **Polling**: a request every few seconds. Simple, but with a delay and many
-  empty responses.
+- **Polling**: a request every few seconds. A delay and many empty responses.
 - **Long polling**: the server holds the request open until there is data, then
   the client sends the next one.
 - **Server-Sent Events** (SSE, `EventSource`): one long HTTP response in which
   the server writes text events. **Server → client only**, with automatic
   reconnection.
 - **WebSocket**: a persistent **two-way** connection, opened with an HTTP
-  upgrade; text or binary messages in both directions.
+  upgrade.
 
 SSE suits notifications, feeds, progress and streaming of AI responses;
 WebSocket suits chats, multiplayer games and collaborative editing.
@@ -70,9 +69,8 @@ WebSocket suits chats, multiplayer games and collaborative editing.
   sessions or a shared broker (Redis pub/sub) to deliver a message to clients
   connected to other instances.
 
-**WebTransport** is a newer API over HTTP/3 with streams and unreliable
-datagrams, for games and media. All major browsers support it since Safari 26.4
-(2026); WebSocket remains the default for older clients.
+**WebTransport** (HTTP/3, streams and unreliable datagrams) is the newer option
+for games and media; WebSocket remains the default.
 
 ## Example
 
@@ -151,8 +149,13 @@ connect();
 - How do you authenticate a WebSocket? A cookie sent with the handshake (and an
   `Origin` check), or a short-lived token in the first message. A token in the
   URL ends up in server logs.
-- What does `101 Switching Protocols` mean? The server agreed to switch the
-  connection from HTTP to WebSocket. See [HTTP](./http.md).
+- What about messages missed while the client was disconnected? SSE: the browser
+  sends `Last-Event-ID`, and the server replays the rest. WebSocket: number the
+  messages and ask for everything after the last seen ID on reconnect, or
+  refetch the state.
+- Why do AI chat UIs stream with `fetch` instead of `EventSource`? `EventSource`
+  cannot send `POST` or set headers; `fetch` with `response.body.getReader()`
+  can, but reconnection and `Last-Event-ID` are then your code.
 
 ## Common Mistakes
 

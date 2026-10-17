@@ -12,10 +12,10 @@ scope (`self`) and its own event loop. It has **no access to the DOM**, `window`
 or `localStorage`; the page and the worker exchange **messages** with
 `postMessage`, and the data is **copied** (structured clone) or **transferred**.
 Workers are for **CPU-heavy** work (parsing large files, image processing,
-compression, search indexing) that would otherwise block the main thread and
-make the page freeze. Types: **dedicated** (one page), **shared**
-(`SharedWorker`, shared by the tabs of one origin) and
-[service workers](./service-workers.md), which are a separate topic.
+compression) that would otherwise block the main thread and make the page
+freeze. Types: **dedicated** (one page), **shared** (`SharedWorker`, shared by
+the tabs of one origin) and [service workers](./service-workers.md), which are a
+separate topic.
 
 ## Details
 
@@ -58,7 +58,8 @@ make the page freeze. Types: **dedicated** (one page), **shared**
 - **Does not help**: network requests and other I/O (already asynchronous), DOM
   updates (only the main thread can do them), tiny tasks (starting a worker and
   copying the data cost more than the work).
-- Many tasks: a pool of workers, one per core (`navigator.hardwareConcurrency`).
+- For many tasks, a pool of workers, one per core
+  (`navigator.hardwareConcurrency`).
 - **Comlink** wraps `postMessage` so that worker functions are called like async
   functions.
 
@@ -112,10 +113,15 @@ self.addEventListener('message', (event) => {
   DOM.
 - How do you draw from a worker? Transfer an `OffscreenCanvas` to it with
   `canvas.transferControlToOffscreen()`.
-- How are Web Workers related to Node.js? `worker_threads` is the same idea on
-  the server. See [Worker Threads](../../nodejs/modules/worker-threads.md).
+- When would you use a `SharedWorker`? To share one WebSocket connection or one
+  cache between all tabs of the app, instead of one per tab.
+- How do you get a result back as a promise? Give each message an ID and resolve
+  the matching promise in the `message` handler; Comlink does this for you.
 
 ## Common Mistakes
+
+- Expecting the worker to see the page's variables or imports: it has its own
+  global scope, and data crosses only through messages.
 
 - "A worker makes `fetch` faster." Requests do not block the main thread anyway;
   only parsing a huge response might.
@@ -128,4 +134,5 @@ self.addEventListener('message', (event) => {
 
 - [Service Workers](./service-workers.md)
 - [Event Loop](../../javascript/event-loop.md)
+- [Worker Threads in Node.js](../../nodejs/modules/worker-threads.md)
 - [Core Web Vitals](../performance/web-vitals.md)

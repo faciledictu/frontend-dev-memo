@@ -11,12 +11,11 @@ description:
 to your site. The browser attaches **cookies automatically**, so the server sees
 an authenticated request and performs the action: a transfer, a password change,
 a post. The attacker cannot read the response (the Same-Origin Policy hides it),
-but the **side effect** has already happened. Only authentication that the
-browser sends by itself is affected: cookies, HTTP Basic auth, client
-certificates. A token that your code puts into the `Authorization` header is
-not. Defenses: **`SameSite` cookies**, a **CSRF token**, checking the
-**`Origin`** or **`Sec-Fetch-Site`** header, and never changing state with
-`GET`.
+but the **side effect** has already happened. Only credentials the browser
+attaches by itself are affected (cookies, Basic auth), not a token your code
+puts into the `Authorization` header. Defenses: **`SameSite` cookies**, a **CSRF
+token**, checking the **`Origin`** or **`Sec-Fetch-Site`** header, and never
+changing state with `GET`.
 
 ## Details
 
@@ -34,12 +33,12 @@ What a cross-site page **cannot** do: set custom headers or a JSON
 
 ### Defenses
 
-| Defense                     | How it works                                                                                                            | Limits                                                                           |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `SameSite=Lax` / `Strict`   | the browser does not send the cookie with cross-site requests (`Lax` still sends it on top-level `GET` navigation)      | a **site** is broader than an origin: a compromised subdomain is same-site       |
-| CSRF token                  | the server puts a random token into the page and checks it in every state-changing request; another site cannot read it | must be added to every form and request                                          |
-| `Origin` / `Sec-Fetch-Site` | the server rejects state-changing requests whose `Origin` is foreign or whose `Sec-Fetch-Site` is `cross-site`          | requests without these headers (old browsers, non-browser clients) need a policy |
-| Custom header or JSON only  | a cross-origin request with such a header or `Content-Type` needs a preflight, and the server does not allow it         | relies on a correct CORS setup; check the `Content-Type` exactly                 |
+| Defense                     | How it works                                                                                                            | Limits                                                                     |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `SameSite=Lax` / `Strict`   | the browser does not send the cookie with cross-site requests (`Lax` still sends it on top-level `GET` navigation)      | a **site** is broader than an origin: a compromised subdomain is same-site |
+| CSRF token                  | the server puts a random token into the page and checks it in every state-changing request; another site cannot read it | must be added to every form and request                                    |
+| `Origin` / `Sec-Fetch-Site` | the server rejects state-changing requests whose `Origin` is foreign or whose `Sec-Fetch-Site` is `cross-site`          | decide what to do when the headers are missing                             |
+| Custom header or JSON only  | a cross-origin request with such a header or `Content-Type` needs a preflight, and the server does not allow it         | relies on a correct CORS setup; check the `Content-Type` exactly           |
 
 - **`SameSite`.** Set it explicitly. Chromium treats a cookie without the
   attribute as `Lax`, but still sends it with a top-level cross-site `POST`
@@ -59,13 +58,6 @@ What a cross-site page **cannot** do: set custom headers or a JSON
   `SameSite=Lax` still sends cookies with a top-level `GET` navigation (a link,
   a redirect), and an `<img>` sends a `GET` with cookies that have no `SameSite`
   restriction.
-
-### Why CORS Does Not Help
-
-CORS controls who can **read** a response, not who can **send** a request. A
-form submission or a simple `fetch` reaches the server and is processed; CORS
-only stops the attacker's script from seeing the result. See
-[CORS and the Same-Origin Policy](../network/cors.md).
 
 ## Example
 
@@ -116,14 +108,21 @@ function csrfGuard(req, res, next) {
 - What is login CSRF? The attacker logs the victim into the attacker's account,
   and the victim then enters their data into it. Login forms need protection
   too.
-- Does a WebSocket have the same problem? The handshake sends cookies and is not
-  limited by CORS, so the server must check the `Origin` header. See
+- How does an SPA send the token, and why is that cookie not `HttpOnly`? The
+  script reads the token from a cookie, a `<meta>` tag or an endpoint and puts
+  it into a header (`X-CSRF-Token`) of every state-changing request. The cookie
+  must be readable by your script; another site still cannot read it (the
+  Same-Origin Policy) or set the header without a preflight.
+- Does a WebSocket have the same problem? Yes, it is called **cross-site
+  WebSocket hijacking**: the handshake sends cookies and is not limited by CORS,
+  so the server must check the `Origin` header. See
   [Real-Time Updates](../network/realtime.md).
 
 ## Common Mistakes
 
-- "CORS protects against CSRF." CORS hides the response; the request is still
-  processed.
+- "CORS protects against CSRF." CORS controls who can **read** a response, not
+  who can **send** a request: a form or a simple `fetch` is still processed. See
+  [CORS](../network/cors.md).
 - "We use `POST`, so we are safe." A form on another site sends `POST` too.
 - "A CSRF token in a cookie is enough." The browser sends the cookie
   automatically; the token must also be in the request body or a header, where

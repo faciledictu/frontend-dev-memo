@@ -6,19 +6,20 @@ description:
 
 # Core Web Vitals
 
-**Core Web Vitals** are three metrics of user experience from Google:
+**Core Web Vitals** are Google's three user-experience metrics, also used as a
+**ranking signal** in Search:
 
 - **LCP** (Largest Contentful Paint), **loading**: when the largest image or
-  text block of the first screen is rendered. Good: **≤ 2.5 s**.
-- **INP** (Interaction to Next Paint), **responsiveness**: the delay from a
-  click, a tap or a key press to the next frame, taken for the slowest
-  interactions of the visit. Good: **≤ 200 ms**. It replaced FID in 2024.
+  text block in the viewport is rendered. Good: **≤ 2.5 s**.
+- **INP** (Interaction to Next Paint), **responsiveness**: from an input to the
+  next frame, close to the slowest interaction of the visit. Good: **≤ 200 ms**
+  (replaced FID in 2024).
 - **CLS** (Cumulative Layout Shift), **visual stability**: how much the content
   jumps around unexpectedly. Good: **≤ 0.1**.
 
-A page passes when the **75th percentile** of real visits is in the good range.
-The metrics are measured on real users (**field data**); Lighthouse gives **lab
-data**, useful for debugging but not the same.
+A page passes when the **75th percentile** of real visits (**field data**) is in
+the good range. Lighthouse gives **lab data**: useful for debugging, not the
+same thing.
 
 ## Details
 
@@ -36,12 +37,12 @@ time, the lab stand-in for INP).
 
 ### Field vs Lab
 
-|         | Field (RUM)                                              | Lab                                         |
-| ------- | -------------------------------------------------------- | ------------------------------------------- |
-| Source  | real users: CrUX, the `web-vitals` library, RUM services | one run on one device: Lighthouse, DevTools |
-| Shows   | what users get, on their devices and networks            | why it is slow, reproducibly                |
-| INP     | yes                                                      | no: nobody clicks, so TBT is used instead   |
-| Used in | Google Search ranking, Search Console                    | development, CI                             |
+|         | Field (RUM)                                                                        | Lab                                         |
+| ------- | ---------------------------------------------------------------------------------- | ------------------------------------------- |
+| Source  | real users: CrUX (Chrome only, not on iOS), the `web-vitals` library, RUM services | one run on one device: Lighthouse, DevTools |
+| Shows   | what users get, on their devices and networks                                      | why it is slow, reproducibly                |
+| INP     | yes                                                                                | no: nobody clicks, so TBT is used instead   |
+| Used in | Google Search ranking, Search Console                                              | development, CI                             |
 
 ### LCP
 
@@ -56,7 +57,7 @@ delay**. What helps:
   `<link rel="preload">`.
 - **`fetchpriority="high"`** on the LCP image, and **never `loading="lazy"`** on
   it.
-- Smaller images: AVIF or WebP, `srcset` and `sizes` for the screen width.
+- Smaller images. See [Loading Performance](./loading-performance.md#images).
 - No render-blocking CSS and scripts in the way. See
   [Loading Performance](./loading-performance.md).
 
@@ -80,7 +81,8 @@ frame). What helps:
 The score of a shift is the share of the viewport that moved times the distance
 it moved. CLS takes the worst burst of shifts (a **session window**: shifts less
 than 1 s apart, up to 5 s in total). Shifts within 500 ms after a click or a key
-press do not count. What helps:
+press do not count. Only Chromium reports CLS; LCP and INP are reported by all
+major browsers. What helps:
 
 - **`width` and `height`** (or `aspect-ratio`) on images, videos and iframes, so
   that the space is reserved before they load.
@@ -139,11 +141,15 @@ button.addEventListener('click', async () => {
 - Why does `loading="lazy"` on the hero image make LCP worse? The browser waits
   for layout to decide whether the image is in the viewport, so the download
   starts later.
-- Which browsers report these metrics? LCP and INP: all major browsers since
-  December 2025 (Firefox 144, Safari 26.2). CLS: only Chromium. CrUX collects
-  data only from Chrome, and not on iOS.
+- How do you find which interaction is slow? Record it in the **Performance**
+  panel: the Interactions track splits it into input delay, processing and
+  presentation. In the field, the `web-vitals/attribution` build reports the
+  element and the longest phase for each metric.
 
 ## Common Mistakes
+
+- Listing FID, FCP or TTI as Core Web Vitals. FID was replaced by INP; FCP, TTFB
+  and TBT are supporting metrics.
 
 - Optimizing only the Lighthouse score: the field data is what counts.
 - "CLS is about the page load." Shifts are counted during the whole visit, for

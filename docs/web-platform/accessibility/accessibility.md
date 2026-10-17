@@ -9,11 +9,9 @@ description:
 
 **Accessibility** (a11y) means that people with disabilities can use the site:
 with a **screen reader**, with the **keyboard only**, with low vision or color
-blindness, with tremor, with cognitive difficulties. The standard is **WCAG**
-(Web Content Accessibility Guidelines) 2.2; the usual target is level **AA**,
-which is also what laws refer to: the European Accessibility Act (in force since
-June 2025, through the EN 301 549 standard) and the ADA rules in the US
-currently require WCAG 2.1 AA. The basics:
+blindness, with motor or cognitive impairments. The standard is **WCAG** (Web
+Content Accessibility Guidelines) 2.2; the usual target, and what laws such as
+the European Accessibility Act and the ADA require, is level **AA**. The basics:
 
 - **Semantic HTML** first: a `<button>` for actions, `<a href>` for links,
   headings, landmarks, `<label>` for fields.
@@ -28,6 +26,8 @@ currently require WCAG 2.1 AA. The basics:
 - Four principles, **POUR**: Perceivable, Operable, Understandable, Robust.
 - Three levels: **A** (the minimum), **AA** (the usual target), **AAA** (not
   required for whole sites).
+- Laws currently point at WCAG 2.1 AA: the European Accessibility Act (in force
+  since June 2025, through the EN 301 549 standard) and the ADA rules in the US.
 
 ### Semantics and Accessible Names
 
@@ -39,6 +39,7 @@ currently require WCAG 2.1 AA. The basics:
 - Every interactive element needs an **accessible name**: the text of a button,
   a `<label>` of an input, `aria-label` or `aria-labelledby` for an icon button.
   A `placeholder` is not a label: it disappears while typing.
+- `<html lang="…">`, so that the screen reader picks the right language.
 - Images: `alt` with the meaning of the image; `alt=""` for decorative ones.
 - Errors in forms: linked to the field with `aria-describedby`, the field marked
   with `aria-invalid="true"`, not shown by color alone.
@@ -51,10 +52,8 @@ currently require WCAG 2.1 AA. The basics:
   it focusable only from code. A positive `tabindex` breaks the order.
 - Never remove the outline without a replacement: style `:focus-visible`
   instead.
-- **Modals**: move the focus inside on open, keep it there, close on Esc, return
-  the focus on close. The native `<dialog>` with `showModal()` does most of it;
-  for a custom modal, the `inert` attribute disables the rest of the page. See
-  [Portals](../../react/basics/portals.md).
+- **Modals**: trap the focus, close on Esc, return the focus; `<dialog>` with
+  `showModal()` does most of it. See [Portals](../../react/basics/portals.md).
 - **SPA navigation**: after a route change, move the focus to the new heading or
   announce the new page; otherwise a screen reader user does not notice the
   change.
@@ -161,6 +160,9 @@ A field with a label and an error message linked to it:
   what is hidden from whom? The first two hide from everyone; the third hides
   only from assistive technology; the `sr-only` class hides only visually, the
   text is still read.
+- What is the accessibility tree? A tree of roles, names and states that the
+  browser builds from the DOM and ARIA. Assistive technology reads it, not the
+  DOM; DevTools shows it in the Accessibility pane.
 - How do you announce "Item added to cart" without moving the focus? A live
   region: `role="status"`.
 
@@ -173,6 +175,8 @@ A field with a label and an error message linked to it:
 - "Lighthouse shows 100, so the site is accessible." Automated checks find only
   part of the problems; keyboard and screen reader testing are needed.
 - Images with `alt="image"` or with the file name.
+- `aria-label` on a `<div>` or `<span>` without a role: generic elements cannot
+  be named, so screen readers ignore it.
 
 ## See Also
 
