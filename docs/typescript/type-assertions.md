@@ -1,7 +1,8 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 description:
-  The as syntax, as const, satisfies, non-null assertion and type guards
+  The as syntax, as const, satisfies, non-null assertion and when a type guard
+  is safer
 tags: [junior, middle]
 ---
 
@@ -59,38 +60,6 @@ const theme = {
 } satisfies Theme;
 
 theme.gap.toFixed(); // OK: `gap` is still a number, not `string | number`
-```
-
-A type guard for data from an API:
-
-```typescript
-interface User {
-  id: number;
-  name: string;
-}
-
-// highlight-next-line
-function isUser(value: unknown): value is User {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'id' in value &&
-    typeof value.id === 'number' &&
-    'name' in value &&
-    typeof value.name === 'string'
-  );
-}
-
-async function fetchUser(id: number): Promise<User> {
-  const response = await fetch(`https://api.example.com/users/${id}`);
-  const data: unknown = await response.json();
-
-  if (!isUser(data)) {
-    throw new Error('Invalid user data');
-  }
-
-  return data; // narrowed to User
-}
 ```
 
 ## Follow-up Questions

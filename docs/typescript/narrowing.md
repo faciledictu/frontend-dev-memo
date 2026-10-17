@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 4
 description:
   typeof, instanceof, in, equality, discriminated unions, type predicates and
   assertion functions
@@ -115,24 +115,32 @@ function describe(value: object | string | null) {
 <summary>Type predicates and assertion functions</summary>
 
 ```typescript
-interface Fish {
-  swim(): void;
-}
-interface Bird {
-  fly(): void;
+interface User {
+  id: number;
+  name: string;
 }
 
 // highlight-next-line
-function isFish(pet: Fish | Bird): pet is Fish {
-  return 'swim' in pet;
+function isUser(value: unknown): value is User {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'id' in value &&
+    typeof value.id === 'number' &&
+    'name' in value &&
+    typeof value.name === 'string'
+  );
 }
 
-function move(pet: Fish | Bird) {
-  if (isFish(pet)) {
-    pet.swim();
-  } else {
-    pet.fly(); // the else branch is narrowed too
+async function fetchUser(id: number): Promise<User> {
+  const response = await fetch(`https://api.example.com/users/${id}`);
+  const data: unknown = await response.json();
+
+  if (!isUser(data)) {
+    throw new Error('Invalid user data');
   }
+
+  return data; // narrowed to User
 }
 
 // Inferred type predicate

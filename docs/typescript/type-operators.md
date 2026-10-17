@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 9
 description:
   keyof, typeof, indexed access, mapped, conditional and template literal types,
   infer

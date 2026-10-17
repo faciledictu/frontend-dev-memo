@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 8
 description:
   Partial, Required, Readonly, Pick, Omit, Record, Exclude, Extract,
   NonNullable, ReturnType, Parameters, Awaited and NoInfer

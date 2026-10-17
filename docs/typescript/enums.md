@@ -99,6 +99,9 @@ console.log(Object.values(Role)); // ['admin', 'user']
 - "String enums have a reverse mapping." Only numeric ones.
 - Iterating over a numeric enum with `Object.keys()` and getting both names and
   values.
+- A string enum for values that arrive from an API: `'ACTIVE'` is not assignable
+  to `Status`, so every response needs a cast. A union of literals accepts the
+  string as is.
 
 ## See Also
 

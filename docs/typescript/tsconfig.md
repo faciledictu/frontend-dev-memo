@@ -83,6 +83,8 @@ ten times faster. TypeScript 6.0 prepared for it by changing defaults:
   loaded automatically, so `process` or `describe` need `"types": ["node"]` or
   `["jest"]`;
 - `lib: ["dom"]` now includes `dom.iterable`;
+- `noUncheckedSideEffectImports` is on: `import './missing.css'` of a file that
+  does not exist is an error;
 - deprecated or removed in 6.0 and gone in 7.0: `target: es5`, `baseUrl` (use
   `paths` relative to the config), `moduleResolution: node` (`node10`) and
   `classic`, `outFile`, the `amd`, `umd` and `systemjs` module formats,

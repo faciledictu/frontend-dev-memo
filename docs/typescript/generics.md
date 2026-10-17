@@ -19,6 +19,9 @@ checks off. In most calls the type argument is **inferred**.
   keys of another.
 - **Default**: `<T = unknown>` is used when the argument is neither passed nor
   inferred.
+- **`const` type parameter**: `<const T extends readonly string[]>` infers
+  literal types from the argument, as if the caller wrote `as const` (TypeScript
+  5.0).
 - **Generic types**: interfaces, type aliases and classes take parameters too:
   `ApiResponse<User>`, `Map<string, number>`, `Promise<void>`.
 - **[Utility types](./utility-types.md)** such as `Partial<T>` and `Pick<T, K>`

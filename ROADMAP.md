@@ -265,7 +265,9 @@
   задачей, по разделу за раз. Коммиты прямо в `main`, без PR.
   - [x] JavaScript: `regexp` и `classes` приведены к шаблону, `closures` сразу
         после `execution-context`, теги уровня на всех страницах.
-  - [ ] TypeScript.
+  - [x] TypeScript: `basic-types` и `objects` приведены к шаблону, `narrowing`
+        перед `type-assertions`, `utility-types` перед `type-operators`, теги
+        уровня на всех страницах.
 
 - Тренировочный режим (вопрос → скрытый ответ, случайный вопрос).
 - Запускаемые примеры «что выведет этот код?» для JS.
