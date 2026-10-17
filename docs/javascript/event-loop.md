@@ -98,8 +98,8 @@ console.log(7);
 - What happens if a microtask keeps scheduling new microtasks? The loop never
   reaches rendering and the next task: the page freezes.
 - How do you run heavy calculations without blocking the page? Split them into
-  chunks with `setTimeout` or `scheduler.postTask`, or move them to a Web
-  Worker.
+  chunks with `setTimeout` (or `scheduler.yield()`, not in Safari yet), or move
+  them to a Web Worker.
 
 ## Common Mistakes
 

@@ -1,9 +1,9 @@
 ---
 sidebar_position: 5
-description: What the ‘this’ keyword refers to in JavaScript
+description: What the `this` keyword refers to in JavaScript
 ---
 
-# The ‘this’ Keyword
+# The `this` Keyword
 
 `this` is the **context of a call**. In a regular function it is defined by
 **how the function is called**, not where it is declared[^1]:

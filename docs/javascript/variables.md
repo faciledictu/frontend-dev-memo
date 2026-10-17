@@ -86,7 +86,7 @@ user = {}; // TypeError: Assignment to constant variable.
 
 - What does a loop with `var` and `setTimeout` print? See
   [Closures](./closures.md).
-- How do you make an object immutable? `Object.freeze()`, which is shallow.
+- How do you make an object immutable? See [Objects](./objects.md).
 - What happens when you assign to an undeclared variable? In strict mode it is a
   `ReferenceError`; otherwise a global variable is created.
 
