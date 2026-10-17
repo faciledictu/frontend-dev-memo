@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 2
 description: CSS Modules, Tailwind, CSS-in-JS and Sass compared
 ---
 

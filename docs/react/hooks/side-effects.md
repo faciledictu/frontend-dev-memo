@@ -64,8 +64,9 @@ adding a "did run" ref hides the bug.
   request with `AbortController`.
 - An effect can't be `async`: it would return a promise instead of a cleanup.
   Declare an async function inside and call it.
-- In real projects fetching is done by a library (TanStack Query, RTK Query) or
-  by the framework: they add caching, deduplication and race handling.
+- In real projects fetching is done by a library
+  ([TanStack Query](../state-management/tanstack-query.md), RTK Query) or by the
+  framework: they add caching, deduplication and race handling.
 
 ### `useLayoutEffect`
 
@@ -159,5 +160,5 @@ export default function Profile({ userId }) {
 
 ## See Also
 
-- [React in the Browser: `StrictMode`](../basics/react-in-browser.md#strictmode)
+- [React in the Browser: `StrictMode`](../rendering/react-in-browser.md#strictmode)
 - [You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect)

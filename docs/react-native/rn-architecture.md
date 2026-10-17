@@ -67,7 +67,7 @@ For an urgent update from a UI event, the whole pipeline can run synchronously
 on the UI thread.
 
 The render phase can be interrupted by a more urgent update, as with
-[concurrent rendering](../react/performance/concurrent-rendering.md) on the web.
+[concurrent rendering](../react/rendering/concurrent-rendering.md) on the web.
 Updates triggered from the UI thread (for example a Reanimated animation) can
 skip the JS thread.
 
@@ -111,4 +111,4 @@ skip the JS thread.
 
 - [What Is React Native](./overview.md)
 - [Reanimated](./animations/reanimated.md)
-- [Rendering and Reconciliation in React](../react/basics/rendering.md)
+- [Rendering and Reconciliation in React](../react/rendering/reconciliation.md)

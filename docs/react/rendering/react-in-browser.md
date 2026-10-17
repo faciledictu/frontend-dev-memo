@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 4
 description: createRoot, hydrateRoot, hydration, StrictMode and flushSync
 ---
 
@@ -17,14 +17,14 @@ Applies to: React 19.
 
 ### Entry Points
 
-| API                                           | Import from        | What it does                                                         |
-| --------------------------------------------- | ------------------ | -------------------------------------------------------------------- |
-| `createRoot(container)`                       | `react-dom/client` | Creates a root. `root.render(<App />)` renders into an empty node    |
-| `hydrateRoot(container, <App />)`             | `react-dom/client` | Attaches React to existing server HTML instead of creating the nodes |
-| `root.unmount()`                              | —                  | Removes the tree and runs all cleanup functions                      |
-| `createPortal(children, node)`                | `react-dom`        | Renders children into another DOM node, see [Portals](./portals.md)  |
-| `flushSync(callback)`                         | `react-dom`        | Applies the state updates made in the callback synchronously         |
-| `renderToPipeableStream`, `renderToString`, … | `react-dom/server` | Render components to HTML on the server                              |
+| API                                           | Import from        | What it does                                                                |
+| --------------------------------------------- | ------------------ | --------------------------------------------------------------------------- |
+| `createRoot(container)`                       | `react-dom/client` | Creates a root. `root.render(<App />)` renders into an empty node           |
+| `hydrateRoot(container, <App />)`             | `react-dom/client` | Attaches React to existing server HTML instead of creating the nodes        |
+| `root.unmount()`                              | —                  | Removes the tree and runs all cleanup functions                             |
+| `createPortal(children, node)`                | `react-dom`        | Renders children into another DOM node, see [Portals](../basics/portals.md) |
+| `flushSync(callback)`                         | `react-dom`        | Applies the state updates made in the callback synchronously                |
+| `renderToPipeableStream`, `renderToString`, … | `react-dom/server` | Render components to HTML on the server                                     |
 
 `ReactDOM.render`, `ReactDOM.hydrate`, `unmountComponentAtNode` and
 `findDOMNode` were removed in React 19.
@@ -140,5 +140,5 @@ function TodoList() {
 
 ## See Also
 
-- [Rendering and Reconciliation](./rendering.md)
-- [Portals](./portals.md)
+- [Rendering and Reconciliation](./reconciliation.md)
+- [Portals](../basics/portals.md)

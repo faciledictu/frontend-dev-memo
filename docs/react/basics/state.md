@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 description:
   useState and useReducer, state as a snapshot, batching, immutable updates
 ---
@@ -27,7 +27,7 @@ event handler are **batched** into one re-render. State is treated as
   function only on the first render; `useState(createInitialState())` calls it
   on every render and throws the result away.
 - State belongs to a position in the tree. A different
-  [`key`](./rendering.md#diffing-heuristics) resets it.
+  [`key`](../rendering/reconciliation.md#diffing-heuristics) resets it.
 
 ### Batching
 
@@ -35,7 +35,7 @@ event handler are **batched** into one re-render. State is treated as
   setters cause **one** re-render.
 - Since React 18 batching is **automatic** everywhere: in promises, timeouts and
   native event handlers too. Before, it worked only in React event handlers.
-- [`flushSync`](./react-in-browser.md#flushsync) opts out.
+- [`flushSync`](../rendering/react-in-browser.md#flushsync) opts out.
 
 ### Immutable Updates
 
@@ -59,6 +59,8 @@ there is no re-render.
   `useMemo` if the computation is expensive.
 - Data that does not affect rendering (a timer ID) belongs in a
   [ref](../hooks/refs.md).
+- State shared across the app: see
+  [Where to Keep State](../state-management/overview.md).
 
 ### `useReducer`
 
@@ -155,5 +157,6 @@ export default function Counter() {
 
 ## See Also
 
-- [Redux](../ecosystem/redux.md)
+- [Where to Keep State](../state-management/overview.md)
+- [Redux](../state-management/redux.md)
 - [Class Components](./class-components.md) — `this.state` and `this.setState`.

@@ -27,7 +27,7 @@ Applies to: React 19, React Compiler 1.0.
 - **Don't define components inside components**: a new type on every render
   remounts the subtree.
 - **Use stable keys** in lists, see
-  [Diffing Heuristics](../basics/rendering.md#diffing-heuristics).
+  [Lists and `key`](../basics/lists-and-keys.md).
 
 ### Memoization
 
@@ -73,8 +73,8 @@ Applies to: React 19, React Compiler 1.0.
 ### Doing Less Work
 
 - [Virtualization](./virtualization.md) for long lists.
-- [Transitions and `useDeferredValue`](./concurrent-rendering.md) to keep the UI
-  responsive during a slow render.
+- [Transitions and `useDeferredValue`](../rendering/concurrent-rendering.md) to
+  keep the UI responsive during a slow render.
 - [Code splitting](../../web-platform/tools/bundle-optimization.md) with `lazy`.
 - [Debounce or throttle](../../javascript/debounce-throttle.md) for frequent
   events.
@@ -184,5 +184,5 @@ export default function Catalog({ products }) {
 
 ## See Also
 
-- [Rendering and Reconciliation](../basics/rendering.md)
+- [Rendering and Reconciliation](../rendering/reconciliation.md)
 - [Bundle Optimization](../../web-platform/tools/bundle-optimization.md)

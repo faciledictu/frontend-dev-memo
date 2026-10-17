@@ -112,4 +112,4 @@ for (const item of items) {
 
 - [HTTP](../network/http.md)
 - [HTML](../../html-css/html.md)
-- [Rendering in React](../../react/basics/rendering.md)
+- [Rendering in React](../../react/rendering/reconciliation.md)

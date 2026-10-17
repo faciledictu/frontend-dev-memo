@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 description:
   Controlled and uncontrolled inputs, form Actions in React 19, form libraries
 ---
@@ -201,4 +201,4 @@ export default function ProfileForm() {
 ## See Also
 
 - [Refs](../hooks/refs.md)
-- [Concurrent Rendering](../performance/concurrent-rendering.md#transitions)
+- [Concurrent Rendering](../rendering/concurrent-rendering.md#transitions)

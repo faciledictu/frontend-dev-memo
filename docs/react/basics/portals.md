@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 8
 description: createPortal, event bubbling through portals, modal accessibility
 ---
 
@@ -82,5 +82,6 @@ export default function App() {
 
 ## See Also
 
-- [React in the Browser](./react-in-browser.md)
+- [React in the Browser](../rendering/react-in-browser.md)
+- [Synthetic Events](./events.md)
 - [`createPortal` reference](https://react.dev/reference/react-dom/createPortal)

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 description: Components, elements and JSX, purity, fragments
 ---
 
@@ -15,12 +15,12 @@ output, with no side effects.
 
 ### Component, Element, JSX
 
-| Term      | What it is                                                                                                          |
-| --------- | ------------------------------------------------------------------------------------------------------------------- |
-| Component | A function (or a class) such as `Button`. Its name starts with a capital letter                                     |
-| Element   | A plain immutable object `{ type, props, key }` that describes what to render. Cheap to create                      |
-| JSX       | Syntax sugar for creating elements: `<Button size="l" />` compiles to `jsx(Button, { size: 'l' })`                  |
-| Instance  | What React keeps for a component at a position in the tree: its state and effects (a [fiber](./rendering.md#fiber)) |
+| Term      | What it is                                                                                                                          |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Component | A function (or a class) such as `Button`. Its name starts with a capital letter                                                     |
+| Element   | A plain immutable object `{ type, props, key }` that describes what to render. Cheap to create                                      |
+| JSX       | Syntax sugar for creating elements: `<Button size="l" />` compiles to `jsx(Button, { size: 'l' })`                                  |
+| Instance  | What React keeps for a component at a position in the tree: its state and effects (a [fiber](../rendering/reconciliation.md#fiber)) |
 
 A lowercase tag (`<div>`) is an HTML element; a capitalized one (`<Button>`) is
 a component.
@@ -29,7 +29,7 @@ a component.
 
 - A React element or a fragment.
 - A string or a number (rendered as text).
-- An array of these (each item needs a `key`).
+- An array of these (each item needs a [`key`](./lists-and-keys.md)).
 - `null`, `undefined`, `true` or `false`: nothing is rendered.
 - A [portal](./portals.md).
 
@@ -41,7 +41,7 @@ a component.
   [effects](../hooks/side-effects.md).
 - The reason: React can call a component several times, pause a render or throw
   its result away (`StrictMode`,
-  [concurrent rendering](../performance/concurrent-rendering.md)).
+  [concurrent rendering](../rendering/concurrent-rendering.md)).
 - Local mutation is fine: creating an array during render and pushing into it.
 
 ### Fragments
@@ -107,4 +107,4 @@ export default function Blog({ posts }) {
 ## See Also
 
 - [Props](./props.md)
-- [Rendering and Reconciliation](./rendering.md)
+- [Rendering and Reconciliation](../rendering/reconciliation.md)

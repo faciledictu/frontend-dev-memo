@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 description:
   React Router modes, nested routes, navigation hooks, loaders and protected
   routes
