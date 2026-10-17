@@ -2,6 +2,7 @@
 sidebar_position: 4
 description:
   The as syntax, as const, satisfies, non-null assertion and type guards
+tags: [junior, middle]
 ---
 
 # Type Assertions
@@ -44,7 +45,7 @@ a schema validator such as Zod for API responses. See
 Assertions and their safer relatives:
 
 ```typescript
-const input = document.querySelector('#email') as HTMLInputElement;
+const input = document.querySelector('#email') as HTMLInputElement; // also drops `null`
 
 const sizes = ['s', 'm', 'l'] as const;
 type Size = (typeof sizes)[number]; // 's' | 'm' | 'l'
@@ -107,3 +108,8 @@ async function fetchUser(id: number): Promise<User> {
   `'5' as unknown as number` is still a string.
 - Asserting the result of `response.json()` and trusting it without validation.
 - Using `!` to silence the compiler instead of handling `null`.
+
+## See Also
+
+- [Type Narrowing and Type Guards](./narrowing.md)
+- [Basic Types](./basic-types.md)

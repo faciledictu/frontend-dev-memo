@@ -1,6 +1,7 @@
 ---
 sidebar_position: 7
 description: Type parameters, constraints, defaults and generic React components
+tags: [junior, middle]
 ---
 
 # Generics
@@ -105,3 +106,9 @@ const list = (
   then promises a type it does not check.
 - Adding a type parameter that appears only in the return type, so the caller
   can claim any type (`get<T>(): T`). This is a type assertion in disguise.
+
+## See Also
+
+- [Utility Types](./utility-types.md)
+- [Type Operators](./type-operators.md)
+- [Typing React](./react.md)

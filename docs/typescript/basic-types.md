@@ -2,6 +2,7 @@
 sidebar_position: 1
 description:
   Primitives, any, unknown, never, void, arrays, tuples, unions and literals
+tags: [junior]
 ---
 
 # Basic Types
@@ -23,7 +24,9 @@ The most common question is the difference between the special types:
 | `never`   | nothing                    | nothing: it never has a value          |
 | `void`    | `undefined`                | nothing: the function returns no value |
 
-## Primitives
+## Details
+
+### Primitives
 
 TypeScript has seven primitive types, matching the primitives in JavaScript:
 `boolean`, `number`, `bigint`, `string`, `null`, `undefined`, `symbol`.
@@ -48,7 +51,7 @@ let notAssigned: undefined;
 let uniqueId: symbol = Symbol('id');
 ```
 
-## Special Types
+### Special Types
 
 - `any` represents any type and opts out of type checking. It spreads: anything
   derived from an `any` value is `any` too.
@@ -114,7 +117,7 @@ function area(shape: Shape): number {
 }
 ```
 
-## Arrays
+### Arrays
 
 Arrays of any length are typed with `type[]` or `Array<type>`. Both work for any
 element type.
@@ -124,7 +127,7 @@ const list: number[] = [1, 2, 3];
 const sameList: Array<number> = [1, 2, 3];
 ```
 
-## Tuples
+### Tuples
 
 A tuple represents an array with a fixed number of elements, where each element
 can have a different type.
@@ -133,11 +136,11 @@ can have a different type.
 const x: [string, number] = ['hello', 10];
 ```
 
-## Union types
+### Union Types
 
 A union type allows a value to be one of several types. To use something that
-only one of the variants has, the type has to be narrowed first, for example
-with `typeof`.
+only one of the variants has, the type has to be [narrowed](./narrowing.md)
+first, for example with `typeof`.
 
 ```typescript
 let value: number | string;
@@ -145,7 +148,7 @@ value = 42;
 value = 'hello';
 ```
 
-## Literal types
+### Literal Types
 
 Literal types let you specify the exact value a string, number, or boolean must
 have.
@@ -154,8 +157,6 @@ have.
 let direction: 'up' | 'down' | 'left' | 'right';
 direction = 'up';
 ```
-
-## Usage
 
 ### Type Inference
 
@@ -182,5 +183,33 @@ let current: Direction = 'up';
 current = 'down';
 ```
 
+## Follow-up Questions
+
+- What is the difference between `any` and `unknown`? Both accept any value;
+  with `any` you can also do anything, with `unknown` nothing until it is
+  narrowed. See [Type Narrowing](./narrowing.md).
+- Where does `never` come from? A function that always throws, the `default` of
+  an exhaustive `switch`, and an impossible type such as `string & number`.
+- What is the difference between `void` and `undefined` as a return type? `void`
+  says the result is ignored, so a callback typed `() => void` may return
+  anything; `undefined` is a value the caller can use.
+- Do types exist at runtime? No, they are erased. Runtime checks are plain
+  JavaScript: `typeof`, `instanceof`, `Array.isArray`.
+
+## Common Mistakes
+
+- `any` for data from outside (`response.json()`, `JSON.parse`) instead of
+  `unknown` plus a type guard.
+- `Number`, `String`, `Boolean` with a capital letter as types: these are the
+  wrapper objects; the primitives are lowercase.
+- Annotating what is inferred (`const count: number = 0`) while leaving function
+  parameters without types.
+
+## See Also
+
+- [Objects and Interfaces](./objects.md)
+- [Type Narrowing and Type Guards](./narrowing.md)
+- [Enums](./enums.md)
+
 [^1]:
-    https://stackoverflow.com/questions/58885485/why-does-typescript-have-both-void-and-undefined
+    [TypeScript FAQ: Why are functions returning non-void assignable to function returning void?](https://github.com/microsoft/TypeScript/wiki/FAQ#why-are-functions-returning-non-void-assignable-to-function-returning-void)

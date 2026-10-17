@@ -1,6 +1,7 @@
 ---
 sidebar_position: 6
 description: Numeric, string and const enums, and why unions often replace them
+tags: [junior, middle]
 ---
 
 # Enums
@@ -10,7 +11,7 @@ An **enum** is a named set of constants. Unlike most of TypeScript, an enum is
 reason modern code often uses a **union of string literals** or an **`as const`
 object** instead.
 
-Applies to: TypeScript 5.8+ (for `erasableSyntaxOnly`).
+Applies to: TypeScript 7.0.
 
 ## Details
 
@@ -31,8 +32,8 @@ Applies to: TypeScript 5.8+ (for `erasableSyntaxOnly`).
 - They generate runtime code, while almost all the rest of TypeScript is only
   types.
 - They can't be removed by "type stripping", which is how Node.js runs
-  TypeScript files directly. With `erasableSyntaxOnly` enabled an enum is a
-  compile error.
+  TypeScript files directly. With `erasableSyntaxOnly` (TypeScript 5.8) enabled
+  an enum is a compile error.
 - A union of literals gives the same checks and autocompletion with no runtime
   code.
 
@@ -53,6 +54,7 @@ enum Direction {
 }
 
 console.log(Direction.Down); // 2
+// highlight-next-line
 console.log(Direction[2]); // 'Down' (reverse mapping)
 
 enum Status {
@@ -97,3 +99,8 @@ console.log(Object.values(Role)); // ['admin', 'user']
 - "String enums have a reverse mapping." Only numeric ones.
 - Iterating over a numeric enum with `Object.keys()` and getting both names and
   values.
+
+## See Also
+
+- [Basic Types](./basic-types.md#literal-types)
+- [tsconfig and Strict Mode](./tsconfig.md)

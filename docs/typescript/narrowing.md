@@ -44,7 +44,8 @@ Applies to: TypeScript 7.0.
   object, so the fields of that member become available.
 - It also works after destructuring: `const { kind } = shape`.
 - An **exhaustive check** with `never` in `default` turns a forgotten member
-  into a compile error (see [Basic Types](./basic-types.md#special-types)).
+  into a compile error (see [Basic Types](./basic-types.md#special-types));
+  `x satisfies never` is the short form of `const unreachable: never = x`.
 - The common model for API states, reducer actions and component props:
   `{ status: 'success'; data: T } | { status: 'error'; error: Error }`.
 
