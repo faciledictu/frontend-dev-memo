@@ -243,8 +243,14 @@
       подгруппы `rendering` (`reconciliation` — бывшая `rendering`,
       `re-renders`, `concurrent-rendering` из `performance`, `react-in-browser`)
       и `state-management` (туда же `redux`). Первая пачка с ревью Fable.
-- [ ] 4. Web Platform: безопасность (XSS, CSRF, CSP), Web Vitals и critical
-      rendering path, доступность, воркеры и service worker, WebSocket / SSE.
+- [x] 4. Web Platform: безопасность (XSS, CSRF, CSP), Web Vitals и critical
+      rendering path, доступность, воркеры и service worker, WebSocket / SSE (9
+      страниц: `security/xss`, `security/csrf`, `security/csp`,
+      `performance/web-vitals`, `performance/loading-performance`,
+      `accessibility/accessibility`, `browser/web-workers`,
+      `browser/service-workers`, `network/realtime`). Новые подгруппы
+      `security`, `performance` и `accessibility`; `tools` переехала в конец
+      раздела.
 - [ ] 5. HTML & CSS: специфичность и каскад, box model, flexbox и grid,
       позиционирование, адаптивность.
 - [ ] 6. React Native и Next.js: навигация, производительность, Expo; RSC vs
