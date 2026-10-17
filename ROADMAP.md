@@ -222,6 +222,9 @@
   страницы держатся компактными, как в JavaScript и React: короткий ответ
   сверху, таблицы, примеры под спойлерами.
 - Новая страница не дублирует существующие: общее выносится ссылкой.
+- Поддержка браузерами и даты релизов («с Safari 26») быстро устаревают: не
+  больше строки в Details, не в коротком ответе и не в follow-up вопросах
+  (правило в [docs/\_template.md](docs/_template.md), с пачки 4).
 
 Порядок, по одной ветке на пачку:
 
@@ -243,8 +246,14 @@
       подгруппы `rendering` (`reconciliation` — бывшая `rendering`,
       `re-renders`, `concurrent-rendering` из `performance`, `react-in-browser`)
       и `state-management` (туда же `redux`). Первая пачка с ревью Fable.
-- [ ] 4. Web Platform: безопасность (XSS, CSRF, CSP), Web Vitals и critical
-      rendering path, доступность, воркеры и service worker, WebSocket / SSE.
+- [x] 4. Web Platform: безопасность (XSS, CSRF, CSP), Web Vitals и critical
+      rendering path, доступность, воркеры и service worker, WebSocket / SSE (9
+      страниц: `security/xss`, `security/csrf`, `security/csp`,
+      `performance/web-vitals`, `performance/loading-performance`,
+      `accessibility/accessibility`, `browser/web-workers`,
+      `browser/service-workers`, `network/realtime`). Новые подгруппы
+      `performance`, `security` и `accessibility`; `tools` переехала в конец
+      раздела.
 - [ ] 5. HTML & CSS: специфичность и каскад, box model, flexbox и grid,
       позиционирование, адаптивность.
 - [ ] 6. React Native и Next.js: навигация, производительность, Expo; RSC vs

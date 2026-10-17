@@ -12,6 +12,9 @@ first `##` heading is the short answer.
 
 Applies to: React 19.
 
+Browser support and release dates ("since Safari 26") age quickly: at most one
+line in Details, never in the short answer or the follow-up questions.
+
 ## Details
 
 What stands behind the short answer: how it works, edge cases, comparison

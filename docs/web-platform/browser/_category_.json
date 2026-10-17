@@ -3,6 +3,6 @@
   "position": 2,
   "link": {
     "type": "generated-index",
-    "description": "How a page is loaded and rendered, DOM events"
+    "description": "How a page is loaded and rendered, DOM events, web and service workers"
   }
 }
