@@ -94,6 +94,7 @@ if (isMainThread) {
 
 ## See Also
 
+- [Web Workers](../../web-platform/browser/web-workers.md)
 - [Cluster Module](./cluster.md)
 - [Child Process Module](./child-process.md)
 - [Event Loop in Node.js](../event-loop.md)

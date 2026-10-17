@@ -149,3 +149,5 @@ window.addEventListener('storage', (event) => {
 
 - [HTTP](./http.md)
 - [CORS and the Same-Origin Policy](./cors.md)
+- [XSS](../security/xss.md)
+- [CSRF](../security/csrf.md)

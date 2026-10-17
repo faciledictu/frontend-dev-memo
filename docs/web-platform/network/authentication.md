@@ -89,3 +89,5 @@ The usual recommendation is an `HttpOnly; Secure; SameSite` cookie. See
 
 - [Authentication in Next.js](../../nextjs/authentication.md)
 - [CORS and the Same-Origin Policy](./cors.md)
+- [XSS](../security/xss.md)
+- [CSRF](../security/csrf.md)

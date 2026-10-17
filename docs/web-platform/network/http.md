@@ -149,3 +149,4 @@ try {
 
 - [CORS and the Same-Origin Policy](./cors.md)
 - [Browser Storage](./storage.md)
+- [Real-Time Updates](./realtime.md)

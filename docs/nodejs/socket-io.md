@@ -143,5 +143,6 @@ if (ok) socket.emit('chat:message', 'general', 'Hello!');
 
 ## See Also
 
+- [Real-Time Updates in the Browser](../web-platform/network/realtime.md)
 - [HTTP Module](./modules/http.md)
 - [Events Module](./modules/events.md)

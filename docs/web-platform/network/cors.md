@@ -26,7 +26,7 @@ Compared with `https://example.com/page`:
 
 The policy limits **reading** from scripts. Embedding (`<img>`, `<script>`,
 `<link>`), form submissions and navigation to another origin are allowed, which
-is why CSRF attacks are possible.
+is why [CSRF](../security/csrf.md) attacks are possible.
 
 ### Simple Requests and Preflight
 
@@ -120,3 +120,4 @@ Access-Control-Max-Age: 600
 
 - [HTTP](./http.md)
 - [Authentication and Authorization](./authentication.md)
+- [CSRF](../security/csrf.md)

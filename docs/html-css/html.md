@@ -183,3 +183,4 @@ elements come with keyboard support and focus for free.
 
 - [How the Browser Works](../web-platform/browser/browser-workflow.md)
 - [DOM Events](../web-platform/browser/events.md)
+- [Web Accessibility](../web-platform/accessibility/accessibility.md)
