@@ -1,6 +1,7 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
 description: Array methods by group, mutating and non-mutating, common pitfalls
+tags: [junior, middle]
 ---
 
 # Arrays
@@ -195,6 +196,8 @@ let y = 2;
   [Map, Set, WeakMap and WeakSet](./map-set.md).
 - What is the difference between `map` and `forEach`? `map` returns a new array,
   `forEach` returns nothing and is used for side effects.
+- Is `sort` stable? Yes, since ES2019: equal elements keep their order, so you
+  can sort by one field and then by another.
 
 ## Common Mistakes
 

@@ -1,7 +1,8 @@
 ---
-sidebar_position: 11
+sidebar_position: 5
 description:
   A function that remembers the variables of the scope it was created in
+tags: [junior, middle]
 ---
 
 # Closures

@@ -1,6 +1,7 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 description: bind(), call(), apply()
+tags: [junior, middle]
 ---
 
 # bind, call and apply

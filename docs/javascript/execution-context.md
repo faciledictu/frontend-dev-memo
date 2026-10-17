@@ -1,6 +1,7 @@
 ---
 sidebar_position: 4
 description: What the engine creates to run code, hoisting and the scope chain
+tags: [middle]
 ---
 
 # Execution Context

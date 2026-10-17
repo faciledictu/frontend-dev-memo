@@ -1,6 +1,7 @@
 ---
 sidebar_position: 2
 description: var, let and const, hoisting and the temporal dead zone
+tags: [junior, middle]
 ---
 
 # Variables

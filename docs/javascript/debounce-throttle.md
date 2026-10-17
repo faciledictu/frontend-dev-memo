@@ -1,8 +1,9 @@
 ---
-sidebar_position: 17
+sidebar_position: 18
 description:
   Debounce vs throttle, where to use each, an implementation of both and how to
   use them in React
+tags: [middle]
 ---
 
 # Debounce and Throttle

@@ -1,6 +1,7 @@
 ---
 sidebar_position: 15
 description: Call stack, tasks and microtasks, and the order of execution
+tags: [middle]
 ---
 
 # Event Loop

@@ -1,6 +1,7 @@
 ---
 sidebar_position: 20
 description: Creating regular expressions, flags, methods and basic syntax
+tags: [junior, middle]
 ---
 
 # Regular Expressions

@@ -1,8 +1,9 @@
 ---
-sidebar_position: 9
+sidebar_position: 10
 description:
   Map vs plain objects, Set and set methods, WeakMap and WeakSet and when to use
   them
+tags: [middle]
 ---
 
 # Map, Set, WeakMap and WeakSet

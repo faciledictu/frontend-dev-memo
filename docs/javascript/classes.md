@@ -1,6 +1,7 @@
 ---
 sidebar_position: 13
 description: Class syntax, inheritance, private fields and static methods
+tags: [junior, middle]
 ---
 
 # Classes

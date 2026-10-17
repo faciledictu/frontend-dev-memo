@@ -1,6 +1,7 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 description: What the `this` keyword refers to in JavaScript
+tags: [junior, middle]
 ---
 
 # The `this` Keyword

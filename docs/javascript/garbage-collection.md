@@ -1,6 +1,7 @@
 ---
-sidebar_position: 18
+sidebar_position: 19
 description: How memory is freed in JavaScript and where leaks come from
+tags: [middle, senior]
 ---
 
 # Garbage Collection
