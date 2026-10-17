@@ -3,6 +3,7 @@ sidebar_position: 16
 description:
   Promise states and chaining, Promise.all vs allSettled vs race vs any,
   async/await, errors and cancellation
+tags: [middle]
 ---
 
 import Tabs from '@theme/Tabs';
@@ -231,6 +232,9 @@ try {
 - What does this print?
   `console.log(1); new Promise(() => console.log(2)); Promise.resolve().then(() => console.log(3)); console.log(4);`
   → `1 2 4 3`: the executor is synchronous, `then` callbacks are microtasks.
+- What is the difference between `then(onOk, onError)` and
+  `then(onOk).catch(onError)`? In the first form `onError` does not see an error
+  thrown inside `onOk`; a `catch` after `then` handles both.
 - How do you turn a callback API into a promise? Wrap it in `new Promise` and
   call `resolve` / `reject` from the callback; Node.js has `util.promisify`.
 - How is `Promise.withResolvers` useful? When the code that settles the promise

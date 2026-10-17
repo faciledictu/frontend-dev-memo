@@ -1,6 +1,7 @@
 ---
 sidebar_position: 12
 description: The prototype chain, __proto__ vs prototype, what new does
+tags: [middle]
 ---
 
 # Prototypes and Inheritance

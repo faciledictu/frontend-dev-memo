@@ -1,6 +1,7 @@
 ---
 sidebar_position: 3
 description: Function Declarations, Function Expressions, and Arrow Functions
+tags: [junior, middle]
 ---
 
 # Functions

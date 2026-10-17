@@ -1,7 +1,8 @@
 ---
-sidebar_position: 8
+sidebar_position: 9
 description:
   Cloning objects, accessing properties, iterating, Object static methods
+tags: [junior, middle]
 ---
 
 # Objects
@@ -122,17 +123,18 @@ for (const [key, value] of Object.entries(obj)) {
 
 ## `Object` Static Methods
 
-| Method                           | What it does                                           |
-| -------------------------------- | ------------------------------------------------------ |
-| `Object.keys / values / entries` | arrays of own enumerable keys, values or pairs         |
-| `Object.fromEntries(pairs)`      | builds an object from `[key, value]` pairs             |
-| `Object.assign(target, ...src)`  | copies own enumerable properties into `target`         |
-| `Object.hasOwn(obj, key)`        | own property check; replaces `hasOwnProperty` (ES2022) |
-| `Object.freeze(obj)`             | forbids any changes; shallow                           |
-| `Object.seal(obj)`               | forbids adding and deleting; values can be changed     |
-| `Object.create(proto)`           | new object with the given prototype                    |
-| `Object.getPrototypeOf(obj)`     | returns the prototype                                  |
-| `Object.groupBy(items, fn)`      | groups items into an object by key (ES2024)            |
+| Method                                        | What it does                                                                                      |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `Object.keys / values / entries`              | arrays of own enumerable keys, values or pairs                                                    |
+| `Object.fromEntries(pairs)`                   | builds an object from `[key, value]` pairs                                                        |
+| `Object.assign(target, ...src)`               | copies own enumerable properties into `target`                                                    |
+| `Object.hasOwn(obj, key)`                     | own property check; replaces `hasOwnProperty` (ES2022)                                            |
+| `Object.freeze(obj)`                          | forbids any changes; shallow                                                                      |
+| `Object.seal(obj)`                            | forbids adding and deleting; values can be changed                                                |
+| `Object.create(proto)`                        | new object with the given prototype                                                               |
+| `Object.defineProperty(obj, key, descriptor)` | sets `writable`, `enumerable`, `configurable`, or `get` / `set`; omitted flags default to `false` |
+| `Object.getPrototypeOf(obj)`                  | returns the prototype                                                                             |
+| `Object.groupBy(items, fn)`                   | groups items into an object by key (ES2024)                                                       |
 
 ## Creating
 

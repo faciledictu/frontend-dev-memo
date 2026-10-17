@@ -1,6 +1,7 @@
 ---
 sidebar_position: 13
 description: Class syntax, inheritance, private fields and static methods
+tags: [junior, middle]
 ---
 
 # Classes
@@ -17,7 +18,9 @@ Unlike constructor functions, classes:
 - always run in strict mode;
 - have non-enumerable methods.
 
-## Basic Syntax
+## Details
+
+### Basic Syntax
 
 ```javascript
 class Person {
@@ -34,13 +37,23 @@ class Person {
 }
 
 const person1 = new Person('John', 30);
-person1.greet(); // Output: Hello, my name is John and I am 30 years old.
+person1.greet(); // Hello, my name is John and I am 30 years old.
 ```
 
-## Inheritance
+### Fields, Getters and Setters
+
+- **Public fields** (`count = 0;`) are own properties created for each instance
+  before the constructor body runs. A field holding an **arrow function** keeps
+  `this` when the method is passed as a callback.
+- **`get` / `set`** define accessor properties on the prototype:
+  `get fullName() {}` is read as `user.fullName`.
+
+### Inheritance
 
 The `extends` keyword creates a subclass. A subclass constructor must call
-`super()` before using `this`.
+`super()` before using `this`. `super.speak()` calls the parent's method. A
+subclass without a constructor gets `constructor(...args) { super(...args); }`
+by default.
 
 ```javascript
 class Animal {
@@ -68,7 +81,7 @@ const dog1 = new Dog('Rex', 'German Shepherd');
 dog1.speak(); // Rex barks.
 ```
 
-## Private and Protected Properties and Methods
+### Private Members
 
 ECMAScript 2022 introduced support for private fields and methods using the `#`
 prefix. Private fields and methods are only accessible within the class where
@@ -105,7 +118,7 @@ JavaScript has no **protected** members (accessible in the class and its
 subclasses only). A leading underscore (`_name`) is just a naming convention:
 the property stays public.
 
-## `instanceof` Operator
+### `instanceof`
 
 It checks whether an object is an instance of a specific class or constructor
 function.
@@ -118,10 +131,11 @@ console.log(dog1 instanceof Dog); // true
 console.log(dog1 instanceof Car); // false
 ```
 
-## Static Methods
+### Static Members
 
 Static methods and fields are defined on the class itself, not on instances.
-They are used for utility functions and factories.
+They are used for utility functions and factories. A `static {}` block runs once
+when the class is created.
 
 ```javascript
 class MathUtilities {
@@ -130,5 +144,31 @@ class MathUtilities {
   }
 }
 
-console.log(MathUtilities.add(5, 3)); // Output: 8
+console.log(MathUtilities.add(5, 3)); // 8
 ```
+
+## Follow-up Questions
+
+- Why must `super()` be called before `this` in a subclass constructor? The
+  object is created by the base constructor; until `super()` returns there is no
+  `this` (`ReferenceError`).
+- How do you keep `this` in a class method used as a callback? Bind it in the
+  constructor (`this.handle = this.handle.bind(this)`) or make it an arrow
+  function field (`handle = () => {}`). See [`this`](./this-keyword.md).
+- Can a class extend several classes? No; use composition or mixins. See
+  [OOP Principles](../programming/paradigms/oop-principles.md).
+
+## Common Mistakes
+
+- "Classes are just syntax sugar, nothing else." They also require `new`, are in
+  the TDZ, run in strict mode and have non-enumerable methods.
+- Passing `obj.method` as a callback and losing `this` (React class components,
+  `addEventListener`).
+- "`_name` is private." Only `#name` is enforced; the underscore is a
+  convention.
+
+## See Also
+
+- [Prototypes](./prototypes.md)
+- [The `this` Keyword](./this-keyword.md)
+- [OOP Principles](../programming/paradigms/oop-principles.md)

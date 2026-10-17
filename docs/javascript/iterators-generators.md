@@ -1,8 +1,9 @@
 ---
-sidebar_position: 10
+sidebar_position: 11
 description:
   The iteration protocols, generator functions, iterator helpers and async
   iteration
+tags: [middle]
 ---
 
 # Iterators and Generators

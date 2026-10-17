@@ -1,6 +1,7 @@
 ---
 sidebar_position: 4
 description: What the engine creates to run code, hoisting and the scope chain
+tags: [middle]
 ---
 
 # Execution Context
@@ -107,8 +108,6 @@ run(); // 'global'
 
 - "Declarations are moved to the top of the scope." They are registered during
   the creation phase; the code is not rearranged.
-- "`let` and `const` are not hoisted." They are, but reading them before the
-  declaration throws.
 - "A context is created for each function." It is created for each call.
 - Describing the context through Variable Object and Activation Object. These
   terms are from ES3.

@@ -1,7 +1,8 @@
 ---
-sidebar_position: 19
+sidebar_position: 17
 description:
   throw, try...catch...finally, custom errors and errors in async code
+tags: [junior, middle]
 ---
 
 # Error Handling

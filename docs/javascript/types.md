@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 description: What data types exist in modern JS
+tags: [junior, middle]
 ---
 
 # Data Types
@@ -89,8 +90,9 @@ console.log(typeof null); // 'object'
   value was assigned", `null` is assigned explicitly to say "empty".
 - When is `==` acceptable? `value == null` checks for both `null` and
   `undefined`. In other cases use `===`.
-- How do you compare two objects by content? Field by field; `===` only tells
-  whether it is the same object.
+- What are symbols for? Property keys that never clash with other code and are
+  skipped by `for...in`, `Object.keys` and `JSON.stringify`. Well-known symbols
+  such as `Symbol.iterator` let objects customize built-in behavior.
 
 ## Common Mistakes
 

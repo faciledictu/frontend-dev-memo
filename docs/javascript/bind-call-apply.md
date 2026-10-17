@@ -1,6 +1,7 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 description: bind(), call(), apply()
+tags: [junior, middle]
 ---
 
 # bind, call and apply
@@ -45,20 +46,28 @@ bound.call({ x: 1 }, 'c'); // {} a b c
 
 ## Follow-up Questions
 
-Write your own `bind`:
-
-```javascript
-function bind(fn, thisArg, ...boundArgs) {
-  return function (...args) {
-    return fn.apply(thisArg, [...boundArgs, ...args]);
-  };
-}
-```
-
 - Where is `bind` used in practice? To keep the context of a method passed as a
   callback and to fix the first arguments of a function.
 - What does `bind` do when the bound function is called with `new`? The bound
   `this` is ignored and a new object is created; the fixed arguments are kept.
+- Write your own `bind`:
+
+<details>
+<summary>Answer</summary>
+
+```javascript
+Function.prototype.myBind = function (thisArg, ...boundArgs) {
+  const fn = this;
+  return function bound(...args) {
+    // `new bound()` ignores the bound `this`, like the native `bind`
+    if (new.target) return new fn(...boundArgs, ...args);
+    // highlight-next-line
+    return fn.apply(thisArg, [...boundArgs, ...args]);
+  };
+};
+```
+
+</details>
 
 ## Common Mistakes
 

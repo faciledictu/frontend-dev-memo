@@ -3,6 +3,7 @@ sidebar_position: 14
 description:
   import and export, live bindings, modules in the browser, dynamic import,
   top-level await, import maps and import attributes
+tags: [middle]
 ---
 
 # ES Modules
