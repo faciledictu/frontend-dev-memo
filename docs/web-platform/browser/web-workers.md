@@ -45,7 +45,7 @@ make the page freeze. Types: **dedicated** (one page), **shared**
 - `SharedArrayBuffer` gives both sides the same memory, with `Atomics` for
   synchronization. It is available only on **cross-origin isolated** pages
   (`Cross-Origin-Opener-Policy: same-origin` and
-  `Cross-Origin-Embedder-Policy: require-corp`).
+  `Cross-Origin-Embedder-Policy: require-corp` or `credentialless`).
 - Errors inside the worker fire the `error` event on the `Worker` object.
 - `worker.terminate()` stops the worker from the page, `self.close()` from
   inside.

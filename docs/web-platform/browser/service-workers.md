@@ -39,9 +39,11 @@ works only over **HTTPS** (and on `localhost`). Lifecycle: **register → instal
 3. **Activate**: the `activate` event, to delete caches of old versions.
    `clients.claim()` takes control of the already open pages.
 
-- The browser checks for an update on navigation and on `register()`: it
-  downloads `sw.js` and compares it byte by byte. The HTTP cache is bypassed for
-  this check by default.
+- The browser checks for an update on navigation to a page in the scope, on
+  `registration.update()`, and on push or sync events if the last check was more
+  than 24 hours ago. It downloads `sw.js` and compares it byte by byte; the HTTP
+  cache is bypassed for this check by default. Calling `register()` again with
+  the same URL does not check.
 - `skipWaiting()` means that an open page loaded with the old files now gets
   responses from the new worker. Apps often show "A new version is available,
   reload" instead.

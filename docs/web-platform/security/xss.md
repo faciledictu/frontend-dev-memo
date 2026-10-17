@@ -49,7 +49,8 @@ Dangerous sinks in the browser: `innerHTML` / `outerHTML`, `insertAdjacentHTML`,
 - **Trusted Types** (the CSP directive `require-trusted-types-for 'script'`)
   make the browser reject plain strings in `innerHTML` and other sinks: only
   values created by a reviewed policy are accepted. This finds DOM-based XSS in
-  the whole codebase at once.
+  the whole codebase at once. Supported in all major browsers since 2026
+  (Firefox 148).
 
 ### XSS in React
 
@@ -102,13 +103,21 @@ A URL from users:
 
 ```javascript
 function safeUrl(value) {
-  const url = new URL(value, location.origin);
-  // highlight-next-line
-  return ['http:', 'https:'].includes(url.protocol) ? url.href : 'about:blank';
+  try {
+    const url = new URL(value, location.origin);
+    // highlight-start
+    return ['http:', 'https:'].includes(url.protocol)
+      ? url.href
+      : 'about:blank';
+    // highlight-end
+  } catch {
+    return 'about:blank'; // new URL() throws on 'http://'
+  }
 }
 
 safeUrl('javascript:alert(1)'); // 'about:blank'
 safeUrl('/profile'); // 'https://your-site.example/profile'
+safeUrl('//evil.example'); // 'https://evil.example/': the scheme is checked, the host is not
 ```
 
 ## Follow-up Questions

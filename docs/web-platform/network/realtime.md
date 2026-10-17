@@ -48,7 +48,8 @@ WebSocket suits chats, multiplayer games and collaborative editing.
   AI chat UIs that need `POST` read a streamed `fetch` response instead
   (`response.body.getReader()`).
 - Over HTTP/1.1 a browser opens at most 6 connections per domain, for all tabs
-  together, so many tabs with SSE run out of them. HTTP/2 removes the limit.
+  together, so many tabs with SSE run out of them. HTTP/2 multiplexes the
+  streams over one connection, usually up to 100.
 - Proxies must not buffer the response (for nginx: `X-Accel-Buffering: no`).
 
 ### WebSocket
@@ -70,11 +71,12 @@ WebSocket suits chats, multiplayer games and collaborative editing.
   connected to other instances.
 
 **WebTransport** is a newer API over HTTP/3 with streams and unreliable
-datagrams, for games and media; it is not yet available in all browsers.
+datagrams, for games and media. All major browsers support it since Safari 26.4
+(2026); WebSocket remains the default for older clients.
 
 ## Example
 
-An SSE server in Node.js and the client:
+An SSE server in Node.js and the client (a page served from the same origin):
 
 ```javascript title="server.js"
 import { createServer } from 'node:http';
@@ -141,9 +143,11 @@ connect();
 - Why not always use WebSocket? SSE and polling are plain HTTP: they work with
   existing auth, caches, proxies and load balancers, and reconnect by
   themselves. WebSocket is worth it when the client also sends a lot.
-- How does the server know that a WebSocket client is gone? A `close` event
-  comes only on a clean close. For dropped connections an application-level
-  heartbeat (or the server's ping/pong) is needed.
+- How does the server know that a WebSocket client is gone? `close` fires when
+  the connection ends, cleanly or not (code `1006`). But a connection that dies
+  silently (lost network, a sleeping laptop) sends nothing, and `close` comes
+  only after a TCP timeout. A heartbeat (the server's ping/pong, or
+  application-level messages) detects it.
 - How do you authenticate a WebSocket? A cookie sent with the handshake (and an
   `Origin` check), or a short-lived token in the first message. A token in the
   URL ends up in server logs.

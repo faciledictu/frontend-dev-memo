@@ -11,8 +11,9 @@ description:
 with a **screen reader**, with the **keyboard only**, with low vision or color
 blindness, with tremor, with cognitive difficulties. The standard is **WCAG**
 (Web Content Accessibility Guidelines) 2.2; the usual target is level **AA**,
-which is also what laws require (the European Accessibility Act, the ADA in the
-US). The basics:
+which is also what laws refer to: the European Accessibility Act (in force since
+June 2025, through the EN 301 549 standard) and the ADA rules in the US
+currently require WCAG 2.1 AA. The basics:
 
 - **Semantic HTML** first: a `<button>` for actions, `<a href>` for links,
   headings, landmarks, `<label>` for fields.
@@ -52,7 +53,7 @@ US). The basics:
   instead.
 - **Modals**: move the focus inside on open, keep it there, close on Esc, return
   the focus on close. The native `<dialog>` with `showModal()` does most of it;
-  `inert` disables the rest of the page. See
+  for a custom modal, the `inert` attribute disables the rest of the page. See
   [Portals](../../react/basics/portals.md).
 - **SPA navigation**: after a route change, move the focus to the new heading or
   announce the new page; otherwise a screen reader user does not notice the

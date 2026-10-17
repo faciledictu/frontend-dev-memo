@@ -131,8 +131,9 @@ The `<head>` and the first screen of an optimized page:
   styles would show unstyled content and then repaint it. A script may change
   the DOM (`document.write`) or read styles, so the parser waits for it.
 - What is the difference between `preload` and `prefetch`? `preload` is for the
-  current page, with a high priority; `prefetch` is for a future navigation,
-  with the lowest one.
+  current page, with the priority of its `as` type (high for fonts and styles,
+  low for images unless `fetchpriority="high"`); `prefetch` is for a future
+  navigation, with the lowest priority.
 - How do you find what slows down the load? The **Network** panel (waterfall,
   priorities), the **Performance** panel, Lighthouse. See
   [Debugging](../tools/debugging.md).

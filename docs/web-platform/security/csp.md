@@ -38,16 +38,16 @@ by a random **nonce** or a **hash**, not by a list of hosts. CSP also replaces
 
 ### Source Values
 
-| Value                               | Allows                                                                           |
-| ----------------------------------- | -------------------------------------------------------------------------------- |
-| `'self'`                            | the page's own origin                                                            |
-| `'none'`                            | nothing                                                                          |
-| `https://cdn.example.com`, `https:` | a host or a whole scheme                                                         |
-| `'nonce-<random>'`                  | elements with the matching `nonce` attribute                                     |
-| `'sha256-<hash>'`                   | an inline script or style with exactly this content                              |
-| `'strict-dynamic'`                  | scripts loaded by an already trusted script; host lists and `'self'` are ignored |
-| `'unsafe-inline'`                   | any inline code; it disables the protection against XSS                          |
-| `'unsafe-eval'`                     | `eval`, `new Function`, `setTimeout` with a string                               |
+| Value                               | Allows                                                                                                                                         |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `'self'`                            | the page's own origin                                                                                                                          |
+| `'none'`                            | nothing                                                                                                                                        |
+| `https://cdn.example.com`, `https:` | a host or a whole scheme                                                                                                                       |
+| `'nonce-<random>'`                  | elements with the matching `nonce` attribute                                                                                                   |
+| `'sha256-<hash>'`                   | an inline script or style with exactly this content                                                                                            |
+| `'strict-dynamic'`                  | scripts that a trusted script creates (`createElement`, not `document.write`); hosts, schemes, `'self'` and `'unsafe-inline'` are then ignored |
+| `'unsafe-inline'`                   | any inline code; it disables the protection against XSS                                                                                        |
+| `'unsafe-eval'`                     | `eval`, `new Function`, `setTimeout` with a string                                                                                             |
 
 ### Strict CSP vs Allowlist
 
@@ -70,8 +70,8 @@ by a random **nonce** or a **hash**, not by a list of hosts. CSP also replaces
 - Both headers can be sent at once: an enforced policy and a stricter one being
   tested.
 - A `<meta http-equiv="Content-Security-Policy">` tag works too, but without
-  `frame-ancestors`, `report-to` and `sandbox`, and it applies only to what
-  comes after it.
+  `frame-ancestors`, `sandbox` and `report-uri`, and it applies only to what
+  comes after it. Report-Only cannot be set with `<meta>`.
 - If several policies are present, a resource must pass **all** of them: an
   extra policy can only tighten the rules.
 
@@ -95,6 +95,8 @@ What happens on the page:
 <script>
   alert('injected');
 </script>
+<!-- Refused to execute inline event handler because it violates the following
+     Content Security Policy directive: "script-src 'nonce-r4nd0m' 'strict-dynamic'" -->
 <img src="x" onerror="alert('injected')" />
 <!-- error-end -->
 ```

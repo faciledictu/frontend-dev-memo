@@ -132,15 +132,16 @@ button.addEventListener('click', async () => {
 - Why INP instead of FID? FID measured only the input delay of the **first**
   interaction. INP measures the whole interaction, up to the next frame, for the
   slowest interactions of the visit.
-- Why is the score good in Lighthouse but poor in Search Console? Lighthouse
-  runs once on a fast machine with an empty cache; field data comes from real
-  devices and networks, and includes interactions.
+- Why is the score good in Lighthouse but poor in Search Console? Lighthouse is
+  one run with an emulated mid-range phone and slow network, with an empty cache
+  and no interactions. Field data is the real spread of devices, networks, cache
+  states and user actions.
 - Why does `loading="lazy"` on the hero image make LCP worse? The browser waits
   for layout to decide whether the image is in the viewport, so the download
   starts later.
-- Which browsers report these metrics? All three were built in Chromium first.
-  Check support before relying on data from other browsers; CrUX collects data
-  only from Chrome.
+- Which browsers report these metrics? LCP and INP: all major browsers since
+  December 2025 (Firefox 144, Safari 26.2). CLS: only Chromium. CrUX collects
+  data only from Chrome, and not on iOS.
 
 ## Common Mistakes
 

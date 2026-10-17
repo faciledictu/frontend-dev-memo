@@ -42,7 +42,9 @@ What a cross-site page **cannot** do: set custom headers or a JSON
 | Custom header or JSON only  | a cross-origin request with such a header or `Content-Type` needs a preflight, and the server does not allow it         | relies on a correct CORS setup; check the `Content-Type` exactly                 |
 
 - **`SameSite`.** Set it explicitly. Chromium treats a cookie without the
-  attribute as `Lax`; Firefox and Safari do not. See
+  attribute as `Lax`, but still sends it with a top-level cross-site `POST`
+  during the first 2 minutes after it was set; Firefox and Safari do not apply
+  `Lax` by default at all. See
   [Browser Storage](../network/storage.md#cookie-attributes).
 - **CSRF token.** The classic variant stores it in the session (synchronizer
   token). The stateless variant, **double submit**, puts it into a cookie and
@@ -50,12 +52,13 @@ What a cross-site page **cannot** do: set custom headers or a JSON
   or tied to the session, otherwise a subdomain can overwrite it. Frameworks
   have it built in (Rails, Django, Laravel).
 - **`Sec-Fetch-Site`** is one of the **Fetch Metadata** headers, sent by all
-  modern browsers: `same-origin`, `same-site`, `cross-site`, or `none` for a
-  request the user started (typing the URL, a bookmark). It cannot be set from a
-  script.
+  modern browsers, only over HTTPS (and to `localhost`): `same-origin`,
+  `same-site`, `cross-site`, or `none` for a request the user started (typing
+  the URL, a bookmark). It cannot be set from a script.
 - **Safe methods.** `GET`, `HEAD` and `OPTIONS` must not change anything:
-  `SameSite=Lax` still sends cookies with them, and an `<img>` can trigger a
-  `GET` from any site.
+  `SameSite=Lax` still sends cookies with a top-level `GET` navigation (a link,
+  a redirect), and an `<img>` sends a `GET` with cookies that have no `SameSite`
+  restriction.
 
 ### Why CORS Does Not Help
 
