@@ -132,8 +132,8 @@ app.use((req, res, next) => {
 ## Common Mistakes
 
 - `'unsafe-inline'` in `script-src` "to make it work": it turns off the main
-  protection. With a nonce or a hash present, browsers ignore it, which is how
-  it is used as a fallback for very old browsers.
+  protection. With a nonce or a hash present, modern browsers ignore it, so it
+  only serves as a fallback for very old browsers.
 - An allowlist with large CDNs or `https:`: easy to bypass.
 - Turning on the enforcing header without a Report-Only period: it breaks the
   site for users.

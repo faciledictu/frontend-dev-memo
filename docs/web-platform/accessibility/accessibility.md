@@ -85,11 +85,11 @@ clickable from the keyboard.
 | Text contrast    | **4.5:1**, large text (24 px, or 18.66 px bold) **3:1**        |
 | UI components    | 3:1 for borders of fields, icons, focus indicators             |
 | Color            | not the only way to convey information (errors, links, charts) |
-| Zoom and reflow  | usable at 200 % zoom and at a width of 320 CSS px              |
+| Zoom and reflow  | usable at 200% zoom and at a width of 320 CSS px               |
 | Target size      | at least 24 × 24 CSS px (new in WCAG 2.2)                      |
 
 Respect user settings: `prefers-reduced-motion` for animations, sizes in `rem`
-so that the browser font size works.
+so that the font size set in the browser is applied.
 
 ### Testing
 
@@ -165,8 +165,8 @@ A field with a label and an error message linked to it:
 
 ## Common Mistakes
 
-- "Accessibility is for screen readers." It is also the keyboard, contrast,
-  zoom, motion, clear language.
+- "Accessibility is for screen readers." It also covers the keyboard, contrast,
+  zoom, motion and clear language.
 - `outline: none` without a replacement focus style.
 - Adding ARIA to fix a `<div>` instead of using the native element.
 - "Lighthouse shows 100, so the site is accessible." Automated checks find only

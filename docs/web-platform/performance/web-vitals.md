@@ -17,8 +17,8 @@ description:
   jumps around unexpectedly. Good: **≤ 0.1**.
 
 A page passes when the **75th percentile** of real visits is in the good range.
-They are measured on real users (**field data**); Lighthouse gives **lab data**,
-useful for debugging but not the same.
+The metrics are measured on real users (**field data**); Lighthouse gives **lab
+data**, useful for debugging but not the same.
 
 ## Details
 

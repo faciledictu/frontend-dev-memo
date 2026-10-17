@@ -11,9 +11,9 @@ description:
 script runs in **your origin**, with all the rights of the page: it reads the
 DOM and `localStorage`, sends requests as the user, changes what the user sees.
 Types: **stored** (saved on the server and shown to other users), **reflected**
-(the server puts a part of the URL into the response), **DOM-based** (client
-code puts untrusted data into a dangerous sink such as `innerHTML`). The defense
-is to treat every external string as text: **escape output** for its context,
+(the server puts part of the URL into the response), **DOM-based** (client code
+puts untrusted data into a dangerous sink such as `innerHTML`). The defense is
+to treat every external string as text: **escape output** for its context,
 **sanitize** HTML that must be rendered, and add **CSP** as the second layer.
 
 ## Details

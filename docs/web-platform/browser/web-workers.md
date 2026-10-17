@@ -52,8 +52,8 @@ make the page freeze. Types: **dedicated** (one page), **shared**
 
 ### When It Helps
 
-- **Helps**: long synchronous computation, from tens of milliseconds and more.
-  The main thread stays free for input and rendering, which improves
+- **Helps**: long synchronous computation, from tens of milliseconds up. The
+  main thread stays free for input and rendering, which improves
   [INP](../performance/web-vitals.md#inp).
 - **Does not help**: network requests and other I/O (already asynchronous), DOM
   updates (only the main thread can do them), tiny tasks (starting a worker and

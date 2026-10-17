@@ -69,7 +69,7 @@ works only over **HTTPS** (and on `localhost`). Lifecycle: **register → instal
   Storage, because the worker can be stopped at any moment and global variables
   are lost.
 - A cached `index.html` served cache first keeps users on the old version
-  forever. HTML is served network first.
+  forever. Serve HTML network first.
 - A broken service worker survives deploys. Keep a way out: deploy a new `sw.js`
   that unregisters itself (`self.registration.unregister()`), or send the
   `Clear-Site-Data: "storage"` header.

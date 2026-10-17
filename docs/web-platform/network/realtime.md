@@ -37,9 +37,9 @@ WebSocket suits chats, multiplayer games and collaborative editing.
 ### Server-Sent Events
 
 - The response has `Content-Type: text/event-stream` and is never finished. Each
-  event is a few lines `field: value` and an empty line: `data:` (the payload,
-  may repeat), `event:` (the event name), `id:`, `retry:` (the reconnection
-  delay in ms).
+  event is a few `field: value` lines followed by an empty line: `data:` (the
+  payload, may repeat), `event:` (the event name), `id:`, `retry:` (the
+  reconnection delay in ms).
 - After a disconnect, `EventSource` reconnects by itself and sends the last
   received `id` in the `Last-Event-ID` header, so the server can send what was
   missed. A response with status `204` stops the reconnection.
