@@ -5,7 +5,7 @@ description:
   fetchpriority, images, fonts, compression and caching
 ---
 
-# Loading Performance
+# Critical Rendering Path and Loading Performance
 
 The **critical rendering path** is the work the browser must do before the first
 paint: download the HTML, build the DOM and the CSSOM, run the blocking scripts,

@@ -37,7 +37,7 @@ export const webPlatform: Category = {
   label: 'Web Platform',
   navbarLabel: 'Web',
   description:
-    'Network, how the browser renders a page, security, performance, accessibility, build and debugging tools',
+    'Network, how the browser renders a page, performance, security, accessibility, build and debugging tools',
   group: 'main',
 };
 

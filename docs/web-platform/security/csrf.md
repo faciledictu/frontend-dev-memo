@@ -95,6 +95,23 @@ function csrfGuard(req, res, next) {
 }
 ```
 
+The client side of a CSRF token: the server renders it into the page, the script
+sends it in a header, and the server compares it with the session:
+
+```javascript
+const token = document.querySelector('meta[name="csrf-token"]').content;
+
+await fetch('/transfer', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    // highlight-next-line
+    'X-CSRF-Token': token,
+  },
+  body: JSON.stringify({ to: 'alice', amount: 100 }),
+});
+```
+
 ## Follow-up Questions
 
 - Is an API with a JWT in the `Authorization` header vulnerable to CSRF? No: the

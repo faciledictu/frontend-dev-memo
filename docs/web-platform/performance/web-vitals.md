@@ -57,9 +57,10 @@ delay**. What helps:
   `<link rel="preload">`.
 - **`fetchpriority="high"`** on the LCP image, and **never `loading="lazy"`** on
   it.
-- Smaller images. See [Loading Performance](./loading-performance.md#images).
+- Smaller images. See
+  [Critical Rendering Path and Loading Performance](./loading-performance.md#images).
 - No render-blocking CSS and scripts in the way. See
-  [Loading Performance](./loading-performance.md).
+  [Critical Rendering Path and Loading Performance](./loading-performance.md).
 
 ### INP
 
@@ -159,6 +160,6 @@ button.addEventListener('click', async () => {
 
 ## See Also
 
-- [Loading Performance](./loading-performance.md)
+- [Critical Rendering Path and Loading Performance](./loading-performance.md)
 - [Optimization Tools in Next.js](../../nextjs/optimization.md)
 - [Bundle Optimization](../tools/bundle-optimization.md)

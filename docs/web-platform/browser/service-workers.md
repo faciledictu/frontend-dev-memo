@@ -171,4 +171,4 @@ self.addEventListener('fetch', (event) => {
 
 - [Web Workers](./web-workers.md)
 - [Browser Storage](../network/storage.md)
-- [Loading Performance](../performance/loading-performance.md)
+- [Critical Rendering Path and Loading Performance](../performance/loading-performance.md)

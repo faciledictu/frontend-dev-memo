@@ -94,7 +94,7 @@ for (const item of items) {
 
 - What blocks the first render? CSS in `<head>` and parser-blocking scripts.
   That is why scripts get `defer` and critical CSS is kept small. See
-  [Loading Performance](../performance/loading-performance.md).
+  [Critical Rendering Path and Loading Performance](../performance/loading-performance.md).
 - What is the difference between `display: none` and `visibility: hidden`? The
   first removes the element from the render tree; the second keeps its place in
   the layout, but it is not painted.
@@ -113,5 +113,5 @@ for (const item of items) {
 
 - [HTTP](../network/http.md)
 - [HTML](../../html-css/html.md)
-- [Loading Performance](../performance/loading-performance.md)
+- [Critical Rendering Path and Loading Performance](../performance/loading-performance.md)
 - [Rendering in React](../../react/rendering/reconciliation.md)
