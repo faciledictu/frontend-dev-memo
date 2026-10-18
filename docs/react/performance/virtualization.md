@@ -96,7 +96,7 @@ export default function VirtualList({ items }) {
 ## Follow-up Questions
 
 - Why not just paginate? Pagination changes the UX; virtualization keeps one
-  scrollable list. They are often combined with infinite scroll.
+  scrollable list. Virtualization is often combined with infinite loading.
 - How does the scrollbar look right if only 20 items are rendered? The inner
   element has the full (estimated) height of the list.
 - What is overscan? Extra items rendered beyond the viewport, so fast scrolling
@@ -114,7 +114,8 @@ export default function VirtualList({ items }) {
 - A scroll container without a fixed height or `overflow`: every item is
   "visible" and all of them render.
 - Index keys for items with state or for a list that can be reordered.
-- Forgetting `aria-rowcount` or `aria-setsize`.
+- Forgetting `aria-setsize` and `aria-posinset` (or `aria-rowcount` and
+  `aria-rowindex` in a grid): screen readers see only the rendered items.
 
 ## See Also
 

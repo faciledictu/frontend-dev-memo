@@ -34,8 +34,8 @@ Applies to: React 19.3.
   on screen, renders the new one in the background and sets `isPending` to
   `true`.
 - The background render is **interruptible**: a new urgent update or a newer
-  transition of the same state makes React drop the unfinished work. Unrelated
-  transitions render independently (React 19.3).
+  transition that updates the same state makes React drop the unfinished work.
+  Unrelated transitions render independently (React 19.3).
 - React can only yield **between components**. One component with a slow body
   still blocks the thread; a slow tree of many components does not.
 - A transition does not replace already visible content with a `Suspense`

@@ -187,8 +187,9 @@ export default function Catalog({ products }) {
 - `useMemo` for a trivial calculation.
 - Deep comparison in a custom `memo` comparator: it can cost more than the
   render.
-- "With React Compiler `memo` and `useMemo` are wrong": they stay valid escape
-  hatches, and the compiler keeps manual memoization.
+- Removing all `useMemo` and `useCallback` after enabling React Compiler: they
+  stay valid escape hatches (for example for an effect dependency), and removing
+  them can change the compiled output.
 
 ## See Also
 

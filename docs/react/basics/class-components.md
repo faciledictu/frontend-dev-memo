@@ -96,7 +96,8 @@ export default class Timer extends Component {
 - `PureComponent` or `Component`? `PureComponent` skips the re-render when props
   and state are shallowly equal.
 - Are class components removed in React 19? No, they are still supported, but
-  hooks, `use` and Actions are not available in them.
+  hooks (including `useActionState` and `useOptimistic`) and `use` are not
+  available in them.
 
 ## Common Mistakes
 

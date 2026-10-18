@@ -192,7 +192,8 @@ export default function ProfileForm() {
   or a new `key` for uncontrolled ones.
 - `useActionState` or `useFormStatus`? `useActionState` owns the action and
   returns its result and `isPending`. `useFormStatus` is read by a child of the
-  `<form>` and knows only that a submission is pending, not its result.
+  `<form>` and returns `pending`, `data`, `method` and `action` of the
+  submission, but not its result.
 - What happens to `useOptimistic` when the action fails? The optimistic value is
   dropped and the real state is shown again. The error is returned by the action
   as state or, if thrown, goes to the nearest error boundary.
@@ -205,7 +206,7 @@ export default function ProfileForm() {
 - Forgetting `event.preventDefault()` in `onSubmit` and getting a page reload.
 - Initializing a controlled field with `undefined` or `null`.
 - Expecting `<form action>` to clear controlled fields: React resets only
-  uncontrolled ones, controlled values stay until the state is set back.
+  uncontrolled ones; controlled values stay until the state is set back.
 
 ## See Also
 

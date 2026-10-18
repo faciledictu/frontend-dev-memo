@@ -37,8 +37,8 @@ Applies to: React 19.3.
   scroll, selection, measuring). Don't change the DOM structure that React
   renders.
 - Since React 19.3 a ref on a **`<Fragment>`** gives a `FragmentInstance`: it
-  adds listeners, focuses or observes all the fragment's DOM children without a
-  wrapper `<div>`.
+  adds event listeners to and observes the fragment's top-level DOM nodes, and
+  `focus()` focuses the first focusable one, all without a wrapper `<div>`.
 
 ### Callback Refs
 
@@ -173,8 +173,9 @@ export default function Measured({ children }) {
 - How to get refs for a list of items? A callback ref that stores nodes in a
   `Map` kept in a ref.
 - How to keep the previous value of a prop? For rendering, store it in state and
-  update it during render when the prop changes. For effects and handlers, a ref
-  written in an effect (`usePrevious`); reading it during render is a mistake.
+  update it during render when the prop changes. For effects and handlers, use a
+  ref updated in an effect (`usePrevious`); reading it during render is a
+  mistake.
 
 ## Common Mistakes
 

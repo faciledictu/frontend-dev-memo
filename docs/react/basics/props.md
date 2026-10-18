@@ -93,8 +93,10 @@ export default function Counter() {
   parent re-renders, whether or not the props changed. Comparing props is an
   optimization: [`memo`](../performance/optimization.md#memoization).
 - How to pass a component or an element as a prop, and how is it different from
-  `children`? It is the same mechanism: `children` is just the prop written
-  between the tags. Several such props (`header`, `footer`) work as named slots.
+  `children`? Pass an element (`icon={<Star />}`) or the component itself
+  (`as={Link}`, rendered by the child under a capitalized name). `children` is
+  the same mechanism: the prop written between the tags. Several such props
+  (`header`, `footer`) work as named slots.
 
 ## Common Mistakes
 

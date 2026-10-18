@@ -6,7 +6,7 @@ description:
 tags: [middle]
 ---
 
-# Common Patterns
+# Patterns and Error Boundaries
 
 React code is reused through **composition**, not inheritance. UI is composed
 with `children` and **compound components**; logic is shared with **custom
@@ -211,9 +211,10 @@ const ProtectedSettings = withAuthorization(Settings);
 - How to recover from an error boundary without a reload? Reset its state:
   change its `key`, or call `resetErrorBoundary` (or set `resetKeys`) in
   `react-error-boundary`.
-- What is a controlled compound component? The parent takes `value` and
-  `onChange` like an input, so the owner keeps the state (as in Radix and
-  Headless UI); the uncontrolled one takes `defaultValue`.
+- What is a controlled compound component? The root component (`<Tabs>`) takes
+  `value` and a change callback like an input (`onChange` in Headless UI,
+  `onValueChange` in Radix), so its owner keeps the state; the uncontrolled one
+  takes `defaultValue`.
 
 ## Common Mistakes
 

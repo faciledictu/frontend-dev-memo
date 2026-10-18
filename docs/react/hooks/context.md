@@ -47,12 +47,9 @@ Applies to: React 19.3.
 
 ### Context and a Store
 
-- Context fits values that change rarely: theme, locale, the current user,
-  dependency injection.
-- For shared state that changes often and is read in parts, a store with
-  selectors ([Redux](../state-management/redux.md),
-  [Zustand](../state-management/overview.md#example)) re-renders only the
-  components whose data changed. See
+- Context fits values that change rarely: theme, locale, the current user.
+  Shared state that changes often and is read in parts belongs in a store with
+  selectors, see
   [When a Store Is Needed](../state-management/overview.md#when-a-store-is-needed).
 - Before reaching for context, check if
   [composition](../basics/patterns.md#composition) solves the prop drilling.

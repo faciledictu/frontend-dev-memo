@@ -135,9 +135,9 @@ export default function ToggleButton() {
 
 ## Follow-up Questions
 
-- What problems did hooks solve? Stateful logic is reused without HOC and
-  render-prop wrappers, a component's logic is split by concern instead of by
-  lifecycle method, and there is no `this`.
+- What problems did hooks solve? Stateful logic is reused without HOCs and
+  render props (no "wrapper hell"), a component's logic is split by concern
+  instead of by lifecycle method, and there is no `this`.
 - Why can't hooks be called conditionally? React identifies a hook by its call
   order, not by a name.
 - Do two components that use the same custom hook share state? No. To share
@@ -157,4 +157,4 @@ export default function ToggleButton() {
 - [Side Effects](./side-effects.md)
 - [Refs](./refs.md)
 - [React Context](./context.md)
-- [Common Patterns](../basics/patterns.md)
+- [Patterns and Error Boundaries](../basics/patterns.md)

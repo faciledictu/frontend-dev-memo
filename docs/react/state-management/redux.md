@@ -211,8 +211,8 @@ export default function App() {
 ## Follow-up Questions
 
 - Why Redux Toolkit instead of plain Redux? It removes the boilerplate of action
-  types and action creators, mutates drafts safely through Immer, and includes
-  thunks, DevTools and serializability checks by default.
+  types and action creators, lets reducers "mutate" a draft through Immer, and
+  includes thunks, DevTools and serializability checks by default.
 - What is a thunk? A function `(dispatch, getState) => …` dispatched instead of
   an action; the thunk middleware calls it, so it can run async code and
   dispatch real actions.

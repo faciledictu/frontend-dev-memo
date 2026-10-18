@@ -45,8 +45,8 @@ Applies to: React 19.3.
   `suppressHydrationWarning` on a single element for an unavoidable difference
   such as a timestamp.
 - A subtree that needs browser APIs calls **`use(browser())`** (from
-  `react-dom`, React 19.3) inside `<Suspense>`: the server renders the fallback,
-  the browser renders the content.
+  `react-dom`, React 19.3) in a Client Component inside `<Suspense>`: the server
+  renders the fallback, the browser renders the content.
 - With `Suspense`, hydration is **selective**: each boundary hydrates
   independently, and the one the user interacts with goes first.
 
@@ -134,9 +134,10 @@ function TodoList() {
   attaches handlers.
 - Why does an effect run twice in development? Because of `StrictMode`, see
   [Side Effects](../hooks/side-effects.md#strictmode).
-- `renderToString` or `renderToPipeableStream`? `renderToString` waits for the
-  whole tree; the stream sends HTML in chunks, sends `Suspense` fallbacks first
-  and fills them in as data arrives.
+- `renderToString` or `renderToPipeableStream`? `renderToString` returns the
+  HTML at once: it can't wait for data, so a suspended part stays as its
+  fallback. The stream sends the shell first and streams the content of each
+  `Suspense` boundary as its data arrives.
 - Can a page have several React roots? Yes, each `createRoot` is independent,
   for example when React is added to parts of an existing page.
 
@@ -144,7 +145,7 @@ function TodoList() {
 
 - Rendering different content on the server and on the client
   (`typeof window !== 'undefined' ? a : b`) and getting a hydration mismatch.
-  `use(browser())` or an effect does it without a mismatch.
+  Render browser-only content with `use(browser())` or in an effect instead.
 - Removing `StrictMode` to "fix" a double effect instead of adding a cleanup.
 - Using `flushSync` as a regular way to update state.
 
