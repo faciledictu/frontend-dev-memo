@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 6
 description:
   Controlled and uncontrolled inputs, form Actions in React 19, form libraries
 tags: [junior, middle]

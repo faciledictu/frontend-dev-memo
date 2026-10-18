@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 description: Authentication vs authorization, sessions vs JWT, OAuth and OIDC
 tags: [middle, senior]
 ---

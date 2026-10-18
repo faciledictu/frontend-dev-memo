@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 3
 description:
   REST vs GraphQL - over- and under-fetching, caching, errors, N+1, versioning,
   and where tRPC fits

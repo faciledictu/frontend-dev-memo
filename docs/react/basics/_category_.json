@@ -4,6 +4,6 @@
   "link": {
     "type": "generated-index",
     "slug": "/react/basics",
-    "description": "Components, props, state, lists, events, error boundaries, forms and composition patterns."
+    "description": "Components, props, state, lists, events, forms, composition patterns and error boundaries."
   }
 }

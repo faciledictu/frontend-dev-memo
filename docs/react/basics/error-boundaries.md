@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 9
 description:
   What error boundaries catch and what they don't, where to place them, how to
   reset them and react-error-boundary
