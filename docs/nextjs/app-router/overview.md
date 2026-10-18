@@ -118,9 +118,8 @@ export default async function PostPage({
 - How are dynamic routes prerendered at build time? `generateStaticParams`
   returns the `params` to prerender, like `getStaticPaths` in the Pages Router;
   other values render on request.
-- Where does `<title>` come from? A `metadata` object or `generateMetadata()`
-  exported from a layout or a page; nested segments override the parent's fields
-  (a shallow merge: a nested `openGraph` replaces the whole object).
+- Where does `<title>` come from? From the Metadata API; see
+  [Metadata and SEO](./metadata.md).
 
 ## Common Mistakes
 
