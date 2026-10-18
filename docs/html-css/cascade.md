@@ -40,12 +40,14 @@ Only what is usually asked; the full list is on
 | `.a.b`            | one element with both classes                        |
 | `[href^='https']` | attribute starts with; `$=` ends with, `*=` contains |
 
-- `:nth-child(2)` counts all siblings; `:nth-of-type(2)` counts only siblings of
-  the same element type.
-- `:focus-visible` matches keyboard focus (use it for focus rings);
-  `:focus-within` matches an element whose descendant has focus.
+- `:nth-child(2)` counts all siblings; `:nth-of-type(2)` counts only siblings
+  with the same tag, so `.item:nth-of-type(2)` does not count `.item`s;
+  `:nth-child(2 of .item)` does.
+- `:focus-visible` matches focus the browser would show a ring for (keyboard
+  navigation, text fields), not a mouse click on a button; `:focus-within`
+  matches an element whose descendant has focus.
 - `::before` and `::after` render only with `content` (`content: ''` for a
-  decorative box).
+  decorative box); they do not work on `<img>` or `<input>`.
 
 ### Specificity
 
@@ -196,7 +198,6 @@ body:has(dialog:modal) {
   overriding third-party inline styles.
 - What is the specificity of `nav ul li a.active:hover`? (0, 2, 4). Of
   `#main :not(.x) p`? (1, 1, 1).
-
 - How does the browser match selectors? Right to left, from the rightmost part:
   `.nav li a` first finds every `a`, then checks its ancestors.
 

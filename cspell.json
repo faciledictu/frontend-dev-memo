@@ -183,6 +183,7 @@
     "touchmove",
     "touchstart",
     "trackpad",
+    "transitioncancel",
     "transitionend",
     "treemap",
     "trygve",
