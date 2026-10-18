@@ -161,3 +161,4 @@ function BlogPost({ post }) {
 
 - [React 19 release post](https://react.dev/blog/2024/12/05/react-19)
 - [React 19 Upgrade Guide](https://react.dev/blog/2024/04/25/react-19-upgrade-guide)
+- [Metadata and SEO in Next.js](../nextjs/app-router/metadata.md)

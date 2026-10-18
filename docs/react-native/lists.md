@@ -164,3 +164,4 @@ export function Messages({ messages }: { messages: Message[] }) {
 
 - [Virtualization in React](../react/performance/virtualization.md)
 - [Optimization in React](../react/performance/optimization.md)
+- [Performance in React Native](./performance.md)
