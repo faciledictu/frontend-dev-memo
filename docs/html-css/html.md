@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 description:
-  Semantic markup, script loading, block vs inline, data attributes, viewport,
+  Semantic markup, script loading, nesting rules, data attributes, viewport,
   form validation
 tags: [junior]
 ---
@@ -15,7 +15,7 @@ What is usually asked:
   `<button>`), not by appearance.
 - **Script loading**: a plain `<script>` blocks the parser; `defer`, `async` and
   `type="module"` do not.
-- **Block vs inline**, **`data-*` attributes**, the **viewport meta tag** and
+- **Nesting rules**, **`data-*` attributes**, the **viewport meta tag** and
   built-in **form validation**.
 
 ## Details
@@ -63,23 +63,12 @@ elements come with keyboard support and focus for free.
   and are executed once even when included several times.
 - A script added with `document.createElement('script')` behaves as `async`.
 
-### Block vs Inline
+### Nesting Rules
 
-|                    | Block                                       | Inline                              |
-| ------------------ | ------------------------------------------- | ----------------------------------- |
-| Position           | starts on a new line                        | flows inside a line of text         |
-| Width              | all available width                         | the width of its content            |
-| `width` / `height` | applied                                     | ignored                             |
-| Vertical margin    | applied                                     | ignored                             |
-| Default for        | `<div>`, `<p>`, `<h1>`, `<ul>`, `<section>` | `<span>`, `<a>`, `<strong>`, `<em>` |
-
-- `inline-block` flows in a line but respects `width`, `height` and vertical
-  margins.
-- Replaced inline elements (`<img>`, `<input>`, `<video>`) are an exception:
-  they respect `width`, `height` and vertical margins.
-- This is the CSS `display` property and can be changed. What HTML itself
-  defines is which elements may be nested: a `<p>` cannot contain a `<div>`, the
-  parser closes the paragraph before it.
+HTML defines which elements may be nested: a `<p>` cannot contain a `<div>`, so
+the parser closes the paragraph before it; interactive content (`<a>`,
+`<button>`) cannot be nested in another interactive element. Block and inline
+display is CSS, see [Box Model](./box-model.md#block-vs-inline).
 
 ### `data-*` Attributes
 

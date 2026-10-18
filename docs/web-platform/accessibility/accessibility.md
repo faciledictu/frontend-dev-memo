@@ -48,7 +48,8 @@ the European Accessibility Act and the ADA require, is level **AA**. The basics:
 ### Keyboard and Focus
 
 - Tab order follows the DOM order. Do not rearrange it visually with CSS
-  (`order`, absolute positioning) so that it no longer matches.
+  (`order`, absolute positioning) so that it no longer matches, see
+  [Flexbox](../../html-css/flexbox.md#order-and-accessibility).
 - `tabindex="0"` adds a custom element to the Tab order; `tabindex="-1"` makes
   it focusable only from code. A positive `tabindex` breaks the order.
 - Never remove the outline without a replacement: style `:focus-visible`

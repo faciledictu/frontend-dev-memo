@@ -100,4 +100,5 @@ export default function App() {
 
 - [React in the Browser](../rendering/react-in-browser.md)
 - [Synthetic Events](./events.md)
+- [Stacking context and `z-index`](../../html-css/positioning.md#stacking-context)
 - [`createPortal` reference](https://react.dev/reference/react-dom/createPortal)
