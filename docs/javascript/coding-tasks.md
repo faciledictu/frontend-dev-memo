@@ -3,7 +3,7 @@ sidebar_position: 21
 description:
   An index of live-coding tasks - bind, call/apply, Promise.all, debounce, deep
   copy, memoize, flat, event emitter, LRU cache - and where each is solved
-tags: [middle]
+tags: [junior, middle]
 ---
 
 # Common Coding Tasks
@@ -20,15 +20,15 @@ explains the topic and shows the solution.
 
 ### Functions and `this`
 
-| Task                    | What it checks                                               | Solution                                                                                 |
-| ----------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| `bind`                  | Closures, `this`, fixed arguments, `new` on a bound function | [bind, call and apply](./bind-call-apply.md), follow-up questions                        |
-| `call` / `apply`        | How `this` is set by a method call                           | [Below](#call-and-apply)                                                                 |
-| `debounce` / `throttle` | Timers, closures, passing `this` and arguments through       | [Debounce and Throttle](./debounce-throttle.md)                                          |
-| `memoize`               | A cache in a closure, the cache key, pure functions          | [Functional Programming](../programming/paradigms/fp.md), follow-up questions            |
-| `once`                  | State in a closure, keeping the first result                 | [Below](#once)                                                                           |
-| `curry`, `compose`      | Closures, `fn.length`, the order of application              | [Functional Programming](../programming/paradigms/fp.md#currying-vs-partial-application) |
-| A retry wrapper         | Higher-order functions, `async` / `await` in a loop          | [Design Patterns](../programming/patterns.md), the Decorator example                     |
+| Task                               | What it checks                                               | Solution                                                                      |
+| ---------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| `bind`                             | Closures, `this`, fixed arguments, `new` on a bound function | [bind, call and apply](./bind-call-apply.md), follow-up questions             |
+| `call` / `apply`                   | How `this` is set by a method call                           | [Below](#call-and-apply)                                                      |
+| `debounce` / `throttle`            | Timers, closures, passing `this` and arguments through       | [Debounce and Throttle](./debounce-throttle.md)                               |
+| `memoize`                          | A cache in a closure, the cache key, pure functions          | [Functional Programming](../programming/paradigms/fp.md), follow-up questions |
+| `once`                             | State in a closure, keeping the first result                 | [Below](#once)                                                                |
+| `curry`, `compose`, `sum(1)(2)(3)` | Closures, `fn.length`, the order of application              | [Functional Programming](../programming/paradigms/fp.md#example), Example     |
+| A retry wrapper                    | Higher-order functions, `async` / `await` in a loop          | [Design Patterns](../programming/patterns.md), the Decorator example          |
 
 ### Promises
 
@@ -37,19 +37,22 @@ explains the topic and shows the solution.
 | `Promise.all`             | Result order, fail-fast, an empty input, non-promise values | [Promises](./promises.mdx), follow-up questions           |
 | `allSettled` / `race`     | The difference between the combinators                      | [Below](#allsettled-and-race)                             |
 | A request with a timeout  | `AbortController`, `AbortSignal.timeout`                    | [Promises](./promises.mdx), "More examples"               |
-| Promisify a callback API  | `new Promise`, `resolve` / `reject` in the callback         | [Promises](./promises.mdx), follow-up questions           |
+| Promisify a callback API  | `new Promise`, `resolve` / `reject` in the callback         | [Below](#promisify)                                       |
+| Run promises one by one   | `for...of` with `await` vs `Promise.all`                    | [Promises](./promises.mdx), "More examples"               |
 | At most N tasks at a time | A queue of tasks, workers, keeping the result order         | [Below](#concurrency-limit)                               |
 | "What does this print?"   | Microtasks vs tasks, the synchronous executor               | [Event Loop](./event-loop.md), [Promises](./promises.mdx) |
 
 ### Objects and Arrays
 
-| Task                        | What it checks                                                       | Solution                                                                       |
-| --------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Deep copy                   | Recursion, cycles, `Date` / `Map` / `Set`; knowing `structuredClone` | [Objects](./objects.md#cloning) for the built-ins, [below](#deep-copy) by hand |
-| Deep equal                  | Recursion, `Object.is`, keys and prototypes                          | [Below](#deep-equal)                                                           |
-| `flat`                      | Recursion with depth                                                 | [Arrays](./arrays.md#transforming) for the built-in, [below](#flat) by hand    |
-| `var` in a loop with timers | Closures and block scope                                             | [Closures](./closures.md), follow-up questions                                 |
-| `this` in a callback        | The rules of `this`                                                  | [The `this` Keyword](./this-keyword.md)                                        |
+| Task                                | What it checks                                                       | Solution                                                                       |
+| ----------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Deep copy                           | Recursion, cycles, `Date` / `Map` / `Set`; knowing `structuredClone` | [Objects](./objects.md#cloning) for the built-ins, [below](#deep-copy) by hand |
+| Deep equal                          | Recursion, `Object.is`, keys and prototypes                          | [Below](#deep-equal)                                                           |
+| `flat`                              | Recursion with depth                                                 | [Arrays](./arrays.md#transforming) for the built-in, [below](#flat) by hand    |
+| `var` in a loop with timers         | Closures and block scope                                             | [Closures](./closures.md), follow-up questions                                 |
+| `this` in a callback                | The rules of `this`                                                  | [The `this` Keyword](./this-keyword.md)                                        |
+| `map` / `filter` / `reduce` by hand | Callbacks, the initial value, an empty array                         | [Below](#reduce)                                                               |
+| `new` by hand                       | The prototype chain, a constructor that returns an object            | [Prototypes](./prototypes.md#what-new-does), the four steps                    |
 
 ### Data Structures and Algorithms
 
@@ -61,12 +64,13 @@ explains the topic and shows the solution.
 
 ### React
 
-| Task                       | What it checks                                     | Solution                                                                                |
-| -------------------------- | -------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| Search input with debounce | A stable debounced function, cleanup on unmount    | [Debounce and Throttle](./debounce-throttle.md), "In React"                             |
-| Fetching in an effect      | Race conditions, cleanup, loading and error states | [Side Effects](../react/hooks/side-effects.md)                                          |
-| Tabs, accordion            | Compound components, context                       | [Composition Patterns](../react/basics/patterns.md)                                     |
-| A list with add / remove   | `key`, immutable updates                           | [Lists and `key`](../react/basics/lists-and-keys.md), [State](../react/basics/state.md) |
+| Task                                       | What it checks                                     | Solution                                                                                |
+| ------------------------------------------ | -------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Search input with debounce                 | A stable debounced function, cleanup on unmount    | [Debounce and Throttle](./debounce-throttle.md), "In React"                             |
+| Fetching in an effect                      | Race conditions, cleanup, loading and error states | [Side Effects](../react/hooks/side-effects.md)                                          |
+| A custom hook (`useToggle`, `useDebounce`) | Extracting logic, rules of hooks                   | [Hooks](../react/hooks/hooks.mdx#custom-hooks)                                          |
+| Tabs, accordion                            | Compound components, context                       | [Composition Patterns](../react/basics/patterns.md)                                     |
+| A list with add / remove                   | `key`, immutable updates                           | [Lists and `key`](../react/basics/lists-and-keys.md), [State](../react/basics/state.md) |
 
 ## Example
 
@@ -168,6 +172,39 @@ console.log(await promiseAllSettled([1, fail]));
 const wait = (ms, value) =>
   new Promise((resolve) => setTimeout(resolve, ms, value));
 console.log(await promiseRace([wait(100, 'slow'), wait(10, 'fast')])); // fast
+```
+
+</details>
+
+### `promisify`
+
+<details>
+<summary>Solution</summary>
+
+```javascript
+function promisify(fn) {
+  return function (...args) {
+    return new Promise((resolve, reject) => {
+      // Node.js-style callback: the error first, then the result
+      // highlight-next-line
+      fn.call(this, ...args, (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      });
+    });
+  };
+}
+
+function readConfig(name, callback) {
+  setTimeout(() => {
+    if (name === 'missing') callback(new Error('Not found'));
+    else callback(null, { name });
+  }, 10);
+}
+
+const readConfigAsync = promisify(readConfig);
+console.log(await readConfigAsync('app')); // { name: 'app' }
+await readConfigAsync('missing').catch((error) => console.log(error.message)); // Not found
 ```
 
 </details>
@@ -306,6 +343,35 @@ console.log(flat([1, [2, [3, [4]]]], Infinity)); // [1, 2, 3, 4]
 
 </details>
 
+### `reduce`
+
+`map` and `filter` follow the same pattern: a loop that calls the callback with
+`(item, index, array)`.
+
+<details>
+<summary>Solution</summary>
+
+```javascript
+Array.prototype.myReduce = function (callback, ...initial) {
+  if (this.length === 0 && initial.length === 0) {
+    throw new TypeError('Reduce of empty array with no initial value');
+  }
+  let index = 0;
+  // highlight-next-line
+  let accumulator = initial.length > 0 ? initial[0] : this[index++];
+  for (; index < this.length; index++) {
+    accumulator = callback(accumulator, this[index], index, this);
+  }
+  return accumulator;
+};
+
+console.log([1, 2, 3].myReduce((sum, n) => sum + n)); // 6
+console.log([1, 2, 3].myReduce((sum, n) => sum + n, 10)); // 16
+console.log([[1], [2]].myReduce((all, item) => all.concat(item), [])); // [1, 2]
+```
+
+</details>
+
 ### Event Emitter
 
 <details>
@@ -405,6 +471,9 @@ console.log(cache.get('b'), cache.get('a'), cache.get('c')); // undefined 1 3
   timers, fake timers (`vi.useFakeTimers()`).
 - Why a `Symbol` in `myCall`? A unique key cannot overwrite a property the
   object already has; a string key like `fn` could.
+- What changes in `myCall` for strict-mode code? Native `call` passes `this` as
+  is: `null` stays `null` and primitives are not boxed. The emulation can't do
+  that, because it needs an object to attach the method to.
 - What is the complexity of the LRU cache? O(1) for `get` and `set`: `Map`
   lookup, delete and insert are O(1) on average. Without `Map` ordering, the
   classic answer is a hash map plus a doubly linked list.

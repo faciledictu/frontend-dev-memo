@@ -287,10 +287,14 @@
       Страницы вставлены между существующими с перенумерацией; статус поддержки
       сверен с web-features 3.43.0, ссылки на новые страницы добавлены в 10
       существующих.
-- [ ] 8. Пробелы из итогового ревью: «REST vs GraphQL» (`web-platform/network`),
+- [x] 8. Пробелы из итогового ревью: «REST vs GraphQL» (`web-platform/network`),
       страница-указатель типовых задач на собеседовании (`bind`, `Promise.all`,
       `debounce`, глубокое копирование, мемоизация… со ссылками на страницы),
       error boundaries — отдельной страницей из `react/basics/patterns`.
+      Сделано: `network/rest-vs-graphql`, `javascript/coding-tasks` (указатель,
+      решения под спойлерами только для задач, которых не было на сайте),
+      `react/basics/error-boundaries`; `patterns` переименована в «Composition
+      Patterns», ссылки на неё обновлены.
 
 Обновление версий: строки `Applies to` сверяются раз в квартал
 (`grep -rh '^Applies to:' docs | sort | uniq -c`). Node.js 26 и PostgreSQL 19 —

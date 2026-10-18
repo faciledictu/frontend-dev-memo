@@ -25,12 +25,15 @@ Applies to: React 19.3, react-error-boundary 6.1.
 | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
 | Errors during rendering of any component below                                                               | Event handlers (`onClick`, `onSubmit`)                            |
 | Lifecycle methods and effects (`useEffect`, `useLayoutEffect`)                                               | Async code: `setTimeout`, promise callbacks, `await` in a handler |
-| A function passed to `startTransition` from `useTransition` or to `<form action>`, async ones too (React 19) | Server rendering                                                  |
+| A function passed to `startTransition` from `useTransition` or to `<form action>`, async ones too (React 19) | Server rendering: retried on the client, see below                |
 | A rejected promise read with `use`                                                                           | Errors in the boundary itself: they go to the next boundary up    |
 
 - Errors that are not caught are handled with `try` / `catch` and state, or
   moved into the render: store the error in state and throw it there, or call
   `showBoundary` from `react-error-boundary`.
+- **Server rendering**: a boundary does nothing on the server. If a component
+  inside `<Suspense>` throws, React sends the Suspense fallback in the HTML and
+  retries on the client; if it fails again, the nearest boundary catches it.
 - The search goes **up the tree** from the component that threw: the nearest
   boundary shows its fallback, the rest of the app keeps working.
 
@@ -187,6 +190,10 @@ export default function Editor({ draftId }) {
 
 - Expecting a boundary to catch errors from `onClick`, `setTimeout` or a `fetch`
   in a handler.
+- Throwing code in the same component that renders the boundary:
+  `<ErrorBoundary>{renderChart()}</ErrorBoundary>` calls `renderChart` during
+  the parent's render, above the boundary. A boundary catches errors of its
+  **descendant components** only.
 - A fallback without a way out: no retry and no reset on navigation, so the user
   has to reload the page.
 

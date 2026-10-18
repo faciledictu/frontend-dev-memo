@@ -172,6 +172,16 @@ console.log(JSON.stringify(result.data));
   client instead.
 - What is the N+1 problem and how is it solved? A resolver called once per item
   of a list, each with its own request; DataLoader batches them into one.
+- How does a mutation differ from a query besides the name? Top-level mutation
+  fields run **one after another**, in order; query fields may be resolved in
+  parallel. The convention is that queries have no side effects.
+- How is pagination done in GraphQL? Usually cursor-based **connections** (the
+  Relay convention): `posts(first: 10, after: $cursor)` returns `edges` with a
+  `node` and a `cursor`, and `pageInfo { hasNextPage endCursor }`. Cursors stay
+  correct when items are added, unlike `offset`.
+- Where is authorization checked? REST checks it per endpoint; in GraphQL one
+  query touches many types, so the check goes into resolvers or the business
+  layer under them, per type or field.
 - How do you version a GraphQL API? Usually you don't: fields are only added,
   old ones get `@deprecated(reason: …)` and are removed when usage stats show no
   clients.
@@ -187,12 +197,12 @@ console.log(JSON.stringify(result.data));
 
 ## Common Mistakes
 
-- "GraphQL replaces HTTP." It runs over HTTP, usually `POST` with JSON.
+- Choosing GraphQL for one client and plain CRUD: the server cost (resolvers,
+  DataLoader, limits, a client cache) without the benefit.
 - "GraphQL is a database query language." It queries an API; resolvers can read
   from any source.
-- "REST means JSON over HTTP." REST is an architectural style: resources,
-  uniform interface, statelessness, cacheability. Most "REST APIs" are only
-  partly RESTful.
+- "REST means JSON over HTTP." REST is an architectural style, see
+  [HTTP](./http.md#rest); most "REST APIs" are only partly RESTful.
 - Checking only `response.ok` with GraphQL: errors come in the body.
 - Building a query by string concatenation instead of variables.
 

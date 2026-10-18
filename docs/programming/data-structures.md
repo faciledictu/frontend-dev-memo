@@ -372,6 +372,8 @@ console.log(fibSlow(20), fib(20), fib(50)); // 6765 6765 12586269025
 ## See Also
 
 - [Arrays](../javascript/arrays.md)
+- [Common Coding Tasks](../javascript/coding-tasks.md) — live-coding tasks in
+  JavaScript: LRU cache, event emitter, deep copy.
 - "Introduction to Algorithms" by Cormen, Leiserson, Rivest and Stein — the
   standard textbook.
 - [VisuAlgo](https://visualgo.net/) — animated data structures and algorithms.
