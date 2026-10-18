@@ -132,8 +132,9 @@ export default function Form() {
 - What is the difference between the virtual DOM and Fiber? The virtual DOM is
   the idea of describing the UI with objects; Fiber is the implementation of the
   reconciler that processes them.
-- What happens when an element's type changes at the same position? React
-  destroys the old subtree with its state and mounts the new one.
+- Why does switching a wrapper from `<div>` to `<section>` clear a form inside
+  it? A different type at the same position destroys the old subtree with its
+  state.
 
 ## Common Mistakes
 

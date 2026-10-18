@@ -212,9 +212,9 @@ const ProtectedSettings = withAuthorization(Settings);
   change its `key`, or call `resetErrorBoundary` (or set `resetKeys`) in
   `react-error-boundary`.
 - What is a controlled compound component? The root component (`<Tabs>`) takes
-  `value` and a change callback like an input (`onChange` in Headless UI,
-  `onValueChange` in Radix), so its owner keeps the state; the uncontrolled one
-  takes `defaultValue`.
+  the value and a change callback like an input (`value` / `onValueChange` in
+  Radix, `selectedIndex` / `onChange` in Headless UI), so its owner keeps the
+  state; the uncontrolled one takes `defaultValue`.
 
 ## Common Mistakes
 

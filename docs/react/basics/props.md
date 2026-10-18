@@ -94,9 +94,9 @@ export default function Counter() {
   optimization: [`memo`](../performance/optimization.md#memoization).
 - How to pass a component or an element as a prop, and how is it different from
   `children`? Pass an element (`icon={<Star />}`) or the component itself
-  (`as={Link}`, rendered by the child under a capitalized name). `children` is
-  the same mechanism: the prop written between the tags. Several such props
-  (`header`, `footer`) work as named slots.
+  (`as={Link}`, which the child assigns to a capitalized variable and renders).
+  `children` is the same mechanism: the prop written between the tags. Several
+  such props (`header`, `footer`) work as named slots.
 
 ## Common Mistakes
 

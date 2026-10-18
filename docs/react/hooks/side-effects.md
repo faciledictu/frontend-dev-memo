@@ -149,8 +149,6 @@ export default function Profile({ userId }) {
 - How to run code only on mount? `useEffect(fn, [])`, as long as the effect
   really reads no reactive values.
 - When does the cleanup run? Before every re-run of the effect and on unmount.
-- How to read the latest props in an effect without re-subscribing? Move that
-  code into a **`useEffectEvent`** function and call it from the effect.
 - In what order do the effects of a parent and a child run? Children first. On
   an update all cleanups run before all new setups.
 

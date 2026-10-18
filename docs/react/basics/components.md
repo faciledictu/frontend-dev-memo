@@ -95,8 +95,8 @@ export default function Blog({ posts }) {
   elements.
 - What does JSX compile to, and why is `import React` no longer needed? The
   **automatic JSX transform** (React 17+, required in React 19) compiles
-  `<Button />` to `jsx(Button, {})` and the compiler adds the import of `jsx`
-  from `react/jsx-runtime` itself.
+  `<Button />` to `jsx(Button, {})` and the transform imports `jsx` from
+  `react/jsx-runtime` automatically.
 - Why are function components preferred over classes? Less code, no `this`,
   logic is reused with [custom hooks](../hooks/hooks.mdx#custom-hooks), and new
   features are built for hooks.

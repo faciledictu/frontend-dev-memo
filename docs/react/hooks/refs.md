@@ -37,8 +37,9 @@ Applies to: React 19.3.
   scroll, selection, measuring). Don't change the DOM structure that React
   renders.
 - Since React 19.3 a ref on a **`<Fragment>`** gives a `FragmentInstance`: it
-  adds event listeners to and observes the fragment's top-level DOM nodes, and
-  `focus()` focuses the first focusable one, all without a wrapper `<div>`.
+  adds event listeners and observers to the fragment's top-level DOM nodes, and
+  `focus()` moves focus to the first focusable element inside it, all without a
+  wrapper `<div>`.
 
 ### Callback Refs
 

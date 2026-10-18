@@ -268,6 +268,11 @@
   - [x] TypeScript: `basic-types` и `objects` приведены к шаблону, `narrowing`
         перед `type-assertions`, `utility-types` перед `type-operators`, теги
         уровня на всех страницах.
+  - [x] React: недостающие секции шаблона (`class-components`, `virtualization`,
+        `portals`), факты React 19.3 (Fragment refs, `use(browser())`),
+        `patterns` переименована в «Patterns and Error Boundaries», сравнение
+        context и стора оставлено в `state-management/overview`, теги уровня на
+        всех страницах.
 
 - Тренировочный режим (вопрос → скрытый ответ, случайный вопрос).
 - Запускаемые примеры «что выведет этот код?» для JS.

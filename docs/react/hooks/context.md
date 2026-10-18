@@ -2,7 +2,7 @@
 sidebar_position: 4
 description:
   createContext, providers, useContext and use, re-renders of consumers
-tags: [middle]
+tags: [junior, middle]
 ---
 
 # React Context

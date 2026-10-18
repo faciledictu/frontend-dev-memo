@@ -41,8 +41,7 @@ Applies to: React 19.3.
 - A transition does not replace already visible content with a `Suspense`
   fallback: the old content stays until the new one is ready.
 - The function can be async (React 19 calls it an **Action**): `isPending` stays
-  `true` until it finishes. State updates after an `await` must be wrapped in
-  another `startTransition`.
+  `true` until it finishes.
 - A controlled input value can't be updated in a transition: typing must be
   synchronous.
 

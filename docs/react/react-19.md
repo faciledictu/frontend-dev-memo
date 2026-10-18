@@ -140,8 +140,8 @@ function BlogPost({ post }) {
 - What is an Action? A function called inside a transition. It can be async;
   React sets the pending state, shows errors through an error boundary and
   resets the form after a form Action.
-- Is `use` a hook? It is called like a hook, only in components and hooks, but
-  it can be called in a condition or a loop.
+- Is `use` a hook? No, it is an API: it is called like a hook, only in
+  components and hooks, but it can be called in a condition or a loop.
 - Do I still need `useMemo` and `useCallback`? With React Compiler, rarely.
 - Are Server Components part of React 19? The React APIs are stable; bundling
   and routing are done by a framework such as Next.js.
