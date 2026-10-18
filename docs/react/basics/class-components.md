@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 10
 description:
   Legacy class components, lifecycle methods and their hook equivalents
 tags: [junior, middle]
@@ -11,7 +11,7 @@ A **class component** is a class that extends `Component` and has a `render()`
 method. State is kept in `this.state` and updated with `this.setState()`, and
 **lifecycle methods** are used instead of hooks. It is a **legacy** API: new
 code uses function components. The only common feature that still needs a class
-is an [error boundary](./patterns.md#error-boundaries).
+is an [error boundary](./error-boundaries.md).
 
 Applies to: React 19.3.
 

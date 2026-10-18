@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 description:
   Controlled and uncontrolled inputs, form Actions in React 19, form libraries
 tags: [junior, middle]
@@ -196,7 +196,8 @@ export default function ProfileForm() {
   submission, but not its result.
 - What happens to `useOptimistic` when the action fails? The optimistic value is
   dropped and the real state is shown again. The error is returned by the action
-  as state or, if thrown, goes to the nearest error boundary.
+  as state or, if thrown, goes to the nearest
+  [error boundary](./error-boundaries.md).
 
 ## Common Mistakes
 

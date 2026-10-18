@@ -1,17 +1,16 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
 description:
-  Composition, conditional rendering, compound components, render props, HOCs
-  and error boundaries
+  Composition, conditional rendering, compound components, render props and HOCs
 tags: [middle]
 ---
 
-# Patterns and Error Boundaries
+# Composition Patterns
 
 React code is reused through **composition**, not inheritance. UI is composed
 with `children` and **compound components**; logic is shared with **custom
 hooks**, which replaced **render props** and **higher-order components** in most
-cases. **Error boundaries** catch rendering errors and show a fallback.
+cases.
 
 Applies to: React 19.3.
 
@@ -25,7 +24,6 @@ Applies to: React 19.3.
 | Compound components    | Several components share implicit state through context                 | UI libraries: tabs, selects, accordions  |
 | Render prop            | A prop that is a function returning JSX                                 | When the child decides what to pass back |
 | Higher-order component | A function that takes a component and returns a new one                 | Legacy; replaced by hooks                |
-| Error boundary         | A class component that catches errors of its subtree                    | Required; no hook equivalent             |
 
 ### Conditional Rendering
 
@@ -58,23 +56,6 @@ controls the markup and the order, the state stays hidden.
 - HOC problems: "wrapper hell" in DevTools, prop name collisions, unclear origin
   of props. A [custom hook](../hooks/hooks.mdx#custom-hooks) solves the same
   task without them.
-
-### Error Boundaries
-
-- A class with `static getDerivedStateFromError` (switch to the fallback) and/or
-  `componentDidCatch` (log the error). There is no hook for it; the
-  `react-error-boundary` package provides a ready component.
-- It **catches** errors thrown below it during rendering, in lifecycle methods
-  and in effects.
-- It **does not catch** errors in event handlers, in asynchronous code
-  (`setTimeout`, promise callbacks), during server rendering, or in the boundary
-  itself. Those are handled with `try` / `catch`.
-- Exception in React 19: an error thrown inside an **Action** (a function passed
-  to `startTransition` or `<form action>`, async ones included) and a promise
-  rejected in `use` do reach the boundary.
-- Without a boundary an error unmounts the whole app.
-- Boundaries are placed around independent parts of the UI: the page, a widget,
-  a route.
 
 ## Example
 
@@ -120,37 +101,6 @@ export default function App() {
     </Tabs>
   );
 }
-```
-
-An error boundary:
-
-```jsx
-import { Component } from 'react';
-
-class ErrorBoundary extends Component {
-  state = { hasError: false };
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, info) {
-    console.error(error, info.componentStack);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return this.props.fallback;
-    }
-
-    return this.props.children;
-  }
-}
-
-// Usage
-<ErrorBoundary fallback={<p>Something went wrong.</p>}>
-  <Profile />
-</ErrorBoundary>;
 ```
 
 <details>
@@ -205,14 +155,8 @@ const ProtectedSettings = withAuthorization(Settings);
 
 - Why did hooks replace HOCs and render props? The same logic is shared without
   extra components in the tree and with explicit inputs and outputs.
-- How to handle an error in an event handler? `try` / `catch` and state. To show
-  the boundary's fallback, run the work in `startTransition` or pass the error
-  to `showBoundary` from the `useErrorBoundary` hook of `react-error-boundary`.
 - Composition or inheritance? Composition: React components are not extended
   from one another.
-- How to recover from an error boundary without a reload? Reset its state:
-  change its `key`, or call `resetErrorBoundary` (or set `resetKeys`) in
-  `react-error-boundary`.
 - What is a controlled compound component? The root component (`<Tabs>`) takes
   the value and a change callback like an input (`value` / `onValueChange` in
   Radix, `selectedIndex` / `onChange` in Headless UI), so its owner keeps the
@@ -221,13 +165,12 @@ const ProtectedSettings = withAuthorization(Settings);
 ## Common Mistakes
 
 - `{items.length && <List />}` rendering `0`.
-- Expecting an error boundary to catch errors from `onClick` or `fetch`.
-- One error boundary for the whole app: any error replaces the entire page.
 - Creating a HOC inside a component: a new component type on every render
   remounts the subtree.
 
 ## See Also
 
+- [Error Boundaries](./error-boundaries.md)
 - [Hooks](../hooks/hooks.mdx)
 - [Design Patterns](../../programming/patterns.md) — GoF patterns in JavaScript.
 - [Higher-Order Components (legacy docs)](https://legacy.reactjs.org/docs/higher-order-components.html)

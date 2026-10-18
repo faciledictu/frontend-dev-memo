@@ -87,7 +87,8 @@ REST is an architectural style, not a protocol: resources are identified by
 URLs, the interface is uniform (HTTP methods and status codes), the server keeps
 no client state between requests, and responses say whether they can be cached.
 CRUD maps to methods as `POST` (create), `GET` (read), `PUT` / `PATCH` (update)
-and `DELETE`.
+and `DELETE`. How it compares with GraphQL and RPC:
+[REST vs GraphQL](./rest-vs-graphql.md).
 
 ### Requests from JavaScript
 
@@ -168,3 +169,4 @@ try {
 - [CORS and the Same-Origin Policy](./cors.md)
 - [Browser Storage](./storage.md)
 - [Real-Time Updates](./realtime.md)
+- [REST vs GraphQL](./rest-vs-graphql.md)

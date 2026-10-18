@@ -57,9 +57,8 @@ a component.
 ### Function and Class Components
 
 Function components with hooks are the standard. Classes are legacy; the only
-common thing that still needs one is an
-[error boundary](./patterns.md#error-boundaries). See
-[Class Components](./class-components.md).
+common thing that still needs one is an [error boundary](./error-boundaries.md).
+See [Class Components](./class-components.md).
 
 ## Example
 

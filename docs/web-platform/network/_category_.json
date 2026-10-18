@@ -4,6 +4,6 @@
   "link": {
     "type": "generated-index",
     "slug": "/web-platform/network",
-    "description": "HTTP, URLs and encoding, CORS, browser storage, authentication and real-time updates."
+    "description": "HTTP, URLs and encoding, CORS, browser storage, authentication, real-time updates and REST vs GraphQL."
   }
 }
