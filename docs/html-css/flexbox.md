@@ -13,9 +13,9 @@ axis** is set by `flex-direction` (`row` by default), the **cross axis** is
 perpendicular to it. `justify-content` aligns items along the main axis,
 `align-items` along the cross axis.
 
-Free space is shared by **`flex-grow`**, lack of space by **`flex-shrink`**,
-starting from **`flex-basis`**. `flex: 1` means "share the free space equally,
-ignoring content size".
+**`flex-grow`** shares out free space, **`flex-shrink`** shares out the
+overflow, both starting from **`flex-basis`**. `flex: 1` means "share the free
+space equally, ignoring content size".
 
 ## Details
 
@@ -43,12 +43,12 @@ ignoring content size".
 | `align-self`  | `auto`     | overrides `align-items` for one item                           |
 | `order`       | `0`        | visual order; lower goes first                                 |
 
-| Shorthand         | Means      | Behavior                                              |
-| ----------------- | ---------- | ----------------------------------------------------- |
-| `flex: 1`         | `1 1 0%`   | equal shares of the whole space, content size ignored |
-| `flex: auto`      | `1 1 auto` | starts from content size, then shares the rest        |
-| `flex: none`      | `0 0 auto` | rigid: neither grows nor shrinks                      |
-| `flex: 0 0 200px` | —          | exactly 200px                                         |
+| Shorthand         | Means      | Behavior                                                                            |
+| ----------------- | ---------- | ----------------------------------------------------------------------------------- |
+| `flex: 1`         | `1 1 0%`   | equal shares of the whole space, content size ignored                               |
+| `flex: auto`      | `1 1 auto` | starts from content size, then shares the rest                                      |
+| `flex: none`      | `0 0 auto` | rigid: neither grows nor shrinks                                                    |
+| `flex: 0 0 200px` | —          | 200px, neither grows nor shrinks (but not below its content without `min-width: 0`) |
 
 - With `flex: 1` items get **equal widths**; with `flex: auto` a longer label
   gets a wider item.
@@ -65,7 +65,8 @@ content" (the longest word, a `<pre>`, a wide table, a nested flex row with
 width, and the item overflows its container.
 
 - Fix: **`min-width: 0`** (`min-height: 0` in a column) on the item, or
-  `overflow` other than `visible`.
+  `overflow: hidden` or `auto` (anything that makes it a scroll container;
+  `clip` does not).
 - Typical symptom: `text-overflow: ellipsis` does not work inside a flex item.
 
 ### `order` and Accessibility
@@ -112,7 +113,7 @@ the HTML when it matters. See
   gap: 16px;
 }
 .card {
-  flex: 1 1 240px; /* at least 240px, grow to fill the line */
+  flex: 1 1 240px; /* starts at 240px, grows to fill the line */
 }
 ```
 

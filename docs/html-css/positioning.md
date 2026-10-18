@@ -26,13 +26,13 @@ element…), no `z-index` on a child can lift it above the parent's siblings.
 
 ### `position` Values
 
-| Value      | In the flow     | Offsets are relative to                              | Typical use                   |
-| ---------- | --------------- | ---------------------------------------------------- | ----------------------------- |
-| `static`   | yes             | ignored (`top`, `z-index` have no effect)            | default                       |
-| `relative` | yes, space kept | its own normal position                              | anchor for absolute children  |
-| `absolute` | no              | the padding box of the nearest non-`static` ancestor | badges, dropdowns, overlays   |
-| `fixed`    | no              | the viewport (with exceptions, below)                | headers, floating buttons     |
-| `sticky`   | yes             | the nearest scrolling ancestor, within its parent    | table headers, section titles |
+| Value      | In the flow     | Offsets are relative to                            | Typical use                   |
+| ---------- | --------------- | -------------------------------------------------- | ----------------------------- |
+| `static`   | yes             | ignored (`top`, `z-index` have no effect)          | default                       |
+| `relative` | yes, space kept | its own normal position                            | anchor for absolute children  |
+| `absolute` | no              | the padding box of the nearest positioned ancestor | badges, dropdowns, overlays   |
+| `fixed`    | no              | the viewport (with exceptions, below)              | headers, floating buttons     |
+| `sticky`   | yes             | the nearest scrolling ancestor, within its parent  | table headers, section titles |
 
 - The rectangle that offsets and percentages are measured from is the
   **containing block**. Without positioned ancestors, `absolute` uses the
@@ -45,11 +45,11 @@ element…), no `z-index` on a child can lift it above the parent's siblings.
 ### When `fixed` Is Not Fixed
 
 An ancestor with **`transform`**, **`filter`**, **`perspective`**,
-`backdrop-filter`, `contain: paint` or `will-change: transform` becomes the
-containing block for its `fixed` descendants. The "fixed" element then scrolls
-with that ancestor and is clipped by it. Typical case: a modal inside an
-animated card. Fix: render the modal at the end of `<body>` (a portal) or use
-`<dialog>`.
+`backdrop-filter`, `contain: layout` or `paint`, or `will-change` for any of
+these becomes the containing block for its `fixed` descendants. The "fixed"
+element then scrolls with that ancestor and is clipped by it. Typical case: a
+modal inside an animated card. Fix: render the modal at the end of `<body>` (a
+portal) or use `<dialog>`.
 
 ### Why `sticky` Does Not Stick
 
@@ -171,8 +171,9 @@ or move the menu to the top layer (`popover`) or a portal.
 - `transform: translate()` vs `top` / `left` for animation? `transform` is done
   by the compositor without layout, see
   [How the Browser Works](../web-platform/browser/browser-workflow.md).
-- What does `z-index` do on a static element? Nothing, unless it is a flex or
-  grid item.
+- Can a child with a negative `z-index` go behind its parent? Behind the
+  parent's background only if the parent does not create a stacking context;
+  otherwise it stays above the parent's background.
 - Why does `opacity: 0.99` change the layering? Any `opacity` below 1 creates a
   stacking context, which groups the children.
 
@@ -180,8 +181,8 @@ or move the menu to the top layer (`popover`) or a portal.
 
 - Raising `z-index` to 9999 instead of finding which ancestor creates a stacking
   context.
-- `position: absolute` without a positioned parent: the element is placed
-  against the page.
+- `position: absolute` without a positioned ancestor: the element is placed
+  against the initial containing block (the first screen).
 - `position: fixed` inside an element with `transform`: it is no longer fixed to
   the viewport.
 - `position: sticky` inside a parent with `overflow: hidden`.

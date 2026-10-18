@@ -15,7 +15,7 @@ picks one. It compares, in this order:
    reverses their order.
 2. The **`style` attribute** beats any selector.
 3. **Cascade layers** (`@layer`): later layers win; unlayered styles beat all
-   layers.
+   layers (without `!important`).
 4. **Specificity**: (id, class, type), compared left to right.
 5. **Scope proximity** (`@scope`): the closer scope root wins.
 6. **Source order**: the last declaration wins.
@@ -36,7 +36,7 @@ beats any number of classes.
 | **A**: id                                                          | `#header`                             | (1, 0, 0)   |
 | **B**: class, attribute, pseudo-class                              | `.btn`, `[type='text']`, `:hover`     | (0, 1, 0)   |
 | **C**: type, pseudo-element                                        | `p`, `::before`                       | (0, 0, 1)   |
-| Nothing: `*`, combinators (`>`, `+`, `~`, space)                   | `*`, `ul > li`                        | (0, 0, 2)   |
+| Nothing: `*`, combinators (`>`, `+`, `~`, space)                   | `ul > li`: only the two types count   | (0, 0, 2)   |
 | `:is()`, `:not()`, `:has()`: their **most specific** argument      | `:is(#a, .b) p`                       | (1, 0, 1)   |
 | `:where()`: always zero                                            | `:where(#a, .b) p`                    | (0, 0, 1)   |
 | Nesting `&`: like `:is()` around the parent selector               | `#a, .b { & p {} }` = `:is(#a, .b) p` | (1, 0, 1)   |
@@ -55,7 +55,7 @@ beats any number of classes.
 From the weakest to the strongest:
 
 1. Browser (user-agent) styles.
-2. User styles (browser settings, extensions).
+2. User styles (browser settings, a user stylesheet).
 3. Author styles: the site's CSS.
 4. CSS animations (`@keyframes`).
 5. Author `!important`.
@@ -73,9 +73,9 @@ the order of origins is **reversed**: user `!important` beats author
 @layer reset, base, components, utilities;
 ```
 
-- The first `@layer` statement fixes the order; later layers win, whatever the
-  specificity inside them: `.btn` in `utilities` beats `#id .btn` in
-  `components`.
+- Layers are ordered by first appearance; one `@layer a, b, c;` statement up
+  front fixes the order. Later layers win, whatever the specificity inside them:
+  `.btn` in `utilities` beats `#id .btn` in `components`.
 - **Unlayered styles beat all layers.** Third-party CSS can be put into a low
   layer with `@import url(lib.css) layer(vendor);`.
 - **`!important` reverses the order of layers**: an `!important` declaration in
@@ -86,8 +86,9 @@ the order of origins is **reversed**: user `!important` beats author
 ### `@scope`
 
 `@scope (.card) to (.card-content) { img { … } }` applies the rules only inside
-`.card` and not below `.card-content`; when specificity is equal, the rule from
-the closer scope root wins. Browser support: Baseline 2026, newly available.
+`.card` but not inside `.card-content` (the limit itself is excluded too); when
+specificity is equal, the rule from the closer scope root wins. Browser support:
+Baseline 2026, newly available.
 
 ### Inheritance and the Global Keywords
 
@@ -98,14 +99,14 @@ the closer scope root wins. Browser support: Baseline 2026, newly available.
 - Form controls do not inherit `font` by default: the browser stylesheet sets
   it. A reset adds `font: inherit` to `button, input, select, textarea`.
 
-| Keyword        | Value                                                                    |
-| -------------- | ------------------------------------------------------------------------ |
-| `inherit`      | the parent's computed value                                              |
-| `initial`      | the initial value from the spec (`display: initial` is `inline`)         |
-| `unset`        | `inherit` for an inherited property, `initial` for the rest              |
-| `revert`       | rolls back to the previous origin: usually the browser's default style   |
-| `revert-layer` | rolls back to the previous cascade layer; with no layer, works as revert |
-| `all: …`       | sets every property except `direction`, `unicode-bidi` and custom ones   |
+| Keyword        | Value                                                                                                                        |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `inherit`      | the parent's computed value                                                                                                  |
+| `initial`      | the initial value from the spec (`display: initial` is `inline`)                                                             |
+| `unset`        | `inherit` for an inherited property, `initial` for the rest                                                                  |
+| `revert`       | rolls back to the previous origin: usually the browser's default style                                                       |
+| `revert-layer` | rolls back to the previous cascade layer (from unlayered styles, to the layered ones); with no layer left, works as `revert` |
+| `all: …`       | sets every property except `direction`, `unicode-bidi` and custom ones                                                       |
 
 ## Example
 
@@ -119,21 +120,21 @@ the closer scope root wins. Browser support: Baseline 2026, newly available.
   }
 }
 
-/* Unlayered: wins despite lower specificity */
+/* Unlayered: beats the layered rule despite lower specificity */
 /* highlight-next-line */
 .btn {
   color: green;
+  padding: 4px;
 }
 
-/* (0, 1, 1): beats .btn (0, 1, 0) */
-.card .btn,
+/* (0, 1, 1): beats .btn (0, 1, 0), so the padding is 8px */
 button.btn {
   padding: 8px;
 }
 
 /* (0, 0, 1): any class overrides it */
 :where(.card, .panel) button {
-  padding: 4px;
+  font-weight: bold;
 }
 ```
 
@@ -152,7 +153,7 @@ label:has(+ input:user-invalid) {
 }
 
 /* The page while a modal is open */
-body:has(dialog[open]) {
+body:has(dialog:modal) {
   overflow: hidden;
 }
 ```
@@ -168,14 +169,12 @@ body:has(dialog[open]) {
 - Is `:has()` a parent selector? More than that: it selects an element by
   anything relative to it — descendants, children (`:has(> img)`), following
   siblings (`:has(+ input)`). It cannot be nested inside another `:has()`.
-- Why avoid `!important`? The only way to beat it is another `!important` with
-  higher specificity, so it escalates. Layers and `:where()` solve the same
-  problem; `!important` stays for utilities and overriding third-party inline
-  styles.
+- Why avoid `!important`? Only another `!important` can beat it (more specific,
+  later in the source or in an earlier layer), so it escalates. Layers and
+  `:where()` solve the same problem; `!important` stays for utilities and
+  overriding third-party inline styles.
 - How do you override a third-party style without raising specificity? Put the
   library into a lower layer, or write your rule unlayered.
-- Does a selector with 11 classes beat one id? No: the columns are not summed
-  into one number.
 
 ## Common Mistakes
 

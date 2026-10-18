@@ -14,21 +14,13 @@ rows and columns (**tracks**), and items are placed into cells or areas by
 tracks. Flexbox sizes items by their content along one axis; Grid fixes the
 structure first and puts content into it.
 
-```css
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
-}
-```
-
 ## Details
 
 ### Tracks and `fr`
 
 - `grid-template-columns: 200px 1fr 2fr`: a fixed column, then the rest shared
   1:2.
-- **`fr`** shares the space left after fixed tracks and `gap`.
+- **`fr`** shares the space left after the non-`fr` tracks and the gaps.
 - `1fr` is really `minmax(auto, 1fr)`: a track does not shrink below its
   content, and a long word or a wide `<pre>` makes it wider than the others. For
   strictly equal columns use **`minmax(0, 1fr)`**.
@@ -64,7 +56,8 @@ With enough items to fill the row, both behave the same.
   default).
 - **`grid-auto-flow`**: `row` (default) fills row by row, `column` column by
   column; `dense` fills holes left by large items with later small ones, so the
-  visual order no longer matches the DOM.
+  visual order no longer matches the DOM (see
+  [`order` and accessibility](./flexbox.md#order-and-accessibility)).
 - `-1` refers to the last line of the **explicit** grid only.
 
 ### Subgrid
@@ -102,18 +95,28 @@ They combine: a Grid page layout with Flexbox inside the header and the cards.
 ## Example
 
 ```css
+/* Mobile: one column */
 .page {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
-  grid-template-rows: auto 1fr auto;
-  /* highlight-start */
-  grid-template-areas:
-    'header header'
-    'sidebar main'
-    'footer footer';
-  /* highlight-end */
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto auto;
+  grid-template-areas: 'header' 'main' 'sidebar' 'footer';
   min-height: 100dvh;
 }
+
+@media (width >= 768px) {
+  .page {
+    grid-template-columns: 240px minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    /* highlight-start */
+    grid-template-areas:
+      'header header'
+      'sidebar main'
+      'footer footer';
+    /* highlight-end */
+  }
+}
+
 .page > header {
   grid-area: header;
 }
@@ -125,13 +128,6 @@ They combine: a Grid page layout with Flexbox inside the header and the cards.
 }
 .page > footer {
   grid-area: footer;
-}
-
-@media (width < 768px) {
-  .page {
-    grid-template-columns: 1fr;
-    grid-template-areas: 'header' 'main' 'sidebar' 'footer';
-  }
 }
 ```
 
@@ -163,14 +159,12 @@ its neighbors.
 - What is the difference between `fr` and `%`? A percentage is taken from the
   container and ignores `gap`, so `25%` × 4 plus gaps overflows; `fr` shares
   what is left after the gaps.
-- Does the HTML order still matter? Yes: screen readers and Tab follow the DOM,
-  not the visual placement. Rearranging with areas or `dense` should not break
-  the reading order.
+
 - What is the difference between `grid-template-*` and `grid-auto-*`? The first
   defines the explicit grid, the second sizes tracks created automatically for
   extra items.
-- What about masonry layouts? Grid cannot do them yet; the masonry spec is not
-  Baseline.
+- What about masonry layouts? Not with plain Grid: masonry is a separate layout
+  type, `display: grid-lanes`, used as progressive enhancement with `@supports`.
 
 ## Common Mistakes
 

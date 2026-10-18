@@ -13,12 +13,13 @@ Every element is a rectangular box: **content**, **padding**, **border** and
 **`box-sizing`**:
 
 - `content-box` (the default): `width` is the content only; padding and border
-  are added on top. `width: 200px; padding: 20px; border: 1px` takes 242px.
+  are added on top. `width: 200px; padding: 20px; border: 1px solid` takes
+  242px.
 - `border-box`: `width` includes padding and border; the content shrinks. Most
   projects switch it on for all elements.
 
-Margins are outside the box and do not count into its size; **vertical margins
-of block elements can collapse** into one.
+Margins are outside the border and do not count toward the element's size;
+**vertical margins of block elements can collapse** into one.
 
 ## Details
 
@@ -44,8 +45,8 @@ negative).
 - **Adjacent siblings**: `margin-bottom: 20px` and `margin-top: 30px` give a
   30px gap, not 50px.
 - **Parent and its first or last child**: the child's top margin goes outside
-  the parent if nothing separates them (border, padding, inline content,
-  `height`).
+  the parent if nothing separates them: border, padding, inline content; for the
+  bottom margin, also a set `height`.
 - **Empty block**: its own top and bottom margins merge.
 
 Margins do **not** collapse:
@@ -67,8 +68,8 @@ Margins do **not** collapse:
 | Vertical padding   | applied, pushes neighbors                   | painted, but does not move lines    | applied                |
 | Default for        | `<div>`, `<p>`, `<h1>`, `<ul>`, `<section>` | `<span>`, `<a>`, `<strong>`, `<em>` | `<button>`, `<select>` |
 
-- Replaced elements (`<img>`, `<input>`, `<video>`) are inline but respect
-  `width`, `height` and vertical margins.
+- Replaced elements (`<img>`, `<video>`, `<iframe>`, `<canvas>`) are inline but
+  respect `width`, `height` and vertical margins.
 - An inline `<img>` sits on the text baseline, so a few pixels appear under it:
   `display: block` or `vertical-align: middle` removes them.
 - Whitespace between `inline-block` elements in the HTML is rendered as a space.
@@ -122,14 +123,14 @@ becomes `auto` if the other is not `visible` or `clip`.
 Physical properties (`left`, `width`, `margin-top`) are tied to the screen;
 **logical** ones follow the writing direction:
 
-| Physical                         | Logical                                              |
-| -------------------------------- | ---------------------------------------------------- |
-| `width` / `height`               | `inline-size` / `block-size`                         |
-| `margin-left` / `margin-right`   | `margin-inline-start` / `margin-inline-end`          |
-| `margin-top` + `margin-bottom`   | `margin-block`                                       |
-| `padding-left` + `padding-right` | `padding-inline`                                     |
-| `top`, `right`, `bottom`, `left` | `inset-block-start`, `inset-inline-end`, … , `inset` |
-| `text-align: left`               | `text-align: start`                                  |
+| Physical                         | Logical                                                                   |
+| -------------------------------- | ------------------------------------------------------------------------- |
+| `width` / `height`               | `inline-size` / `block-size`                                              |
+| `margin-left` / `margin-right`   | `margin-inline-start` / `margin-inline-end`                               |
+| `margin-top` + `margin-bottom`   | `margin-block`                                                            |
+| `padding-left` + `padding-right` | `padding-inline`                                                          |
+| `top`, `right`, `bottom`, `left` | `inset-block-start`, `inset-inline-end`, …, `inset-block`, `inset-inline` |
+| `text-align: left`               | `text-align: start`                                                       |
 
 - With `dir="rtl"` (Arabic, Hebrew), `margin-inline-start` becomes the right
   margin by itself; with `writing-mode: vertical-rl`, `inline-size` becomes the

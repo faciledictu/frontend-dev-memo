@@ -28,8 +28,8 @@ for themes and component variants.
   property that uses it when the computed value is calculated.
 - `var()` works only in property values: not in selectors, property names or
   media query conditions (`@media (width > var(--bp))` does not work).
-- The fallback is used only when the variable is **not defined**, not when its
-  value is wrong for the property. Fallbacks can nest:
+- The fallback is used only when the variable is **not defined** (or set to
+  `initial`), not when its value is wrong for the property. Fallbacks can nest:
   `var(--button-bg, var(--brand, blue))`.
 
 ### Invalid at Computed-Value Time
@@ -67,13 +67,15 @@ Registers a variable with a **type**, an **initial value** and whether it
 **inherits**:
 
 - A registered variable can be **animated and transitioned**: the browser knows
-  how to interpolate an `<angle>` or a `<color>`. An unregistered one switches
-  at the midpoint, so a gradient angle cannot be animated without it.
+  how to interpolate an `<angle>` or a `<color>`. An unregistered one flips at
+  50% in an animation and changes at once in a transition, so a gradient angle
+  cannot be animated without it.
 - A value of the wrong type is replaced with `initial-value` (or the inherited
   value when `inherits: true`), so the properties that use it still get a valid
   value.
-- `inherits: false` stops a component's variable from leaking into nested
-  components.
+- `inherits: false`: the value exists only on the element where it is set;
+  children get `initial-value`. It suits per-element values such as an animated
+  angle, not scoping a component's tokens.
 - JavaScript equivalent: `CSS.registerProperty()`. Browser support:
   Baseline 2024.
 
@@ -176,8 +178,8 @@ the middle of the animation, and the gradient does not rotate.
   variable is defined, so the fallback is not used; the value is invalid for
   `color`, so the property becomes `unset`.
 - How do you make a variable available only inside a component? Declare it on
-  the component's root class instead of `:root`; with `@property`,
-  `inherits: false` stops it from reaching nested elements.
+  the component's root class instead of `:root`; it is inherited only by that
+  component's subtree.
 - How do you avoid the dark theme flash on page load? Set `data-theme` (or
   `color-scheme`) before the first paint: an inline script in `<head>` that
   reads the saved choice, or a server-rendered attribute from a cookie.

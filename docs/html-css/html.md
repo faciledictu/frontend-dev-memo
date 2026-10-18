@@ -67,8 +67,10 @@ elements come with keyboard support and focus for free.
 
 HTML defines which elements may be nested: a `<p>` cannot contain a `<div>`, so
 the parser closes the paragraph before it; interactive content (`<a>`,
-`<button>`) cannot be nested in another interactive element. Block and inline
-display is CSS, see [Box Model](./box-model.md#block-vs-inline).
+`<button>`) must not be nested in another interactive element; the parser
+repairs only some cases, the rest stays invalid and confuses assistive
+technology. Block and inline display is CSS, see
+[Box Model](./box-model.md#block-vs-inline).
 
 ### `data-*` Attributes
 

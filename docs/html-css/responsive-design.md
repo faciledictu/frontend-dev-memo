@@ -13,8 +13,7 @@ A responsive layout adapts to the space it gets. The main tools:
 - **Fluid layout** first: Flexbox and Grid with `fr`, `%`, `minmax()` and
   `clamp()` often need no breakpoints at all.
 - **Media queries**, written **mobile-first**: base styles for small screens,
-  `@media (width >= 768px)` adds to them. Breakpoints are chosen where the
-  content breaks, not by device models.
+  `@media (width >= 768px)` adds to them.
 - **Container queries** adapt a component to the size of its container, not the
   viewport, so the same card works in a sidebar and in the main column.
 - **Responsive images**: `srcset` and `sizes` let the browser pick a file of the
@@ -44,7 +43,8 @@ It all needs the [viewport meta tag](./html.md#viewport-meta-tag).
 - Mobile-first keeps the simplest styles as the base, and phones do not have to
   undo desktop styles; desktop-first (`max-width`) works too, but mixing both
   leads to gaps and overlaps at the boundaries.
-- Breakpoints in `em` follow the user's font size.
+- Breakpoints in `em` follow the user's default font size, so the layout
+  switches before the text gets cramped.
 
 ### Units
 
@@ -102,8 +102,8 @@ It all needs the [viewport meta tag](./html.md#viewport-meta-tag).
   container needs an explicit height.
 - Units `cqi` / `cqw` size things relative to the container.
 - **Style queries** `@container style(--variant: compact)` check the value of a
-  custom property on the container. Browser support: Baseline 2026, newly
-  available.
+  custom property on an ancestor (the parent when no container is named; no
+  `container-type` needed). Browser support: Baseline 2026, newly available.
 
 ### Responsive Images
 
@@ -158,7 +158,7 @@ h1 {
 }
 
 .hero {
-  min-height: 100svh; /* the first screen, toolbars included */
+  min-height: 100svh; /* fits the screen with the browser toolbars shown */
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -176,15 +176,14 @@ h1 {
 - Media query or container query? A media query for the page layout (number of
   columns, navigation); a container query for a reusable component that can be
   placed in areas of different width.
-- `em` or `px` for breakpoints? `em` breakpoints move when the user changes the
-  default font size, so the layout switches before the text gets cramped.
+
 - Why do `vw` units cause horizontal scroll on desktop? `100vw` includes the
   vertical scrollbar; use `100%` for full-width blocks.
 - `srcset` or `<picture>`? `srcset` when it is the same image at different
   resolutions and the browser may choose; `<picture>` when the content or format
   must change and the choice is yours.
 - What is `sizes="auto"`? With `loading="lazy"`, the browser takes the size from
-  the layout instead of a hand-written `sizes`; not Baseline yet.
+  the layout instead of a hand-written `sizes`.
 
 ## Common Mistakes
 
