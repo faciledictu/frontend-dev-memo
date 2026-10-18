@@ -13,6 +13,8 @@ and every render sees its own **snapshot** of the state. Updates made in one
 event handler are **batched** into one re-render. State is treated as
 **immutable**: objects and arrays are replaced, not mutated.
 
+Applies to: React 19.3.
+
 ## Details
 
 ### `useState`

@@ -2,7 +2,7 @@
   "label": "Hooks",
   "position": 2,
   "link": {
-    "type": "generated-index",
-    "description": "Built-in and custom hooks, effects, refs and context."
+    "type": "doc",
+    "id": "react/hooks/hooks"
   }
 }

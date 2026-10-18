@@ -114,8 +114,8 @@
   ключевые термины выделены; всё до первого `##` — это и есть короткий ответ;
 - `## Details` и `## Example` — подробности и запущенный пример кода;
 - `## Follow-up Questions` и `## Common Mistakes` — блок для интервьюера;
-- по желанию: уровень в `tags` (`junior` / `middle` / `senior`) и строка
-  `Applies to: …` с версией библиотеки.
+- уровень в `tags` (`junior` / `middle` / `senior`, определения — в шаблоне) и,
+  где важна версия, строка `Applies to: …`.
 
 Фиксированные названия секций и граница «до первого `##`» — задел под
 тренировочный режим: его можно будет построить поверх контента без
@@ -147,9 +147,10 @@
   и неправильный вариант, который компилируется; зелёный — только в паре с
   красным. Ключевая строка каждого примера — `highlight-next-line` или
   `{1,3-4}`, у блока-файла — `title="…"`. Используются везде, где применимы (с
-  этапа 4, пачка 2). Правила — в [docs/\_template.md](docs/_template.md).
-  Существующие примеры переведены в разделах JavaScript, TypeScript, React и Web
-  Platform; дальше — при правке каждого раздела.
+  этапа 4, пачка 2). Правила — в [docs/\_template.md](docs/_template.md). Пары
+  «неправильно / правильно» есть в JavaScript, TypeScript, React, Web Platform,
+  `programming`, `nodejs` и `sql`; в остальных разделах таких примеров нет, там
+  используются `highlight` и `title`.
 
 Порядок, по одному PR на шаг:
 
@@ -253,53 +254,85 @@
       `accessibility/accessibility`, `browser/web-workers`,
       `browser/service-workers`, `network/realtime`). Новые подгруппы
       `performance`, `security` и `accessibility`; `tools` переехала в конец
-      раздела.
-- [ ] 5. HTML & CSS: специфичность и каскад, box model, flexbox и grid,
-      позиционирование, адаптивность.
-- [ ] 6. React Native и Next.js: навигация, производительность, Expo; RSC vs
-      SSR, Metadata — если этого ещё нет на готовых страницах.
-- [ ] 7. Web Platform: браузерные API — Intersection / Resize / Mutation
-      Observer, History API, Web Components и Shadow DOM,
-      `requestAnimationFrame` и `requestIdleCallback`, URL и кодирование (пробел
-      из ревью Fable).
+      раздела. Пачки 5–7 утверждены (списки страниц ниже), порядок 5 → 6 → 7:
+      React Native — текущий фокус, позже раздел будет углубляться.
+
+- [ ] 5. HTML & CSS, 7 страниц: `cascade` (специфичность, `@layer`, `:has()`,
+      вложенность, наследование), `box-model` (сюда же «Block vs Inline» из
+      `html`, логические свойства), `flexbox`, `grid` (subgrid, Grid vs
+      Flexbox), `positioning` (stacking context и `z-index`, центрирование,
+      anchor positioning), `responsive-design` (единицы, `clamp()`, container
+      queries, `srcset`), `custom-properties` (переменные, `@property`, темы,
+      `color-mix()`). Подгрупп нет; ревью Fable для `html` и описание раздела в
+      `src/categories.ts` — вместе с пачкой.
+- [ ] 6. React Native и Next.js, 8 страниц. React Native: `navigation` (React
+      Navigation и Expo Router), `deep-linking`, `storage` (AsyncStorage, MMKV,
+      SecureStore, SQLite), `performance`, `debugging` (React Native DevTools).
+      Next.js: `app-router/metadata` (Metadata API, SEO, OG-картинки), `proxy`
+      (отдельная страница; в `authentication` остаётся только проверка доступа),
+      `environment-variables`. RSC vs SSR и Expo уже покрыты.
+- [ ] 7. Web Platform: браузерные API, 5 страниц: `browser/scheduling`
+      (`requestAnimationFrame`, `requestIdleCallback`, `scheduler.yield()`),
+      `browser/observers` (Intersection, Resize, Mutation),
+      `browser/history-api` (с разделом про Navigation API),
+      `browser/web-components` (Shadow DOM), `network/url` (URL и кодирование).
+      Страницы вставляются между существующими с перенумерацией.
+- [ ] 8. Пробелы из итогового ревью: «REST vs GraphQL» (`web-platform/network`),
+      страница-указатель типовых задач на собеседовании (`bind`, `Promise.all`,
+      `debounce`, глубокое копирование, мемоизация… со ссылками на страницы),
+      error boundaries — отдельной страницей из `react/basics/patterns`.
+
+Обновление версий: строки `Applies to` сверяются раз в квартал
+(`grep -rh '^Applies to:' docs | sort | uniq -c`). Node.js 26 и PostgreSQL 19 —
+после релиза; страницы не завязаны на версию, меняются только эти строки.
+
+## Этап 5. Ревью готовых разделов
+
+Готово. Ревью Fable глазами интервьюера для разделов, сделанных до появления
+Fable в процессе (этап 3 и пачки 1–2 этапа 4), по разделу за раз, коммиты прямо
+в `main`. Схема: ревью Fable → правки → свежая проверка фактов Opus → решения по
+структуре → итоговое ревью Fable → мерж.
+
+- [x] JavaScript: `regexp` и `classes` приведены к шаблону, `closures` сразу
+      после `execution-context`, теги уровня на всех страницах.
+- [x] TypeScript: `basic-types` и `objects` приведены к шаблону, `narrowing`
+      перед `type-assertions`, `utility-types` перед `type-operators`, теги
+      уровня на всех страницах.
+- [x] React: недостающие секции шаблона (`class-components`, `virtualization`,
+      `portals`), факты React 19.3 (Fragment refs, `use(browser())`), `patterns`
+      переименована в «Patterns and Error Boundaries», сравнение context и стора
+      оставлено в `state-management/overview`, теги уровня на всех страницах.
+- [x] Web Platform: страницы этапа 3 приведены к шаблону, `authentication`
+      получила пример, факты на Vite 8, React DevTools 8 и Chrome 155
+      (`unload`), `bundle-optimization` перенесена в `performance`, повторы
+      заменены ссылками, теги уровня на всех страницах; `html-css/html` — вместе
+      с пачкой 5.
+- [x] Next.js: недостающие секции шаблона на 11 страницах, факты Next.js 16.4
+      (redirect в Server Action, CORS в Route Handlers, segment config с Cache
+      Components), Proxy описан один раз в `authentication`, гидратация
+      перенесена в `server-components`, порядок страниц App Router, теги уровня
+      на всех страницах.
+- [x] React Native: поднят до RN 0.88 и Expo SDK 58, follow-up вопросы на всех
+      страницах, порядок страниц (UI → платформенный код → анимации → устройство
+      → релиз), `rn-architecture` переименована.
+- [x] `programming`, `tooling`, `git`: пример в `package-managers`, пример
+      Playwright перенесён в `tooling/testing`, повторы с `javascript` и
+      `react-native` заменены ссылками.
+- [x] `nodejs`, `sql`: `title` и ключевые строки в примерах, страницы-концепции
+      перед справочником модулей. Node.js 26 и PostgreSQL 19 — отдельным
+      проходом после релиза.
+- [x] Итоговое ревью Fable верхнего уровня: ROADMAP и структура справочника
+      целиком; решения — в пачках 5–8 и ниже.
 
 ## На будущее
-
-- Ревью Fable для уже готовых разделов (этап 3 и пачки 1–2 этапа 4) — отдельной
-  задачей, по разделу за раз. Коммиты прямо в `main`, без PR.
-  - [x] JavaScript: `regexp` и `classes` приведены к шаблону, `closures` сразу
-        после `execution-context`, теги уровня на всех страницах.
-  - [x] TypeScript: `basic-types` и `objects` приведены к шаблону, `narrowing`
-        перед `type-assertions`, `utility-types` перед `type-operators`, теги
-        уровня на всех страницах.
-  - [x] React: недостающие секции шаблона (`class-components`, `virtualization`,
-        `portals`), факты React 19.3 (Fragment refs, `use(browser())`),
-        `patterns` переименована в «Patterns and Error Boundaries», сравнение
-        context и стора оставлено в `state-management/overview`, теги уровня на
-        всех страницах.
-  - [x] Web Platform: страницы этапа 3 приведены к шаблону, `authentication`
-        получила пример, факты на Vite 8, React DevTools 8 и Chrome 155
-        (`unload`), `bundle-optimization` перенесена в `performance`, повторы
-        заменены ссылками, теги уровня на всех страницах; `html-css/html` —
-        вместе с пачкой 5.
-  - [x] Next.js: недостающие секции шаблона на 11 страницах, факты Next.js 16.4
-        (redirect в Server Action, CORS в Route Handlers, segment config с Cache
-        Components), Proxy описан один раз в `authentication`, гидратация
-        перенесена в `server-components`, порядок страниц App Router, теги
-        уровня на всех страницах.
-  - [x] React Native: поднят до RN 0.88 и Expo SDK 58, follow-up вопросы на всех
-        страницах, порядок страниц (UI → платформенный код → анимации →
-        устройство → релиз), `rn-architecture` переименована.
-  - [x] `programming`, `tooling`, `git`: пример в `package-managers`, пример
-        Playwright перенесён в `tooling/testing`, повторы с `javascript` и
-        `react-native` заменены ссылками.
-  - [x] `nodejs`, `sql`: `title` и ключевые строки в примерах,
-        страницы-концепции перед справочником модулей. Node.js 26 и PostgreSQL
-        19 — отдельным проходом после релиза.
-  - [ ] Итоговое ревью Fable верхнего уровня: ROADMAP и структура справочника
-        целиком.
 
 - Тренировочный режим (вопрос → скрытый ответ, случайный вопрос).
 - Запускаемые примеры «что выведет этот код?» для JS.
 - Живые React-примеры (`@docusaurus/theme-live-codeblock`).
 - Визуализации: event loop, flexbox.
+- Список вопросов по разделу без ответов (заголовки и follow-up) — для
+  собеседующего, раньше тренировочного режима.
+- Возможные страницы, если появится экспертиза: инструменты сборки (Vite vs
+  webpack, HMR), frontend system design и архитектура (тема большая), `Symbol` /
+  `Proxy` / `Reflect` в JavaScript, i18n и `Intl`.
+- Иконки для разделов `html-css`, `tooling` и `react-native`.

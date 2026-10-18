@@ -1,7 +1,7 @@
 ---
 sidebar_position: 3
 description: Bundle analysis, tree shaking, code splitting and lighter imports
-tags: [middle, senior]
+tags: [middle]
 ---
 
 # Bundle Optimization

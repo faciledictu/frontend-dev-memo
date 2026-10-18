@@ -3,6 +3,7 @@
   "position": 2,
   "link": {
     "type": "generated-index",
+    "slug": "/nextjs/app-router",
     "description": "The current Next.js router based on the app/ directory: Server Components, layouts, streaming, Server Actions and caching."
   }
 }

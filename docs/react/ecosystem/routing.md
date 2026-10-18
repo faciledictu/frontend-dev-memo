@@ -15,11 +15,13 @@ ways to use it: **declarative** (`<BrowserRouter>` with `<Routes>`), **data**
 (`createBrowserRouter` with loaders and actions) and **framework** (a Vite
 plugin with route modules and SSR, the successor of Remix).
 
-Applies to: React Router 8. In v7 the API is almost the same; in v6 everything
-is imported from `react-router-dom`, which is not published for v8 (everything
-is in `react-router`).
+Applies to: React Router 8.
 
 ## Details
+
+In v7 the API is almost the same; in v6 everything is imported from
+`react-router-dom`, which is not published for v8 (everything is in
+`react-router`).
 
 ### Modes
 

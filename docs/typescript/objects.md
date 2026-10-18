@@ -14,6 +14,8 @@ properties, regardless of how it was declared.
 For object shapes the two are almost interchangeable; the differences are on a
 separate page: [Type vs Interface](./type-vs-interface.md).
 
+Applies to: TypeScript 7.0.
+
 ## Details
 
 ### `object` Type

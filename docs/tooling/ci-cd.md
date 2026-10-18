@@ -16,9 +16,7 @@ release, and the release to production is a manual decision (a button).
 **Continuous deployment**: every change that passes goes to production
 **automatically**, with no human step.
 
-Applies to: GitHub Actions (`actions/checkout@v7`, `actions/setup-node@v7`,
-`pnpm/action-setup@v6`, `actions/upload-artifact@v7`,
-`actions/download-artifact@v8`), Node.js 24.
+Applies to: GitHub Actions, Node.js 24.
 
 ## Details
 

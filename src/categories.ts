@@ -12,7 +12,8 @@ export const javascript: Category = {
   id: 'javascript',
   label: 'JavaScript',
   navbarLabel: 'JS',
-  description: 'JavaScript basic concepts',
+  description:
+    'Types, scope and closures, this, prototypes, event loop, promises and modules',
   group: 'main',
 };
 
@@ -20,7 +21,8 @@ export const typescript: Category = {
   id: 'typescript',
   label: 'TypeScript',
   navbarLabel: 'TS',
-  description: 'Statically typed superset of JavaScript',
+  description:
+    'Types and narrowing, generics, utility types, tsconfig and typing React',
   group: 'main',
 };
 
@@ -28,7 +30,7 @@ export const htmlCss: Category = {
   id: 'html-css',
   label: 'HTML & CSS',
   navbarLabel: 'HTML/CSS',
-  description: 'Markup and styling of web pages',
+  description: 'Semantic markup, script loading, viewport and form validation',
   group: 'main',
 };
 
@@ -54,7 +56,8 @@ export const nextjs: Category = {
   id: 'nextjs',
   label: 'Next.js',
   navbarLabel: 'Next',
-  description: 'React framework for building full-stack web applications',
+  description:
+    'App Router, Server Components, data fetching, caching and Server Actions',
   group: 'main',
 };
 
@@ -62,7 +65,8 @@ export const reactNative: Category = {
   id: 'react-native',
   label: 'React Native',
   navbarLabel: 'RN',
-  description: 'Framework for building mobile apps using JavaScript and React',
+  description:
+    'Architecture, styling, lists, animations, native features and releases',
   group: 'main',
 };
 
@@ -96,8 +100,7 @@ export const nodejs: Category = {
   id: 'nodejs',
   label: 'Node.js',
   navbarLabel: 'Node',
-  description:
-    'JavaScript runtime that allows server-side execution of JavaScript code',
+  description: 'Event loop, modules, errors and core modules',
   group: 'related',
 };
 
@@ -106,7 +109,7 @@ export const sql: Category = {
   label: 'SQL',
   navbarLabel: 'SQL',
   description:
-    'Structured Query Language for managing and manipulating relational databases',
+    'Queries and joins, constraints, indexes and transactions in PostgreSQL',
   group: 'related',
 };
 

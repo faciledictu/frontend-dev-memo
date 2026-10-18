@@ -3,6 +3,7 @@
   "position": 3,
   "link": {
     "type": "generated-index",
+    "slug": "/web-platform/performance",
     "description": "Core Web Vitals, loading performance and bundle size."
   }
 }

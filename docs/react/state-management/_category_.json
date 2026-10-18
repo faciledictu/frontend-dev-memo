@@ -3,6 +3,7 @@
   "position": 5,
   "link": {
     "type": "generated-index",
+    "slug": "/react/state-management",
     "description": "Where to keep state, server state and global stores."
   }
 }

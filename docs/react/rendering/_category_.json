@@ -3,6 +3,7 @@
   "position": 3,
   "link": {
     "type": "generated-index",
+    "slug": "/react/rendering",
     "description": "Reconciliation, re-renders, concurrent rendering and react-dom."
   }
 }

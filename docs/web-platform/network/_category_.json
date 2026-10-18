@@ -3,6 +3,7 @@
   "position": 1,
   "link": {
     "type": "generated-index",
+    "slug": "/web-platform/network",
     "description": "HTTP, CORS, browser storage, authentication and real-time updates."
   }
 }

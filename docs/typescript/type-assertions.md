@@ -14,6 +14,8 @@ runtime, so a wrong assertion moves the error from compile time to production.
 Use it when you really know more than the compiler (for example, the type of a
 DOM element). For external data, prefer **type guards** or validation.
 
+Applies to: TypeScript 7.0.
+
 ## Details
 
 ### Syntax

@@ -11,6 +11,8 @@ and works with many types, while the compiler still knows how the input and
 output types are related. This is the difference from `any`, which switches the
 checks off. In most calls the type argument is **inferred**.
 
+Applies to: TypeScript 7.0.
+
 ## Details
 
 - **Constraint**: `<T extends Shape>` limits which types are allowed and lets

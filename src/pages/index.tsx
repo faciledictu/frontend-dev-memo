@@ -18,15 +18,11 @@ function HomepageHeader() {
           {siteConfig.title}
         </Heading>
         <p className={clsx(styles.subtitle, 'hero__subtitle')}>
-          Here are answers to some of the most common questions about JavaScript
-          and React that you might be asked in a job interview.
+          Model answers to frontend interview questions, with follow-up
+          questions and common mistakes: to refresh before an interview, glance
+          at while answering, or use when interviewing others.
         </p>
-        <p>
-          All the info on this site has been pulled together from different
-          sources, so it might not be 100% accurate or complete. Please feel
-          free to submit pull requests with any updates or changes you think are
-          needed.
-        </p>
+        <p>Found a mistake? Pull requests are welcome.</p>
       </div>
     </header>
   );

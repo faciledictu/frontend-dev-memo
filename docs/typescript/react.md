@@ -19,7 +19,7 @@ tags: [junior, middle]
   wrapper components. In React 19 **`ref` is a regular prop**, so `forwardRef`
   is no longer needed.
 
-Applies to: React 19, `@types/react` 19.3, TypeScript 7.0.
+Applies to: React 19.3, `@types/react` 19.3, TypeScript 7.0.
 
 ## Details
 

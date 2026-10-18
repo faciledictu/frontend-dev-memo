@@ -12,6 +12,8 @@ so **context** and **event bubbling** follow the React tree, not the DOM.
 Portals are used for modals, tooltips and dropdowns that must escape the
 parent's `overflow: hidden` or stacking context.
 
+Applies to: React 19.3.
+
 ## Details
 
 - `createPortal` is imported from `react-dom` and is returned from a component

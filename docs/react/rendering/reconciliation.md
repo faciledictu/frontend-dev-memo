@@ -13,6 +13,8 @@ to find the minimal set of DOM changes. An update has two phases: **render**
 DOM; synchronous). A re-render of a component does not mean that the DOM was
 touched.
 
+Applies to: React 19.3.
+
 ## Details
 
 ### Render and Commit

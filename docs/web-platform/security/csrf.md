@@ -3,7 +3,7 @@ sidebar_position: 2
 description:
   How CSRF works, why CORS does not stop it, SameSite cookies, CSRF tokens,
   Origin and Fetch Metadata checks
-tags: [middle, senior]
+tags: [middle]
 ---
 
 # Cross-Site Request Forgery (CSRF)

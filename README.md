@@ -2,8 +2,8 @@
 
 [frontend-dev-memo.vercel.app](https://frontend-dev-memo.vercel.app)
 
-The answers to some of the most common questions about JavaScript and React that
-you might be asked in a job interview.
+Model answers to frontend interview questions, with follow-up questions and
+common mistakes: to refresh before an interview or to interview others.
 
 ## Built with
 

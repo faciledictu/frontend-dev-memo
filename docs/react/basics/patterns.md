@@ -13,6 +13,8 @@ with `children` and **compound components**; logic is shared with **custom
 hooks**, which replaced **render props** and **higher-order components** in most
 cases. **Error boundaries** catch rendering errors and show a fallback.
 
+Applies to: React 19.3.
+
 ## Details
 
 | Pattern                | Idea                                                                    | Today                                    |

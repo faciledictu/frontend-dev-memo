@@ -3,6 +3,7 @@ sidebar_position: 1
 description:
   Semantic markup, script loading, block vs inline, data attributes, viewport,
   form validation
+tags: [junior]
 ---
 
 # HTML

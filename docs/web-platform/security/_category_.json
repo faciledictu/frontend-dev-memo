@@ -3,6 +3,7 @@
   "position": 4,
   "link": {
     "type": "generated-index",
+    "slug": "/web-platform/security",
     "description": "XSS, CSRF and Content Security Policy."
   }
 }

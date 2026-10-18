@@ -8,9 +8,21 @@ tags: [middle]
 
 The model answer: 2–4 sentences or a short list that can be read at a glance and
 said out loud. **Key terms** are in bold. Everything between the title and the
-first `##` heading is the short answer.
+first `##` heading is the short answer. Keep it under about 100 words or one
+table.
 
-Applies to: React 19.
+Applies to: React 19.3.
+
+`Applies to` names the library version the page was checked against; pages that
+do not depend on a version leave it out.
+
+Every page has level tags, one or two of:
+
+- `junior` — asked at the first screening; expected of anyone who has worked
+  with the technology;
+- `middle` — expected of any working developer who uses it daily;
+- `senior` — design trade-offs and internals; usually only the follow-ups go
+  this deep.
 
 Browser support and release dates ("since Safari 26") age quickly: at most one
 line in Details, never in the short answer or the follow-up questions.
@@ -54,8 +66,9 @@ score = 'high'; // Error: Type 'string' is not assignable to type 'number'.
 
 ## Follow-up Questions
 
-- What an interviewer asks next to go deeper.
-- Each question either has a one-line answer here or links to its own page.
+- What does an interviewer ask next? The question and a one-line answer in one
+  item, or a link to the page that answers it.
+- Follow-ups add something new; they don't restate Details.
 
 ## Common Mistakes
 

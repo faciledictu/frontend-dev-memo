@@ -24,6 +24,8 @@ The most common question is the difference between the special types:
 | `never`   | nothing                    | nothing: it never has a value          |
 | `void`    | `undefined`                | nothing: the function returns no value |
 
+Applies to: TypeScript 7.0.
+
 ## Details
 
 ### Primitives

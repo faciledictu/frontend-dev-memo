@@ -12,6 +12,8 @@ independent and reusable, and they are composed into a tree. During rendering a
 component must be **pure**: the same props, state and context give the same
 output, with no side effects.
 
+Applies to: React 19.3.
+
 ## Details
 
 ### Component, Element, JSX

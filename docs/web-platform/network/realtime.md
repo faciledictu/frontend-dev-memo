@@ -3,7 +3,7 @@ sidebar_position: 5
 description:
   Polling, long polling, Server-Sent Events and WebSocket, how each works and
   when to choose it
-tags: [middle, senior]
+tags: [middle]
 ---
 
 # Real-Time Updates: WebSocket, SSE, Polling
