@@ -26,8 +26,8 @@ Applies to: React Native 0.88, Expo SDK 58.
 | ----------- | ------------------------------------------------------------------------- |
 | Console     | Logs and errors from the app; evaluate JS in the running app              |
 | Sources     | Breakpoints, `debugger` statements, stepping; source maps show your files |
-| Network     | Requests made with `fetch`, `XMLHttpRequest` and images; since 0.83       |
-| Performance | JS profiling and React tracks on one timeline; since 0.83                 |
+| Network     | Requests made with `fetch`, `XMLHttpRequest` and images                   |
+| Performance | JS profiling and React tracks on one timeline                             |
 | Memory      | Heap snapshots and allocations, for leaks                                 |
 | Components  | The React tree, props, state and hooks; select a view on screen           |
 | Profiler    | React renders: which components rendered, why and how long                |
@@ -40,9 +40,9 @@ Applies to: React Native 0.88, Expo SDK 58.
 ### What It Replaced
 
 - **Chrome remote debugging** ran the app's JS in the browser instead of on the
-  device: different engine, no JSI, synchronous native calls broke. Removed in
-  0.79.
-- **Flipper** was removed from the new project template in 0.74.
+  device: different engine, no JSI, synchronous native calls broke.
+- **Flipper**, a separate desktop app with plugins.
+- Both were dropped in 0.74–0.79; DevTools covers what they did.
 
 ### LogBox
 
@@ -129,6 +129,9 @@ after `eas update`, run `npx @sentry/expo-upload-sourcemaps dist`.
   logs, and check the crash reporter; DevTools are not available in release.
 - How do you inspect network requests of a native SDK? The Network panel sees
   only JS requests; use a proxy (Proxyman, Charles) or the native profilers.
+- How do you see which component re-rendered and why? The Profiler panel with
+  "Record why each component rendered" turned on; see
+  [Re-renders](../react/rendering/re-renders.md).
 
 ## Common Mistakes
 

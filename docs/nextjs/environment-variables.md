@@ -115,6 +115,12 @@ export function Checkout({ region }: { region?: string }) {
   see [Environment Configuration](../react-native/release/env.md).
 - Why is `.env.local` ignored in tests? Tests should give the same results on
   every machine, so personal overrides are not loaded; use `.env.test`.
+- How do you fail fast on a missing variable? Validate `process.env` with a
+  schema (Zod, `@t3-oss/env-nextjs`) at build or startup, not at the first
+  request that needs it.
+- Can there be a `.env.staging`? Not through `NODE_ENV`: it allows only
+  `development`, `production` and `test`. Use your own variable (`APP_ENV`) or
+  set the values in the staging environment.
 
 ## Common Mistakes
 
@@ -127,6 +133,5 @@ export function Checkout({ region }: { region?: string }) {
 
 ## See Also
 
-- [Proxy](./proxy.md)
 - [Server Components](./app-router/server-components.mdx)
 - [Environment Configuration in React Native](../react-native/release/env.md)

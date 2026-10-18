@@ -173,6 +173,10 @@ adb shell am start -W -a android.intent.action.VIEW -d "https://example.com/user
 - How do you test App Link verification on Android?
   `adb shell pm get-app-links <package>` shows whether each domain is
   `verified`.
+- A logged-out user opens a link to a private screen; where do they land after
+  login? Without extra code, on the default screen: the auth flow drops the URL.
+  Save the intended path before showing the login screen and `replace` to it
+  after login.
 
 ## Common Mistakes
 

@@ -137,13 +137,18 @@ export const useCart = create<Cart>()(
 - Why not keep the token in AsyncStorage? It is a plain file in the app's
   sandbox: readable on a rooted or jailbroken device and in unencrypted backups.
 - Why is MMKV faster than AsyncStorage? It is synchronous and memory-mapped: no
-  async round trip and no JSON bridge, values are typed (numbers, booleans).
+  async round trip and no JSON serialization, values are typed (numbers,
+  booleans).
 - Where do you keep a refresh token and where the access token? The refresh
   token in the Keychain / Keystore; the short-lived access token can stay in
   memory and be restored from the refresh token on launch.
 - What happens to the data on an app update or uninstall? It survives an update
   (keep migrations for the shape); it is removed on uninstall, except iOS
   Keychain items.
+- Can the app read the token while the device is locked (a background refresh, a
+  push handler)? It depends on the Keychain accessibility class: the default
+  `WHEN_UNLOCKED` fails then; use `AFTER_FIRST_UNLOCK` (`keychainAccessible` in
+  SecureStore).
 
 ## Common Mistakes
 

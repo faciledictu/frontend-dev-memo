@@ -58,8 +58,7 @@ Applies to: Next.js 16.4.
 | `manifest.ts`                               | `/manifest.webmanifest`                                     |
 
 - A file takes precedence over the `metadata` object for the same tag.
-- `ImageResponse` supports flexbox and a subset of CSS (no grid), ttf / otf /
-  woff fonts, and up to 500 KB of JSX, fonts and images.
+- `ImageResponse` supports flexbox and a subset of CSS (no grid).
 - A large site splits the sitemap with `generateSitemaps()`: one file holds at
   most 50,000 URLs.
 
@@ -198,6 +197,11 @@ export default function robots(): MetadataRoute.Robots {
 - Does `robots.txt` hide a page from search? No, it only asks crawlers not to
   crawl it; a page linked from elsewhere can still be indexed. Use
   `robots: { index: false }` (`noindex`) on the page.
+- How do you add structured data (JSON-LD)? Render
+  `<script type="application/ld+json">` in the page; the Metadata API does not
+  cover it.
+- How do you link localized versions of a page? `alternates.languages`
+  (`hreflang` links), resolved against `metadataBase`.
 
 ## Common Mistakes
 

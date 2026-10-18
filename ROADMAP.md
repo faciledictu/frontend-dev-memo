@@ -266,12 +266,15 @@
       queries, `srcset`), `custom-properties` (переменные, `@property`, темы,
       `color-mix()`). Подгрупп нет; ревью Fable для `html` и описание раздела в
       `src/categories.ts` — вместе с пачкой.
-- [ ] 6. React Native и Next.js, 8 страниц. React Native: `navigation` (React
+- [x] 6. React Native и Next.js, 8 страниц. React Native: `navigation` (React
       Navigation и Expo Router), `deep-linking`, `storage` (AsyncStorage, MMKV,
       SecureStore, SQLite), `performance`, `debugging` (React Native DevTools).
       Next.js: `app-router/metadata` (Metadata API, SEO, OG-картинки), `proxy`
       (отдельная страница; в `authentication` остаётся только проверка доступа),
-      `environment-variables`. RSC vs SSR и Expo уже покрыты.
+      `environment-variables`. RSC vs SSR и Expo уже покрыты. Сделано: RN 0.88,
+      Expo SDK 58, React Navigation 7, Next.js 16.4; страницы RN и Next.js
+      перенумерованы, Proxy описан один раз в `proxy`, в `overview` RN — два
+      follow-up про Expo.
 - [ ] 7. Web Platform: браузерные API, 5 страниц: `browser/scheduling`
       (`requestAnimationFrame`, `requestIdleCallback`, `scheduler.yield()`),
       `browser/observers` (Intersection, Resize, Mutation),

@@ -65,10 +65,8 @@ Without a `matcher` Proxy runs on **every request**, including static files,
 | Security headers, a request ID header                  | Caching `fetch`: `cache` and `next.revalidate` have no effect here |
 | An optimistic auth check: no session cookie → `/login` | Static export: Proxy needs a server                                |
 
-**Server Actions** are not separate routes: they are POST requests to the page
-that uses them. A matcher that excludes a page also skips its actions, and
-moving an action to another page can silently remove Proxy coverage. This is why
-the session is checked inside each action, see
+**Server Actions** are POST requests to their page, so the page's matcher covers
+them, and a moved action silently loses Proxy; see
 [Authentication](./authentication.md#proxy).
 
 ### `middleware` → `proxy`
@@ -126,6 +124,9 @@ export const config = {
   per-route logic is branching inside it or the matcher.
 - Does Proxy run on client-side navigation? Yes: the RSC request for the next
   page is a request to the server and goes through the matcher like any other.
+- How does a layout know the locale after a rewrite? Proxy sets a request header
+  (`x-locale`) and the server code reads it with `headers()`; on the client
+  `usePathname()` still shows the original URL.
 
 ## Common Mistakes
 

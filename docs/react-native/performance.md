@@ -43,7 +43,7 @@ Applies to: React Native 0.88, Expo SDK 58.
 | A press feels late                      | Heavy work in `onPress` before the UI updates | Update the UI first, then run the work (`setTimeout`), or move it off the JS thread          |
 | Slow release builds with many logs      | `console.log` with large objects              | Strip logs in release (`babel-plugin-transform-remove-console`)                              |
 | Memory spikes, crashes on image screens | Full-size images scaled down in the view      | Resized images from the server, `expo-image` with caching                                    |
-| A screen transition stutters            | The new screen renders everything on mount    | Render the heavy part after the transition                                                   |
+| A screen transition stutters            | The new screen renders everything on mount    | Render the heavy part after the transition (`transitionEnd` listener)                        |
 
 ### Startup Time
 
@@ -58,7 +58,7 @@ Applies to: React Native 0.88, Expo SDK 58.
   `metro.config.js`).
 - **Fewer modules at startup**: heavy libraries (date, charts, SDKs) imported
   from the entry file run before the first screen; import them where they are
-  used. TurboModules are already loaded lazily.
+  used.
 - Do less before the first frame: no blocking network calls behind the splash
   screen; read cached state synchronously (MMKV) and refresh in the background.
 
@@ -119,6 +119,9 @@ export function ReportButton() {
 - Does the New Architecture make the app faster by itself? It removes the bridge
   overhead and allows synchronous layout, but re-renders and heavy lists cost
   the same.
+- How do you find which JS code is slow? Record in the Performance panel of
+  React Native DevTools (a flame chart of JS and React tracks) and in the React
+  Profiler; see [Debugging](./debugging.md).
 
 ## Common Mistakes
 

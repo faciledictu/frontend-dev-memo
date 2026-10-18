@@ -21,13 +21,13 @@ Applies to: React Native 0.88, React Navigation 7, Expo SDK 58.
 
 ### React Navigation or Expo Router
 
-|              | React Navigation                                                          | Expo Router                                    |
-| ------------ | ------------------------------------------------------------------------- | ---------------------------------------------- |
-| Routes       | In code: the static API (an object, recommended) or the dynamic API (JSX) | Files: `app/profile/[id].tsx` → `/profile/42`  |
-| Deep links   | A `linking` config; the static API can generate it                        | Every screen has a URL automatically           |
-| Typed params | A param list per navigator                                                | Typed routes (`experiments.typedRoutes`, beta) |
-| Works in     | Any React Native app                                                      | Apps on Expo CLI, bare ones included           |
-| Web          | Possible                                                                  | URLs, static rendering                         |
+|              | React Navigation                                                          | Expo Router                                   |
+| ------------ | ------------------------------------------------------------------------- | --------------------------------------------- |
+| Routes       | In code: the static API (an object, recommended) or the dynamic API (JSX) | Files: `app/profile/[id].tsx` → `/profile/42` |
+| Deep links   | A `linking` config; the static API can generate it                        | Every screen has a URL automatically          |
+| Typed params | A param list per navigator                                                | Typed routes (beta)                           |
+| Works in     | Any React Native app                                                      | Apps on Expo CLI, bare ones included          |
+| Web          | Possible                                                                  | URLs, static rendering                        |
 
 - The **static API** (`createNativeStackNavigator({ screens })`) is an object
   known before render: it generates deep links and types. The **dynamic API**
@@ -211,14 +211,19 @@ export default function RootLayout() {
   refetch-on-focus.
 - How do you pass a result back to the previous screen?
   `popTo('Edit', { result }, { merge: true })` (without `merge` the screen's
-  params are replaced), or keep the data in shared state; do not pass callbacks
-  in params: they are not serializable and break deep links and state
-  persistence.
+  params are replaced), or keep the data in shared state.
 - Why does a tab screen keep its scroll position? Tabs stay mounted; pressing
   the active tab again scrolls a list to the top (`useScrollToTop`).
 - What is `getId`? A function that returns an ID from params, so that
   `navigate('Profile', { id: 2 })` opens a new `Profile` instead of updating the
   one for `id: 1`.
+- How do you navigate from outside a component (a push handler, an API
+  interceptor)? A ref from `createNavigationContainerRef()` passed to the
+  container: `navigationRef.navigate(…)` once `isReady()`. In Expo Router,
+  `router` can be imported anywhere.
+- How do you open a screen inside a nested navigator?
+  `navigate('Tabs', { screen: 'Profile', params })`; in Expo Router, just the
+  URL.
 
 ## Common Mistakes
 
@@ -226,7 +231,8 @@ export default function RootLayout() {
   to the screen.
 - Navigating to `Login` on logout instead of switching the rendered screens: the
   user can swipe back to a private screen.
-- Passing whole objects or functions as params.
+- Passing whole objects or callbacks as params: they are not serializable and
+  break deep links and state persistence.
 - Importing `@react-navigation/*` in an Expo Router app on SDK 56+.
 
 ## See Also
