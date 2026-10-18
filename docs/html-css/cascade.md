@@ -45,9 +45,10 @@ Only what is usually asked; the full list is on
   `:nth-child(2 of .item)` does.
 - `:focus-visible` matches focus the browser would show a ring for (keyboard
   navigation, text fields), not a mouse click on a button; `:focus-within`
-  matches an element whose descendant has focus.
+  matches an element that has focus or contains the focused element.
 - `::before` and `::after` render only with `content` (`content: ''` for a
-  decorative box); they do not work on `<img>` or `<input>`.
+  decorative box); they do not work on replaced elements (`<img>`, `<video>`,
+  most `<input>`s).
 
 ### Specificity
 
@@ -191,7 +192,8 @@ body:has(dialog:modal) {
   element or creates a virtual one, counts as a type; double colon.
 - Is `:has()` a parent selector? More than that: it selects an element by
   anything relative to it — descendants, children (`:has(> img)`), following
-  siblings (`:has(+ input)`). It cannot be nested inside another `:has()`.
+  siblings (`:has(+ input)`). It cannot be nested inside another `:has()`, and
+  pseudo-elements are not allowed inside it.
 - Why avoid `!important`? Only another `!important` can beat it (more specific,
   later in the source or in an earlier layer), so it escalates. Layers and
   `:where()` solve the same problem; `!important` stays for utilities and
@@ -199,7 +201,9 @@ body:has(dialog:modal) {
 - What is the specificity of `nav ul li a.active:hover`? (0, 2, 4). Of
   `#main :not(.x) p`? (1, 1, 1).
 - How does the browser match selectors? Right to left, from the rightmost part:
-  `.nav li a` first finds every `a`, then checks its ancestors.
+  `.nav li a` first finds every `a`, then checks its ancestors. So the rightmost
+  part should reject most elements: a single `.nav-link` is cheaper than
+  `.nav li a`.
 
 ## Common Mistakes
 
@@ -212,6 +216,10 @@ body:has(dialog:modal) {
   them.
 - Expecting `!important` in a later layer to win: with `!important` the earlier
   layer wins.
+- Expecting `.item:nth-of-type(2)` to count only `.item`s: it counts siblings
+  with the same tag; use `:nth-child(2 of .item)`.
+- Adding `::before` to an `<img>` or `<input>`: replaced elements have no
+  content box for it.
 
 ## See Also
 

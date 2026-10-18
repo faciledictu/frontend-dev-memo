@@ -53,7 +53,7 @@ the European Accessibility Act and the ADA require, is level **AA**. The basics:
 - `tabindex="0"` adds a custom element to the Tab order; `tabindex="-1"` makes
   it focusable only from code. A positive `tabindex` breaks the order.
 - Never remove the outline without a replacement: style `:focus-visible`
-  instead.
+  instead, see [Selectors](../../html-css/cascade.md#selectors-in-brief).
 - **Modals**: trap the focus, close on Esc, return the focus; `<dialog>` with
   `showModal()` does most of it. See [Portals](../../react/basics/portals.md).
 - **SPA navigation**: after a route change, move the focus to the new heading or
@@ -90,8 +90,9 @@ clickable from the keyboard.
 | Zoom and reflow  | usable at 200% zoom and at a width of 320 CSS px               |
 | Target size      | at least 24 × 24 CSS px (new in WCAG 2.2)                      |
 
-Respect user settings: `prefers-reduced-motion` for animations, sizes in `rem`
-so that the font size set in the browser is applied.
+Respect user settings: `prefers-reduced-motion` for
+[animations](../../html-css/animations.md), sizes in `rem` so that the font size
+set in the browser is applied.
 
 ### Testing
 

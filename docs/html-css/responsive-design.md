@@ -206,5 +206,6 @@ h1 {
 
 - [HTML: viewport meta tag](./html.md#viewport-meta-tag)
 - [CSS Grid](./grid.md)
+- [CSS Transitions and Animations](./animations.md): `prefers-reduced-motion`
 - [Loading Performance](../web-platform/performance/loading-performance.md)
 - [Web Vitals](../web-platform/performance/web-vitals.md): CLS and image sizes
