@@ -254,8 +254,9 @@
       `accessibility/accessibility`, `browser/web-workers`,
       `browser/service-workers`, `network/realtime`). Новые подгруппы
       `performance`, `security` и `accessibility`; `tools` переехала в конец
-      раздела. Пачки 5–7 утверждены (списки страниц ниже), порядок 5 → 6 → 7:
-      React Native — текущий фокус, позже раздел будет углубляться.
+      раздела. Пачки 5–7 утверждены, подробные планы — в
+      [plans/](plans/README.md); порядок 5 → 6 → 7: React Native — текущий
+      фокус, позже раздел будет углубляться.
 
 - [ ] 5. HTML & CSS, 7 страниц: `cascade` (специфичность, `@layer`, `:has()`,
       вложенность, наследование), `box-model` (сюда же «Block vs Inline» из
