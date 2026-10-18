@@ -275,12 +275,14 @@
       Expo SDK 58, React Navigation 7, Next.js 16.4; страницы RN и Next.js
       перенумерованы, Proxy описан один раз в `proxy`, в `overview` RN — два
       follow-up про Expo.
-- [ ] 7. Web Platform: браузерные API, 5 страниц: `browser/scheduling`
+- [x] 7. Web Platform: браузерные API, 5 страниц: `browser/scheduling`
       (`requestAnimationFrame`, `requestIdleCallback`, `scheduler.yield()`),
       `browser/observers` (Intersection, Resize, Mutation),
       `browser/history-api` (с разделом про Navigation API),
       `browser/web-components` (Shadow DOM), `network/url` (URL и кодирование).
-      Страницы вставляются между существующими с перенумерацией.
+      Страницы вставлены между существующими с перенумерацией; статус поддержки
+      сверен с web-features 3.43.0, ссылки на новые страницы добавлены в 10
+      существующих.
 - [ ] 8. Пробелы из итогового ревью: «REST vs GraphQL» (`web-platform/network`),
       страница-указатель типовых задач на собеседовании (`bind`, `Promise.all`,
       `debounce`, глубокое копирование, мемоизация… со ссылками на страницы),

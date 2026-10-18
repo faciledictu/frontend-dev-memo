@@ -118,7 +118,8 @@ menu.addEventListener('click', (event) => {
   `<select>` or a checkbox.
 - What is `event.target` for a click inside a Shadow DOM? Outside the shadow
   tree it is retargeted to the host; `event.composedPath()` gives the full path
-  (for a closed shadow root it stops at the host).
+  (for a closed shadow root it stops at the host). See
+  [Web Components and Shadow DOM](./web-components.md).
 
 ## Common Mistakes
 

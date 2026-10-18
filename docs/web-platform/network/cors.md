@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 description: Same-Origin Policy, what an origin is, preflight and credentials
 tags: [junior, middle]
 ---

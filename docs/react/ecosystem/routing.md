@@ -230,7 +230,7 @@ export default function App() {
 
 - How is `<Link>` different from `<a>`? `Link` renders an `<a>`, but intercepts
   the click and calls `history.pushState`, so the page is not reloaded and the
-  state is kept.
+  state is kept. See [History API](../../web-platform/browser/history-api.md).
 - Why does a page return 404 after a reload with `BrowserRouter`? The server
   must return `index.html` for every path; `HashRouter` avoids it because the
   part after `#` is not sent to the server.

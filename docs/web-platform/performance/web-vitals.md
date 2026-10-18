@@ -70,7 +70,8 @@ An interaction is made of **input delay** (the main thread is busy) →
 frame). What helps:
 
 - **Break long tasks** (over 50 ms): show feedback first, then yield to the
-  browser with `scheduler.yield()` or `setTimeout`, and do the rest.
+  browser with `scheduler.yield()` or `setTimeout`, and do the rest. See
+  [requestAnimationFrame and requestIdleCallback](../browser/scheduling.md#scheduleryield-and-posttask).
 - Less JavaScript on the main thread: code splitting, fewer third-party scripts,
   heavy computation in a [Web Worker](../browser/web-workers.md).
 - In React: `startTransition` for non-urgent updates, fewer re-renders. See
