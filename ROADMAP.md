@@ -277,8 +277,11 @@
         `patterns` переименована в «Patterns and Error Boundaries», сравнение
         context и стора оставлено в `state-management/overview`, теги уровня на
         всех страницах.
-  - [ ] Web Platform: страницы этапа 3 (новые страницы пачки 4 ревью уже прошли;
-        `html-css/html` — вместе с пачкой 5).
+  - [x] Web Platform: страницы этапа 3 приведены к шаблону, `authentication`
+        получила пример, факты на Vite 8, React DevTools 8 и Chrome 155
+        (`unload`), `bundle-optimization` перенесена в `performance`, повторы
+        заменены ссылками, теги уровня на всех страницах; `html-css/html` —
+        вместе с пачкой 5.
   - [ ] Next.js.
   - [ ] React Native.
   - [ ] `programming`, `tooling`, `git`.

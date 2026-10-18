@@ -15,7 +15,7 @@ Debugging is choosing the right tool for the kind of problem:
   pages and leaks.
 - **React DevTools** and **Redux DevTools** for components and store state.
 
-Applies to: Chrome DevTools, React DevTools 8.
+Applies to: React DevTools 8.
 
 ## Details
 
@@ -127,9 +127,8 @@ function findUser(name) {
 - How do you debug an error that happens only in production? Use the stack trace
   from an error tracker with source maps, then reproduce it with the same data,
   network throttling and a production build.
-- How do you debug on a phone? Android: enable USB debugging, connect the phone
-  and open `chrome://inspect` in desktop Chrome. iOS: enable Web Inspector in
-  the iPhone's Safari settings, then Develop → the device in Safari on a Mac.
+- How do you debug on a phone? Remote debugging from the desktop:
+  `chrome://inspect` for Android, the Develop menu of Safari for iOS.
 - How do you find the code that changes an element? A DOM breakpoint on it
   (Break on → subtree or attribute modifications); its handlers are in the Event
   Listeners tab of Elements or in `getEventListeners($0)`.

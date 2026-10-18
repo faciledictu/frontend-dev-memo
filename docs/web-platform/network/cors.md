@@ -116,8 +116,6 @@ Access-Control-Max-Age: 600
   without it; web fonts and module scripts are always fetched with CORS. A
   non-CORS image can be drawn on a `<canvas>` but taints it: `getImageData()`
   throws. The `crossorigin` attribute switches an element to a CORS request.
-- How long is a preflight cached? For `Access-Control-Max-Age` seconds, 5 by
-  default.
 
 ## Common Mistakes
 

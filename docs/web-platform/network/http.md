@@ -36,9 +36,6 @@ encrypted and the server proves its identity with a certificate.
 - Idempotency matters for retries: an idempotent request can be repeated after a
   network failure, a `POST` can create a duplicate.
 
-Headers worth naming: `Content-Type`, `Accept`, `Authorization`, `Cookie` /
-`Set-Cookie`, `Location`, `Cache-Control`, `Content-Encoding`.
-
 ### Status Codes
 
 | Group | Meaning       | Codes worth remembering                                                                                          |
@@ -54,6 +51,9 @@ Headers worth naming: `Content-Type`, `Accept`, `Authorization`, `Cookie` /
 - `301` and `302` allow the client to change `POST` to `GET`; `308` and `307`
   are their counterparts that keep the method.
 - `304` has no body: the client uses its cached copy.
+
+Headers worth naming: `Content-Type`, `Accept`, `Authorization`, `Cookie` /
+`Set-Cookie`, `Location`, `Cache-Control`, `Content-Encoding`.
 
 ### Caching
 
@@ -143,10 +143,9 @@ try {
   [How the Browser Works](../browser/browser-workflow.md).
 - What happened to HTTP/2 Server Push? Browsers removed it; `103 Early Hints`
   and `<link rel="preload">` replaced it.
-- `fetch` or axios? axios uses XHR in the browser by default (so it reports
-  upload progress), rejects on non-2xx statuses, parses JSON and has
-  interceptors. `fetch` is built in and supports streams, but `response.ok` is
-  checked by hand and a timeout is set with `AbortSignal.timeout()`.
+- `fetch` or axios? axios rejects on non-2xx statuses, parses JSON and has
+  interceptors; `fetch` is built in and supports streams, but `response.ok` and
+  the timeout are checked by hand.
 - How do you make a `POST` safe to retry? An `Idempotency-Key` header: the
   server stores the result per key and returns it again for a repeated request.
 - What is `stale-while-revalidate`? After `max-age` runs out, the cache serves
@@ -162,7 +161,7 @@ try {
 - "`no-cache` forbids caching." That is `no-store`.
 - "No `Cache-Control` means no caching." Without `Cache-Control` or `Expires`, a
   response with `Last-Modified` is cached heuristically. Set `Cache-Control`
-  explicitly: `no-cache` to revalidate, `no-store` to not store.
+  explicitly: `no-cache` to revalidate, `no-store` to forbid storing.
 
 ## See Also
 

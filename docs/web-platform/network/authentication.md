@@ -81,10 +81,10 @@ frontend) pattern a server proxy keeps the OAuth tokens and gives the SPA an
 A JWT and its decoded header and payload:
 
 ```text
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MiIsImV4cCI6MTc5MjAwMDAwMH0.<signature>
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MiIsImV4cCI6MjAwMDAwMDAwMH0.<signature>
 
 header:  { "alg": "HS256", "typ": "JWT" }
-payload: { "sub": "42", "exp": 1792000000 }
+payload: { "sub": "42", "exp": 2000000000 }
 ```
 
 A `fetch` wrapper for a cookie-based session that refreshes once on `401` and
@@ -132,9 +132,7 @@ async function apiFetch(url, options) {
   authorization request and the verifier itself with the code exchange, so an
   intercepted code is useless. It is required for public clients (SPAs, mobile
   apps), which cannot keep a secret.
-- How does the client handle a `401`? Refresh once (one refresh for parallel
-  requests), retry, and if the refresh fails, drop the session and go to the
-  login page.
+- What if the refresh itself fails? Drop the session and go to the login page.
 
 ## Common Mistakes
 

@@ -46,8 +46,8 @@ A cookie is set by the server with the `Set-Cookie` header or by a script.
 
 Name prefixes are checked by the browser: a `__Host-` cookie must be `Secure`,
 have `Path=/` and no `Domain`, so it is bound to the exact host and a subdomain
-cannot set or shadow it; a `__Secure-` cookie must be `Secure`. Chrome and
-Firefox cap `Expires` / `Max-Age` at 400 days.
+cannot set or shadow it; a `__Secure-` cookie must be `Secure`. Browsers cap
+`Expires` / `Max-Age` at 400 days (RFC 6265bis).
 
 A **site** is broader than an origin: it is the scheme and the registrable
 domain. `app.example.com` and `api.example.com` are different origins but the

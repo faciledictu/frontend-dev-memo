@@ -24,8 +24,8 @@ What happens after a user enters a URL:
   system, and only then asks a DNS resolver.
 - **TCP and TLS.** TCP sets up a reliable connection with a three-way handshake.
   For HTTPS, a TLS handshake follows: the server presents its certificate and
-  both sides agree on encryption keys. HTTP/3 uses QUIC, which combines both
-  handshakes.
+  both sides agree on encryption keys. The connection is then reused for further
+  requests (keep-alive). HTTP/3 uses QUIC, which combines both handshakes.
 - **HTTP.** The request contains the method, the path, headers and cookies. The
   response contains a status code, headers and the body. See
   [HTTP](../network/http.md).
