@@ -28,11 +28,12 @@ shared between teams and for widgets embedded in other sites.
 
 - The name must contain a **hyphen** and start with a lowercase letter
   (`user-card`), so it never clashes with a future HTML element.
-- Lifecycle: `constructor` (call `super()` first; no attributes or children
-  yet), `connectedCallback` (inserted into the document; may run again after a
-  move), `disconnectedCallback` (removed: clean up listeners and timers),
-  `attributeChangedCallback(name, oldValue, newValue)` for the attributes listed
-  in `static observedAttributes`, `adoptedCallback` (moved to another document).
+- Lifecycle: `constructor` (call `super()` first; don't read attributes or
+  children: they may not exist yet), `connectedCallback` (inserted into the
+  document; may run again after a move), `disconnectedCallback` (removed: clean
+  up listeners and timers), `attributeChangedCallback(name, oldValue, newValue)`
+  for the attributes listed in `static observedAttributes`, `adoptedCallback`
+  (moved to another document).
 - Elements in the HTML before `define()` are upgraded when it runs; until then
   they match `:not(:defined)`, which is used to hide them, and
   `customElements.whenDefined(name)` returns a promise.
@@ -95,8 +96,8 @@ shared between teams and for widgets embedded in other sites.
   such a property, and listens to custom events through `on` + the exact event
   name (`oncount-change` for `count-change`). See
   [What's New in React 19](../../react/react-19.md).
-- Lit and Stencil are thin libraries that add reactive properties and templating
-  on top of the standard.
+- Lit (a thin library) and Stencil (a compiler) add reactive properties and
+  templating on top of the standard.
 - Scoped registries (`new CustomElementRegistry()`) let two versions of one
   element coexist on a page, so far not in Firefox.
 
@@ -173,7 +174,8 @@ customElements.define('my-counter', MyCounter);
 
 - Shadow DOM or CSS Modules for isolation? CSS Modules only rename classes at
   build time; Shadow DOM isolates in the browser in both directions, but makes
-  theming harder: only custom properties and `::part` get in.
+  theming harder: only inherited properties, custom properties and `::part` get
+  in.
 - Why can a custom element not read its attributes in the constructor? When it
   is created with `document.createElement`, it has none yet. Read them in
   `connectedCallback` or `attributeChangedCallback`.

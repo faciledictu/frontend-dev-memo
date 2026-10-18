@@ -35,8 +35,8 @@ So the order is: synchronous code → microtasks → rendering → the next task
   itself executes synchronously. See [Promises and async/await](./promises.mdx).
 - Code after `await` in async functions
 - `queueMicrotask()`
-- `MutationObserver`. See
-  [Intersection, Resize and Mutation Observers](../web-platform/browser/observers.md).
+- `MutationObserver` callbacks (see
+  [Intersection, Resize and Mutation Observers](../web-platform/browser/observers.md))
 
 ### Tasks (Macrotasks)
 

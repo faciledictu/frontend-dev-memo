@@ -34,7 +34,8 @@ A client-side router is these two parts plus intercepting link clicks. The newer
 - `replaceState` is for updates that should not create a back step: filters
   typed into a search field, a corrected URL after a redirect.
 - `history.back()`, `forward()` and `go(n)` move through the history
-  asynchronously, like the browser buttons, and fire `popstate`.
+  asynchronously, like the browser buttons, and fire `popstate` when the target
+  entry belongs to the same document.
 
 ### popstate and hashchange
 
@@ -63,17 +64,19 @@ Server configuration and React Router's `HashRouter` are covered in
 ### Navigation API
 
 - `navigation.addEventListener('navigate', handler)` receives **every**
-  navigation of the page: link clicks, form submissions, back / forward,
-  `location.href = …`, `history.pushState`.
+  navigation the page starts: link clicks, form submissions, back / forward,
+  `location.href = …`, `history.pushState`. Typing in the address bar and
+  bookmarks are not included.
 - `event.intercept({ handler })` turns it into a same-document navigation: the
   browser updates the URL, the async `handler` renders the view, and the page
   does not reload. No manual click handling and no separate `popstate`.
-- `event.canIntercept` is `false` for cross-origin URLs; `event.hashChange`,
-  `event.downloadRequest` and `event.formData` describe the navigation.
-- `navigation.entries()` lists this document's history entries (`history` hides
-  them), `navigation.currentEntry.getState()` returns its state,
+- `event.canIntercept` is `false` for cross-origin URLs and for back / forward
+  to another document; `event.hashChange`, `event.downloadRequest` and
+  `event.formData` describe the navigation.
+- `navigation.entries()` lists the tab's same-origin history entries (`history`
+  hides them), `navigation.currentEntry.getState()` returns its state,
   `navigation.navigate(url, { state })` and `navigation.traverseTo(key)`
-  navigate and return promises.
+  navigate and return `{ committed, finished }`, two promises.
 - `event.signal` aborts when the user starts another navigation, so a stale
   fetch can be canceled.
 

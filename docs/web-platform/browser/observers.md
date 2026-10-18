@@ -8,7 +8,7 @@ tags: [middle]
 
 # Intersection, Resize and Mutation Observers
 
-Observers let the browser tell the code that something changed, instead of
+Observers let the browser notify your code when something changes, instead of
 `scroll` / `resize` handlers or polling with `getBoundingClientRect()`:
 
 - **`IntersectionObserver`**: an element entered or left the viewport (or
@@ -46,9 +46,10 @@ All three work the same way: create an observer with a callback, call
   `rootMargin` (expands or shrinks the root like CSS margins: `'200px'` starts
   loading before the element is visible), `threshold` (the share of the element
   that must be visible: `0`, `0.5`, `[0, 0.25, 0.5, 1]`).
-- The callback runs **once right after `observe()`** with the current state,
-  then on every threshold crossing. Check `entry.isIntersecting`;
-  `entry .intersectionRatio` gives the visible share.
+- The callback runs **once soon after `observe()`** (in the next frame) with the
+  current state, even when the element is not visible, then on every threshold
+  crossing. Check `entry.isIntersecting`; `entry.intersectionRatio` gives the
+  visible share.
 - The browser computes intersections once per frame, after layout, so the code
   does not force extra layouts the way `getBoundingClientRect()` in a `scroll`
   handler does.
@@ -104,10 +105,13 @@ const observer = new IntersectionObserver(
   async ([entry]) => {
     if (!entry.isIntersecting || loading) return;
     loading = true;
-    const items = await fetchPage(page++);
-    list.append(...items.map(renderItem));
-    loading = false;
-    if (items.length === 0) observer.disconnect(); // the end of the list
+    try {
+      const items = await fetchPage(page++);
+      list.append(...items.map(renderItem));
+      if (items.length === 0) observer.disconnect(); // the end of the list
+    } finally {
+      loading = false;
+    }
   },
   // highlight-next-line
   { rootMargin: '300px' } // start loading 300px before the sentinel is visible
@@ -118,9 +122,10 @@ observer.observe(sentinel);
 
 ## Follow-up Questions
 
-- Why not a `scroll` handler with `getBoundingClientRect()`? The handler fires
-  many times per frame, and each `getBoundingClientRect()` after a DOM change
-  forces a layout. The observer is computed by the browser once per frame.
+- Why not a `scroll` handler with `getBoundingClientRect()`? The handler runs on
+  the main thread on every scrolled frame, and each `getBoundingClientRect()`
+  after a DOM change forces a synchronous layout. The observer is computed by
+  the browser once per frame, without extra layouts.
 - Will the sentinel load the next page if the new items do not fill the screen?
   No: the callback runs only when the intersection state changes. Re-observe the
   sentinel (`unobserve` + `observe`) or check `isIntersecting` again after
@@ -129,8 +134,10 @@ observer.observe(sentinel);
   the element counts as seen after it stays half visible for a second.
 - Why does `MutationObserver` use microtasks and not run synchronously? To
   deliver all changes of one script in one batch, after the DOM is consistent.
-- How do you watch an element inside an `iframe` or a scroll container? Pass the
-  container as `root`.
+- How do you watch an element inside a scroll container or an `iframe`? For a
+  scroll container, pass it as `root`. Inside an iframe, the default
+  `root: null` already measures against the top-level viewport, even
+  cross-origin.
 
 ## Common Mistakes
 

@@ -37,7 +37,7 @@ task → microtasks → rAF callbacks → style, layout → ResizeObserver → p
 
 | API                      | When the callback runs                                                          | Use for                                    |
 | ------------------------ | ------------------------------------------------------------------------------- | ------------------------------------------ |
-| `setTimeout(fn, 0)`      | A new task, after other queued tasks; ≥ 4 ms after a few nested calls           | Deferring work; a fallback for yielding    |
+| `setTimeout(fn, 0)`      | A new task, after other queued tasks; ≥ 4 ms when nested over 5 levels          | Deferring work; a fallback for yielding    |
 | `requestAnimationFrame`  | Before the next paint, once per frame                                           | Animations, reading and writing layout     |
 | `requestIdleCallback`    | In idle time after a frame, or after `timeout`                                  | Non-urgent background work                 |
 | `scheduler.yield()`      | A promise; the continuation runs **ahead of** other tasks of its priority       | Splitting a long task without losing place |
@@ -45,9 +45,9 @@ task → microtasks → rAF callbacks → style, layout → ResizeObserver → p
 
 ### requestAnimationFrame
 
-- The callback gets a `DOMHighResTimeStamp`, the start time of the frame: base
-  the animation on elapsed time, not on the number of frames, because the
-  refresh rate is 60, 120 or 144 Hz.
+- The callback gets a `DOMHighResTimeStamp`, the same for all callbacks of the
+  frame: base the animation on elapsed time, not on the number of frames,
+  because the refresh rate varies (60, 120, 144 Hz).
 - It runs **once**: a loop calls rAF again inside the callback.
   `cancelAnimationFrame(id)` cancels it.
 - Paused in background tabs and hidden iframes, so the loop costs nothing there.
@@ -75,8 +75,9 @@ task → microtasks → rAF callbacks → style, layout → ResizeObserver → p
 
 - `await scheduler.yield()` ends the current task and lets the browser handle
   input and render. The rest of the function runs in a task queued **ahead of**
-  other tasks of the same priority. After `await` on `setTimeout`, it goes to
-  the end of the queue, behind any other scripts.
+  other tasks of the same priority. After `await` on a `setTimeout` promise, it
+  goes to the end of the task queue, behind everything already queued, including
+  third-party scripts' tasks.
 - `scheduler.postTask(fn, { priority, signal, delay })` returns a promise with
   the result; a `TaskController` changes the priority or aborts the task.
 - The `yieldToMain` pattern with a fallback is shown in
@@ -137,8 +138,8 @@ enqueue(() => prefetch('/next-page'));
 ## Follow-up Questions
 
 - Why not animate with `setInterval(fn, 16)`? It is not aligned with the display
-  refresh, so frames are skipped or drawn twice (jank); it keeps running in
-  background tabs and does not adapt to 120 Hz screens.
+  refresh, so frames are skipped or drawn twice (jank); it keeps running
+  (throttled) in background tabs and does not adapt to 120 Hz screens.
 - Is a rAF callback a task or a microtask? Neither: it runs in the rendering
   step of the event loop. Microtasks queued inside it run right after it.
 - How do you avoid layout thrashing? Read all the sizes first, then write all

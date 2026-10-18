@@ -57,11 +57,11 @@ The origin is what the Same-Origin Policy compares. See
 
 ### Encoding Functions
 
-| Function             | Leaves as is                           | Space | Use for                             |
-| -------------------- | -------------------------------------- | ----- | ----------------------------------- |
-| `encodeURIComponent` | Letters, digits, `- _ . ! ~ * ' ( )`   | `%20` | One value: a path segment, a param  |
-| `encodeURI`          | The above plus `; , / ? : @ & = + $ #` | `%20` | A whole URL that only has bad chars |
-| `URLSearchParams`    | Letters, digits, `* - . _`             | `+`   | Query strings and form bodies       |
+| Function             | Leaves as is                           | Space | Use for                                    |
+| -------------------- | -------------------------------------- | ----- | ------------------------------------------ |
+| `encodeURIComponent` | Letters, digits, `- _ . ! ~ * ' ( )`   | `%20` | One value: a path segment, a param         |
+| `encodeURI`          | The above plus `; , / ? : @ & = + $ #` | `%20` | A whole URL with spaces or non-ASCII chars |
+| `URLSearchParams`    | Letters, digits, `* - . _`             | `+`   | Query strings and form bodies              |
 
 - In a query string, `+` means a space for `URLSearchParams` and form parsers,
   but not for `decodeURIComponent`, which leaves `+` as it is.
