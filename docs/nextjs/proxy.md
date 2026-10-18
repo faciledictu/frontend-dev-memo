@@ -34,8 +34,8 @@ Without a `matcher` Proxy runs on **every request**, including static files,
 
 ### Matcher
 
-- A path, an array of paths or objects with `source`, `has` and `missing` (match
-  by a header, a cookie or a query parameter).
+- A path, or an array of paths or of objects with `source`, `has` and `missing`
+  (match by a header, a cookie or a query parameter).
 - Path parameters work like in `redirects`: `/dashboard/:path*`; a regular
   expression excludes static files (see the example).
 - Values must be **constants**: the matcher is read at build time, and a
@@ -104,11 +104,10 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Everything except API routes, static files and metadata files
+  // Everything except API routes, Next.js assets and files with an extension
+  // (/logo.png from public/ would otherwise be rewritten to /en/logo.png)
   // highlight-next-line
-  matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|.*\\..*).*)'],
 };
 ```
 

@@ -34,8 +34,8 @@ Applies to: React Native 0.88, React Navigation 7, Expo SDK 58.
   (`<Stack.Navigator>` with `<Stack.Screen>`) can change screens at render time,
   at the cost of writing types and links by hand.
 - Expo Router was built on React Navigation; since SDK 56 it ships its own fork,
-  and app code imports its APIs from `expo-router/react-navigation`, not from
-  `@react-navigation/*`.
+  and app code imports its APIs from `expo-router` entry points (for example
+  `expo-router/react-navigation`), not from `@react-navigation/*`.
 
 ### Navigators
 
@@ -61,14 +61,14 @@ its screens and a stack inside each tab.
 
 ### Moving Between Screens
 
-| Call                          | In a stack                                                               |
-| ----------------------------- | ------------------------------------------------------------------------ |
-| `navigate('Profile', params)` | Pushes the screen; in v7 it no longer goes back to an existing `Profile` |
-| `push('Profile', params)`     | Always pushes a new copy, even if the same screen is on top              |
-| `popTo('Home')`               | Goes back to `Home` in the stack (new in v7)                             |
-| `goBack()` / `pop(n)`         | Back by one / by `n` screens                                             |
-| `replace('Home')`             | Replaces the current screen: no way back to it                           |
-| `setParams({ … })`            | Updates the current screen's params                                      |
+| Call                          | In a stack                                                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `navigate('Profile', params)` | Pushes the screen, or updates params if it is already focused; in v7 it no longer goes back to an earlier `Profile` |
+| `push('Profile', params)`     | Always pushes a new copy, even if the same screen is on top                                                         |
+| `popTo('Home')`               | Goes back to `Home` in the stack (new in v7)                                                                        |
+| `goBack()` / `pop(n)`         | Back by one / by `n` screens                                                                                        |
+| `replace('Home')`             | Replaces the current screen: no way back to it                                                                      |
+| `setParams({ … })`            | Updates the current screen's params                                                                                 |
 
 In Expo Router the same moves are `router.push('/profile/42')`,
 `router.navigate`, `router.back()`, `router.replace`, `router.dismissTo`, and
@@ -85,8 +85,9 @@ ID, not a whole object.
 - React Navigation static API: `if: useIsSignedIn` on a screen or a group.
   Dynamic API: `{isSignedIn ? <Stack.Screen …/> : <Stack.Screen …/>}`.
 - Expo Router: `<Stack.Protected guard={isSignedIn}>` around the screens;
-  `redirectTo` (SDK 58) names where a blocked deep link goes. It is a
-  client-side check: the API still verifies the token.
+  `redirectTo` (SDK 58) names where a denied navigation goes (by default, the
+  first available screen). It is a client-side check: the API still verifies the
+  token.
 
 ### Expo Router Files
 
@@ -209,9 +210,10 @@ export default function RootLayout() {
   unmounted; refresh in `useFocusEffect` or with a query library's
   refetch-on-focus.
 - How do you pass a result back to the previous screen?
-  `popTo('Edit', { result })` (params are merged into that screen), or keep the
-  data in shared state; do not pass callbacks in params: they are not
-  serializable and break deep links and state persistence.
+  `popTo('Edit', { result }, { merge: true })` (without `merge` the screen's
+  params are replaced), or keep the data in shared state; do not pass callbacks
+  in params: they are not serializable and break deep links and state
+  persistence.
 - Why does a tab screen keep its scroll position? Tabs stay mounted; pressing
   the active tab again scrolls a list to the top (`useScrollToTop`).
 - What is `getId`? A function that returns an ID from params, so that

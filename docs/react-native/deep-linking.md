@@ -53,14 +53,15 @@ Applies to: React Native 0.88, React Navigation 7, Expo SDK 58.
 
 ### Cold Start vs Running App
 
-| App state                  | How the URL arrives                      |
-| -------------------------- | ---------------------------------------- |
-| Not running                | `Linking.getInitialURL()` once at launch |
-| Running, in the background | `Linking.addEventListener('url', …)`     |
+| App state                          | How the URL arrives                      |
+| ---------------------------------- | ---------------------------------------- |
+| Not running                        | `Linking.getInitialURL()` once at launch |
+| Running (foreground or background) | `Linking.addEventListener('url', …)`     |
 
-React Navigation and Expo Router handle both; the code is needed only for links
-that bypass them. A frequent bug is handling only one of the two: links work
-when the app is open and not from a cold start, or the other way round.
+React Navigation and Expo Router handle both; you write this code yourself only
+for URLs that do not go through them, such as notification taps. A frequent bug
+is handling only one of the two: links work when the app is open and not from a
+cold start, or the other way round.
 
 ### Opening a Screen from a Notification
 

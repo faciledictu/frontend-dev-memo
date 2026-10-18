@@ -40,8 +40,8 @@ Applies to: React Native 0.88, Expo SDK 58.
 | Everything is slow after a state change | Re-renders of large trees                     | Move state down, memoize, React Compiler; see [Re-renders](../react/rendering/re-renders.md) |
 | Long lists jank or show blank areas     | `ScrollView` with many items, heavy rows      | `FlatList` / FlashList, light memoized rows; see [Lists](./lists.md)                         |
 | Animations stutter while JS is busy     | Animation computed on the JS thread           | Reanimated or `useNativeDriver`; see [Reanimated](./animations/reanimated.md)                |
-| A press feels late                      | Heavy work in `onPress` before the UI updates | Update the UI first, defer the work (`requestAnimationFrame`, `startTransition`)             |
-| Slow in release, worse with logging     | `console.log` with large objects              | Strip logs in release (`babel-plugin-transform-remove-console`)                              |
+| A press feels late                      | Heavy work in `onPress` before the UI updates | Update the UI first, then run the work (`setTimeout`), or move it off the JS thread          |
+| Slow release builds with many logs      | `console.log` with large objects              | Strip logs in release (`babel-plugin-transform-remove-console`)                              |
 | Memory spikes, crashes on image screens | Full-size images scaled down in the view      | Resized images from the server, `expo-image` with caching                                    |
 | A screen transition stutters            | The new screen renders everything on mount    | Render the heavy part after the transition                                                   |
 
@@ -49,11 +49,13 @@ Applies to: React Native 0.88, Expo SDK 58.
 
 - **Hermes bytecode**: release builds ship precompiled bytecode, so there is no
   parsing at launch. Keep Hermes on.
-- **Lazy screens**: load screen code on first navigation (`React.lazy`, or Expo
-  Router's async routes), not all at launch.
-- **Inline requires**: Metro turns `import` into a `require` at the place of
-  use, so a module runs only when needed. On by default in React Native CLI
-  apps, off by default in Expo (`inlineRequires: true` in `metro.config.js`).
+- **Lazy screens**: load screen code on first navigation (`React.lazy`), not all
+  at launch. Expo Router's async routes do this only on the web; on native they
+  are experimental.
+- **Inline requires**: Metro moves each `require` call to the place where the
+  module is used, so a module runs only when needed. On by default in React
+  Native CLI apps, off by default in Expo (`inlineRequires: true` in
+  `metro.config.js`).
 - **Fewer modules at startup**: heavy libraries (date, charts, SDKs) imported
   from the entry file run before the first screen; import them where they are
   used. TurboModules are already loaded lazily.
@@ -74,7 +76,7 @@ Applies to: React Native 0.88, Expo SDK 58.
 A press that updates the UI first and defers the heavy part:
 
 ```tsx
-import { startTransition, useState } from 'react';
+import { useState } from 'react';
 import { Pressable, Text } from 'react-native';
 import { buildReport, type Report } from './report';
 
@@ -83,15 +85,13 @@ export function ReportButton() {
   const [report, setReport] = useState<Report | null>(null);
 
   const onPress = () => {
-    setLoading(true); // the press feedback renders in the next frame
+    setLoading(true); // the press feedback is committed first
     // highlight-next-line
-    requestAnimationFrame(() => {
-      const result = buildReport(); // heavy synchronous work
-      startTransition(() => {
-        setReport(result);
-        setLoading(false);
-      });
-    });
+    setTimeout(() => {
+      // Heavy synchronous work runs in a later task, after the UI update
+      setReport(buildReport());
+      setLoading(false);
+    }, 0);
   };
 
   return (

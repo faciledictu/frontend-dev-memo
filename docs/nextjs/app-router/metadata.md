@@ -189,8 +189,8 @@ export default function robots(): MetadataRoute.Robots {
 ## Follow-up Questions
 
 - Why can a Client Component not export `metadata`? Metadata is resolved on the
-  server before the HTML is sent; a page that needs client code keeps the
-  metadata in the page and moves the interactive part into a child component.
+  server as part of rendering; a page that needs client code keeps the metadata
+  in the page and moves the interactive part into a child component.
 - A page sets only `openGraph.title`; why did the OG image disappear? The merge
   is shallow: the page's `openGraph` replaced the layout's whole object.
 - How do you avoid duplicate content between `/blog?page=1` and `/blog`?

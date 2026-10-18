@@ -46,8 +46,8 @@
     "driessen",
     "EACCES",
     "EADDRINUSE",
-    "ECONNREFUSED",
     "econnrefused",
+    "ECONNREFUSED",
     "edsger",
     "Embedder",
     "ENOENT",
@@ -165,6 +165,7 @@
     "securitypolicyviolation",
     "serializability",
     "sideloading",
+    "simctl",
     "simula",
     "Slackbot",
     "smallint",
@@ -214,6 +215,7 @@
     "workletized",
     "worklets",
     "xcodeproj",
+    "xcrun",
     "xcworkspace"
   ],
   "overrides": [

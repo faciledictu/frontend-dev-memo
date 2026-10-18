@@ -22,18 +22,18 @@ Applies to: React Native 0.88, Expo SDK 58.
 
 ### Which One to Use
 
-| Storage                                      | API                        | Encrypted                        | Use for                                                      |
-| -------------------------------------------- | -------------------------- | -------------------------------- | ------------------------------------------------------------ |
-| AsyncStorage                                 | Async, strings             | No                               | Settings, small cache, persisted state                       |
-| MMKV                                         | **Sync**, typed values     | Optional (the key is in the app) | The same, when speed or sync reads matter (state on startup) |
-| `expo-secure-store`, `react-native-keychain` | Async                      | Yes: Keychain / Keystore         | Tokens, passwords, keys: small values                        |
-| `expo-sqlite`, op-sqlite                     | Async SQL (sync available) | Optional (SQLCipher)             | Lists of records, search, offline data                       |
-| `expo-file-system`                           | Files                      | No                               | Images, downloads, large JSON                                |
+| Storage                                      | API                                  | Encrypted                        | Use for                                                      |
+| -------------------------------------------- | ------------------------------------ | -------------------------------- | ------------------------------------------------------------ |
+| AsyncStorage                                 | Async, strings                       | No                               | Settings, small cache, persisted state                       |
+| MMKV                                         | **Sync**, typed values               | Optional (the key is in the app) | The same, when speed or sync reads matter (state on startup) |
+| `expo-secure-store`, `react-native-keychain` | Async (sync variants in SecureStore) | Yes: Keychain / Keystore         | Tokens, passwords, keys: small values                        |
+| `expo-sqlite`, op-sqlite                     | Async SQL (sync available)           | Optional (SQLCipher)             | Lists of records, search, offline data                       |
+| `expo-file-system`                           | Files                                | No                               | Images, downloads, large JSON                                |
 
 - **AsyncStorage** 3 keeps data in SQLite and creates named instances
   (`createAsyncStorage('app')`); the default export still reads the v2 storage,
   so old data is not lost on upgrade. `expo-sqlite/kv-store` is a drop-in
-  replacement with sync methods.
+  replacement for the classic (v2) API, with sync methods.
 - **MMKV** (`react-native-mmkv` 4, a Nitro module built on JSI) reads
   synchronously from memory-mapped files, so a store can be read before the
   first render without a loading state.
@@ -147,7 +147,7 @@ export const useCart = create<Cart>()(
 
 ## Common Mistakes
 
-- Tokens in AsyncStorage or MMKV "because MMKV supports encryption".
+- Tokens in AsyncStorage, or in MMKV "because it supports encryption".
 - Storing a whole server response in a secure store: it is meant for small
   values and is slow for large ones.
 - Reading AsyncStorage synchronously or forgetting `await`: it returns a

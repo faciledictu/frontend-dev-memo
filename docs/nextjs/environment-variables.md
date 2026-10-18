@@ -49,10 +49,11 @@ Lookup order; the first file that defines a variable wins:
 4. `.env.$(NODE_ENV)`.
 5. `.env`.
 
-- `NODE_ENV` is `development` for `next dev` and `production` for `next build`
-  and `next start`.
+- If `NODE_ENV` is not set, it is `development` for `next dev` and `production`
+  for other commands.
 - `.env*.local` files hold local overrides and secrets and are not committed;
-  `.env`, `.env.development` and `.env.production` hold defaults and can be.
+  `.env`, `.env.development` and `.env.production` hold defaults and can be
+  committed if they contain no secrets.
 - Files are read from the project root, not from `src/`.
 - `$OTHER_VAR` inside a value is expanded; `\$` is a literal dollar.
 - Outside Next.js (a test runner, an ORM script) the same files are loaded with
@@ -96,7 +97,7 @@ export function Checkout({ region }: { region?: string }) {
   // Inlined at build time: the same in every environment that uses this build
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // error-next-line
-  const dbUrl = process.env.DATABASE_URL; // undefined in the browser: no NEXT_PUBLIC_
+  const dbUrl = process.env.DATABASE_URL; // set during SSR, undefined in the browser: leaks into the HTML, then a hydration mismatch
   return <p>{`${apiUrl} · ${region} · ${dbUrl}`}</p>;
 }
 ```

@@ -50,15 +50,17 @@ Applies to: React Native 0.88, Expo SDK 58.
   show full screen with the component stack.
 - `LogBox.ignoreLogs(['…'])` hides known warnings; hiding everything with
   `LogBox.ignoreAllLogs()` also hides real problems.
-- While DevTools is open, non-fatal errors go to its Console instead.
-- LogBox exists only in development; a production build crashes or logs.
+- While DevTools is open, LogBox shows only fatal errors; the rest go to the
+  Console.
+- In release builds LogBox, the Dev Menu and DevTools are disabled; an uncaught
+  error crashes the app.
 
 ### Native Logs
 
 - A crash before JS starts, a missing native module or a permission problem
   shows only in native logs.
 - **iOS**: the Xcode console (run the app from Xcode), Console.app for a device,
-  or `npx react-native log-ios`.
+  or `npx react-native log-ios` in a Community CLI project.
 - **Android**: `adb logcat`, filtered to React Native with
   `adb logcat "*:S" ReactNative:V ReactNativeJS:V`, or Android Studio's Logcat.
 
@@ -81,7 +83,7 @@ Applies to: React Native 0.88, Expo SDK 58.
 npx expo start
 
 # Native logs
-npx react-native log-ios
+xcrun simctl spawn booted log stream --predicate 'process == "MyApp"'
 # highlight-next-line
 adb logcat "*:S" ReactNative:V ReactNativeJS:V
 ```
@@ -111,7 +113,7 @@ export default Sentry.wrap(RootLayout);
 ```
 
 Source maps are uploaded during EAS builds when `SENTRY_AUTH_TOKEN` is set;
-after `eas update`, run `npx sentry-expo-upload-sourcemaps dist`.
+after `eas update`, run `npx @sentry/expo-upload-sourcemaps dist`.
 
 </details>
 
