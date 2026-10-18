@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 description:
   CommonJS vs ES modules in Node.js, how Node.js picks the module type,
   require(esm), module.exports vs exports, resolution and caching

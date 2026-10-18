@@ -18,7 +18,7 @@ bare apps too); updates are served by **EAS Update** (Expo's cloud service) or
 by your own server implementing the open Expo Updates protocol. Microsoft's
 **CodePush** service has been retired.
 
-Applies to: Expo SDK 57.
+Applies to: Expo SDK 58.
 
 ## Details
 

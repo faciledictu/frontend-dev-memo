@@ -74,3 +74,8 @@ Function.prototype.myBind = function (thisArg, ...boundArgs) {
 - Mixing up `call` and `apply`. A mnemonic: `apply` and "array" both start with
   "a".
 - "`bind` calls the function." It only returns a new one.
+
+## See Also
+
+- [Functional Programming](../programming/paradigms/fp.md) — currying and
+  composition.

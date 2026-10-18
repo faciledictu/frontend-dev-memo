@@ -14,7 +14,7 @@ code**: it runs in a JS engine (**Hermes**) inside the app and tells the native
 side which **real native views** to create and update. One codebase covers both
 platforms, and platform-specific parts are written where needed.
 
-Applies to: React Native 0.87, Expo SDK 57.
+Applies to: React Native 0.88, Expo SDK 58.
 
 ## Details
 

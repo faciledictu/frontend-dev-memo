@@ -17,7 +17,7 @@ and runs on the UI thread, so a busy JS thread does not make it stutter; by
 default this works only for non-layout properties such as `transform` and
 `opacity`.
 
-Applies to: React Native 0.87.
+Applies to: React Native 0.88.
 
 ## Details
 

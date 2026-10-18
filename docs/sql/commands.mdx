@@ -338,16 +338,13 @@ Without `WHERE`, `UPDATE` and `DELETE` affect **every row** of the table.
 
 ### DCL and TCL
 
-| Command          | What it does                                           |
-| ---------------- | ------------------------------------------------------ |
-| `GRANT`          | Gives privileges: `GRANT SELECT ON users TO analyst`   |
-| `REVOKE`         | Takes them back                                        |
-| `BEGIN`          | Starts a transaction                                   |
-| `COMMIT`         | Makes the changes of the current transaction permanent |
-| `ROLLBACK`       | Discards them                                          |
-| `SAVEPOINT name` | A point inside a transaction to roll back to           |
+| Command  | What it does                                         |
+| -------- | ---------------------------------------------------- |
+| `GRANT`  | Gives privileges: `GRANT SELECT ON users TO analyst` |
+| `REVOKE` | Takes them back                                      |
 
-See [Transactions](./transactions.md).
+Transaction commands (`BEGIN`, `COMMIT`, `ROLLBACK`, `SAVEPOINT`) are in
+[Transactions](./transactions.md).
 
 ## Follow-up Questions
 

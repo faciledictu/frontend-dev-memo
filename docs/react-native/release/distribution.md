@@ -18,6 +18,8 @@ review and a gradual rollout. An Expo project is released the same way after
 `npx expo prebuild` generates `ios/` and `android/`; EAS Build and EAS Submit
 can do it in the cloud instead, but they are optional.
 
+Applies to: Expo SDK 58.
+
 ## Details
 
 ### iOS vs Android

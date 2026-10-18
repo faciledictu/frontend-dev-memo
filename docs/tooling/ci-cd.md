@@ -60,15 +60,14 @@ Applies to: GitHub Actions (`actions/checkout@v7`, `actions/setup-node@v7`,
 
 The JS part is checked as for the web; release builds add native steps:
 
-| Step                  | Tools                                                                      |
-| --------------------- | -------------------------------------------------------------------------- |
-| Build and sign        | EAS Build (signing credentials managed by Expo), fastlane + Gradle / Xcode |
-| E2E on emulators      | Maestro, Detox; cloud device farms for real devices                        |
-| Distribute to testers | TestFlight, Play testing tracks, Firebase App Distribution                 |
-| Store release         | EAS Submit, fastlane `upload_to_app_store` / `upload_to_play_store`        |
-| JS-only fixes         | OTA updates (EAS Update) without a store release                           |
-
-iOS builds need macOS runners, which are slower and more expensive.
+- Builds need signing and, for iOS, macOS runners, which are slower and more
+  expensive: EAS Build or fastlane, see
+  [Fastlane](../react-native/release/fastlane.md).
+- Releases go to testers and stores, see
+  [Publishing and Distribution](../react-native/release/distribution.md).
+- JS-only fixes ship without a store release, see
+  [OTA Updates](../react-native/release/ota.md).
+- E2E tests on emulators: Maestro or Detox.
 
 ## Example
 

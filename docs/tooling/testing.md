@@ -145,6 +145,25 @@ Feature: User Login
 
 </details>
 
+<details>
+<summary>An E2E test with Playwright</summary>
+
+```typescript
+import { expect, test } from '@playwright/test';
+
+test('adds a todo', async ({ page }) => {
+  await page.goto('/');
+
+  await page.getByRole('textbox', { name: 'New todo' }).fill('Buy milk');
+  // highlight-next-line
+  await page.getByRole('button', { name: 'Add' }).click();
+
+  await expect(page.getByRole('listitem')).toHaveText(['Buy milk']);
+});
+```
+
+</details>
+
 ## Follow-up Questions
 
 - Pyramid or trophy? The pyramid (Mike Cohn, 2009) puts many fast unit tests at
@@ -174,5 +193,5 @@ Feature: User Login
 ## See Also
 
 - [Testing React Components](../react/ecosystem/testing.md) — Testing Library,
-  queries, `userEvent`, an E2E example with Playwright.
+  queries, `userEvent`.
 - [CI/CD](./ci-cd.md)

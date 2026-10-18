@@ -16,7 +16,7 @@ Android. A request returns a status; once the user denies it for good
 (**blocked**), the app can no longer show the system dialog and can only send
 the user to the **Settings** app.
 
-Applies to: React Native 0.87, Expo SDK 57.
+Applies to: React Native 0.88, Expo SDK 58.
 
 ## Details
 

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 6
 description:
   Platform-specific file extensions, Platform.OS, Platform.select and
   Platform.Version
@@ -13,6 +13,8 @@ There are two ways to write code for one platform. **File extensions**
 file at build time; use them when the implementations differ a lot. The
 **`Platform` module** (`Platform.OS`, `Platform.select`, `Platform.Version`)
 branches at runtime; use it for small differences.
+
+Applies to: React Native 0.88, Expo SDK 58.
 
 ## Details
 

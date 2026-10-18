@@ -297,5 +297,7 @@ console.log(await withRetry(flaky)(), calls); // ok 3
 
 - [SOLID Principles](./paradigms/solid.md)
 - [OOP Principles](./paradigms/oop-principles.md)
+- [Patterns and Error Boundaries](../react/basics/patterns.md) — React-specific
+  patterns.
 - [Refactoring.Guru: Design Patterns](https://refactoring.guru/design-patterns)
   — every GoF pattern with diagrams and examples.

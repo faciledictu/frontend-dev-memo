@@ -287,9 +287,15 @@
         Components), Proxy описан один раз в `authentication`, гидратация
         перенесена в `server-components`, порядок страниц App Router, теги
         уровня на всех страницах.
-  - [ ] React Native.
-  - [ ] `programming`, `tooling`, `git`.
-  - [ ] `nodejs`, `sql`.
+  - [x] React Native: поднят до RN 0.88 и Expo SDK 58, follow-up вопросы на всех
+        страницах, порядок страниц (UI → платформенный код → анимации →
+        устройство → релиз), `rn-architecture` переименована.
+  - [x] `programming`, `tooling`, `git`: пример в `package-managers`, пример
+        Playwright перенесён в `tooling/testing`, повторы с `javascript` и
+        `react-native` заменены ссылками.
+  - [x] `nodejs`, `sql`: `title` и ключевые строки в примерах,
+        страницы-концепции перед справочником модулей. Node.js 26 и PostgreSQL
+        19 — отдельным проходом после релиза.
   - [ ] Итоговое ревью Fable верхнего уровня: ROADMAP и структура справочника
         целиком.
 

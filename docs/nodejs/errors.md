@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 4
 description:
   Operational vs programmer errors, system errors and codes, error handling in
   callbacks, promises and EventEmitter, unhandled errors, Express middleware

@@ -17,7 +17,7 @@ on every frame **without React re-renders and without the JS thread**. Version 4
 adds **CSS-like animations and transitions** and works only on the New
 Architecture.
 
-Applies to: Reanimated 4, React Native 0.87.
+Applies to: Reanimated 4, React Native 0.88.
 
 ## Details
 

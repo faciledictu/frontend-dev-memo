@@ -6,7 +6,7 @@ description:
 tags: [middle]
 ---
 
-# React Native Architecture: Bridge vs New Architecture
+# React Native Architecture: JSI, Fabric, TurboModules
 
 In the **legacy architecture** JS talked to native code through the **bridge**:
 an asynchronous queue of batched JSON messages. The **New Architecture**
@@ -17,7 +17,7 @@ objects and call them directly, synchronously if needed. On top of JSI are
 since 0.76, and since 0.82 it is the only one: the legacy architecture cannot be
 turned on.
 
-Applies to: React Native 0.87.
+Applies to: React Native 0.88.
 
 ## Details
 

@@ -1,8 +1,6 @@
 ---
 sidebar_position: 3
-description:
-  React Testing Library queries, user-event, async tests, hooks and E2E with
-  Playwright
+description: React Testing Library queries, user-event, async tests and hooks
 tags: [middle]
 ---
 
@@ -12,8 +10,8 @@ Components are tested **the way a user uses them**: render the component, find
 elements by role or label, interact, check what is on the screen. The standard
 set is **React Testing Library** (RTL) with **user-event** on top of **Vitest**
 or **Jest** in a simulated DOM. State, instances and other implementation
-details are not tested. End-to-end tests run in a real browser with
-**Playwright**.
+details are not tested. End-to-end tests run in a real browser, see
+[Testing](../../tooling/testing.md).
 
 Applies to: React Testing Library 16, user-event 14.
 
@@ -29,7 +27,6 @@ Applies to: React Testing Library 16, user-event 14.
 | `@testing-library/user-event` | Realistic user interactions                                        |
 | `@testing-library/jest-dom`   | Matchers: `toBeInTheDocument`, `toBeDisabled`, `toHaveTextContent` |
 | MSW                           | Mocks the network at the request level instead of mocking `fetch`  |
-| `@playwright/test`            | E2E tests in real browsers                                         |
 
 Enzyme, which tested component internals, has no official adapter for React 17
 and later.
@@ -129,21 +126,6 @@ test('toggles the value', () => {
 });
 ```
 
-An E2E test with Playwright:
-
-```typescript
-import { expect, test } from '@playwright/test';
-
-test('adds a todo', async ({ page }) => {
-  await page.goto('/');
-
-  await page.getByRole('textbox', { name: 'New todo' }).fill('Buy milk');
-  await page.getByRole('button', { name: 'Add' }).click();
-
-  await expect(page.getByRole('listitem')).toHaveText(['Buy milk']);
-});
-```
-
 ## Follow-up Questions
 
 - Why `getByRole` and not `getByTestId`? It finds elements the way assistive
@@ -172,5 +154,5 @@ test('adds a todo', async ({ page }) => {
 
 ## See Also
 
-- [Testing](../../tooling/testing.md) — types of tests, patterns, libraries for
-  E2E testing.
+- [Testing](../../tooling/testing.md) — types of tests, patterns, an E2E example
+  with Playwright.

@@ -21,16 +21,19 @@ Applies to: Socket.IO 4.8.
 
 ## Details
 
-### Socket.IO vs WebSocket vs SSE
+### Socket.IO vs WebSocket
 
-|                     | WebSocket (browser API, `ws`) | Socket.IO                                             | Server-Sent Events       |
-| ------------------- | ----------------------------- | ----------------------------------------------------- | ------------------------ |
-| Direction           | Both ways                     | Both ways                                             | Server → client only     |
-| Messages            | Raw strings or binary         | Named events with any serializable arguments, binary  | Text events              |
-| Reconnection        | Write it yourself             | Built in, with backoff; events are buffered meanwhile | Built in (`EventSource`) |
-| Fallback            | None                          | HTTP long-polling                                     | Not needed: plain HTTP   |
-| Rooms, broadcasting | Write it yourself             | Built in                                              | Write it yourself        |
-| Client size         | 0 (built into browsers)       | A client library                                      | 0                        |
+|                     | WebSocket (browser API, `ws`) | Socket.IO                                             |
+| ------------------- | ----------------------------- | ----------------------------------------------------- |
+| Direction           | Both ways                     | Both ways                                             |
+| Messages            | Raw strings or binary         | Named events with any serializable arguments, binary  |
+| Reconnection        | Write it yourself             | Built in, with backoff; events are buffered meanwhile |
+| Fallback            | None                          | HTTP long-polling                                     |
+| Rooms, broadcasting | Write it yourself             | Built in                                              |
+| Client size         | 0 (built into browsers)       | A client library                                      |
+
+Server-Sent Events are compared with both in
+[Real-Time Updates](../web-platform/network/realtime.md).
 
 Use plain WebSocket when the protocol is simple or the other side is not
 Socket.IO; Socket.IO when you need rooms, acknowledgements and reconnection

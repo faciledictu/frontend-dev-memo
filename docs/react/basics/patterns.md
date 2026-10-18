@@ -227,4 +227,5 @@ const ProtectedSettings = withAuthorization(Settings);
 ## See Also
 
 - [Hooks](../hooks/hooks.mdx)
+- [Design Patterns](../../programming/patterns.md) — GoF patterns in JavaScript.
 - [Higher-Order Components (legacy docs)](https://legacy.reactjs.org/docs/higher-order-components.html)

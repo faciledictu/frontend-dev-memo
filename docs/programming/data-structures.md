@@ -144,11 +144,8 @@ Average case unless stated.
   sequence until a free one is found).
 - When the table fills up (the **load factor** passes a threshold), it is
   resized and all entries are rehashed: O(_n_) once, O(1) amortized.
-- `Map` vs plain object: `Map` accepts any key (objects, functions), keeps pure
-  insertion order, has `size`, and is optimized for frequent additions and
-  deletions. Object keys are only strings and symbols, and their order puts
-  integer-like keys first: `Object.keys({ b: 1, 2: 1, a: 1 })` is
-  `['2', 'b', 'a']`.
+- `Map` and plain objects are hash tables in practice; when to use which is in
+  [Map and Set](../javascript/map-set.md).
 
 ### Trees
 

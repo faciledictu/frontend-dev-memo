@@ -16,7 +16,7 @@ to JS and native code. Everything that ends up in the app **is not secret**: the
 bundle and the binary can be unpacked. Real secrets stay on a backend, and the
 app gets short-lived tokens from it.
 
-Applies to: Expo SDK 57.
+Applies to: Expo SDK 58.
 
 ## Details
 

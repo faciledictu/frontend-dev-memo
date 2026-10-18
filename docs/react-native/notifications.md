@@ -16,7 +16,7 @@ backend. The backend sends a message to APNs / FCM with that token, and the
 service delivers it. What the user sees depends on the **message type** and on
 whether the app is in the **foreground, background or quit**.
 
-Applies to: React Native 0.87, Expo SDK 57.
+Applies to: React Native 0.88, Expo SDK 58.
 
 ## Details
 
@@ -45,11 +45,11 @@ Settings.
 
 ### App State
 
-| App state  | Notification message                                                   | Data-only message                                           |
-| ---------- | ---------------------------------------------------------------------- | ----------------------------------------------------------- |
-| Foreground | **Not shown** by default; the app gets an event and may show it itself | Event in the app                                            |
-| Background | Shown by the OS; tap opens the app                                     | Background handler, with a short time limit                 |
-| Quit       | Shown by the OS; tap launches the app with the payload                 | Background handler on Android; usually not delivered on iOS |
+| App state  | Notification message                                                                                              | Data-only message                                           |
+| ---------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Foreground | OS default: **not shown**, the app gets an event; `expo-notifications` shows it unless the handler says otherwise | Event in the app                                            |
+| Background | Shown by the OS; tap opens the app                                                                                | Background handler, with a short time limit                 |
+| Quit       | Shown by the OS; tap launches the app with the payload                                                            | Background handler on Android; usually not delivered on iOS |
 
 ### Libraries
 
@@ -144,8 +144,9 @@ with an OAuth 2.0 access token of a service account.
 
 - Testing remote pushes in Expo Go on Android: since SDK 53 they need a
   development build.
-- Expecting a notification to appear while the app is open: in the foreground it
-  is delivered to the code, and the app decides whether to show it.
+- Expecting a notification to appear while the app is open with Firebase
+  messaging: it is delivered to the code; with `expo-notifications` the handler
+  decides.
 - Relying on data-only pushes for important updates on iOS.
 - Storing the token once: it must be refreshed and tied to the current user, and
   removed on logout.

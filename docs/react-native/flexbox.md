@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 4
 description:
   How Flexbox in React Native differs from the web, alignment properties and
   their values
@@ -14,7 +14,7 @@ engine. It works like CSS Flexbox with different defaults:
 and **`flex` takes a single number**. `justifyContent` aligns children along the
 main axis (set by `flexDirection`), `alignItems` along the cross axis.
 
-Applies to: React Native 0.87.
+Applies to: React Native 0.88.
 
 ## Details
 

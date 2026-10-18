@@ -16,7 +16,7 @@ that, apps use **React Native Gesture Handler** (RNGH): gestures are recognized
 by the platform's native touch system, can run on the UI thread together with
 Reanimated, and can be composed (pinch and rotate at once, tap vs double tap).
 
-Applies to: React Native 0.87, Gesture Handler 3, Reanimated 4.
+Applies to: React Native 0.88, Gesture Handler 3, Reanimated 4.
 
 ## Details
 

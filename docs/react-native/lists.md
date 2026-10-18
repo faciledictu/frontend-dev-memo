@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 5
 description:
   ScrollView vs FlatList vs SectionList vs FlashList, virtualization, FlatList
   optimization props
@@ -15,7 +15,7 @@ empty space, so memory stays flat. **FlashList** (Shopify) is a drop-in
 alternative that **recycles** item views instead of creating new ones, which
 scrolls smoother on long, varied lists.
 
-Applies to: React Native 0.87, FlashList 2.
+Applies to: React Native 0.88, FlashList 2.
 
 ## Details
 

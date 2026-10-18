@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 description:
   StyleSheet API, how styles differ from CSS, responsive sizes with
   useWindowDimensions, custom fonts
@@ -16,7 +16,7 @@ only to the component it is passed to, and only text styles are inherited, from
 a parent `<Text>` to a nested `<Text>`. `StyleSheet.create` groups the styles
 and type-checks them; it returns the same object.
 
-Applies to: React Native 0.87.
+Applies to: React Native 0.88.
 
 ## Details
 
