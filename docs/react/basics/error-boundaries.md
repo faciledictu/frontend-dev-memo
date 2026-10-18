@@ -15,18 +15,18 @@ rendering error unmounts the **whole app**. It is a **class component** with
 for it, so projects write one class or use the **`react-error-boundary`**
 package. Errors in **event handlers** and **async code** are not caught.
 
-Applies to: React 19.3, react-error-boundary 6.
+Applies to: React 19.3, react-error-boundary 6.1.
 
 ## Details
 
 ### What It Catches
 
-| Caught                                                                               | Not caught                                                        |
-| ------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| Errors during rendering of any component below                                       | Event handlers (`onClick`, `onSubmit`)                            |
-| Lifecycle methods and effects (`useEffect`, `useLayoutEffect`)                       | Async code: `setTimeout`, promise callbacks, `await` in a handler |
-| A function passed to `startTransition` or `<form action>`, async ones too (React 19) | Server rendering                                                  |
-| A rejected promise read with `use`                                                   | Errors in the boundary itself: they go to the next boundary up    |
+| Caught                                                                                                       | Not caught                                                        |
+| ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| Errors during rendering of any component below                                                               | Event handlers (`onClick`, `onSubmit`)                            |
+| Lifecycle methods and effects (`useEffect`, `useLayoutEffect`)                                               | Async code: `setTimeout`, promise callbacks, `await` in a handler |
+| A function passed to `startTransition` from `useTransition` or to `<form action>`, async ones too (React 19) | Server rendering                                                  |
+| A rejected promise read with `use`                                                                           | Errors in the boundary itself: they go to the next boundary up    |
 
 - Errors that are not caught are handled with `try` / `catch` and state, or
   moved into the render: store the error in state and throw it there, or call
@@ -41,8 +41,6 @@ Applies to: React 19.3, react-error-boundary 6.
 | `static getDerivedStateFromError(error)` | render | Return the state that switches to the fallback; must be pure       |
 | `componentDidCatch(error, info)`         | commit | Side effects: log the error and `info.componentStack` to a service |
 
-- In development a caught error also bubbles to `window` (`onerror`, the `error`
-  event); in production it does not.
 - React 19 logs a caught error once with `console.error` and does not re-throw
   it. `createRoot` takes `onCaughtError` (caught by a boundary) and
   `onUncaughtError` (unmounted the app) for app-wide reporting.
@@ -67,7 +65,7 @@ Applies to: React 19.3, react-error-boundary 6.
   `key={pathname}` to reset on navigation.
 - In `react-error-boundary`: `resetErrorBoundary()` from the fallback (a "Try
   again" button), `resetKeys` (reset when one of the values changes) and
-  `onReset` to clear what caused the error.
+  `onReset`, which runs on every reset, to clear what caused the error.
 
 ### react-error-boundary
 
@@ -76,7 +74,7 @@ Applies to: React 19.3, react-error-boundary 6.
 | `<ErrorBoundary fallback={…}>`               | A static fallback element                                                 |
 | `fallbackRender` / `FallbackComponent`       | A fallback that receives `{ error, resetErrorBoundary }`                  |
 | `onError(error, info)`                       | Logging, like `componentDidCatch`                                         |
-| `resetKeys`, `onReset`                       | Automatic and manual reset                                                |
+| `resetKeys`, `onReset`                       | Reset when a value changes; a callback on every reset                     |
 | `useErrorBoundary()` → `showBoundary(error)` | Send an error from an event handler or async code to the nearest boundary |
 | `withErrorBoundary(Component, props)`        | The same as a HOC                                                         |
 
@@ -167,11 +165,13 @@ export default function Editor({ draftId }) {
 
 - Why is there no hook for error boundaries? A boundary must catch an error
   thrown while its children render and render something else instead. Function
-  components have no API for that yet; the class methods are the only one.
+  components have no API for this yet; only the class methods
+  `getDerivedStateFromError` and `componentDidCatch` can do it.
 - How to show the fallback for an error in an event handler? `showBoundary` from
-  `useErrorBoundary`, or run the work in `startTransition`: an error thrown in a
-  transition reaches the boundary. Or store the error in state and throw it
-  during render.
+  `useErrorBoundary`, or run the work in `startTransition` from `useTransition`:
+  an error thrown in such a transition reaches the boundary; the standalone
+  `startTransition` imported from `react` is not connected to a boundary. Or
+  store the error in state and throw it during render.
 - What happens to the state of the components under the boundary? They are
   unmounted when the fallback is shown; after a reset they mount again with
   fresh state.
@@ -187,11 +187,8 @@ export default function Editor({ draftId }) {
 
 - Expecting a boundary to catch errors from `onClick`, `setTimeout` or a `fetch`
   in a handler.
-- One boundary for the whole app: any error replaces the entire page.
 - A fallback without a way out: no retry and no reset on navigation, so the user
   has to reload the page.
-- Side effects in `getDerivedStateFromError`: it runs during render; logging
-  belongs in `componentDidCatch`.
 
 ## See Also
 

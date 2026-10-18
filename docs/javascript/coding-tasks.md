@@ -36,7 +36,7 @@ explains the topic and shows the solution.
 | ------------------------- | ----------------------------------------------------------- | --------------------------------------------------------- |
 | `Promise.all`             | Result order, fail-fast, an empty input, non-promise values | [Promises](./promises.mdx), follow-up questions           |
 | `allSettled` / `race`     | The difference between the combinators                      | [Below](#allsettled-and-race)                             |
-| A request with a timeout  | `AbortController`, `AbortSignal.timeout`, `Promise.race`    | [Promises](./promises.mdx), "More examples"               |
+| A request with a timeout  | `AbortController`, `AbortSignal.timeout`                    | [Promises](./promises.mdx), "More examples"               |
 | Promisify a callback API  | `new Promise`, `resolve` / `reject` in the callback         | [Promises](./promises.mdx), follow-up questions           |
 | At most N tasks at a time | A queue of tasks, workers, keeping the result order         | [Below](#concurrency-limit)                               |
 | "What does this print?"   | Microtasks vs tasks, the synchronous executor               | [Event Loop](./event-loop.md), [Promises](./promises.mdx) |
@@ -70,8 +70,7 @@ explains the topic and shows the solution.
 
 ## Example
 
-The tasks that are not solved on other pages. Each solution has been run in
-Node.js.
+Solutions to the tasks not covered on other pages.
 
 ### `call` and `apply`
 
@@ -80,7 +79,7 @@ Node.js.
 
 ```javascript
 Function.prototype.myCall = function (thisArg, ...args) {
-  // null / undefined → globalThis, primitives → wrapper objects (non-strict)
+  // emulates non-strict `this`: null / undefined → globalThis, primitives → objects
   const context = thisArg == null ? globalThis : Object(thisArg);
   const key = Symbol('fn'); // a unique key does not overwrite own properties
   context[key] = this;
@@ -266,10 +265,11 @@ function deepEqual(a, b) {
 
   const keys = Object.keys(a);
   if (keys.length !== Object.keys(b).length) return false;
-  // highlight-next-line
+  // highlight-start
   return keys.every(
     (key) => Object.hasOwn(b, key) && deepEqual(a[key], b[key])
   );
+  // highlight-end
 }
 
 console.log(deepEqual({ a: [1, { b: 2 }] }, { a: [1, { b: 2 }] })); // true

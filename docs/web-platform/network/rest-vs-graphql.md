@@ -20,17 +20,17 @@ and rate limiting no longer work out of the box.
 
 ### Comparison
 
-|                     | REST                                                      | GraphQL                                                                  |
-| ------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Endpoints           | One per resource: `/users/1`, `/users/1/posts`            | One: `POST /graphql`                                                     |
-| Who shapes the data | The server                                                | The client, within the schema                                            |
-| Fetching            | Over-fetching (extra fields), under-fetching (N requests) | Exactly the requested fields, nested data in one round trip              |
-| Contract            | Optional: OpenAPI                                         | Required: the schema, introspection, generated types                     |
-| Caching             | HTTP: `Cache-Control`, `ETag`, CDN                        | Usually `POST`, so a client cache normalized by `__typename` + `id`      |
-| Errors              | Status codes                                              | Field errors come in `errors` next to partial `data`, usually with `200` |
-| Changes             | New version (`/v2`) or a new endpoint                     | Add fields, mark old ones `@deprecated`; no versions                     |
-| Real time           | WebSocket or SSE separately                               | Subscriptions in the schema (over WebSocket or SSE)                      |
-| Files               | Plain `multipart/form-data`                               | Not in the spec: a separate REST endpoint or a multipart extension       |
+|                     | REST                                                      | GraphQL                                                                              |
+| ------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Endpoints           | One per resource: `/users/1`, `/users/1/posts`            | One: `POST /graphql`                                                                 |
+| Who shapes the data | The server                                                | The client, within the schema                                                        |
+| Fetching            | Over-fetching (extra fields), under-fetching (N requests) | Exactly the requested fields, nested data in one round trip                          |
+| Contract            | Optional: OpenAPI                                         | Required: the schema; introspection and codegen give typed clients                   |
+| Caching             | HTTP: `Cache-Control`, `ETag`, CDN                        | Usually `POST`, so caching moves to a client cache normalized by `__typename` + `id` |
+| Errors              | Status codes                                              | Field errors come in `errors` next to partial `data`, usually with `200`             |
+| Changes             | New version (`/v2`) or a new endpoint                     | Add fields, mark old ones `@deprecated`; no versions                                 |
+| Real time           | WebSocket or SSE separately                               | Subscriptions in the schema (over WebSocket or SSE)                                  |
+| Files               | Plain `multipart/form-data`                               | Not in the spec: a separate REST endpoint or a multipart extension                   |
 
 HTTP methods, status codes and caching headers themselves are in
 [HTTP](./http.md).
@@ -54,8 +54,9 @@ HTTP methods, status codes and caching headers themselves are in
   request (`WHERE id IN (…)`) and caches them per request.
 - **Expensive queries**: a client can ask for deeply nested data. Servers limit
   depth and complexity, and production apps often accept only **persisted
-  queries** (a hash of a query registered at build time), which also allows
-  `GET` and CDN caching.
+  queries**: the client sends a hash instead of the query text (trusted
+  documents are registered at build time, APQ at runtime). Short, stable `GET`
+  URLs make CDN caching practical.
 - **Caching**: one URL and `POST` defeat HTTP caches. Apollo Client, Relay and
   urql keep a normalized cache: an object updated by a mutation changes
   everywhere it is shown.
@@ -83,14 +84,17 @@ HTTP methods, status codes and caching headers themselves are in
 A post page needs the post title, the author's name and the comment count.
 
 REST: three requests, each returning full objects (over-fetching), and the
-second waits for the first (under-fetching):
+author request has to wait for the post (under-fetching):
 
 ```javascript
-const post = await (await fetch('/api/posts/42')).json();
-const [author, comments] = await Promise.all([
-  fetch(`/api/users/${post.authorId}`).then((r) => r.json()),
-  fetch(`/api/posts/42/comments`).then((r) => r.json()),
+const getJson = (url) => fetch(url).then((response) => response.json());
+
+const [post, comments] = await Promise.all([
+  getJson('/api/posts/42'),
+  getJson('/api/posts/42/comments'),
 ]);
+// highlight-next-line
+const author = await getJson(`/api/users/${post.authorId}`); // a second round trip
 console.log(post.title, author.name, comments.length);
 ```
 
@@ -172,11 +176,12 @@ console.log(JSON.stringify(result.data));
   old ones get `@deprecated(reason: …)` and are removed when usage stats show no
   clients.
 - How does the client cache know that two queries returned the same object? It
-  normalizes by `__typename` and `id`; queries without `id` cannot be merged.
-- What status code does a GraphQL error return? With `application/json`, a field
-  error usually comes with `200` and an `errors` array. The GraphQL over HTTP
-  draft adds `application/graphql-response+json`, where parse and validation
-  errors get `4xx`.
+  normalizes by `__typename` and `id`; objects without `id` (or a custom key)
+  are stored inside their parent, not normalized.
+- What status code does a GraphQL error return? In practice most servers return
+  `200` with an `errors` array. The GraphQL over HTTP draft
+  (`application/graphql-response+json`) uses `4xx` for request errors: `400` for
+  a parse error, `422` for a validation error.
 - REST or tRPC in a Next.js app? Server Actions and tRPC give typed calls
   without a hand-written API; REST is needed when other clients use the API.
 
