@@ -3,6 +3,7 @@ sidebar_position: 3
 description:
   Creational, structural and behavioral design patterns with frontend examples,
   Observer vs Pub/Sub, Factory Method vs Simple Factory
+tags: [middle, senior]
 ---
 
 # Design Patterns
@@ -277,6 +278,12 @@ console.log(await withRetry(flaky)(), calls); // ok 3
 - Why do many GoF patterns look trivial in JavaScript? Functions are first-class
   values: Strategy, Command and Decorator need a function, not a class
   hierarchy.
+- Is React context dependency injection? Yes: the provider supplies the
+  implementation (a store, an API client, a theme), the consumer depends only on
+  its shape, and a test renders a different provider.
+- What is the Null Object pattern? An object with the expected interface that
+  does nothing (`{ log() {} }`), so callers need no `if (logger)`; a default
+  no-op callback prop is the same idea.
 
 ## Common Mistakes
 
@@ -285,6 +292,8 @@ console.log(await withRetry(flaky)(), calls); // ok 3
 - Mixing up Adapter, Decorator and Proxy: they differ in what happens to the
   interface.
 - Reaching for a pattern first and looking for a problem second.
+- Calling JavaScript's prototype chain "the Prototype pattern": the GoF pattern
+  copies an instance, prototypes delegate.
 
 ## See Also
 

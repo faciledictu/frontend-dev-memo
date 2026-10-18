@@ -2,6 +2,7 @@
 sidebar_position: 3
 description:
   Gitflow, GitHub Flow and trunk-based development, which one to choose
+tags: [middle]
 ---
 
 # Branching Models: Gitflow, GitHub Flow, Trunk-Based
@@ -46,7 +47,8 @@ Described by Vincent Driessen in 2010.
 | Fits                | Libraries, mobile and desktop apps with versions | Web apps, small teams     | Web apps with continuous delivery, large teams |
 
 Teams often adapt the models, for example an extra `staging` branch that mirrors
-an environment. That is a local practice, not part of Gitflow.
+an environment. That is GitLab Flow (GitHub Flow plus environment branches), not
+part of Gitflow.
 
 ## Follow-up Questions
 
@@ -55,6 +57,12 @@ an environment. That is a local practice, not part of Gitflow.
   development continues.
 - What is a feature flag? A runtime switch that turns code on or off without a
   deploy, so incomplete work can be merged early and released gradually.
+- How is a hotfix done in GitHub Flow or trunk-based development? Like any
+  change: a short branch from `main`, a PR, a deploy; `main` is always
+  deployable.
+- What is a release branch in trunk-based development? A short-lived branch cut
+  from the trunk for a version; fixes go to the trunk first and are
+  cherry-picked into it.
 
 ## Common Mistakes
 

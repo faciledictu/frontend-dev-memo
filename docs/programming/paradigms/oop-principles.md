@@ -3,6 +3,7 @@ sidebar_position: 3
 description:
   Encapsulation, inheritance, polymorphism and abstraction with TypeScript
   examples, composition over inheritance
+tags: [junior, middle]
 ---
 
 # OOP Principles
@@ -191,6 +192,7 @@ class Rectangle extends Shape {
 
 // One call, different behavior: dynamic dispatch picks the right area()
 const shapes: Shape[] = [new Circle(1), new Rectangle(2, 3)];
+// highlight-next-line
 shapes.forEach((shape) => console.log(shape.describe()));
 // Circle with area 3.14
 // Rectangle with area 6.00
@@ -214,6 +216,12 @@ console.log(counter.increment()); // 2
 - Is OOP possible without classes? Yes: JavaScript objects with methods and
   closures, or prototypes via `Object.create`, give encapsulation and
   polymorphism without `class`.
+- How to reuse behavior from several sources with single inheritance? Mixins: a
+  class factory `const Serializable = (Base) => class extends Base { … }`, or
+  composition, which is usually cleaner.
+- What does `instanceof` check? Whether `Class.prototype` is in the object's
+  prototype chain, so it fails across realms (iframes) and for duck-typed
+  objects, see [Prototypes](../../javascript/prototypes.md).
 
 ## Common Mistakes
 
@@ -223,6 +231,8 @@ console.log(counter.increment()); // 2
 - Calling a component that wraps another component "inheritance": that is
   composition.
 - Building deep hierarchies for code reuse where a function or a hook would do.
+- "Polymorphism is method overloading." JavaScript has no overloading; in OOP
+  polymorphism means one call and a different method for each object.
 
 ## See Also
 

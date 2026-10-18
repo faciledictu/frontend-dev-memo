@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 description: Imperative vs declarative programming, with examples in JavaScript
+tags: [junior, middle]
 ---
 
 # Programming Paradigms
@@ -94,6 +95,9 @@ console.log(names, activeNames); // [ 'ALICE', 'CAROL' ] [ 'ALICE', 'CAROL' ]
 - What is structured programming? The discipline behind procedural code (Edsger
   Dijkstra, late 1960s): programs are built only from sequence, branching (`if`)
   and loops, without arbitrary `goto` jumps.
+- Is React purely declarative? No: refs and effects (`ref.current.focus()`,
+  `useEffect`) are imperative escape hatches for what a description of the UI
+  cannot express.
 
 ## Common Mistakes
 
@@ -103,6 +107,9 @@ console.log(names, activeNames); // [ 'ALICE', 'CAROL' ] [ 'ALICE', 'CAROL' ]
   imperative.
 - Saying that declarative code has no imperative parts: they are hidden in the
   library, not removed.
+- "JavaScript is not OOP because it has no real classes." It is object-oriented
+  through prototypes; `class` is syntax on top, see
+  [OOP Principles](./oop-principles.md).
 
 ## See Also
 

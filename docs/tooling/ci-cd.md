@@ -3,6 +3,7 @@ sidebar_position: 3
 description:
   CI vs continuous delivery vs continuous deployment, pipeline stages, caching,
   preview environments, a GitHub Actions example, CI/CD for mobile apps
+tags: [middle]
 ---
 
 # CI/CD
@@ -170,12 +171,19 @@ deploy:
   flags turn off a broken feature without a deploy.
 - Where do E2E tests run? Against a preview deployment of the pull request or
   against a build served inside the CI job.
+- What are blue/green and canary deployments? Blue/green: two identical
+  environments, traffic switches at once and back for a rollback. Canary: the
+  new version gets a small share of traffic first.
+- How to avoid several runs for one PR? `concurrency` with
+  `cancel-in-progress: true` cancels the older run on a new push.
 
 ## Common Mistakes
 
 - Treating "continuous delivery" and "continuous deployment" as the same thing.
 - Caching `node_modules` across Node.js versions or lockfile changes.
 - Secrets in the repository or printed by a debug step.
+- `pull_request_target` with a checkout of the PR head: it runs untrusted code
+  with the repository's secrets.
 
 ## See Also
 

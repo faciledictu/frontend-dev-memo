@@ -3,6 +3,7 @@ sidebar_position: 4
 description:
   The five SOLID principles with frontend interpretations and TypeScript
   examples
+tags: [middle, senior]
 ---
 
 # SOLID Principles
@@ -280,6 +281,13 @@ await new MessageManager(new ConsoleNotificationService()).notifyUser('Hi');
 - Can SOLID be overdone? Yes: interfaces with one implementation and layers of
   indirection for code that never changes make it harder to read. Apply the
   principles where change actually happens.
+- Does TypeScript enforce LSP? Only signatures, and method parameters are
+  bivariant; behavior (preconditions, postconditions, invariants) is not
+  checked, which is why the `Square` example compiles.
+- Name a SOLID violation in a typical React codebase. A `Button` with ten
+  boolean props and an `if` for each (OCP), a `useEverything` hook (SRP), a
+  component that imports an API client instead of receiving it through props or
+  context (DIP).
 
 ## Common Mistakes
 
@@ -287,6 +295,8 @@ await new MessageManager(new ConsoleNotificationService()).notifyUser('Hi');
   change.
 - Splitting code into tiny pieces in the name of SOLID where nothing changes
   independently.
+- Equating DIP with a DI container: passing a dependency as an argument or
+  through React context already is dependency injection.
 
 ## See Also
 

@@ -2,6 +2,7 @@
 sidebar_position: 4
 description:
   Why code review exists, what to look at, how to give and receive feedback
+tags: [middle]
 ---
 
 # Code Review
@@ -58,12 +59,18 @@ correctness, design and readability. Good reviews are **small**, **fast** and
   writes down a convention.
 - How big should a pull request be? Small enough to review in one sitting; split
   refactoring and feature work into separate pull requests.
+- What is `CODEOWNERS`? A file that maps paths to owners; GitHub and GitLab
+  request their review automatically, and branch protection can require it.
+- How to review a change that is too big? Ask for stacked PRs (small branches,
+  each on top of the previous), or review commit by commit if the commits are
+  clean.
 
 ## Common Mistakes
 
 - Treating review as a gate for finding blame rather than a shared
   responsibility for the code.
 - Approving without reading because the change is large.
+- Reviewing only the diff of a risky UI change without running the branch.
 
 ## See Also
 

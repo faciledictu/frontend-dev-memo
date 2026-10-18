@@ -3,6 +3,7 @@ sidebar_position: 1
 description:
   Merge vs rebase, fast-forward and merge commits, squash, interactive rebase,
   cherry-pick and conflicts
+tags: [junior, middle]
 ---
 
 # Merge vs Rebase
@@ -97,13 +98,19 @@ git cherry-pick 3f2a9c1 8b47de0
 
 - Why `--force-with-lease` and not `--force`? It refuses to overwrite the remote
   branch if it has moved since your last fetch. A background fetch (an IDE)
-  updates that reference too, so add `--force-if-includes` (Git 2.30+) to also
-  check that you have integrated the remote changes.
+  updates that reference too, so add `--force-if-includes` to also check that
+  you have integrated the remote changes.
 - How to undo a merge that was already pushed? `git revert -m 1 <merge-commit>`
   creates a commit that reverses it without rewriting history.
 - What is `git pull --rebase`? `fetch` + `rebase` of local commits on top of the
   remote branch instead of `fetch` + `merge`; avoids "Merge branch 'main' of …"
   commits.
+- When do you prefer a squash merge? Noisy work-in-progress commits, one commit
+  per PR on `main`, an easy revert; the price is the lost per-commit history for
+  `bisect` and `blame`.
+- What does `git rebase --onto` do? Replays a range onto another base:
+  `git rebase --onto main feature-a feature-b` moves `feature-b` from
+  `feature-a` to `main`.
 
 ## Common Mistakes
 
@@ -111,6 +118,9 @@ git cherry-pick 3f2a9c1 8b47de0
 - Rebasing `main` or another shared branch and force-pushing it.
 - Thinking rebase "loses" commits: the old ones stay reachable through
   `git reflog` until garbage collection.
+- Resolving rebase conflicts with `--ours` / `--theirs` as in a merge: in a
+  rebase the sides are swapped, `ours` is the branch being rebased onto,
+  `theirs` is your commit.
 
 ## See Also
 

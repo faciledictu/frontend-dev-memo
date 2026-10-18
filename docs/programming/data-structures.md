@@ -4,6 +4,7 @@ description:
   Big O, Omega and Theta, complexity classes, abstract data types, arrays,
   linked lists, stacks, queues, hash tables, trees, heaps, graphs, sorting,
   search and common algorithmic techniques
+tags: [junior, middle]
 ---
 
 # Algorithms and Data Structures
@@ -253,15 +254,19 @@ console.log(binarySearch([1, 3, 5, 7, 9, 11], 4)); // -1
 <summary>O(n²) → O(n) with a Set</summary>
 
 ```javascript
+// error-start
 // O(n²): includes() scans the array for every element
 function hasDuplicatesSlow(items) {
   return items.some((item, i) => items.slice(i + 1).includes(item));
 }
+// error-end
 
+// correct-start
 // O(n): Set lookups are O(1) on average
 function hasDuplicates(items) {
   return new Set(items).size !== items.length;
 }
+// correct-end
 
 console.log(hasDuplicatesSlow([1, 2, 3, 2]), hasDuplicates([1, 2, 3, 2])); // true true
 console.log(hasDuplicates([1, 2, 3])); // false
@@ -314,15 +319,19 @@ console.log(shortestPath(graph, 'A', 'F')); // [ 'A', 'B', 'D', 'F' ]
 <summary>Dynamic programming: Fibonacci from O(2ⁿ) to O(n)</summary>
 
 ```javascript
+// error-start
 // O(2ⁿ): the same values are computed again and again
 const fibSlow = (n) => (n < 2 ? n : fibSlow(n - 1) + fibSlow(n - 2));
+// error-end
 
+// correct-start
 // O(n): each value is computed once
 function fib(n) {
   let [prev, curr] = [0, 1];
   for (let i = 0; i < n; i++) [prev, curr] = [curr, prev + curr];
   return prev;
 }
+// correct-end
 
 console.log(fibSlow(20), fib(20), fib(50)); // 6765 6765 12586269025
 ```
@@ -344,6 +353,13 @@ console.log(fibSlow(20), fib(20), fib(50)); // 6765 6765 12586269025
 - When is a linked list better than an array? When elements are often inserted
   or removed in the middle at a known position, and access by index is rare. In
   practice JS arrays win in most cases because of memory locality.
+- What is the complexity of `arr.filter(…).map(…).reduce(…)`? O(n) each, O(n) in
+  total: chaining is not nesting. It becomes O(n²) only when a scan (`includes`,
+  `find`) runs inside a callback.
+- How to find the k-th largest element? Sorting: O(n log n); a heap of size k:
+  O(n log k); quickselect: O(n) on average.
+- How to make a queue with O(1) dequeue in JavaScript? A head index over an
+  array (as in the BFS example), two stacks or a linked list; `shift()` is O(n).
 
 ## Common Mistakes
 
@@ -353,6 +369,8 @@ console.log(fibSlow(20), fib(20), fib(50)); // 6765 6765 12586269025
   loop turn O(_n_) into O(_n_²).
 - Saying a linked list inserts in O(1) without adding "at a known node".
 - Sorting numbers with `sort()` without a comparator.
+- Confusing the heap data structure with the heap in memory management: they are
+  unrelated.
 
 ## See Also
 

@@ -3,6 +3,7 @@ sidebar_position: 2
 description:
   reset vs revert vs restore, reset modes, reflog, stash, switch, fetch vs pull,
   tags
+tags: [junior]
 ---
 
 # Common Commands
@@ -112,6 +113,20 @@ git stash pop
   back. `HEAD^2` is the second parent of a merge commit.
 - `fetch` or `pull`? `fetch` is always safe: it only updates remote-tracking
   branches, so you can look at the changes before merging them.
+- What is a detached HEAD? `HEAD` points to a commit, not a branch (after
+  checking out a tag or a hash); commits made there stay only in the reflog
+  unless you create a branch with `git switch -c`.
+- What is `git worktree`? Several working directories for one repository
+  (`git worktree add ../hotfix main`), so a hotfix needs no stash or branch
+  switch.
+
+## Common Mistakes
+
+- `git reset --hard` to undo a commit already pushed to a shared branch: use
+  `git revert`.
+- Lightweight tags for releases: they have no author, date or message.
+- `git pull` with uncommitted changes, then fighting the merge: commit or stash
+  first.
 
 ## See Also
 
