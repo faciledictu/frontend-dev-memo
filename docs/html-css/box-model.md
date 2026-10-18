@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 description:
   Content, padding, border and margin, box-sizing, margin collapsing, block vs
   inline, block formatting context, overflow, logical properties

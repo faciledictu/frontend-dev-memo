@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
 description:
   Mobile-first media queries and range syntax, CSS units, clamp() / min() /
   max(), container queries, srcset and sizes vs picture, user preference queries
@@ -167,6 +167,7 @@ h1 {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }
@@ -206,5 +207,6 @@ h1 {
 
 - [HTML: viewport meta tag](./html.md#viewport-meta-tag)
 - [CSS Grid](./grid.md)
+- [CSS Transitions and Animations](./animations.md): `prefers-reduced-motion`
 - [Loading Performance](../web-platform/performance/loading-performance.md)
 - [Web Vitals](../web-platform/performance/web-vitals.md): CLS and image sizes

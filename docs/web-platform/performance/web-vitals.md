@@ -93,7 +93,8 @@ major browsers. What helps:
   user is reading.
 - Fonts: `font-display: optional`, or a fallback font adjusted with
   `size-adjust`, so that the text does not change size when the font arrives.
-- Animations through `transform`, not `top` or `height`.
+- Animations through `transform`, not `top` or `height`, see
+  [CSS Transitions and Animations](../../html-css/animations.md).
 
 ## Example
 

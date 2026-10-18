@@ -269,7 +269,8 @@
       селекторах в `cascade`. Подгрупп нет; статусы по web-features 3.43.0. У
       `html` после ревью Fable новый короткий ответ и follow-up вопросы,
       описание раздела в `src/categories.ts` обновлено, обратные ссылки из
-      `react-native`, `react` и `web-platform`.
+      `react-native`, `react` и `web-platform`. `animations` и селекторы прошли
+      ревью Fable отдельным PR, селекторы вынесены из `cascade` в `selectors`.
 - [x] 6. React Native и Next.js, 8 страниц. React Native: `navigation` (React
       Navigation и Expo Router), `deep-linking`, `storage` (AsyncStorage, MMKV,
       SecureStore, SQLite), `performance`, `debugging` (React Native DevTools).

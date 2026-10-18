@@ -54,9 +54,10 @@ task → microtasks → rAF callbacks → style, layout → ResizeObserver → p
 - **Double rAF**: a callback scheduled inside a rAF callback runs in the next
   frame, after the current one is painted. Used to start a CSS transition after
   an element has been rendered with its initial styles.
-- For simple animations, CSS or `element.animate()` (Web Animations API) is
-  better: `transform` and `opacity` animate on the compositor even when the main
-  thread is busy.
+- For simple animations, CSS or `element.animate()` (Web Animations API, see
+  [CSS Transitions and Animations](../../html-css/animations.md)) is better:
+  `transform` and `opacity` animate on the compositor even when the main thread
+  is busy.
 - rAF also serves as a throttle for `scroll` and `pointermove` handlers. See
   [Debounce and Throttle](../../javascript/debounce-throttle.md).
 
