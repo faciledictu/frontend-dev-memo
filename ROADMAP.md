@@ -358,3 +358,6 @@ Fable в процессе (этап 3 и пачки 1–2 этапа 4), по р
   webpack, HMR), frontend system design и архитектура (тема большая), `Symbol` /
   `Proxy` / `Reflect` в JavaScript, i18n и `Intl`.
 - Иконки для разделов `html-css`, `tooling` и `react-native`.
+- Проверить `KeyboardAvoidingView` на Android 15+ (edge-to-edge) в эмуляторе:
+  нужен ли `behavior` на Android или хватает варианта без него из гайда Expo; по
+  результату поправить `react-native/keyboard.md`.
