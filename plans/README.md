@@ -16,3 +16,5 @@
 - [Пачка 6: React Native и Next.js](batch-6-react-native-nextjs.md)
 - [Пачка 7: браузерные API](batch-7-browser-apis.md)
 - [Пачка 9: React Native](batch-9-react-native.md)
+- [Пачка 10: доступность и безопасность в React Native](batch-10-react-native.md)
+  — предложение, ещё не утверждено
