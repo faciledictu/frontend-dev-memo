@@ -64,12 +64,20 @@ The architecture behind them (JSI, bridgeless, Codegen) is on
 ### Sync vs Async
 
 - The spec decides: `getModel(): string` is synchronous,
-  `getBattery(): Promise<number>` is async. In Expo it is `Function` vs
+  `getBatteryLevel(): Promise<number>` is async. In Expo it is `Function` vs
   `AsyncFunction`.
 - A sync call runs on the JS thread and blocks it until native code returns: a
   slow one freezes the UI and touches. Keep sync for cheap reads: constants, a
   value from memory (MMKV).
 - Disk, network, permissions, dialogs, anything on the main thread → async.
+- An async method runs off the JS thread but also off the UI thread: on the
+  module's queue on iOS, on a native-modules thread on Android (Expo's
+  `AsyncFunction` on a background queue). UIKit and Android views need a hop to
+  the main thread: `runOnQueue(.main)` in Expo, `dispatch_async` to the main
+  queue in `.mm`, `UiThreadUtil.runOnUiThread` in Kotlin.
+- What crosses the boundary: primitives, plain objects and arrays, promises,
+  callbacks, `ArrayBuffer`; not class instances (Nitro's hybrid objects are the
+  exception).
 
 ### Events to JS
 
@@ -203,8 +211,9 @@ export default requireNativeModule<DeviceInfoModule>('DeviceInfo');
 ## Follow-up Questions
 
 - Turbo Module, Expo Module or Nitro? In an Expo app, Expo Modules (Swift and
-  Kotlin, lifecycle hooks, config plugins). For a library with no dependencies,
-  Turbo. For a hot path with many calls or native objects passed around, Nitro.
+  Kotlin, lifecycle hooks, config plugins); they also work in a bare app with
+  the `expo` package installed. For a library with no dependencies, Turbo. For a
+  hot path with many calls or native objects passed around, Nitro.
 - Why must the spec be typed? Codegen generates the native interfaces from it,
   so a mismatch between JS and native signatures fails at build time, not at
   runtime.

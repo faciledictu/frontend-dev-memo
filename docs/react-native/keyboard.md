@@ -11,12 +11,12 @@ tags: [middle]
 
 On **iOS** the keyboard is drawn **over** the app: the app moves the content
 itself, usually with **`KeyboardAvoidingView`** (`behavior="padding"`) or a
-scroll view that scrolls to the focused input. On **Android** the default
-`adjustResize` mode keeps the focused input above the keyboard (on Android 15+,
-through the keyboard inset), so often nothing extra is needed. For long forms
-and chats, **`react-native-keyboard-controller`** gives the same behavior on
-both platforms. A tap while the keyboard is open is controlled by
-**`keyboardShouldPersistTaps`** on the scroll view.
+scroll view that scrolls to the focused input. On **Android** the window is
+resized for the keyboard (`adjustResize`), and Expo's guide sets no `behavior`
+there; on Android 15+ (edge-to-edge) check on a device and set one if the input
+stays covered. For long forms and chats, **`react-native-keyboard-controller`**
+gives the same behavior on both platforms. A tap while the keyboard is open is
+controlled by **`keyboardShouldPersistTaps`** on the scroll view.
 
 Applies to: React Native 0.88, Expo SDK 58, react-native-keyboard-controller
 1.22.
@@ -25,17 +25,16 @@ Applies to: React Native 0.88, Expo SDK 58, react-native-keyboard-controller
 
 ### Platforms
 
-|                        | iOS                                      | Android                                                  |
-| ---------------------- | ---------------------------------------- | -------------------------------------------------------- |
-| Default                | Keyboard covers the bottom of the screen | `adjustResize`: the app's area ends above the keyboard   |
-| `KeyboardAvoidingView` | `behavior="padding"`                     | Often not needed; Expo recommends `behavior={undefined}` |
-| Events                 | `keyboardWill*` and `keyboardDid*`       | Only `keyboardDidShow` / `keyboardDidHide`               |
+|                        | iOS                                      | Android                                                       |
+| ---------------------- | ---------------------------------------- | ------------------------------------------------------------- |
+| Default                | Keyboard covers the bottom of the screen | `adjustResize`; on Android 15+ the keyboard comes as an inset |
+| `KeyboardAvoidingView` | `behavior="padding"`                     | Expo's guide: `behavior={undefined}`                          |
+| Events                 | `keyboardWill*` and `keyboardDid*`       | Only `keyboardDidShow` / `keyboardDidHide`                    |
 
 - Edge-to-edge (Android 15+) does not resize the window by itself: the app gets
-  the keyboard as a bottom inset. `KeyboardAvoidingView` with a `behavior`
-  handles that since React Native 0.86; Expo's guide still uses no `behavior` on
-  Android. If an input stays covered on a device, set one or use
-  keyboard-controller.
+  the keyboard as a bottom inset. If an input stays covered there, set a
+  `behavior` (`KeyboardAvoidingView` handles the inset since React Native 0.86)
+  or use keyboard-controller, which behaves the same on every version.
 - `adjustPan` (`softwareKeyboardLayoutMode: "pan"` in Expo's `app.json`) moves
   the whole window up instead of resizing it. It stops a bottom tab bar from
   riding above the keyboard; `tabBarHideOnKeyboard: true` hides the tab bar
@@ -103,7 +102,8 @@ for `InputAccessoryView` (iOS only, deprecated in 0.88).
 - `onSubmitEditing` focuses the next input through a ref:
   `nextRef.current?.focus()`.
 - `submitBehavior="submit"` keeps the keyboard open between fields; the default
-  for a single-line input is `blurAndSubmit`.
+  for a single-line input is `blurAndSubmit`. It replaces the deprecated
+  `blurOnSubmit`.
 
 ## Example
 
@@ -198,6 +198,9 @@ export function SignInForm() {
   has `keyboardShouldPersistTaps="never"` by default; set `handled`.
 - Why is the input still covered under a navigation header? The header height is
   missing from `keyboardVerticalOffset`.
+- How do you close the keyboard on a tap outside or on scroll?
+  `Keyboard.dismiss` on a wrapping `Pressable`; `keyboardDismissMode="on-drag"`
+  on the scroll view.
 - Why does the tab bar jump above the keyboard on Android? The window is
   resized; use `tabBarHideOnKeyboard` or the `pan` mode.
 - How do you animate a view with the keyboard? iOS `keyboardWillShow` gives the

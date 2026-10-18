@@ -117,6 +117,8 @@ const LOCK_AFTER_MS = 5 * 60_000;
 export function useAppLock(onReturn: () => void) {
   const [locked, setLocked] = useState(false);
   const leftAt = useRef<number | null>(null);
+  const onReturnRef = useRef(onReturn); // subscribe once, call the latest
+  onReturnRef.current = onReturn;
 
   useEffect(() => {
     // highlight-next-line
@@ -126,11 +128,11 @@ export function useAppLock(onReturn: () => void) {
       } else if (state === 'active' && leftAt.current !== null) {
         if (Date.now() - leftAt.current > LOCK_AFTER_MS) setLocked(true);
         leftAt.current = null;
-        onReturn(); // refresh data
+        onReturnRef.current(); // refresh data
       }
     });
     return () => sub.remove();
-  }, [onReturn]);
+  }, []);
 
   return { locked, unlock: () => setLocked(false) };
 }
@@ -171,13 +173,16 @@ declare function syncOutbox(): Promise<void>;
 
 ## Follow-up Questions
 
-- Can JS keep running after the user leaves the app? Not reliably: only inside
-  OS-scheduled tasks or special modes (audio, location, a foreground service).
+- The user starts a large upload and switches apps; what happens? On iOS the app
+  is suspended and the request dies unless it goes through a background
+  `URLSession` (a library with background uploads); on Android use WorkManager
+  or a foreground service.
 - Why did a background task never run in testing? The iOS simulator does not
   support it, the interval is only a hint, and on iOS a task stops once the user
   swipes the app away.
-- How do you refresh data when the user comes back? Listen for `active` in
-  `AppState` (or `focusManager` in TanStack Query) and refetch stale data.
+- How do you keep a WebSocket alive in the background? You do not: close it on
+  `background`, reopen and refetch on `active`, and send anything urgent as a
+  push, see [Push Notifications](./notifications.md).
 - What happens to an in-flight request when the app goes to the background? It
   may finish, fail or hang until the app returns; make writes retryable and
   idempotent, see [Offline Support](./offline.md).
@@ -188,8 +193,9 @@ declare function syncOutbox(): Promise<void>;
 ## Common Mistakes
 
 - Relying on `setInterval` or a long `setTimeout` for background sync.
-- Treating `inactive` as background: on iOS it fires for the app switcher and
-  incoming calls, and never on Android.
+- Treating `inactive` as background: on iOS it fires for the app switcher,
+  Control Center and incoming calls (a lock timer started there fires when the
+  user only pulled down Control Center), and never on Android.
 - Defining a background task inside a component: when the OS starts the app for
   the task, the component is not mounted.
 - Promising exact background timing: the OS decides, and the user can disable

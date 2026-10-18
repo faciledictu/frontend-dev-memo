@@ -296,10 +296,13 @@
       решения под спойлерами только для задач, которых не было на сайте),
       `react/basics/error-boundaries`; `patterns` переименована в «Composition
       Patterns», ссылки на неё обновлены.
-- [ ] 9. React Native, 6 страниц: `core-components`, `safe-area`, `keyboard`,
+- [x] 9. React Native, 6 страниц: `core-components`, `safe-area`, `keyboard`,
       `native-modules`, `app-lifecycle` (`AppState` и фоновая работа),
       `offline`; план —
-      [plans/batch-9-react-native.md](plans/batch-9-react-native.md).
+      [plans/batch-9-react-native.md](plans/batch-9-react-native.md). Сделано:
+      RN 0.88, Expo SDK 58; страницы раздела перенумерованы, ссылки на новые
+      страницы добавлены в 11 существующих (в `tanstack-query` — follow-up про
+      refetch on focus).
 
 Обновление версий: строки `Applies to` сверяются раз в квартал
 (`grep -rh '^Applies to:' docs | sort | uniq -c`). Node.js 26 и PostgreSQL 19 —

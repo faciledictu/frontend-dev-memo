@@ -21,18 +21,18 @@ Applies to: React Native 0.88, Expo SDK 58.
 
 ### Components
 
-| Component           | iOS / Android view                        | Use                                                                   |
-| ------------------- | ----------------------------------------- | --------------------------------------------------------------------- |
-| `View`              | `UIView` / `ViewGroup`                    | Layout container with Flexbox, styles, touch handling                 |
-| `Text`              | `UITextView` / `TextView`                 | All text; nested `Text` is inline                                     |
-| `Image`             | `UIImageView` / `ImageView`               | Local and network images                                              |
-| `TextInput`         | `UITextField` / `EditText`                | Text fields; `multiline` for a text area                              |
-| `Pressable`         | A `View` with press handling              | Buttons, rows; see [Gestures](./animations/gestures.md)               |
-| `ScrollView`        | `UIScrollView` / `ScrollView`             | Short scrolling content; long lists go to [Lists](./lists.md)         |
-| `Modal`             | Presented view controller / `Dialog`      | A layer above the whole app: dialogs, pickers                         |
-| `ActivityIndicator` | `UIActivityIndicatorView` / `ProgressBar` | Spinner                                                               |
-| `Switch`            | `UISwitch` / `SwitchCompat`               | Boolean toggle                                                        |
-| `SafeAreaView`      | Deprecated, iOS only                      | Use `react-native-safe-area-context`; see [Safe Area](./safe-area.md) |
+| Component           | iOS / Android view                        | Use                                                                            |
+| ------------------- | ----------------------------------------- | ------------------------------------------------------------------------------ |
+| `View`              | `UIView` / `ViewGroup`                    | Layout container with Flexbox, styles, touch handling                          |
+| `Text`              | `UITextView` / `TextView`                 | All text; nested `Text` is inline                                              |
+| `Image`             | `UIImageView` / `ImageView`               | Local and network images                                                       |
+| `TextInput`         | `UITextField` / `EditText`                | Text fields; `multiline` for a text area                                       |
+| `Pressable`         | A `View` with press handling              | Buttons, rows; replaces `Touchable*`; see [Gestures](./animations/gestures.md) |
+| `ScrollView`        | `UIScrollView` / `ScrollView`             | Short scrolling content; long lists go to [Lists](./lists.md)                  |
+| `Modal`             | Presented view controller / `Dialog`      | A layer above the whole app: dialogs, pickers                                  |
+| `ActivityIndicator` | `UIActivityIndicatorView` / `ProgressBar` | Spinner                                                                        |
+| `Switch`            | `UISwitch` / `SwitchCompat`               | Boolean toggle                                                                 |
+| `SafeAreaView`      | Deprecated, iOS only                      | Use `react-native-safe-area-context`; see [Safe Area](./safe-area.md)          |
 
 `Button` exists too, but it cannot be styled beyond `color`; apps build buttons
 from `Pressable` and `Text`.
@@ -137,13 +137,11 @@ export function Comment({ count }: { count: number }) {
   or `aspectRatio`.
 - Can text be placed directly in a `View`? No: only `Text` creates native text
   views. On the web `<div>text</div>` works because the DOM has text nodes.
-- How do you set a default font for the whole app? There is no cascade from
-  `View`; use an `AppText` wrapper (or a styling library's theme).
 - `ScrollView` or `FlatList`? `ScrollView` renders all children at once; for
   long or unknown-length data use a virtualized list, see [Lists](./lists.md).
-- Why does `onChangeText` give a string and `onChange` an event? `onChangeText`
-  is a shortcut for the common case; `onChange` gives `nativeEvent.text` and
-  more.
+- Can `require` take a dynamic path (``require(`./icons/${name}.png`)``)? No:
+  Metro resolves assets at build time, so the path must be a literal; keep a map
+  of static `require` calls.
 
 ## Common Mistakes
 

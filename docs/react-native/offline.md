@@ -65,10 +65,9 @@ Where to keep the data (AsyncStorage, MMKV, SQLite):
   `queryClient.setMutationDefaults(['addTodo'], …)` (a function cannot be
   persisted, only the key and variables), then call
   `queryClient.resumePausedMutations()` in the provider's `onSuccess`.
-- **Optimistic updates**: in `onMutate` cancel queries, save the old data and
-  write the new one with `setQueryData`; restore it in `onError`; invalidate in
-  `onSettled`. See
-  [TanStack Query](../react/state-management/tanstack-query.md).
+- **Optimistic updates** work as on the web, see
+  [TanStack Query](../react/state-management/tanstack-query.md); the `variables`
+  of a paused mutation are what the UI shows as "Sending…".
 
 ### Sync Engines on SQLite
 
@@ -198,6 +197,10 @@ export function AddTodoButton() {
 - What happens to a mutation started offline? With `networkMode: 'online'` it
   pauses and runs when the device is online again; to survive an app restart it
   needs a persisted cache, `setMutationDefaults` and `resumePausedMutations`.
+- What happens to a `fetch` made offline? With no network it rejects quickly
+  with `TypeError: Network request failed`; on a dead link it can hang, because
+  `fetch` has no timeout by default: add one with `AbortController`. With
+  TanStack Query the request is paused and not sent at all.
 - How do you avoid duplicate records when a request is retried? A client-side ID
   or an idempotency key.
 - When is a sync engine worth it? When users edit data offline for long periods
@@ -214,6 +217,7 @@ export function AddTodoButton() {
 - Persisting the cache with `gcTime` shorter than `maxAge`: entries are
   garbage-collected and removed from storage before `maxAge`.
 - Retrying non-idempotent `POST` requests from a queue.
+- Draining the queue in parallel: an edit overtakes its create.
 - An error screen instead of cached data when the device is offline.
 
 ## See Also

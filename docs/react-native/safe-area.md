@@ -59,11 +59,11 @@ safe area: see [Keyboard Handling](./keyboard.md).
 - Android 15 enforces edge-to-edge for apps targeting API 35; for apps targeting
   API 36, Android 16 removes the opt-out. The app draws under the status bar and
   the navigation bar, as on iOS.
-- Expo SDK 54+ apps are always edge-to-edge on Android 16 (`edgeToEdgeEnabled`
-  still works on older versions). In a bare app `edgeToEdgeEnabled=true` in
-  `gradle.properties` turns it on for older Android versions too; React Native
-  0.86 fixed `KeyboardAvoidingView`, `measureInWindow` and `Dimensions` in this
-  mode.
+- Expo SDK 54+: always edge-to-edge on Android 16; on older Android versions the
+  `edgeToEdgeEnabled` setting decides. Bare app: `edgeToEdgeEnabled=true` in
+  `gradle.properties` makes it edge-to-edge on every Android version, not only
+  where the OS enforces it. React Native 0.86 fixed `KeyboardAvoidingView`,
+  `measureInWindow` and `Dimensions` in this mode.
 - What breaks in an old layout: content and headers slide under the status bar,
   bottom buttons hide behind the navigation bar, and the status bar background
   color can no longer be set. The fix is the same as on iOS: apply insets.
@@ -157,6 +157,8 @@ export default function App() {
 - Applying the inset to the `ScrollView` style instead of its
   `contentContainerStyle`.
 - Reading insets once (or hard-coding them) and not updating on rotation.
+- Using the hook or `SafeAreaView` outside `SafeAreaProvider`: it throws; tests
+  render the provider with `initialMetrics`.
 
 ## See Also
 
