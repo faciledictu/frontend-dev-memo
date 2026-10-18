@@ -189,5 +189,6 @@ Every move event goes through the JS thread, so the drag lags when JS is busy.
 
 ## See Also
 
+- [Core Components](../core-components.md)
 - [Reanimated](./reanimated.md)
 - [Animated API](./animated.md)

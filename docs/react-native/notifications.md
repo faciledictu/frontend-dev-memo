@@ -1,5 +1,5 @@
 ---
-sidebar_position: 11
+sidebar_position: 15
 description:
   How push notifications work, device tokens, notification vs data messages,
   foreground / background / quit behavior, APNs keys, libraries
@@ -45,11 +45,11 @@ Settings.
 
 ### App State
 
-| App state  | Notification message                                                                                              | Data-only message                                           |
-| ---------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| Foreground | OS default: **not shown**, the app gets an event; `expo-notifications` shows it unless the handler says otherwise | Event in the app                                            |
-| Background | Shown by the OS; tap opens the app                                                                                | Background handler, with a short time limit                 |
-| Quit       | Shown by the OS; tap launches the app with the payload                                                            | Background handler on Android; usually not delivered on iOS |
+| App state  | Notification message                                                                                              | Data-only message                                                                    |
+| ---------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Foreground | OS default: **not shown**, the app gets an event; `expo-notifications` shows it unless the handler says otherwise | Event in the app                                                                     |
+| Background | Shown by the OS; tap opens the app                                                                                | Background handler, with a short time limit; see [App Lifecycle](./app-lifecycle.md) |
+| Quit       | Shown by the OS; tap launches the app with the payload                                                            | Background handler on Android; usually not delivered on iOS                          |
 
 ### Libraries
 
@@ -156,4 +156,5 @@ with an OAuth 2.0 access token of a service account.
 ## See Also
 
 - [Permissions](./permissions.md)
+- [App Lifecycle and Background Work](./app-lifecycle.md)
 - [Platform-Specific Code](./platform-specific-code.md)

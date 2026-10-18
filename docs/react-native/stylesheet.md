@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 description:
   StyleSheet API, how styles differ from CSS, responsive sizes with
   useWindowDimensions, custom fonts
@@ -51,6 +51,9 @@ In a style array, later entries override earlier ones; `false`, `null` and
   re-renders the component when the window changes (rotation, split screen).
 - `Dimensions.get('window')` returns the size once. Called at module level, for
   example inside `StyleSheet.create`, it never updates.
+- The window includes the areas under the status bar, the notch and the home
+  indicator; keep content clear of them with insets, see
+  [Safe Area](./safe-area.md).
 
 ### Styling Libraries
 

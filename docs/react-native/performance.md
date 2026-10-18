@@ -1,5 +1,5 @@
 ---
-sidebar_position: 13
+sidebar_position: 19
 description:
   Why a React Native app lags, the frame budget of the JS and UI threads,
   measuring in release builds, common causes and fixes, startup time
@@ -64,9 +64,9 @@ Applies to: React Native 0.88, Expo SDK 58.
 
 ### Memory Leaks
 
-- Typical causes: listeners and subscriptions without cleanup (`AppState`,
-  `Keyboard`, `Linking`, sockets), timers, closures held by a module-level
-  cache, and large images.
+- Typical causes: listeners and subscriptions without cleanup
+  ([`AppState`](./app-lifecycle.md), [`Keyboard`](./keyboard.md), `Linking`,
+  sockets), timers, closures held by a module-level cache, and large images.
 - Screens in a stack stay mounted, so a leak in a screen grows with each push.
 - Find them with the Memory panel (heap snapshots) in React Native DevTools and
   with Xcode / Android Studio memory tools for native memory.
