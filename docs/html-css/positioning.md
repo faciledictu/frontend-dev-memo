@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 description:
   position values, containing block, why sticky does not stick, stacking context
   and z-index, top layer, anchor positioning, ways to center an element

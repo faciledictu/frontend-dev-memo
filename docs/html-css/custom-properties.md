@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 9
 description:
   CSS variables, var() with a fallback, cascade and inheritance, invalid at
   computed-value time, @property, theming with light-dark() and color-mix(), vs
@@ -202,6 +202,7 @@ the middle of the animation, and the gradient does not rotate.
 
 - [Specificity and the Cascade](./cascade.md)
 - [Responsive Design](./responsive-design.md): `prefers-color-scheme`
+- [CSS Transitions and Animations](./animations.md)
 - [Styling in React](../react/ecosystem/styling.md): Sass, CSS Modules,
   CSS-in-JS
 - [MDN: Using CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties)

@@ -196,7 +196,8 @@ export default function ProfileForm() {
   submission, but not its result.
 - What happens to `useOptimistic` when the action fails? The optimistic value is
   dropped and the real state is shown again. The error is returned by the action
-  as state or, if thrown, goes to the nearest error boundary.
+  as state or, if thrown, goes to the nearest
+  [error boundary](./error-boundaries.md).
 
 ## Common Mistakes
 

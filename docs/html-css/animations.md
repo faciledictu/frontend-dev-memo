@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 10
 description:
   Transitions vs keyframe animations, why to animate transform and opacity,
   will-change, CSS vs JavaScript animations, reduced motion
@@ -10,11 +10,11 @@ tags: [junior, middle]
 
 - A **transition** animates a property **between two states** when its value
   changes: on `:hover`, a class toggle, a new inline style.
-- A **keyframe animation** (`@keyframes` + `animation`) runs **on its own**: can
-  have several steps, repeat, and start on page load without a state change.
+- A **keyframe animation** (`@keyframes` + `animation`) runs **on its own**: it
+  can have several steps, repeat, and start on page load without a state change.
 
-Animate **`transform` and `opacity`**: the browser changes them on the
-compositor without layout and paint, so they stay smooth even when the main
+Animate **`transform` and `opacity`**: the browser can change them on the
+compositor, without layout and paint, so they stay smooth even when the main
 thread is busy. Animating `width`, `top` or `margin` reruns layout every frame.
 Respect **`prefers-reduced-motion`**.
 
@@ -22,14 +22,14 @@ Respect **`prefers-reduced-motion`**.
 
 ### Transition vs Animation
 
-|         | `transition`                                                    | `animation`                                            |
-| ------- | --------------------------------------------------------------- | ------------------------------------------------------ |
-| Starts  | when the property value changes                                 | when the `animation` property is applied               |
-| Steps   | from the old value to the new one                               | any number of keyframes                                |
-| Repeats | no                                                              | `animation-iteration-count: infinite`                  |
-| Reverse | by itself, when the state changes back                          | `animation-direction: reverse` or `alternate`          |
-| Control | duration, timing function, delay                                | plus `animation-fill-mode`, `animation-play-state`     |
-| Events  | `transitionend` (one per longhand property), `transitioncancel` | `animationstart`, `animationiteration`, `animationend` |
+|         | `transition`                                            | `animation`                                                               |
+| ------- | ------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Starts  | when the property value changes                         | when the `animation` property is applied                                  |
+| Steps   | from the old value to the new one                       | any number of keyframes                                                   |
+| Repeats | no                                                      | `animation-iteration-count: infinite`                                     |
+| Reverse | by itself, when the state changes back                  | `animation-direction: reverse` or `alternate`                             |
+| Control | duration, timing function, delay, `transition-behavior` | plus `animation-fill-mode`, `animation-play-state`                        |
+| Events  | `transitionend`, `transitioncancel`                     | `animationstart`, `animationiteration`, `animationend`, `animationcancel` |
 
 - `animation-fill-mode: forwards` keeps the values of the last keyframe played
   after the animation ends; otherwise the element jumps back to its own styles.
@@ -45,7 +45,8 @@ Respect **`prefers-reduced-motion`**.
   [Reflow and Repaint](../web-platform/browser/browser-workflow.md#reflow-and-repaint).
 - **`will-change: transform`** hints that the element is about to change, so the
   browser can prepare a separate layer; it also creates a stacking context. Each
-  layer costs memory: set it on a few elements that are about to animate, not on
+  layer costs memory: use it for a measured problem on the few elements about to
+  animate (often set from JS right before and removed after), never on
   everything.
 - `display` and other discrete properties are not interpolated. To animate an
   element appearing from `display: none`, use `@starting-style` (the values to
@@ -54,6 +55,9 @@ Respect **`prefers-reduced-motion`**.
 - `height: auto` cannot be transitioned directly. A common workaround is a grid
   wrapper animated from `grid-template-rows: 0fr` to `1fr`, with
   `overflow: hidden` on its only child.
+- An unregistered custom property is not interpolated: it flips at 50% in an
+  animation and changes at once in a transition. Register it with `@property`,
+  see [CSS Custom Properties](./custom-properties.md#property).
 
 ### CSS vs JavaScript
 
@@ -65,9 +69,10 @@ Respect **`prefers-reduced-motion`**.
   [requestAnimationFrame](../web-platform/browser/scheduling.md#requestanimationframe).
 - The **Web Animations API** (`element.animate(keyframes, options)`) is the same
   engine as CSS animations, controlled from JavaScript: it returns an
-  `Animation` with `pause()`, `reverse()` and a `finished` promise. Motion uses
-  it where possible. CSS transitions and animations are `Animation` objects too:
-  `element.getAnimations()`.
+  `Animation` with `pause()`, `reverse()` and a `finished` promise. Motion
+  (formerly Framer Motion) uses it where it can and falls back to its own
+  `requestAnimationFrame` engine. CSS transitions and animations are `Animation`
+  objects too: `element.getAnimations()`.
 
 ## Example
 
@@ -106,6 +111,11 @@ Respect **`prefers-reduced-motion`**.
 }
 ```
 
+`animation: none` also drops the `animation-fill-mode` end state and
+`animationend`; setting durations to `0.01ms` instead keeps both (and
+`transitionend`). A global version is in
+[Responsive Design](./responsive-design.md#user-preferences-and-input).
+
 <details>
 <summary>Animating an element that appears from `display: none`</summary>
 
@@ -141,25 +151,32 @@ rendered has no previous value to transition from. `allow-discrete` keeps
 - How do you animate a layout change (an item moving in a list) smoothly?
   **FLIP**: measure the First position, apply the change, measure the Last,
   Invert with a `transform` back to the first position, then Play by removing
-  the `transform` with a transition.
+  the `transform` with a transition. View Transitions do this natively.
 - Why avoid `transition: all`? It animates every property that changes,
   including ones that should not move and ones that trigger layout.
 - How do you wait for an animation to finish in JavaScript? The `transitionend`
   or `animationend` event, or `element.animate(…).finished`. `transitionend`
-  fires once per longhand (`transition: padding` gives four events) and not at
-  all if the transition is cancelled.
+  fires once per longhand (`transition: padding` gives up to four events, one
+  per side that changes), not at all if the transition is cancelled, and
+  bubbles: a listener on the parent also fires for children's transitions, so
+  check `event.target` and `event.propertyName`.
+- Why does a transition not run when an element is inserted and the class is
+  added in the same task? The browser never computed the starting style. Use
+  `@starting-style`, force a style flush between inserting and adding the class
+  (read `element.offsetWidth`) or use a
+  [double rAF](../web-platform/browser/scheduling.md#requestanimationframe).
+- How do you find out why an animation is janky? DevTools Performance panel:
+  Layout or Recalculate Style entries during the animation mean a property that
+  is not compositor-only; Rendering tab: paint flashing; Layers panel: whether
+  the element has its own layer.
 - What are View Transitions? `document.startViewTransition(update)` snapshots
   the old and new DOM states and cross-fades them; the parts are styled with
   `::view-transition-*` pseudo-elements. See
   [MDN](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API).
-- How is animation done in React Native? Off the JS thread: Reanimated (worklets
-  on the UI thread, CSS-like transitions in v4) or the built-in Animated with
-  `useNativeDriver`. See [Reanimated](../react-native/animations/reanimated.md).
 
 ## Common Mistakes
 
 - Animating `top`, `left`, `width` or `margin` instead of `transform`.
-
 - Expecting a transition from `display: none` to work without `@starting-style`.
 - Ignoring `prefers-reduced-motion`: large movement can cause nausea for some
   users. See
@@ -168,9 +185,10 @@ rendered has no previous value to transition from. `allow-discrete` keeps
 ## See Also
 
 - [How the Browser Works](../web-platform/browser/browser-workflow.md)
+- [Reanimated](../react-native/animations/reanimated.md): animations in React
+  Native
 - [Responsive Design](./responsive-design.md#user-preferences-and-input):
   `prefers-reduced-motion`
-
 - [Positioning and z-index](./positioning.md): `transform` creates a stacking
   context
 - [MDN: Using CSS transitions](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_transitions/Using_CSS_transitions)

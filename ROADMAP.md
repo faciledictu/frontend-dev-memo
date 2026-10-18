@@ -269,7 +269,8 @@
       селекторах в `cascade`. Подгрупп нет; статусы по web-features 3.43.0. У
       `html` после ревью Fable новый короткий ответ и follow-up вопросы,
       описание раздела в `src/categories.ts` обновлено, обратные ссылки из
-      `react-native`, `react` и `web-platform`.
+      `react-native`, `react` и `web-platform`. `animations` и селекторы прошли
+      ревью Fable отдельным PR, селекторы вынесены из `cascade` в `selectors`.
 - [x] 6. React Native и Next.js, 8 страниц. React Native: `navigation` (React
       Navigation и Expo Router), `deep-linking`, `storage` (AsyncStorage, MMKV,
       SecureStore, SQLite), `performance`, `debugging` (React Native DevTools).
@@ -287,10 +288,14 @@
       Страницы вставлены между существующими с перенумерацией; статус поддержки
       сверен с web-features 3.43.0, ссылки на новые страницы добавлены в 10
       существующих.
-- [ ] 8. Пробелы из итогового ревью: «REST vs GraphQL» (`web-platform/network`),
+- [x] 8. Пробелы из итогового ревью: «REST vs GraphQL» (`web-platform/network`),
       страница-указатель типовых задач на собеседовании (`bind`, `Promise.all`,
       `debounce`, глубокое копирование, мемоизация… со ссылками на страницы),
       error boundaries — отдельной страницей из `react/basics/patterns`.
+      Сделано: `network/rest-vs-graphql`, `javascript/coding-tasks` (указатель,
+      решения под спойлерами только для задач, которых не было на сайте),
+      `react/basics/error-boundaries`; `patterns` переименована в «Composition
+      Patterns», ссылки на неё обновлены.
 - [ ] 9. React Native, 6 страниц: `core-components`, `safe-area`, `keyboard`,
       `native-modules`, `app-lifecycle` (`AppState` и фоновая работа),
       `offline`; план —

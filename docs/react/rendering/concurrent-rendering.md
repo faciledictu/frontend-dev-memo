@@ -57,7 +57,7 @@ Applies to: React 19.3.
   cache. A promise created during the render of the same component is new on
   every render.
 - A rejected promise is handled by the nearest
-  [error boundary](../basics/patterns.md#error-boundaries).
+  [error boundary](../basics/error-boundaries.md).
 
 ### `useDeferredValue`
 

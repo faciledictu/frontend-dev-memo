@@ -1,9 +1,8 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 description:
-  Selectors in brief, cascade order, specificity, :is() / :where() / :has(),
-  nesting, @layer, inheritance and the inherit / initial / unset / revert
-  keywords
+  Cascade order, specificity, :is() / :where() / :has(), nesting, @layer,
+  inheritance and the inherit / initial / unset / revert keywords
 tags: [junior, middle]
 ---
 
@@ -26,44 +25,21 @@ properties such as `color`, `font`) or takes its **initial value** (`margin`,
 
 ## Details
 
-### Selectors in Brief
-
-Only what is usually asked; the full list is on
-[MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors).
-
-| Selector          | Matches                                              |
-| ----------------- | ---------------------------------------------------- |
-| `.a .b`           | `.b` anywhere inside `.a`                            |
-| `.a > .b`         | `.b` that is a direct child of `.a`                  |
-| `.a + .b`         | `.b` right after `.a`, same parent                   |
-| `.a ~ .b`         | any `.b` after `.a`, same parent                     |
-| `.a.b`            | one element with both classes                        |
-| `[href^='https']` | attribute starts with; `$=` ends with, `*=` contains |
-
-- `:nth-child(2)` counts all siblings; `:nth-of-type(2)` counts only siblings
-  with the same tag, so `.item:nth-of-type(2)` does not count `.item`s;
-  `:nth-child(2 of .item)` does.
-- `:focus-visible` matches focus the browser would show a ring for (keyboard
-  navigation, text fields), not a mouse click on a button; `:focus-within`
-  matches an element whose descendant has focus.
-- `::before` and `::after` render only with `content` (`content: ''` for a
-  decorative box); they do not work on `<img>` or `<input>`.
-
 ### Specificity
 
 Specificity is three numbers, **(A, B, C)**, compared left to right: one id
 beats any number of classes.
 
-| Counts as                                                          | Example                               | Specificity |
-| ------------------------------------------------------------------ | ------------------------------------- | ----------- |
-| **A**: id                                                          | `#header`                             | (1, 0, 0)   |
-| **B**: class, attribute, pseudo-class                              | `.btn`, `[type='text']`, `:hover`     | (0, 1, 0)   |
-| **C**: type, pseudo-element                                        | `p`, `::before`                       | (0, 0, 1)   |
-| Nothing: `*`, combinators (`>`, `+`, `~`, space)                   | `ul > li`: only the two types count   | (0, 0, 2)   |
-| `:is()`, `:not()`, `:has()`: their **most specific** argument      | `:is(#a, .b) p`                       | (1, 0, 1)   |
-| `:where()`: always zero                                            | `:where(#a, .b) p`                    | (0, 0, 1)   |
-| Nesting `&`: like `:is()` around the parent selector               | `#a, .b { & p {} }` = `:is(#a, .b) p` | (1, 0, 1)   |
-| `:nth-child(… of S)`: the pseudo-class plus the most specific in S | `:nth-child(2 of .item)`              | (0, 2, 0)   |
+| Counts as                                                          | Example                                                              | Specificity |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------- | ----------- |
+| **A**: id                                                          | `#header`                                                            | (1, 0, 0)   |
+| **B**: class, attribute, pseudo-class                              | `.btn`, `[type='text']`, `:hover`                                    | (0, 1, 0)   |
+| **C**: type, pseudo-element                                        | `p`, `::before`                                                      | (0, 0, 1)   |
+| Nothing: `*`, combinators (`>`, `+`, `~`, space)                   | `ul > li`: only the two types count                                  | (0, 0, 2)   |
+| `:is()`, `:not()`, `:has()`: their **most specific** argument      | `:is(#a, .b) p`                                                      | (1, 0, 1)   |
+| `:where()`: always zero                                            | `:where(#a, .b) p`                                                   | (0, 0, 1)   |
+| Nesting `&`: like `:is()` around the parent selector               | `#a, .b { & p {} }` = `:is(#a, .b) p`                                | (1, 0, 1)   |
+| `:nth-child(… of S)`: the pseudo-class plus the most specific in S | [`:nth-child(2 of .item)`](./selectors.md#nth-child-and-nth-of-type) | (0, 2, 0)   |
 
 - The **`style` attribute** is not specificity: it is a separate, earlier step
   of the cascade and beats any selector without `!important`.
@@ -161,45 +137,14 @@ button.btn {
 }
 ```
 
-<details>
-<summary>`:has()` as a parent selector</summary>
-
-```css
-/* A card that contains an image */
-.card:has(img) {
-  grid-template-rows: 200px auto;
-}
-
-/* A form field label when its input is invalid after user interaction */
-label:has(+ input:user-invalid) {
-  color: crimson;
-}
-
-/* The page while a modal is open */
-body:has(dialog:modal) {
-  overflow: hidden;
-}
-```
-
-</details>
-
 ## Follow-up Questions
 
-- Pseudo-class vs pseudo-element? A pseudo-class (`:hover`, `:focus-visible`,
-  `:nth-child()`) selects an element in a state, counts as a class. A
-  pseudo-element (`::before`, `::placeholder`, `::marker`) styles a part of the
-  element or creates a virtual one, counts as a type; double colon.
-- Is `:has()` a parent selector? More than that: it selects an element by
-  anything relative to it — descendants, children (`:has(> img)`), following
-  siblings (`:has(+ input)`). It cannot be nested inside another `:has()`.
 - Why avoid `!important`? Only another `!important` can beat it (more specific,
   later in the source or in an earlier layer), so it escalates. Layers and
   `:where()` solve the same problem; `!important` stays for utilities and
   overriding third-party inline styles.
 - What is the specificity of `nav ul li a.active:hover`? (0, 2, 4). Of
   `#main :not(.x) p`? (1, 1, 1).
-- How does the browser match selectors? Right to left, from the rightmost part:
-  `.nav li a` first finds every `a`, then checks its ancestors.
 
 ## Common Mistakes
 
@@ -215,6 +160,7 @@ body:has(dialog:modal) {
 
 ## See Also
 
+- [CSS Selectors](./selectors.md)
 - [Box Model](./box-model.md)
 - [CSS Custom Properties](./custom-properties.md)
 - [Styling in React](../react/ecosystem/styling.md): CSS Modules, BEM, CSS-in-JS

@@ -12,8 +12,9 @@ The **App Router** is the file-based router in the `app/` directory. A **folder
 is a URL segment**, and the route is public only when the folder has a
 **`page.tsx`**. Special files in a folder add UI for that segment and everything
 below it: `layout` (shared shell that keeps its state on navigation), `loading`
-(Suspense fallback), `error` (error boundary), `not-found`. All components are
-**Server Components** by default.
+(Suspense fallback), `error`
+([error boundary](../../react/basics/error-boundaries.md)), `not-found`. All
+components are **Server Components** by default.
 
 Applies to: Next.js 16.4.
 

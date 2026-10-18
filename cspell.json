@@ -6,6 +6,7 @@
   "words": [
     "accountabilities",
     "afmkfd",
+    "animationcancel",
     "animationend",
     "animationiteration",
     "animationstart",
@@ -222,6 +223,7 @@
     "updatefound",
     "uppercased",
     "upserts",
+    "urql",
     "uuidv",
     "Valkey",
     "varchar",
