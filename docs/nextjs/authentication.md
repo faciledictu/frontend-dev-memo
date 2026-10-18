@@ -14,7 +14,7 @@ Access Layer** that every page, Server Action and Route Handler goes through.
 **Proxy** (formerly Middleware) does only an optimistic check and a redirect; it
 is not protection on its own.
 
-Applies to: Next.js 16.4, App Router.
+Applies to: Next.js 16.4, React 19.3, App Router.
 
 The general theory (sessions vs JWT, OAuth, where to keep a token) is in
 [Authentication and Authorization](../web-platform/network/authentication.md).
@@ -177,7 +177,6 @@ export const config = { matcher: ['/dashboard/:path*'] };
 ## Common Mistakes
 
 - Only checking in Proxy or only hiding links in the UI.
-
 - Reading a token from `FormData` or `localStorage` and trusting it.
 - Returning whole database records to the client: the Data Access Layer should
   return DTOs with only the fields the user may see.

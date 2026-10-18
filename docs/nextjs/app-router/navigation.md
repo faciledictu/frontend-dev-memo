@@ -122,8 +122,9 @@ export default async function OrderPage({
 - Why can a prefetched link still show a loading state? Only the shell (down to
   `loading.tsx`, or the App Shell) is prefetched by default; the rest renders on
   navigation.
-- How do you link to an external URL? With a plain `<a>`: prefetching and
-  client-side navigation apply only to routes of the app.
+- How do you link to an external URL? With a plain `<a>` (or `<Link>`, which
+  then renders an `<a>` without prefetching): client-side navigation and
+  prefetching apply only to routes of the app.
 
 ## Common Mistakes
 

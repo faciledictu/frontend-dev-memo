@@ -1,7 +1,7 @@
 ---
 sidebar_position: 2
 description:
-  SSG, ISR, SSR and CSR in the Pages Router, hydration and hydration errors
+  SSG, ISR, SSR and CSR in the Pages Router, automatic static optimization
 tags: [junior, middle]
 ---
 
@@ -41,7 +41,6 @@ the same in both routers.
 
 - What is the difference between SSR and SSG? SSR renders on every request, SSG
   once at build time.
-
 - Is CSR bad for SEO? Google runs JavaScript but indexes such pages later and
   less reliably; other crawlers and link previews often see only the shell.
 - What is automatic static optimization? A page without `getServerSideProps` or
@@ -53,9 +52,6 @@ the same in both routers.
 
 - "ISR is SSR with a cache." The regenerated page is shared by all users, so it
   can't be personalized.
-- `suppressHydrationWarning` on a parent element to silence a mismatch: it works
-  only one level deep and hides the bug; move the browser-only read into
-  `useEffect`.
 
 ## See Also
 

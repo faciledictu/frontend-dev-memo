@@ -20,7 +20,6 @@ Applies to: Next.js 16.4.
 
 - The URL comes from the folder: `app/api/users/[id]/route.ts` → `/api/users/1`.
   The `api/` prefix is a convention, not a requirement.
-- A folder cannot have both `route.ts` and `page.tsx`.
 - The second argument holds `params`; as in pages, it is a **promise**.
 - Query string: `request.nextUrl.searchParams`. Body: `await request.json()` or
   `await request.formData()`.

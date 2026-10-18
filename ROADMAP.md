@@ -282,7 +282,11 @@
         (`unload`), `bundle-optimization` перенесена в `performance`, повторы
         заменены ссылками, теги уровня на всех страницах; `html-css/html` —
         вместе с пачкой 5.
-  - [ ] Next.js.
+  - [x] Next.js: недостающие секции шаблона на 11 страницах, факты Next.js 16.4
+        (redirect в Server Action, CORS в Route Handlers, segment config с Cache
+        Components), Proxy описан один раз в `authentication`, гидратация
+        перенесена в `server-components`, порядок страниц App Router, теги
+        уровня на всех страницах.
   - [ ] React Native.
   - [ ] `programming`, `tooling`, `git`.
   - [ ] `nodejs`, `sql`.

@@ -145,8 +145,8 @@ export function PostForm() {
 - What does Next.js do to protect actions? It compares `Origin` with `Host`
   (against CSRF), encrypts action IDs and closure variables, removes unused
   actions from the client bundle and limits the body to 1 MB by default
-  (`serverActions.bodySizeLimit`). None of it replaces your own auth and
-  validation.
+  (`experimental.serverActions.bodySizeLimit`). None of it replaces your own
+  auth and validation.
 
 ## Common Mistakes
 

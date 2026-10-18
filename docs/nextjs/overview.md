@@ -80,8 +80,7 @@ URL must be served by only one of them.
 
 - "Next.js is an SSR framework." Static prerendering is the default; rendering
   on request is one of the strategies.
-- "The Pages Router is removed." It is legacy but supported, and both routers
-  can live in one project.
+
 - Choosing the Pages Router for a new project: Server Components, Server Actions
   and Cache Components exist only in the App Router.
 

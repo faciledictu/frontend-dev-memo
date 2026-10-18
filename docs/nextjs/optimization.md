@@ -157,7 +157,6 @@ export function ChartPanel({ show }: { show: boolean }) {
 
 - `preload`, `loading="eager"` or `fetchPriority="high"` on many images: they
   all load early and compete with the real LCP image.
-
 - `next/dynamic` with `ssr: false` in a Server Component: a build error; move it
   into a Client Component.
 

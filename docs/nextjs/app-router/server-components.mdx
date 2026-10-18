@@ -2,7 +2,7 @@
 sidebar_position: 3
 description:
   RSC vs SSR, what Server Components can't do, static and dynamic rendering,
-  streaming
+  streaming, hydration
 tags: [middle, senior]
 ---
 
@@ -63,15 +63,11 @@ In the browser:
 
 ### Hydration
 
-- **Hydration** attaches event handlers and state to server-rendered HTML. The
-  first client render must produce the same markup as the server.
-- A **hydration mismatch** happens when it does not: `Date.now()`,
-  `Math.random()`, `window` or `localStorage` read during render, locale-based
-  formatting, invalid HTML nesting (`<div>` inside `<p>`), browser extensions
-  changing the DOM.
-- Fixes: read browser-only values in `useEffect`, render the part only on the
-  client (`use(browser())` or `next/dynamic` with `ssr: false`), or use
-  `suppressHydrationWarning` for a single text node such as a timestamp.
+- **Hydration** attaches event handlers and state to the server HTML; the first
+  client render must match it. Causes of a mismatch and the fixes are in
+  [React in the Browser](../../react/rendering/react-in-browser.md#hydration).
+- In Next.js a browser-only part can also be rendered with `next/dynamic` and
+  `ssr: false` inside a Client Component.
 
 ### Rendering Strategies
 
@@ -196,6 +192,9 @@ export async function Users() {
 
 ## Common Mistakes
 
+- `suppressHydrationWarning` on a parent element to silence a mismatch: it works
+  only one level deep and hides the bug; move the browser-only read into
+  `useEffect`.
 - "Server Components replace SSR" or "Client Components render only in the
   browser": Client Components are prerendered on the server as well.
 - Adding `'use client'` to a whole page because of one button: the boundary
