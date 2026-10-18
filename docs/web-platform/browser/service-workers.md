@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 8
 description:
   Service worker as a network proxy, registration and scope, lifecycle and
   updates, caching strategies, offline and PWA

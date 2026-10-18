@@ -55,9 +55,11 @@ throttle:  *  *  *  *       once per 300 ms while the events come
 ### Alternatives
 
 - **`requestAnimationFrame`** as a throttle for visual updates: at most once per
-  frame, in sync with rendering.
+  frame, in sync with rendering. See
+  [requestAnimationFrame and requestIdleCallback](../web-platform/browser/scheduling.md).
 - Passive listeners (`{ passive: true }`) and `IntersectionObserver` instead of
-  heavy `scroll` handlers.
+  heavy `scroll` handlers. See
+  [Intersection, Resize and Mutation Observers](../web-platform/browser/observers.md).
 - In React, `useDeferredValue` and `startTransition` keep typing responsive
   without a fixed delay; they don't reduce the number of requests. See
   [Concurrent Rendering](../react/rendering/concurrent-rendering.md).

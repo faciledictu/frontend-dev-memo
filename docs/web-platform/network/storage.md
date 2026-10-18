@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 description:
   Cookies vs localStorage vs sessionStorage, cookie attributes and security
 tags: [junior, middle]
@@ -81,7 +81,8 @@ in Incognito.
 - Assigning to it sets or updates **one** cookie and does not touch the others.
 - To delete a cookie, set it again with `max-age=0` and the same `path` and
   `domain`.
-- Names and values should be encoded with `encodeURIComponent`.
+- Names and values should be encoded with `encodeURIComponent`. See
+  [URL and Encoding](./url.md#encoding-functions).
 
 ## Example
 

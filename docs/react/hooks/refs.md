@@ -48,7 +48,8 @@ Applies to: React 19.3.
 - Since React 19 it can return a **cleanup function**, like an effect. Without
   one, React calls the callback again with `null` on detach.
 - Use it to measure a node, to attach an observer or to keep refs for a list of
-  items.
+  items. See
+  [Intersection, Resize and Mutation Observers](../../web-platform/browser/observers.md).
 - An inline callback is a new function on every render, so it is called again
   every time. Wrap it in `useCallback` if that matters.
 

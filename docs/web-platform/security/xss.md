@@ -41,7 +41,8 @@ Dangerous sinks in the browser: `innerHTML` / `outerHTML`, `insertAdjacentHTML`,
   Markdown): pass it through **DOMPurify**, which removes scripts, event
   handlers and dangerous URLs. A hand-written regex filter is always bypassed.
 - **Check URLs** that come from users: allow only `http:` and `https:` (and
-  `mailto:` if needed), so that `javascript:alert(1)` is not accepted.
+  `mailto:` if needed), so that `javascript:alert(1)` is not accepted. See
+  [URL and Encoding](../network/url.md#security).
 - **CSP** with nonces blocks injected scripts even if one hole was missed. See
   [Content Security Policy](./csp.md).
 - **Limit the damage**: an `HttpOnly` cookie cannot be read by the script. The
