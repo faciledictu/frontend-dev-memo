@@ -39,11 +39,11 @@ Applies to: React Native 0.88, Expo SDK 58, TanStack Query 5.
 
 ### Levels
 
-| Level         | Works offline                       | How                                                                          |
-| ------------- | ----------------------------------- | ---------------------------------------------------------------------------- |
-| Cached reads  | Seeing data loaded earlier          | Persisted TanStack Query cache, or data in MMKV / SQLite                     |
-| Queued writes | Actions are saved and sent later    | Paused mutations, or an outbox table drained when the network is back        |
-| Offline-first | Everything; the network is optional | A local database (SQLite) is read and written by the UI; a sync engine syncs |
+| Level         | Works offline                       | How                                                                                                      |
+| ------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Cached reads  | Seeing data loaded earlier          | Persisted TanStack Query cache, or data in MMKV / SQLite                                                 |
+| Queued writes | Actions are saved and sent later    | Paused mutations, or an outbox table drained when the network is back                                    |
+| Offline-first | Everything; the network is optional | A local database (SQLite) is read and written by the UI; a sync engine exchanges changes with the server |
 
 Where to keep the data (AsyncStorage, MMKV, SQLite):
 [Storing Data on the Device](./storage.md).
@@ -133,9 +133,13 @@ const queryClient = new QueryClient({
 // Queued mutations need their function registered by key
 queryClient.setMutationDefaults(['addTodo'], {
   mutationFn: (todo: { id: string; title: string }) =>
-    fetch('https://api.example.com/todos', {
-      method: 'PUT', // with a client-generated id, a retry does not duplicate
+    // PUT with a client-generated id: a retry does not duplicate the record
+    fetch(`https://api.example.com/todos/${todo.id}`, {
+      method: 'PUT',
       body: JSON.stringify(todo),
+    }).then((res) => {
+      if (!res.ok) throw new Error(String(res.status)); // keep it queued
+      return res;
     }),
 });
 
@@ -207,8 +211,8 @@ export function AddTodoButton() {
 - Blocking all requests when `isConnected` is `false`, or trusting it when it is
   `true`.
 - Treating `isInternetReachable: null` as offline at startup.
-- Persisting the cache with `gcTime` shorter than `maxAge`: entries are dropped
-  before they are saved.
+- Persisting the cache with `gcTime` shorter than `maxAge`: entries are
+  garbage-collected and removed from storage before `maxAge`.
 - Retrying non-idempotent `POST` requests from a queue.
 - An error screen instead of cached data when the device is offline.
 

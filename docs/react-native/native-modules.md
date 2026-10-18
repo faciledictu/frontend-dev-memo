@@ -151,7 +151,7 @@ public class DeviceInfoModule: Module {
     Name("DeviceInfo")
     Events("onBatteryLow")
 
-    Function("getModel") { UIDevice.current.model }
+    Function("getModel") { UIDevice.current.model } // "iPhone", "iPad"
 
     AsyncFunction("getBatteryLevel") { () -> Float in
       UIDevice.current.isBatteryMonitoringEnabled = true
@@ -216,9 +216,10 @@ export default requireNativeModule<DeviceInfoModule>('DeviceInfo');
 - Why does a module work in a development build but not in Expo Go? Expo Go
   contains only its own native modules; any custom native code needs a
   development build.
-- How do you test code that uses a native module? Mock the module in Jest
-  (`jest.mock('./specs/NativeDeviceInfo')`); the native side is tested with
-  XCTest and JUnit or end-to-end.
+- How do you test code that uses a native module? Mock the module in Jest with a
+  factory (`jest.mock('./specs/NativeDeviceInfo', () => ({ … }))`): without one
+  Jest loads the real spec, and `getEnforcing` throws; the native side is tested
+  with XCTest and JUnit or end-to-end.
 
 ## Common Mistakes
 

@@ -12,11 +12,12 @@ tags: [middle]
 **`AppState`** reports whether the app is **`active`** (in the foreground),
 **`background`** or **`inactive`** (iOS only: a transition, the app switcher, an
 incoming call). It is used to refresh data when the user comes back, pause
-media, hide private content. In the background the OS **suspends** the app
-within seconds: timers, `fetch` and sockets stop, and there is no reliable
-long-running JS. Background work goes through the OS: periodic tasks
-(**`expo-background-task`**), silent pushes, background location, and on Android
-Headless JS and foreground services. The OS decides when they run.
+media, hide private content. In the background iOS **suspends** the app within
+seconds and Android may defer or kill it: timers, `fetch` and sockets stop, and
+there is no reliable long-running JS. Background work goes through the OS:
+periodic tasks (**`expo-background-task`**), silent pushes, background location,
+and on Android Headless JS and foreground services. The OS decides when they
+run.
 
 Applies to: React Native 0.88, Expo SDK 58.
 
@@ -30,11 +31,11 @@ Applies to: React Native 0.88, Expo SDK 58.
 | `background` | Another app or the home screen; on Android also another activity (a system picker, autofill)    |
 | `inactive`   | iOS only: between foreground and background, the app switcher, Control Center, an incoming call |
 
-| Event           | When                                                                                   |
-| --------------- | -------------------------------------------------------------------------------------- |
-| `change`        | The state changed; the listener gets the new state                                     |
-| `memoryWarning` | iOS: the system is low on memory; drop caches                                          |
-| `focus`, `blur` | Android: the user stopped interacting (the notification drawer) without a state change |
+| Event           | When                                                                                                                       |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `change`        | The state changed; the listener gets the new state                                                                         |
+| `memoryWarning` | iOS: the system is low on memory; drop caches                                                                              |
+| `focus`, `blur` | Android: `blur` when the user stops interacting (the notification drawer) without a state change, `focus` when they return |
 
 `AppState.currentState` gives the state now; `addEventListener` returns a
 subscription with `remove()`.
@@ -90,12 +91,12 @@ fires `AppState` but not a blur of the screen. A camera screen needs both; see
 
 ### iOS vs Android
 
-|                        | iOS                                                                       | Android                                                           |
-| ---------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Periodic work          | `BGTaskScheduler`: the system picks the time, often at night on a charger | WorkManager: at least 15 min, with constraints                    |
-| The user kills the app | Background tasks stop until the next launch                               | Tasks usually continue; a force stop in Settings stops everything |
-| Vendor differences     | None                                                                      | Some vendors kill background apps aggressively                    |
-| Long-running work      | Only special modes: audio, location, VoIP, navigation                     | A foreground service with a notification                          |
+|                        | iOS                                                                                                                         | Android                                                           |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Periodic work          | `BGTaskScheduler`: the system picks the time, often at night on a charger                                                   | WorkManager: at least 15 min, with constraints                    |
+| The user kills the app | Background tasks stop until the next launch                                                                                 | Tasks usually continue; a force stop in Settings stops everything |
+| Vendor differences     | None                                                                                                                        | Some vendors kill background apps aggressively                    |
+| Long-running work      | Special modes (audio, location, VoIP), background `URLSession` transfers, user-started `BGContinuedProcessingTask` (iOS 26) | A foreground service with a notification                          |
 
 ### Testing a Background Task
 

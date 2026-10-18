@@ -58,8 +58,8 @@ from `Pressable` and `Text`.
 | `{ uri: 'https://…' }`        | **Must be set**: `width` and `height` or `aspectRatio` | Without a size the image has zero size and is not visible |
 | `{ uri: 'data:image/png;…' }` | Must be set                                            | Small inline images                                       |
 
-- `resizeMode`: `cover` (default), `contain`, `stretch`, `repeat`, `center` —
-  like `object-fit`.
+- `resizeMode`: `cover` (default), `contain`, `stretch`, `repeat`, `center`,
+  `none` — like `object-fit`.
 - Cache control is limited: `source.cache` is iOS only; GIF and WebP on Android
   need extra Fresco modules in a bare app.
 - **`expo-image`** is the usual replacement: memory and disk cache
@@ -70,13 +70,13 @@ from `Pressable` and `Text`.
 
 - **Controlled**: `value` + `onChangeText` (receives the string, not an event).
   Use it when the value is validated or formatted on every keystroke.
-- **Uncontrolled**: `defaultValue`, the value is read from `onChangeText` into a
-  ref or on submit; fewer re-renders in large forms.
+- **Uncontrolled**: `defaultValue`; `onChangeText` stores the value in a ref,
+  and it is read on submit. Fewer re-renders in large forms.
 - Keyboard and autofill: `keyboardType` (`email-address`, `number-pad`,
   `decimal-pad`, `phone-pad`), `secureTextEntry` for passwords, `autoComplete`
-  for password managers and SMS codes (`email`, `password`, `new-password`,
-  `one-time-code`; the older iOS-only `textContentType` does the same, do not
-  set both), `autoCapitalize="none"` for emails.
+  for password managers and SMS codes (`email`, `current-password`,
+  `new-password`, `one-time-code`; the older iOS-only `textContentType` does the
+  same, do not set both), `autoCapitalize="none"` for emails.
 - Focus, the next field and the keyboard covering the input:
   [Keyboard Handling](./keyboard.md).
 

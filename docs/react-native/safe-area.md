@@ -15,8 +15,8 @@ bar. The sizes of the covered strips are **insets**. Use
 **`react-native-safe-area-context`**: `SafeAreaProvider` at the root,
 `SafeAreaView` with `edges` for screens, `useSafeAreaInsets()` for custom
 headers and bottom bars. `SafeAreaView` from `react-native` is deprecated and
-works on iOS only. On Android 15+ apps are **edge-to-edge**: content draws under
-the system bars on both platforms, so insets matter on Android too.
+works on iOS only. On Android 15+ apps are **edge-to-edge**, as on iOS: content
+draws under the system bars, so insets matter on Android too.
 
 Applies to: React Native 0.88, Expo SDK 58, react-native-safe-area-context 5.
 
@@ -56,12 +56,14 @@ safe area: see [Keyboard Handling](./keyboard.md).
 
 ### Edge-to-Edge on Android
 
-- Android 15 enforces edge-to-edge for apps targeting API 35; Android 16 removes
-  the opt-out. The app draws under the status bar and the navigation bar, as on
-  iOS.
-- Expo SDK 54+ always runs Android apps edge-to-edge. A bare app enables it with
-  `edgeToEdgeEnabled=true` in `gradle.properties`; React Native 0.86 fixed
-  `KeyboardAvoidingView`, `measureInWindow` and `Dimensions` in this mode.
+- Android 15 enforces edge-to-edge for apps targeting API 35; for apps targeting
+  API 36, Android 16 removes the opt-out. The app draws under the status bar and
+  the navigation bar, as on iOS.
+- Expo SDK 54+ apps are always edge-to-edge on Android 16 (`edgeToEdgeEnabled`
+  still works on older versions). In a bare app `edgeToEdgeEnabled=true` in
+  `gradle.properties` turns it on for older Android versions too; React Native
+  0.86 fixed `KeyboardAvoidingView`, `measureInWindow` and `Dimensions` in this
+  mode.
 - What breaks in an old layout: content and headers slide under the status bar,
   bottom buttons hide behind the navigation bar, and the status bar background
   color can no longer be set. The fix is the same as on iOS: apply insets.
