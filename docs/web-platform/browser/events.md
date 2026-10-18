@@ -51,7 +51,8 @@ button.removeEventListener('click', handleClick, options);
   ancestor in the capturing phase.
 - A **custom event** carries data in `detail`:
   `el.dispatchEvent(new CustomEvent('save', { detail, bubbles: true }))`. It is
-  listened to like any other event.
+  handled with `addEventListener` like a built-in event; without `bubbles: true`
+  it does not bubble, so delegation does not see it.
 
 ### Stopping an Event
 
@@ -91,7 +92,8 @@ Delegation: one handler for all items, including those added later.
 const menu = document.getElementById('menu');
 
 menu.addEventListener('click', (event) => {
-  // event.target can be the <span>, so matches('[data-action]') would fail.  // closest() checks the element itself and then its ancestors.
+  // event.target can be the <span>, so matches('[data-action]') would fail.
+  // closest() checks the element itself and then its ancestors.
   // highlight-next-line
   const item = event.target.closest('[data-action]');
 
@@ -112,9 +114,11 @@ menu.addEventListener('click', (event) => {
 - What if the same handler is added twice? `addEventListener` ignores the
   duplicate (same type, function and `capture`), so it runs once.
 - `input` or `change`? `input` fires on every change of the value; `change` when
-  the value is committed: on blur, Enter or selecting an option.
+  the value is committed: on blur or Enter in a text field, right away for a
+  `<select>` or a checkbox.
 - What is `event.target` for a click inside a Shadow DOM? Outside the shadow
-  tree it is retargeted to the host; `event.composedPath()` gives the real path.
+  tree it is retargeted to the host; `event.composedPath()` gives the full path
+  (for a closed shadow root it stops at the host).
 
 ## Common Mistakes
 
@@ -123,8 +127,9 @@ menu.addEventListener('click', (event) => {
 - Trying to remove a handler by passing a new function that looks the same.
 - Using `event.target.matches()` in delegation: it fails when the click lands on
   a nested element.
-- "`return false` cancels the default action." Only in `onclick="…"` attributes
-  and jQuery; with `addEventListener` call `preventDefault()`.
+- "`return false` cancels the default action." Only in `on…` handlers
+  (`onclick="…"` or `el.onclick`) and in jQuery, where it also stops
+  propagation; with `addEventListener` call `preventDefault()`.
 
 ## See Also
 

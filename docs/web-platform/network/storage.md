@@ -26,28 +26,28 @@ the browser.
 
 A cookie is set by the server with the `Set-Cookie` header or by a script.
 
-| Attribute             | Meaning                                                                                        |
-| --------------------- | ---------------------------------------------------------------------------------------------- |
-| `Expires` / `Max-Age` | lifetime as a date or in seconds. Without them it is a session cookie                          |
-| `Domain`              | not set: only the host that set the cookie. Set: this domain and its subdomains                |
-| `Path`                | the URL path prefix the cookie is sent for                                                     |
-| `Secure`              | sent only over HTTPS                                                                           |
-| `HttpOnly`            | hidden from JavaScript, so a script injected by XSS cannot read it. Only the server can set it |
-| `SameSite`            | whether the cookie is sent with cross-site requests; a defense against CSRF                    |
-| `Partitioned`         | a third-party cookie stored separately for each top-level site (CHIPS). Requires `Secure`      |
+| Attribute             | Meaning                                                                                                       |
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `Expires` / `Max-Age` | lifetime as a date or in seconds. Without them it is a session cookie                                         |
+| `Domain`              | not set: only the host that set the cookie. Set: this domain and its subdomains                               |
+| `Path`                | the URL path prefix the cookie is sent for                                                                    |
+| `Secure`              | sent only over HTTPS                                                                                          |
+| `HttpOnly`            | hidden from JavaScript, so a script injected by XSS cannot read it. Only the server can set it                |
+| `SameSite`            | whether the cookie is sent with cross-site requests; a defense against CSRF                                   |
+| `Partitioned`         | stored separately for each top-level site (CHIPS): one embed on two sites gets two cookies. Requires `Secure` |
 
 `SameSite` values:
 
 - `Strict`: only requests from the same site.
-
-Name prefixes are checked by the browser: a `__Host-` cookie must be `Secure`,
-have `Path=/` and no `Domain`, so a subdomain can't overwrite it; a `__Secure-`
-cookie must be `Secure`. Browsers cap the lifetime of a cookie at 400 days.
-
 - `Lax`: the same, plus top-level navigation from another site with a safe
   method (`GET`), such as a click on a link. A cross-site `POST` form does not
   get the cookie. Chromium browsers use it when the attribute is missing.
 - `None`: all requests, including those from other sites. Requires `Secure`.
+
+Name prefixes are checked by the browser: a `__Host-` cookie must be `Secure`,
+have `Path=/` and no `Domain`, so it is bound to the exact host and a subdomain
+cannot set or shadow it; a `__Secure-` cookie must be `Secure`. Chrome and
+Firefox cap `Expires` / `Max-Age` at 400 days.
 
 A **site** is broader than an origin: it is the scheme and the registrable
 domain. `app.example.com` and `api.example.com` are different origins but the
@@ -149,7 +149,7 @@ window.addEventListener('storage', (event) => {
   `Domain`.
 - What happens when the quota is exceeded? `setItem` throws
   `QuotaExceededError`, so writes go in `try` / `catch`.
-- When to use IndexedDB? For large, structured or binary data. It is
+- When do you use IndexedDB? For large, structured or binary data. It is
   asynchronous and, unlike Web Storage, available in workers; usually used
   through `idb` or Dexie.
 
@@ -161,8 +161,8 @@ window.addEventListener('storage', (event) => {
 - "`sessionStorage` is shared between tabs." Every tab has its own.
 - Storing an object without `JSON.stringify`: the value becomes
   `'[object Object]'`.
-- Deleting a cookie with `document.cookie = 'name='`: that sets an empty value.
-  Deletion is `max-age=0` with the same `path` and `domain`.
+- Deleting a cookie with `document.cookie = 'name='`: that sets an empty value
+  instead.
 
 ## See Also
 

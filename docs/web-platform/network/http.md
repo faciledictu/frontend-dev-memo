@@ -36,13 +36,16 @@ encrypted and the server proves its identity with a certificate.
 - Idempotency matters for retries: an idempotent request can be repeated after a
   network failure, a `POST` can create a duplicate.
 
+Headers worth naming: `Content-Type`, `Accept`, `Authorization`, `Cookie` /
+`Set-Cookie`, `Location`, `Cache-Control`, `Content-Encoding`.
+
 ### Status Codes
 
 | Group | Meaning       | Codes worth remembering                                                                                          |
 | ----- | ------------- | ---------------------------------------------------------------------------------------------------------------- |
 | `1xx` | Informational | `101 Switching Protocols` (WebSocket)                                                                            |
 | `2xx` | Success       | `200 OK`, `201 Created`, `204 No Content`                                                                        |
-| `3xx` | Redirection   | `301 Moved Permanently`, `302 Found`, `304 Not Modified`, `307`, `308`                                           |
+| `3xx` | Redirection   | `301 Moved Permanently`, `302 Found`, `304 Not Modified`, `307 Temporary Redirect`, `308 Permanent Redirect`     |
 | `4xx` | Client error  | `400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, `404 Not Found`, `409 Conflict`, `429 Too Many Requests` |
 | `5xx` | Server error  | `500 Internal Server Error`, `502 Bad Gateway`, `503 Service Unavailable`, `504 Gateway Timeout`                 |
 
@@ -51,8 +54,6 @@ encrypted and the server proves its identity with a certificate.
 - `301` and `302` allow the client to change `POST` to `GET`; `308` and `307`
   are their counterparts that keep the method.
 - `304` has no body: the client uses its cached copy.
-- Headers worth naming: `Content-Type`, `Accept`, `Authorization`, `Cookie` /
-  `Set-Cookie`, `Location`, `Cache-Control`, `Content-Encoding`.
 
 ### Caching
 
@@ -142,13 +143,15 @@ try {
   [How the Browser Works](../browser/browser-workflow.md).
 - What happened to HTTP/2 Server Push? Browsers removed it; `103 Early Hints`
   and `<link rel="preload">` replaced it.
-- `fetch` or axios? axios is built on XHR (upload progress), rejects on non-2xx
-  statuses, parses JSON and has interceptors. `fetch` is built in and supports
-  streams, but `response.ok` and timeouts are checked by hand.
-- How to make a `POST` retry safe? An `Idempotency-Key` header: the server
-  stores the result per key and returns it again for a repeated request.
-- What is `stale-while-revalidate`? The cache returns the stale copy at once and
-  refreshes it in the background: `max-age=60, stale-while-revalidate=600`.
+- `fetch` or axios? axios uses XHR in the browser by default (so it reports
+  upload progress), rejects on non-2xx statuses, parses JSON and has
+  interceptors. `fetch` is built in and supports streams, but `response.ok` is
+  checked by hand and a timeout is set with `AbortSignal.timeout()`.
+- How do you make a `POST` safe to retry? An `Idempotency-Key` header: the
+  server stores the result per key and returns it again for a repeated request.
+- What is `stale-while-revalidate`? After `max-age` runs out, the cache serves
+  the stale copy during the `stale-while-revalidate` window and revalidates it
+  in the background: `max-age=60, stale-while-revalidate=600`.
 
 ## Common Mistakes
 
@@ -157,9 +160,9 @@ try {
 - "HTTP is a text protocol." Only HTTP/1.x; HTTP/2 and HTTP/3 are binary.
 - "`fetch` throws on `404`." It does not; check `response.ok`.
 - "`no-cache` forbids caching." That is `no-store`.
-- "No `Cache-Control` means no caching." Without it the browser caches
-  heuristically, based on `Last-Modified`; opt out with `no-store` or
-  `no-cache`.
+- "No `Cache-Control` means no caching." Without `Cache-Control` or `Expires`, a
+  response with `Last-Modified` is cached heuristically. Set `Cache-Control`
+  explicitly: `no-cache` to revalidate, `no-store` to not store.
 
 ## See Also
 

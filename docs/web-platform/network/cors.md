@@ -30,7 +30,7 @@ The policy limits **reading** from scripts. Embedding (`<img>`, `<script>`,
 is why [CSRF](../security/csrf.md) attacks are possible.
 
 The policy also keeps windows and iframes of different origins out of each
-other's DOM; they talk through `window.postMessage`.
+other's DOM.
 
 ### Simple Requests and Preflight
 
@@ -50,14 +50,14 @@ other's DOM; they talk through `window.postMessage`.
 
 ### Response Headers
 
-| Header                             | Meaning                                             |
-| ---------------------------------- | --------------------------------------------------- |
-| `Access-Control-Allow-Origin`      | the allowed origin, or `*` for any                  |
-| `Access-Control-Allow-Methods`     | methods allowed for the actual request (preflight)  |
-| `Access-Control-Allow-Headers`     | request headers allowed (preflight)                 |
-| `Access-Control-Allow-Credentials` | `true` allows requests with cookies                 |
-| `Access-Control-Max-Age`           | for how many seconds to cache the preflight result  |
-| `Access-Control-Expose-Headers`    | response headers that the script is allowed to read |
+| Header                             | Meaning                                                                                     |
+| ---------------------------------- | ------------------------------------------------------------------------------------------- |
+| `Access-Control-Allow-Origin`      | the allowed origin, or `*` for any                                                          |
+| `Access-Control-Allow-Methods`     | methods allowed for the actual request (preflight)                                          |
+| `Access-Control-Allow-Headers`     | request headers allowed (preflight)                                                         |
+| `Access-Control-Allow-Credentials` | `true` allows requests with cookies                                                         |
+| `Access-Control-Max-Age`           | seconds to cache the preflight result; 5 by default, capped by browsers (2 hours in Chrome) |
+| `Access-Control-Expose-Headers`    | response headers that the script is allowed to read                                         |
 
 ### Credentials
 
@@ -109,13 +109,15 @@ Access-Control-Max-Age: 600
 - Are `https://example.com` and `https://api.example.com` the same? They are
   different origins, but the same **site**, which is what `SameSite` cookies
   look at.
-- How do a page and a cross-origin iframe talk? `postMessage`, with a check of
-  `event.origin` on the receiving side.
-- Do `<img>`, `<script>` and fonts need CORS? Embedding does not, reading does:
-  a cross-origin image taints a `<canvas>`, while web fonts and module scripts
-  require CORS headers. The `crossorigin` attribute makes an element use CORS.
-- How long is a preflight cached? `Access-Control-Max-Age`, 5 seconds by
-  default; browsers cap it (Chrome at 2 hours).
+- How do a page and a cross-origin iframe talk?
+  `postMessage(data, targetOrigin)` with an exact target origin, and a check of
+  `event.origin` in the `message` handler.
+- Do `<img>`, `<script>` and fonts need CORS? `<img>` and classic scripts embed
+  without it; web fonts and module scripts are always fetched with CORS. A
+  non-CORS image can be drawn on a `<canvas>` but taints it: `getImageData()`
+  throws. The `crossorigin` attribute switches an element to a CORS request.
+- How long is a preflight cached? For `Access-Control-Max-Age` seconds, 5 by
+  default.
 
 ## Common Mistakes
 
@@ -128,8 +130,6 @@ Access-Control-Max-Age: 600
   credentials.
 - Setting `Access-Control-Allow-Origin` as a request header in `fetch`: it is a
   response header, and the extra header only triggers a preflight.
-- "`mode: 'no-cors'` fixes it." The response becomes opaque: the script can't
-  read it.
 
 ## See Also
 

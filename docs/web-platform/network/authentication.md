@@ -27,13 +27,13 @@ recognized on every request either by a **server session** or by a signed
 
 - A JWT is three base64url parts, `header.payload.signature`. The header names
   the algorithm: `HS256` (a shared secret) or `RS256` / `ES256` (a key pair).
-  Standard claims: `sub`, `exp`, `iat`, `iss`, `aud`.
+  Registered claims include `sub`, `exp`, `iat`, `iss`, `aud`.
 - A JWT is **signed, not encrypted**: anyone can decode and read the payload, so
   it must not contain secrets.
 - Because a JWT is hard to revoke, the **access token** is made short-lived
   (minutes) and is renewed with a long-lived **refresh token** that the server
-  can revoke. With **rotation** every refresh issues a new refresh token, and
-  reuse of an old one revokes them all.
+  can revoke. With **rotation**, every refresh issues a new refresh token; reuse
+  of an old one signals a leak, and the server revokes the whole chain.
 
 ### Where to Keep the Token in the Browser
 
@@ -45,8 +45,8 @@ recognized on every request either by a **server session** or by a signed
 
 The usual recommendation is an `HttpOnly; Secure; SameSite` cookie. See
 [Browser Storage](./storage.md#cookie-attributes). In the **BFF** (backend for
-frontend) pattern a server proxy keeps the OAuth tokens and gives the SPA a
-plain session cookie, so no token reaches the browser.
+frontend) pattern a server proxy keeps the OAuth tokens and gives the SPA an
+`HttpOnly` session cookie, so no token reaches the browser.
 
 ### Ways to Authenticate
 
@@ -78,7 +78,7 @@ plain session cookie, so no token reaches the browser.
 
 ## Example
 
-A decoded JWT:
+A JWT and its decoded header and payload:
 
 ```text
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MiIsImV4cCI6MTc5MjAwMDAwMH0.<signature>
@@ -87,7 +87,8 @@ header:  { "alg": "HS256", "typ": "JWT" }
 payload: { "sub": "42", "exp": 1792000000 }
 ```
 
-A `fetch` wrapper that refreshes the session once on `401` and retries:
+A `fetch` wrapper for a cookie-based session that refreshes once on `401` and
+retries:
 
 ```javascript
 let refreshing = null;
@@ -127,21 +128,22 @@ async function apiFetch(url, options) {
 - What does the server check in a JWT? The signature with the expected algorithm
   (`alg: none` is rejected), then `exp`, `iss` and `aud`. The payload is trusted
   only after that.
-- What is PKCE for? An intercepted authorization code is useless without the
-  `code_verifier` that only the client knows, so a public client needs no
-  secret.
+- What is PKCE for? The client sends a hash of a random `code_verifier` with the
+  authorization request and the verifier itself with the code exchange, so an
+  intercepted code is useless. It is required for public clients (SPAs, mobile
+  apps), which cannot keep a secret.
 - How does the client handle a `401`? Refresh once (one refresh for parallel
-  requests), retry, and on a second `401` drop the session and go to the login
-  page.
+  requests), retry, and if the refresh fails, drop the session and go to the
+  login page.
 
 ## Common Mistakes
 
 - "A JWT is encrypted." It is only signed; the payload is readable.
 - "OAuth is an authentication protocol." It is about authorization;
   authentication is added by OpenID Connect.
-- Checking rights only on the client.
-- Using the claims of a JWT decoded on the client for access decisions. They are
-  fine for the UI; the server verifies the signature and the rights.
+- Checking rights only on the client, for example from the claims of a decoded
+  JWT: they are fine for the UI, but the server verifies the signature and the
+  rights.
 
 ## See Also
 

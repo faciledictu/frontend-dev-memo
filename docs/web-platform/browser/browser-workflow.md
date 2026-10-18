@@ -39,10 +39,12 @@ What happens after a user enters a URL:
    attributes is **parser-blocking**: the parser stops until the script is
    downloaded and executed, and the script itself waits for the stylesheets
    above it. `defer` and `type="module"` scripts are downloaded in parallel and
-   run after parsing; an `async` script runs as soon as it arrives and pauses
-   the parser then. See [HTML](../../html-css/html.md#loading-scripts).
-2. **Parse CSS → CSSOM**, in parallel with the HTML. CSS is **render-blocking**:
-   nothing is painted until the styles found so far are loaded and parsed.
+   run after parsing; an `async` script runs as soon as it is downloaded,
+   pausing the parser while it runs. See
+   [HTML](../../html-css/html.md#loading-scripts).
+2. **Parse CSS → CSSOM.** Stylesheets download while the HTML is parsed. CSS is
+   **render-blocking**: nothing is painted until the styles found so far are
+   loaded and parsed.
 3. **Style.** The DOM and the CSSOM are combined into the **render tree**: only
    the nodes that take part in rendering, with their computed styles.
    `display: none` elements are not in it.
@@ -52,8 +54,9 @@ What happens after a user enters a URL:
    and off the main thread.
 
 While the parser waits for a script, the **preload scanner** reads the rest of
-the HTML and starts downloading the resources it finds. Resources whose URL is
-built by JavaScript or CSS are discovered late.
+the HTML and starts downloading the resources it finds. Resources referenced
+only from JavaScript or CSS (an injected script, a `background-image`, a font)
+are invisible to it and are discovered late.
 
 `DOMContentLoaded` fires when the HTML is parsed and deferred scripts have run;
 `load` fires when all resources, including images, are loaded.
@@ -103,9 +106,9 @@ for (const item of items) {
 - What is the difference between `display: none` and `visibility: hidden`? The
   first removes the element from the render tree; the second keeps its place in
   the layout, but it is not painted.
-- How does JavaScript fit into rendering? The browser renders once per frame
-  (about every 16.7 ms at 60 Hz), between tasks, after `requestAnimationFrame`
-  callbacks. A long task delays the next frame. See
+- How does JavaScript fit into rendering? The browser renders at most once per
+  frame (about every 16.7 ms at 60 Hz), between tasks, after
+  `requestAnimationFrame` callbacks. A long task delays the next frame. See
   [Event Loop](../../javascript/event-loop.md).
 - Why not give every element its own layer with `will-change`? Each layer costs
   GPU memory and compositing work; it is for elements that actually animate.
@@ -117,7 +120,8 @@ for (const item of items) {
 - "Any style change causes a reflow." Changes of `transform` and `opacity` can
   be handled by the compositor alone.
 - "Every request opens a new TCP connection." Connections are reused
-  (keep-alive), and HTTP/2 sends all requests over one.
+  (keep-alive), and HTTP/2 multiplexes all requests to an origin over one
+  connection.
 
 ## See Also
 

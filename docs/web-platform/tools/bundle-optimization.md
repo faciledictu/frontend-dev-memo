@@ -27,8 +27,9 @@ Applies to: Vite 8, webpack 5.
   `webpack-bundle-analyzer` for webpack, `rollup-plugin-visualizer` for Vite and
   Rollup (it also supports Rolldown), `source-map-explorer` for any bundler that
   emits source maps.
-- Look for **duplicate dependencies**: two versions of one library appear twice
-  in the treemap; `pnpm why` shows who pulls them in.
+- Look for **duplicate dependencies**: the same library appears twice in the
+  treemap in two versions; `pnpm why <name>` shows which packages pull each one
+  in.
 
 ### Tree Shaking
 
@@ -59,9 +60,10 @@ How the import style affects the bundle, with Lodash as an example:
 - In React, `lazy` together with `Suspense` loads a component on first render.
   Routers can load routes lazily, see
   [Routing](../../react/ecosystem/routing.md).
-- Vite adds `<link rel="modulepreload">` for the dependencies of a chunk when it
-  is requested. A chunk for likely navigation is prefetched with
-  `/* webpackPrefetch: true */` in webpack or `<link rel="prefetch">`.
+- When a dynamic `import()` runs, Vite preloads the chunk's dependencies in
+  parallel (`<link rel="modulepreload">`) instead of in a waterfall. A chunk for
+  likely navigation is prefetched with `/* webpackPrefetch: true */` in webpack
+  or `<link rel="prefetch">`.
 - Dependencies that rarely change can go into a separate **vendor chunk**
   (`splitChunks` in webpack, `codeSplitting` in Rolldown and Vite 8,
   `manualChunks` in Rollup and Vite 7), so that the browser keeps it cached
@@ -98,14 +100,16 @@ function Dashboard() {
 - Why does tree shaking not work for a library? It is published as CommonJS, or
   its modules have side effects and it does not declare `sideEffects`.
 - What is the downside of code splitting? More requests and a delay when a chunk
-  is needed for the first time; chunks for likely navigation are prefetched.
+  is needed for the first time, unless it is prefetched.
 - How do you find out what made the bundle bigger? Compare analyzer reports
   before and after the change.
-- Tree shaking or dead code elimination? Tree shaking drops unused exports; the
-  minifier drops unreachable code (`if (false)`, a `process.env.NODE_ENV` check
-  after it is replaced). Both work only in the production build.
+- Tree shaking or dead code elimination? Tree shaking drops unused exports; dead
+  code elimination drops unreachable code: once the bundler replaces
+  `process.env.NODE_ENV` with `"production"`, a dev-only branch becomes
+  `if (false)` and is removed. Both run by default only in production builds.
 - How do you keep the bundle from growing back? A size budget in CI
-  (`size-limit`, Lighthouse budgets) and an analyzer diff on pull requests.
+  (`size-limit`, Lighthouse CI assertions) and an analyzer diff on pull
+  requests.
 
 ## Common Mistakes
 
@@ -115,8 +119,8 @@ function Dashboard() {
 - Importing through barrel files (`index.ts` that re-exports everything): a
   barrel that re-exports CommonJS modules or modules with side effects defeats
   tree shaking.
-- Lazy-loading every component: dozens of tiny chunks load in a waterfall. Split
-  by route and by heavy, rarely used components.
+- Lazy-loading every component: many tiny requests, and nested lazy components
+  load in a waterfall.
 
 ## See Also
 
