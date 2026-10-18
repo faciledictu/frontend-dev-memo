@@ -24,13 +24,13 @@ Applies to: npm 12, pnpm 12, Yarn 4, Bun 1.4.
 
 ### Comparison
 
-|                               | npm                            | pnpm                                                                      | Yarn 4                                                           | Bun                                           |
-| ----------------------------- | ------------------------------ | ------------------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------- |
-| Lockfile                      | `package-lock.json`            | `pnpm-lock.yaml`                                                          | `yarn.lock`                                                      | `bun.lock`                                    |
-| `node_modules`                | Flat (hoisted)                 | Symlinks into `node_modules/.pnpm`, files hard-linked from a global store | None (PnP) or `nodeLinker`                                       | Hoisted; isolated in new workspaces           |
-| Phantom dependencies          | Possible                       | Not possible for your own code                                            | Not possible with PnP                                            | Possible when hoisted                         |
-| Workspaces                    | `workspaces` in `package.json` | `pnpm-workspace.yaml`                                                     | `workspaces` in `package.json`                                   | `workspaces` in `package.json`                |
-| Dependencies' install scripts | Off by default, `allowScripts` | Off by default, `allowBuilds`                                             | `enableScripts: false` by default since 4.14, `dependenciesMeta` | A built-in allowlist or `trustedDependencies` |
+|                               | npm                            | pnpm                                                                      | Yarn 4                                                          | Bun                                           |
+| ----------------------------- | ------------------------------ | ------------------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------- |
+| Lockfile                      | `package-lock.json`            | `pnpm-lock.yaml`                                                          | `yarn.lock`                                                     | `bun.lock`                                    |
+| `node_modules`                | Flat (hoisted)                 | Symlinks into `node_modules/.pnpm`, files hard-linked from a global store | None (PnP) or `nodeLinker`                                      | Hoisted; isolated in new workspaces           |
+| Phantom dependencies          | Possible                       | Not possible for your own code                                            | Not possible with PnP                                           | Possible when hoisted                         |
+| Workspaces                    | `workspaces` in `package.json` | `pnpm-workspace.yaml`                                                     | `workspaces` in `package.json`                                  | `workspaces` in `package.json`                |
+| Dependencies' install scripts | Off by default, `allowScripts` | Off by default, `allowBuilds`                                             | Off by default since 4.14 (`enableScripts`), `dependenciesMeta` | A built-in allowlist or `trustedDependencies` |
 
 A **phantom dependency** is a package the code imports without declaring it,
 which works only because a flat `node_modules` hoisted it from someone else's
@@ -63,16 +63,14 @@ does not match `package.json`; `npm install` may update the lockfile. The
 For `0.x` versions `^` is stricter: `^0.2.3` means `>=0.2.3 <0.3.0`, and
 `^0.0.3` allows only `0.0.3`.
 
-Node.js 24 and 26 bundle npm 11; npm 12 is installed with `npm install -g npm`.
-
 ### Dependency Types
 
 - **`dependencies`**: needed at runtime; installed for the consumers of a
   library.
 - **`devDependencies`**: build, test and lint tools; not installed for
   consumers. In an app that is bundled, the split is a convention.
-- **`optionalDependencies`**: installed if possible, and the install does not
-  fail without them: platform-specific binaries such as `@esbuild/*`.
+- **`optionalDependencies`**: installed when possible; the install does not fail
+  if they cannot be: platform-specific binaries such as `@esbuild/*`.
 - **`peerDependencies`**: the host package must provide it (a React component
   library declares `react`), so the app has one copy. npm 7+ and pnpm install
   missing peers automatically.
@@ -100,9 +98,10 @@ Node.js 24 and 26 bundle npm 11; npm 12 is installed with `npm install -g npm`.
 
 `preinstall`, `install` and `postinstall` scripts of dependencies run arbitrary
 code on install, a common supply-chain attack vector. npm 12, pnpm 10+ and Yarn
-4.14+ no longer run them by default; the npm 11 bundled with Node.js 24 still
-does. Approve the packages that need them (native builds like `sharp`, binary
-downloaders like Playwright) and commit the allowlist:
+4.14+ no longer run them by default; the npm 11 bundled with Node.js 24 and 26
+still does (upgrade with `npm install -g npm@12`). Approve the packages that
+need them (native builds like `sharp`, binary downloaders like Playwright) and
+commit the allowlist:
 
 | Manager | Approve                  | Where the allowlist lives                                                                  |
 | ------- | ------------------------ | ------------------------------------------------------------------------------------------ |
@@ -117,8 +116,10 @@ downloaders like Playwright) and commit the allowlist:
 {
   "packageManager": "pnpm@12.11.2",
   "dependencies": {
-    "react": "^19.3.0",
     "date-fns": "~4.1.0"
+  },
+  "devDependencies": {
+    "react": "^19.3.0"
   },
   "peerDependencies": {
     "react": ">=18"
@@ -127,7 +128,7 @@ downloaders like Playwright) and commit the allowlist:
 ```
 
 ```yaml title="pnpm-workspace.yaml"
-# Wait a week before installing freshly published versions
+# In minutes: wait a week before installing new versions
 minimumReleaseAge: 10080
 
 # Install scripts allowed (true) or explicitly skipped (false)
@@ -149,17 +150,20 @@ allowBuilds:
   `resolutions` (Yarn), `overrides` in `pnpm-workspace.yaml`: a vulnerable
   transitive package is replaced without waiting for its parents.
 - How do you protect against a malicious new version? Install from the lockfile
-  in CI, keep install scripts blocked and set a minimum release age
-  (`minimumReleaseAge` in pnpm), plus `npm audit`.
-- `pnpm dlx` or `pnpm exec`? `dlx` (like `npx`) downloads a package and runs it;
-  `exec` runs a binary already installed in the project.
+  in CI, keep install scripts blocked and keep a minimum release age:
+  `minimumReleaseAge` in pnpm (one day by default since pnpm 11),
+  `min-release-age` in npm, `npmMinimalAgeGate` in Yarn.
+- `pnpm dlx` or `pnpm exec`? `dlx` downloads a package to a temporary location
+  and runs it; `exec` runs a binary already installed in the project (`npx` does
+  either).
 
 ## Common Mistakes
 
 - `npm install` in CI instead of `npm ci`.
 - Deleting the lockfile to "fix" an install problem: all versions drift at once.
 - Mixing package managers in one repository and committing two lockfiles.
-- A range in `packageManager` (`pnpm@^12`): the field takes an exact version.
+- A range in `packageManager` (`pnpm@^12`): it takes an exact version; a range
+  goes in `devEngines.packageManager`.
 
 ## See Also
 

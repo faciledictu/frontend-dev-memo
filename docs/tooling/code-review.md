@@ -59,18 +59,20 @@ correctness, design and readability. Good reviews are **small**, **fast** and
   writes down a convention.
 - How big should a pull request be? Small enough to review in one sitting; split
   refactoring and feature work into separate pull requests.
-- What is `CODEOWNERS`? A file that maps paths to owners; GitHub and GitLab
-  request their review automatically, and branch protection can require it.
-- How to review a change that is too big? Ask for stacked PRs (small branches,
-  each on top of the previous), or review commit by commit if the commits are
-  clean.
+- What is `CODEOWNERS`? A file that maps paths to owners; GitHub requests their
+  review automatically, GitLab (Premium) adds them as required approvers, and
+  branch protection can require their approval.
+- How to review a change that is too big? Ask for stacked PRs (a chain of small
+  PRs, each based on the previous one's branch), or review commit by commit if
+  the commits are clean.
 
 ## Common Mistakes
 
 - Treating review as a gate for finding blame rather than a shared
   responsibility for the code.
 - Approving without reading because the change is large.
-- Reviewing only the diff of a risky UI change without running the branch.
+- Reviewing only the diff of a risky UI change without running it locally or
+  opening its preview deployment.
 
 ## See Also
 

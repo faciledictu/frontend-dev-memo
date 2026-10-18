@@ -105,12 +105,12 @@ git cherry-pick 3f2a9c1 8b47de0
 - What is `git pull --rebase`? `fetch` + `rebase` of local commits on top of the
   remote branch instead of `fetch` + `merge`; avoids "Merge branch 'main' of …"
   commits.
-- When do you prefer a squash merge? Noisy work-in-progress commits, one commit
-  per PR on `main`, an easy revert; the price is the lost per-commit history for
-  `bisect` and `blame`.
+- When do you prefer a squash merge? When the branch has noisy work-in-progress
+  commits: one commit per PR on `main`, easy to revert; the price is the lost
+  per-commit history for `bisect` and `blame`.
 - What does `git rebase --onto` do? Replays a range onto another base:
-  `git rebase --onto main feature-a feature-b` moves `feature-b` from
-  `feature-a` to `main`.
+  `git rebase --onto main feature-a feature-b` replays the commits of
+  `feature-b` that are not in `feature-a` onto `main`.
 
 ## Common Mistakes
 
@@ -118,9 +118,9 @@ git cherry-pick 3f2a9c1 8b47de0
 - Rebasing `main` or another shared branch and force-pushing it.
 - Thinking rebase "loses" commits: the old ones stay reachable through
   `git reflog` until garbage collection.
-- Resolving rebase conflicts with `--ours` / `--theirs` as in a merge: in a
-  rebase the sides are swapped, `ours` is the branch being rebased onto,
-  `theirs` is your commit.
+- Assuming `--ours` means your changes during a rebase: the sides are swapped;
+  `ours` is the upstream plus the commits replayed so far, `theirs` is your
+  commit being replayed.
 
 ## See Also
 

@@ -292,8 +292,6 @@ console.log(await withRetry(flaky)(), calls); // ok 3
 - Mixing up Adapter, Decorator and Proxy: they differ in what happens to the
   interface.
 - Reaching for a pattern first and looking for a problem second.
-- Calling JavaScript's prototype chain "the Prototype pattern": the GoF pattern
-  copies an instance, prototypes delegate.
 
 ## See Also
 

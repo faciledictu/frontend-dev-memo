@@ -74,11 +74,12 @@ Per the Scrum Guide (2020 edition):
   sprint; used to plan the next sprints, not to compare teams.
 - What is the Definition of Done? A shared checklist an increment must meet:
   reviewed, tested, documented, deployed to staging.
-- What if the sprint scope turns out too big? The scope is renegotiated with the
-  Product Owner while the Sprint Goal stays; only the Product Owner can cancel a
-  Sprint.
-- What is backlog refinement? Ongoing work of splitting and estimating upcoming
-  items, so that Sprint Planning is short; it is not a Scrum event.
+- What if the Sprint scope turns out to be too big? The scope is renegotiated
+  with the Product Owner while the Sprint Goal stays; a Sprint is cancelled only
+  when its goal becomes obsolete, and only by the Product Owner.
+- What is backlog refinement? The ongoing work of splitting upcoming items and
+  adding detail and size, so they are ready for Sprint Planning; it is not a
+  Scrum event.
 
 ## Common Mistakes
 
@@ -87,7 +88,8 @@ Per the Scrum Guide (2020 edition):
 - "Development Team" and "ceremonies": the 2020 Scrum Guide says Developers and
   events.
 - Treating the Daily Scrum as a status report to the manager: it is the
-  Developers' plan for the day.
+  Developers' check of progress toward the Sprint Goal and their plan for the
+  next day.
 
 ## See Also
 

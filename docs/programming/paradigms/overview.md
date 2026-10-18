@@ -107,9 +107,9 @@ console.log(names, activeNames); // [ 'ALICE', 'CAROL' ] [ 'ALICE', 'CAROL' ]
   imperative.
 - Saying that declarative code has no imperative parts: they are hidden in the
   library, not removed.
-- "JavaScript is not OOP because it has no real classes." It is object-oriented
-  through prototypes; `class` is syntax on top, see
-  [OOP Principles](./oop-principles.md).
+- "JavaScript is not OOP because it has no real classes." It supports OOP
+  through prototypes (it is multi-paradigm); `class` is mostly syntax on top,
+  see [OOP Principles](./oop-principles.md).
 
 ## See Also
 

@@ -353,13 +353,13 @@ console.log(fibSlow(20), fib(20), fib(50)); // 6765 6765 12586269025
 - When is a linked list better than an array? When elements are often inserted
   or removed in the middle at a known position, and access by index is rare. In
   practice JS arrays win in most cases because of memory locality.
-- What is the complexity of `arr.filter(…).map(…).reduce(…)`? O(n) each, O(n) in
-  total: chaining is not nesting. It becomes O(n²) only when a scan (`includes`,
-  `find`) runs inside a callback.
-- How to find the k-th largest element? Sorting: O(n log n); a heap of size k:
-  O(n log k); quickselect: O(n) on average.
+- What is the complexity of `arr.filter(…).map(…).reduce(…)`? O(_n_): passes in
+  sequence add up, they do not multiply.
+- How to find the k-th largest element? Sorting: O(_n_ log _n_); a min-heap of
+  size _k_: O(_n_ log _k_); quickselect: O(_n_) on average, O(_n_²) in the worst
+  case.
 - How to make a queue with O(1) dequeue in JavaScript? A head index over an
-  array (as in the BFS example), two stacks or a linked list; `shift()` is O(n).
+  array, a linked list or a ring buffer: O(1); two stacks: O(1) amortized.
 
 ## Common Mistakes
 
@@ -369,8 +369,6 @@ console.log(fibSlow(20), fib(20), fib(50)); // 6765 6765 12586269025
   loop turn O(_n_) into O(_n_²).
 - Saying a linked list inserts in O(1) without adding "at a known node".
 - Sorting numbers with `sort()` without a comparator.
-- Confusing the heap data structure with the heap in memory management: they are
-  unrelated.
 
 ## See Also
 

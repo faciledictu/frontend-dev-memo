@@ -27,11 +27,9 @@ cart" are not pure: the answer depends on when you ask, or the action changes
 something.
 
 ```javascript
-// correct-next-line
 const add = (a, b) => a + b; // pure: depends only on a and b
 
 let count = 0;
-// error-next-line
 const increment = () => ++count; // impure: changes count outside
 
 console.log(add(2, 3), add(2, 3)); // 5 5
@@ -93,13 +91,11 @@ whether **what it refers to can change**:
 const hypotenuse = (a, b) => Math.sqrt(a * a + b * b);
 
 // Pure: x is captured in a closure, but never changes
-// correct-next-line
 const makeAdder = (x) => (y) => x + y;
 const add5 = makeAdder(5);
 
 // Impure: the captured variable is reassigned
 let rate = 1.2;
-// error-next-line
 const withTax = (price) => price * rate;
 
 console.log(hypotenuse(3, 4), add5(2), add5(2)); // 5 7 7
@@ -347,11 +343,12 @@ console.log(city(2)); // Maybe { value: undefined }
   console.log(square(4), square(4)); // 16 16 — computed once
   ```
 
-- What is point-free style? Defining a function as a composition without naming
-  its argument: `const getNames = map(prop('name'))`. Readable in small doses.
+- What is point-free style? Defining a function without naming its arguments, by
+  combining other functions: `const getNames = map(prop('name'))` with Ramda's
+  curried helpers. Readable in small doses.
 - How does FP handle errors without exceptions? The function returns a result
-  type (`Either` / `Result`: `{ ok, value }` or `{ ok, error }`) that is chained
-  like `Maybe`; a thrown exception is a side effect.
+  type (`Either` / `Result`: `{ ok: true, value }` or `{ ok: false, error }`)
+  that is chained like `Maybe`; a thrown exception is a side effect.
 
 ## Common Mistakes
 
@@ -359,11 +356,10 @@ console.log(city(2)); // Maybe { value: undefined }
   deterministic.
 - Mixing up currying and partial application.
 - Thinking `const` or `Object.freeze` makes nested data immutable.
-- Calling `forEach` that pushes into an outer array "functional".
+- Calling `forEach` that pushes into an outer array "functional", or using `map`
+  as a loop and ignoring its result.
 - Saying that FP means "no state": state exists, but it is passed and returned
   explicitly instead of being changed in place.
-- Using `map` as a loop and ignoring its result (that is `forEach`), or
-  `forEach` where a new value is needed.
 
 ## See Also
 

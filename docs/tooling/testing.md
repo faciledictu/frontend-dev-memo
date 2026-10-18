@@ -160,8 +160,8 @@ Feature: User Login
   harmful for whole components, whose snapshots get updated with `-u` without
   being read.
 - What is mutation testing? A tool (Stryker) changes the code (`>` → `>=`) and
-  checks that some test fails; it measures whether tests assert anything, which
-  coverage does not.
+  checks that some test fails; it measures whether the tests detect a change in
+  behavior, which coverage cannot.
 
 ## Common Mistakes
 
@@ -170,7 +170,6 @@ Feature: User Login
 - Tests that depend on each other or on execution order.
 - Calling any test with a mock a "unit test": a component test with a real store
   and children is an integration test.
-- Snapshot tests of whole components, updated blindly with `-u`.
 
 ## See Also
 

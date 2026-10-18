@@ -117,16 +117,13 @@ git stash pop
   checking out a tag or a hash); commits made there stay only in the reflog
   unless you create a branch with `git switch -c`.
 - What is `git worktree`? Several working directories for one repository
-  (`git worktree add ../hotfix main`), so a hotfix needs no stash or branch
-  switch.
+  (`git worktree add -b hotfix ../hotfix main`), so a hotfix needs no stash or
+  branch switch.
 
 ## Common Mistakes
 
-- `git reset --hard` to undo a commit already pushed to a shared branch: use
-  `git revert`.
-- Lightweight tags for releases: they have no author, date or message.
-- `git pull` with uncommitted changes, then fighting the merge: commit or stash
-  first.
+- `git pull` with uncommitted changes: a conflicting merge over them is hard to
+  back out of; commit or stash first, or use `git pull --autostash`.
 
 ## See Also
 

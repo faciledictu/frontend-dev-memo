@@ -216,12 +216,13 @@ console.log(counter.increment()); // 2
 - Is OOP possible without classes? Yes: JavaScript objects with methods and
   closures, or prototypes via `Object.create`, give encapsulation and
   polymorphism without `class`.
-- How to reuse behavior from several sources with single inheritance? Mixins: a
-  class factory `const Serializable = (Base) => class extends Base { … }`, or
-  composition, which is usually cleaner.
-- What does `instanceof` check? Whether `Class.prototype` is in the object's
-  prototype chain, so it fails across realms (iframes) and for duck-typed
-  objects, see [Prototypes](../../javascript/prototypes.md).
+- What is a mixin? A class factory
+  `const Serializable = (Base) => class extends Base { … }` that adds behavior
+  to any base class.
+- What does `instanceof` check? By default, whether `Class.prototype` is in the
+  object's prototype chain (`static [Symbol.hasInstance]` can override it), so
+  it fails across realms (iframes; use `Array.isArray`) and for duck-typed
+  objects. See [Prototypes](../../javascript/prototypes.md).
 
 ## Common Mistakes
 
@@ -231,8 +232,9 @@ console.log(counter.increment()); // 2
 - Calling a component that wraps another component "inheritance": that is
   composition.
 - Building deep hierarchies for code reuse where a function or a hook would do.
-- "Polymorphism is method overloading." JavaScript has no overloading; in OOP
-  polymorphism means one call and a different method for each object.
+- Equating polymorphism with overloading: overloading is ad hoc polymorphism; in
+  OOP "polymorphism" usually means subtype polymorphism, a method chosen by the
+  object at runtime.
 
 ## See Also
 

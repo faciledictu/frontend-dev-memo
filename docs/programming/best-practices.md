@@ -16,7 +16,7 @@ Code is read far more often than it is written, so the goal is code that is
 - **DRY** (Don't Repeat Yourself): each piece of knowledge lives in one place.
 - **KISS** (Keep It Simple, Stupid): the simplest solution that works.
 - **YAGNI** (You Aren't Gonna Need It): do not build what is not needed yet.
-- _"Clean Code"_ (Robert C. Martin): small single-purpose functions, comments
+- **Clean Code** (Robert C. Martin): small single-purpose functions, comments
   that explain _why_, explicit error handling.
 - **Code smells** (Martin Fowler's "Refactoring"): signs that code needs
   restructuring.
@@ -158,8 +158,8 @@ console.log(
 - Are comments bad? No: comments that explain _why_ (a workaround, a business
   rule, a link to an issue) are valuable; comments that repeat the code are
   noise that goes stale.
-- What is refactoring? Changing the structure of code without changing its
-  behavior, in small steps covered by tests.
+- What is refactoring? Changing the internal structure of code without changing
+  its observable behavior, in small steps covered by tests.
 - What is technical debt? A shortcut, deliberate or not, that makes every later
   change cost more; it is paid back with refactoring and planned like other
   work.
@@ -169,8 +169,6 @@ console.log(
 - Attributing the list of code smells to "Clean Code": it comes from
   "Refactoring".
 - Applying DRY to code that is only accidentally similar.
-- Taking the "Clean Code" numbers (functions of 4–5 lines, no comments) as
-  rules: they are debated.
 
 ## See Also
 
