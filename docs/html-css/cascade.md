@@ -17,8 +17,7 @@ picks one. It compares, in this order:
 3. **Cascade layers** (`@layer`): later layers win; unlayered styles beat all
    layers (without `!important`).
 4. **Specificity**: (id, class, type), compared left to right.
-5. **Scope proximity** (`@scope`): the closer scope root wins.
-6. **Source order**: the last declaration wins.
+5. **Source order**: the last declaration wins.
 
 A property that is not set at all is **inherited** from the parent (text
 properties such as `color`, `font`) or takes its **initial value** (`margin`,
@@ -87,8 +86,8 @@ the order of origins is **reversed**: user `!important` beats author
 
 `@scope (.card) to (.card-content) { img { … } }` applies the rules only inside
 `.card` but not inside `.card-content` (the limit itself is excluded too); when
-specificity is equal, the rule from the closer scope root wins. Browser support:
-Baseline 2026, newly available.
+specificity is equal, the rule from the closer scope root wins (this step comes
+before source order). Browser support: Baseline 2026, newly available.
 
 ### Inheritance and the Global Keywords
 
@@ -173,8 +172,12 @@ body:has(dialog:modal) {
   later in the source or in an earlier layer), so it escalates. Layers and
   `:where()` solve the same problem; `!important` stays for utilities and
   overriding third-party inline styles.
-- How do you override a third-party style without raising specificity? Put the
-  library into a lower layer, or write your rule unlayered.
+- What is the specificity of `nav ul li a.active:hover`? (0, 2, 4). Of
+  `#main :not(.x) p`? (1, 1, 1).
+- `:nth-child(2)` vs `:nth-of-type(2)`? The second child among all siblings vs
+  the second sibling of this element type.
+- How does the browser match selectors? Right to left, from the rightmost part:
+  `.nav li a` first finds every `a`, then checks its ancestors.
 
 ## Common Mistakes
 

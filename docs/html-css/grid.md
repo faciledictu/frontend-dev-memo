@@ -160,11 +160,10 @@ its neighbors.
   container and ignores `gap`, so `25%` × 4 plus gaps overflows; `fr` shares
   what is left after the gaps.
 
-- What is the difference between `grid-template-*` and `grid-auto-*`? The first
-  defines the explicit grid, the second sizes tracks created automatically for
-  extra items.
-- What about masonry layouts? Not with plain Grid: masonry is a separate layout
-  type, `display: grid-lanes`, used as progressive enhancement with `@supports`.
+- `auto` vs `1fr` tracks? `auto` is sized by content; `fr` tracks share the free
+  space, so `auto 1fr` is a content-sized column plus the rest.
+- Does `order` work on grid items? Yes, as in Flexbox, with the same
+  accessibility caveat.
 
 ## Common Mistakes
 
@@ -174,6 +173,8 @@ its neighbors.
 - `grid-template-areas` with a non-rectangular area (an L shape): the whole
   declaration is invalid and ignored.
 - Using Grid for a single row of items of different widths: Flexbox is simpler.
+- Reading `grid-area: 1 / 2 / 3 / 4` as top / right / bottom / left: it is
+  row-start / column-start / row-end / column-end.
 
 ## See Also
 

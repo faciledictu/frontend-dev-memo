@@ -161,6 +161,7 @@ h1 {
   min-height: 100svh; /* fits the screen with the browser toolbars shown */
 }
 
+/* A global switch; per-component queries are more precise */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -182,8 +183,12 @@ h1 {
 - `srcset` or `<picture>`? `srcset` when it is the same image at different
   resolutions and the browser may choose; `<picture>` when the content or format
   must change and the choice is yours.
-- What is `sizes="auto"`? With `loading="lazy"`, the browser takes the size from
-  the layout instead of a hand-written `sizes`.
+- How do you make an image responsive? `max-width: 100%; height: auto`: it
+  shrinks with the container and never grows past its natural size; `width` /
+  `height` attributes reserve the space.
+- Responsive vs adaptive design? Responsive is one fluid layout that reflows;
+  adaptive is a set of fixed layouts switched at breakpoints or chosen by the
+  server per device.
 
 ## Common Mistakes
 
@@ -194,6 +199,8 @@ h1 {
   downloads too large a file.
 - Font sizes in `px` or pure `vw`: they ignore the user's font settings or zoom.
 - Using `user-scalable=no` to "fix" the mobile layout.
+- Hiding a large image on mobile with `display: none`: it is still downloaded;
+  use `<picture>` or `srcset`.
 
 ## See Also
 

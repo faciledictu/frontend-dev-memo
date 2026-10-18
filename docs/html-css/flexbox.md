@@ -15,7 +15,7 @@ perpendicular to it. `justify-content` aligns items along the main axis,
 
 **`flex-grow`** shares out free space, **`flex-shrink`** shares out the
 overflow, both starting from **`flex-basis`**. `flex: 1` means "share the free
-space equally, ignoring content size".
+space equally, not starting from the content size".
 
 ## Details
 
@@ -65,8 +65,7 @@ content" (the longest word, a `<pre>`, a wide table, a nested flex row with
 width, and the item overflows its container.
 
 - Fix: **`min-width: 0`** (`min-height: 0` in a column) on the item, or
-  `overflow: hidden` or `auto` (anything that makes it a scroll container;
-  `clip` does not).
+  `overflow: hidden` or `auto` (not `clip`).
 - Typical symptom: `text-overflow: ellipsis` does not work inside a flex item.
 
 ### `order` and Accessibility
@@ -133,6 +132,10 @@ its own free space. When columns must stay aligned across lines, use
   `min-width` and `max-width` still limit it.
 - How is `flex-shrink` calculated? The overflow is split in proportion to
   `flex-shrink × flex-basis`, so large items lose more pixels.
+- How do you keep the footer at the bottom of a short page?
+  `body { min-height: 100dvh; display: flex; flex-direction: column }` and
+  `margin-top: auto` on the footer (or Grid with rows `auto 1fr auto`).
+- Do `float` and `vertical-align` affect flex items? No, they are ignored.
 - Why do items stretch to the full height? `align-items` defaults to `stretch`;
   an item with an explicit `height` or `align-self: flex-start` does not
   stretch.

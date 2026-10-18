@@ -174,8 +174,11 @@ or move the menu to the top layer (`popover`) or a portal.
 - Can a child with a negative `z-index` go behind its parent? Behind the
   parent's background only if the parent does not create a stacking context;
   otherwise it stays above the parent's background.
-- Why does `opacity: 0.99` change the layering? Any `opacity` below 1 creates a
-  stacking context, which groups the children.
+- `fixed` vs `sticky`? `fixed` leaves the flow and ignores its parent; `sticky`
+  keeps its space and moves only inside its parent, so it stops at the parent's
+  bottom edge.
+- Does `z-index` work without `position`? Only on flex and grid items; on a
+  static block it is ignored.
 
 ## Common Mistakes
 

@@ -3,7 +3,7 @@ sidebar_position: 3
 description:
   Content, padding, border and margin, box-sizing, margin collapsing, block vs
   inline, block formatting context, overflow, logical properties
-tags: [junior]
+tags: [junior, middle]
 ---
 
 # Box Model
@@ -179,8 +179,13 @@ border or `display: flow-root` on the `<section>` keeps the margin inside.
 
 ## Follow-up Questions
 
-- Why is `box-sizing: border-box` not the default? `content-box` is the original
-  CSS behavior, and changing it would break existing sites.
+- `display: none` vs `visibility: hidden` vs `opacity: 0`? Removed from layout
+  and the accessibility tree / keeps its space but is not painted or focusable /
+  painted invisible, still focusable and clickable. See
+  [How the Browser Works](../web-platform/browser/browser-workflow.md).
+- What do `float` and `clear` do? `float` takes the element out of the flow and
+  lets text wrap around it; `clear` moves an element below floats. A parent
+  contains its floats only if it creates a BFC (`display: flow-root`).
 - How do you remove the gap between `inline-block` items? Use flex or grid
   instead; the gap is a space character from the HTML.
 - Can an element have a negative margin? Yes: it pulls the element or its

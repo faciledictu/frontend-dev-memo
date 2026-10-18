@@ -174,9 +174,11 @@ the middle of the animation, and the gradient does not rotate.
 
 ## Follow-up Questions
 
-- Why does `color: var(--x, red)` not fall back to red when `--x: 20px`? The
-  variable is defined, so the fallback is not used; the value is invalid for
-  `color`, so the property becomes `unset`.
+- Can a variable hold a plain number? Yes; multiply to get a length:
+  `--n: 10; width: calc(var(--n) * 1px)`.
+- Why `:root` and not `html`? It is the same element, but `:root` has class
+  specificity (0, 1, 0), so its values survive an `html { … }` rule.
+
 - How do you make a variable available only inside a component? Declare it on
   the component's root class instead of `:root`; it is inherited only by that
   component's subtree.
