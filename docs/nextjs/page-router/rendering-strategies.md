@@ -49,22 +49,21 @@ Applies to: Next.js 16.4 (Pages Router).
 
 - What is the difference between SSR and SSG? SSR renders on every request, SSG
   once at build time.
-- When is ISR not a fit? For user-specific content: the regenerated page is
-  shared by all users.
+
 - Is CSR bad for SEO? Google runs JavaScript but indexes such pages later and
   less reliably; other crawlers and link previews often see only the shell.
-- What is automatic static optimization? A page without a blocking data function
-  is detected at build time and emitted as static HTML. A custom
-  `getInitialProps` in `_app` turns it off for all pages.
+- What is automatic static optimization? A page without `getServerSideProps` or
+  `getInitialProps` is emitted as static HTML at build time. A custom
+  `getInitialProps` in `_app` turns it off for every page without
+  `getStaticProps`.
 
 ## Common Mistakes
 
-- "Pages are SSR by default." Without `getServerSideProps` or `getInitialProps`
-  a page is prerendered statically.
 - "ISR is SSR with a cache." The regenerated page is shared by all users, so it
   can't be personalized.
-- `suppressHydrationWarning` on a whole subtree instead of moving the
-  browser-only read into `useEffect`.
+- `suppressHydrationWarning` on a parent element to silence a mismatch: it works
+  only one level deep and hides the bug; move the browser-only read into
+  `useEffect`.
 
 ## See Also
 

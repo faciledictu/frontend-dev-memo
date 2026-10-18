@@ -95,8 +95,9 @@ export default function RootLayout({
   fetching moves to the client.
 - Reading `window` during render: the component also renders on the server. Use
   it in `useEffect`, event handlers or behind `use(browser())`.
-- Wrapping `<html>` in the provider instead of `{children}`: the client boundary
-  moves up for no reason.
+- Wrapping `<html>` in the provider instead of `{children}`: providers go as
+  deep as possible, so Next.js can optimize the static parts of Server
+  Components.
 
 ## See Also
 

@@ -119,15 +119,16 @@ export default async function PostPage({
   returns the `params` to prerender, like `getStaticPaths` in the Pages Router;
   other values render on request.
 - Where does `<title>` come from? A `metadata` object or `generateMetadata()`
-  exported from a layout or a page; nested segments override the parent's
-  fields.
+  exported from a layout or a page; nested segments override the parent's fields
+  (a shallow merge: a nested `openGraph` replaces the whole object).
 
 ## Common Mistakes
 
-- A folder without `page.tsx` is not a route.
-- `<html>` and `<body>` in a nested layout: only the root layout renders them.
+- Expecting a folder with only a `layout.tsx` to be reachable: it needs a
+  `page.tsx` (or `route.ts`).
+- `<html>` and `<body>` in a nested layout: only the root layout (and
+  `global-error.tsx`) renders them.
 - Expecting a layout to re-run on navigation, for example for an auth check.
-- Reading `params.slug` without `await`: `params` is a promise.
 - `route.ts` and `page.tsx` in the same folder: a build error.
 
 ## See Also

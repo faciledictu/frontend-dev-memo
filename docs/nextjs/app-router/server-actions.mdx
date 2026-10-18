@@ -27,11 +27,11 @@ Applies to: Next.js 16.4, React 19.3.
 - `'use server'` at the start of a function body defines an inline action inside
   a Server Component.
 - Ways to call: `<form action={fn}>` and `<button formAction={fn}>`, or from an
-  event handler or `useEffect` inside `startTransition`, so that the pending
+  event handler or `useEffect`, wrapped in `startTransition` so that the pending
   state works.
 - Arguments and the return value must be **serializable**.
-- Actions are called one at a time per client and are meant for mutations, not
-  for fetching data: read data in Server Components.
+- Actions are meant for mutations, not for fetching data: read data in Server
+  Components.
 
 ### Forms
 
@@ -48,12 +48,12 @@ Applies to: Next.js 16.4, React 19.3.
 
 ### After a Mutation
 
-| Task                               | How                                                                     |
-| ---------------------------------- | ----------------------------------------------------------------------- |
-| Show the new data                  | `updateTag(tag)`, `revalidateTag(tag, 'max')` or `revalidatePath(path)` |
-| Go to another page                 | `redirect('/posts/1')`, called outside `try/catch`                      |
-| Return validation or server errors | Return an object and read it with `useActionState`                      |
-| Optimistic UI                      | `useOptimistic`                                                         |
+| Task                               | How                                                                                                 |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Show the new data                  | `updateTag(tag)` or `revalidatePath(path)`; `revalidateTag(tag, 'max')` refreshes in the background |
+| Go to another page                 | `redirect('/posts/1')`, called outside `try/catch`                                                  |
+| Return validation or server errors | Return an object and read it with `useActionState`                                                  |
+| Optimistic UI                      | `useOptimistic`                                                                                     |
 
 ## Example
 
@@ -138,13 +138,15 @@ export function PostForm() {
   Route Handler for webhooks, other clients and non-POST methods. See
   [Route Handlers](./route-handlers.md#route-handler-vs-server-action).
 - What happens to the page after an action? Next.js returns the updated RSC
-  Payload in the same response when the action revalidates or redirects, so
-  there is no extra round trip. `revalidateTag(tag, 'max')` only marks the tag
-  stale and does not re-render in the same response.
+  Payload in the same response when the action calls `updateTag`,
+  `revalidatePath` or `refresh()`, changes cookies or redirects, so there is no
+  extra round trip. `revalidateTag(tag, 'max')` only marks the tag stale and
+  does not re-render in the same response.
 - What does Next.js do to protect actions? It compares `Origin` with `Host`
   (against CSRF), encrypts action IDs and closure variables, removes unused
-  actions from the client bundle and limits the body to 1 MB. None of it
-  replaces your own auth and validation.
+  actions from the client bundle and limits the body to 1 MB by default
+  (`serverActions.bodySizeLimit`). None of it replaces your own auth and
+  validation.
 
 ## Common Mistakes
 

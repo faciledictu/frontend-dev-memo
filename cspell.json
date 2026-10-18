@@ -154,6 +154,7 @@
     "speculationrules",
     "storetype",
     "subproblems",
+    "subrequest",
     "subtyping",
     "Subviews",
     "syscall",

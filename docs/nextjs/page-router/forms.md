@@ -129,8 +129,6 @@ export function RegisterForm() {
 ## Common Mistakes
 
 - Sending a `FormData` body with `Content-Type: application/json`.
-- Trusting `required` and `type="email"` on the client instead of validating on
-  the server.
 
 ## See Also
 

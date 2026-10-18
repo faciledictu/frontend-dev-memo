@@ -223,12 +223,12 @@ export async function createPost(formData: FormData) {
 - Why can `'use cache'` data disappear on serverless hosting? By default it is
   kept in the memory of one instance; `'use cache: remote'` is needed for a
   shared cache.
-- What happens to `export const revalidate = 60` with Cache Components? Route
-  segment configs `dynamic`, `revalidate` and `fetchCache` are not allowed
-  there; lifetimes come from `cacheLife`.
-- Why pair `cacheTag` with a long `cacheLife`? Content that changes only on
-  writes is cached for long and invalidated on demand by its tag; content that
-  drifts gets a short profile and refreshes itself.
+- What happens to `export const revalidate = 60` with Cache Components? A build
+  error: `dynamic`, `dynamicParams`, `revalidate` and `fetchCache` are not
+  compatible with Cache Components; lifetimes come from `cacheLife`.
+- Why pair `cacheTag` with a long `cacheLife`? Content that changes only when
+  you write it is cached for a long time and expired on demand by its tag;
+  content that changes on its own gets a short profile instead.
 
 ## Common Mistakes
 
@@ -236,8 +236,7 @@ export async function createPost(formData: FormData) {
 - With Cache Components, awaiting `params`, `cookies()` or uncached data at the
   top of a page with no `<Suspense>` or `loading.tsx` above it: the build fails
   with a blocking-route error. Fixes: a Suspense boundary, `'use cache'`, or
-  `export const instant = false` to opt the segment out of the static-shell
-  validation.
+  `export const instant = false` to allow a blocking route.
 - Calling `cookies()` inside a `'use cache'` function instead of passing the
   value as an argument.
 - In the previous model, expecting a page without `cookies()` or `searchParams`

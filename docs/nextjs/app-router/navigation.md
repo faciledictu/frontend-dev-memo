@@ -46,8 +46,9 @@ All are imported from `next/navigation` and work only in Client Components.
   `prefetch={true}` prefetches the full route, `prefetch={false}` turns it off.
 - With Partial Prefetching (`partialPrefetching: true`; requires Cache
   Components, both on in new 16.4 projects) the default prefetch is the route's
-  **App Shell** (static and cached content), reused across links;
-  `prefetch={true}` adds cached content that depends on the link's URL.
+  **App Shell** (the part that does not depend on URL data: static and cached
+  content), reused across links; `prefetch={true}` adds cached content that
+  depends on the link's URL.
 
 ### Where to Redirect
 
@@ -120,8 +121,9 @@ export default async function OrderPage({
   in a Server Action; `router.push()` in a client event handler.
 - What does `router.refresh()` do? Fetches the current route's RSC Payload again
   and re-renders Server Components, keeping client state and scroll.
-- Why can a prefetched link still show a loading state? Only the static part is
-  prefetched by default; dynamic data still renders on navigation.
+- Why can a prefetched link still show a loading state? Only the shell (down to
+  `loading.tsx`, or the App Shell) is prefetched by default; the rest renders on
+  navigation.
 - How do you link to an external URL? With a plain `<a>`: prefetching and
   client-side navigation apply only to routes of the app.
 

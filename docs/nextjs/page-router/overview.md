@@ -90,17 +90,13 @@ export default function Post() {
 - How do you share a layout between pages? Render it in `_app`, or use the
   per-page `getLayout` pattern to keep the layout's state between pages.
 - Can you use Server Components in the Pages Router? No: all components in
-  `pages/` are prerendered and hydrated. Routers can be mixed per URL, not per
-  page.
+  `pages/` are prerendered and hydrated. The routers can be mixed per route, not
+  inside one page.
 
 ## Common Mistakes
 
-- Importing `useRouter` from `next/navigation` in `pages/`, or from
-  `next/router` in `app/`.
-- State, effects or event handlers in `_document`: it renders only on the
-  server.
-- Expecting Server Components or Server Actions in `pages/`: both are App Router
-  only.
+- Importing `useRouter` from `next/router` in `app/` (it throws), or expecting
+  `query` and `isReady` from the `next/navigation` one in `pages/`.
 
 ## See Also
 

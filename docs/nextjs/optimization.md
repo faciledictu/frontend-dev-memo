@@ -26,7 +26,6 @@ Applies to: Next.js 16.4.
 - `next/dynamic` (or `React.lazy` with `Suspense`) moves a Client Component into
   a separate chunk that loads when it is rendered.
 - `ssr: false` skips the server render of a component that needs browser APIs.
-  It is allowed only inside a Client Component.
 - A library can be loaded on demand with `await import('lib')` in an event
   handler.
 
@@ -156,10 +155,9 @@ export function ChartPanel({ show }: { show: boolean }) {
 
 ## Common Mistakes
 
-- `preload` or `fetchPriority="high"` on many images: lazy loading is lost, and
-  they compete with the real LCP image.
-- Loading Google Fonts with a `<link>` in the layout instead of `next/font`: an
-  extra origin and a layout shift.
+- `preload`, `loading="eager"` or `fetchPriority="high"` on many images: they
+  all load early and compete with the real LCP image.
+
 - `next/dynamic` with `ssr: false` in a Server Component: a build error; move it
   into a Client Component.
 

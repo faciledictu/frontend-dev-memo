@@ -181,9 +181,6 @@ export async function Users() {
   sooner instead of waiting for the slowest query.
 - How do you keep server-only code out of the client? Import `server-only` in
   the module: importing it from a Client Component becomes a build error.
-- Are Client Components server-rendered on client navigation? No: on navigation
-  only the RSC Payload is fetched, and Client Components render in the browser.
-  SSR happens only on the first load.
 
 ## Common Mistakes
 

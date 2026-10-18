@@ -31,8 +31,8 @@ The general theory (sessions vs JWT, OAuth, where to keep a token) is in
 | Layout                         | Unreliable: a shared layout is not re-rendered on client navigation, so its check does not run for the new page | No                                                          |
 | Client components              | Hide buttons and links                                                                                          | No, this is UX                                              |
 
-A Proxy-only check has failed before: CVE-2025-29927 let a crafted internal
-header skip Middleware entirely.
+A Proxy-only check has failed before: CVE-2025-29927 let a crafted
+`x-middleware-subrequest` header skip Middleware in self-hosted apps.
 
 ### Session
 
@@ -161,15 +161,16 @@ export const config = { matcher: ['/dashboard/:path*'] };
 - How does a Client Component get the current user? It cannot import the Data
   Access Layer (`server-only`): a parent Server Component reads the user and
   passes a DTO as props or through a context provider.
-- Why not `await cookies()` at the top of a layout? The whole segment waits for
-  it before streaming. Read the session in a nested Server Component inside
-  `<Suspense>`, such as the user menu.
+- Why not `await cookies()` at the top of a layout? It makes the layout and
+  everything below it request-time: with Cache Components the build fails
+  without a `<Suspense>` above, in the previous model the whole route becomes
+  dynamic. Read the session in a nested Server Component inside `<Suspense>`,
+  such as the user menu.
 
 ## Common Mistakes
 
 - Only checking in Proxy or only hiding links in the UI.
-- A database session lookup in Proxy: it runs on every request, prefetches
-  included. Only read the cookie there.
+
 - Reading a token from `FormData` or `localStorage` and trusting it.
 - Returning whole database records to the client: the Data Access Layer should
   return DTOs with only the fields the user may see.

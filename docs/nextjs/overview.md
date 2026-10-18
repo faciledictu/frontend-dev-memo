@@ -82,8 +82,8 @@ URL must be served by only one of them.
   on request is one of the strategies.
 - "The Pages Router is removed." It is legacy but supported, and both routers
   can live in one project.
-- "`'use client'` means rendering only in the browser." Client Components are
-  prerendered on the server too.
+- Choosing the Pages Router for a new project: Server Components, Server Actions
+  and Cache Components exist only in the App Router.
 
 ## See Also
 

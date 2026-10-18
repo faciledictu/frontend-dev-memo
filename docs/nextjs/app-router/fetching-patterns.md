@@ -114,13 +114,13 @@ export function Playlists({
 - How is the same request in a layout and a page not made twice? `fetch` calls
   with the same URL and options are memoized for one render; for other functions
   use React `cache`.
-- What can go wrong with a promise passed to `use()`? It must be created in the
-  Server Component: created in the Client Component, it is new on every render.
-  A rejection goes to the nearest error boundary.
+- What can go wrong with a promise passed to `use()`? Create it in a Server
+  Component: a promise created while a Client Component renders is new on every
+  render, so `use()` suspends again. A rejection goes to the nearest error
+  boundary.
 
 ## Common Mistakes
 
-- Awaiting independent requests one after another: a waterfall.
 - Fetching in `useEffect` what a Server Component could render.
 - Passing data down through many levels of props: thanks to deduplication each
   component can fetch what it needs.

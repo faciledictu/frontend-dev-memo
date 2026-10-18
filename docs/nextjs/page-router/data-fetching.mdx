@@ -122,9 +122,9 @@ export function Profile() {
 
 ## Common Mistakes
 
-- Returning `Date`, `undefined` or a class instance in `props`: they are not
-  JSON-serializable, and the build or the request fails.
-- ISR for a page that depends on the user.
+- Using `fallback: true` without handling `router.isFallback`: the page renders
+  with empty props.
+
 - Calling your own API Route from `getStaticProps` instead of importing the
   function.
 
