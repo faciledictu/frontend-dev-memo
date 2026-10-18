@@ -3,7 +3,7 @@ sidebar_position: 4
 description:
   IntersectionObserver, ResizeObserver and MutationObserver, when their
   callbacks run, lazy loading, infinite scroll and the ResizeObserver loop error
-tags: [middle]
+tags: [junior, middle]
 ---
 
 # Intersection, Resize and Mutation Observers
