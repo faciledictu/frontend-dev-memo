@@ -56,7 +56,8 @@ but with a low priority and without blocking the render.
 - `loading="lazy"` for images below the fold, never for the LCP image.
 - `width` and `height` to reserve space (against CLS).
 - AVIF or WebP; `srcset` and `sizes` so that a phone does not download the
-  desktop image.
+  desktop image, see
+  [Responsive Design](../../html-css/responsive-design.md#responsive-images).
 
 ### Network and Caching
 

@@ -258,14 +258,18 @@
       [plans/](plans/README.md); порядок 5 → 6 → 7: React Native — текущий
       фокус, позже раздел будет углубляться.
 
-- [ ] 5. HTML & CSS, 7 страниц: `cascade` (специфичность, `@layer`, `:has()`,
+- [x] 5. HTML & CSS, 7 страниц: `cascade` (специфичность, `@layer`, `:has()`,
       вложенность, наследование), `box-model` (сюда же «Block vs Inline» из
       `html`, логические свойства), `flexbox`, `grid` (subgrid, Grid vs
       Flexbox), `positioning` (stacking context и `z-index`, центрирование,
       anchor positioning), `responsive-design` (единицы, `clamp()`, container
       queries, `srcset`), `custom-properties` (переменные, `@property`, темы,
-      `color-mix()`). Подгрупп нет; ревью Fable для `html` и описание раздела в
-      `src/categories.ts` — вместе с пачкой.
+      `color-mix()`); по решению пользователя добавлены `animations` (общие
+      вопросы про transitions и анимации, не справочник) и короткий блок о
+      селекторах в `cascade`. Подгрупп нет; статусы по web-features 3.43.0. У
+      `html` после ревью Fable новый короткий ответ и follow-up вопросы,
+      описание раздела в `src/categories.ts` обновлено, обратные ссылки из
+      `react-native`, `react` и `web-platform`.
 - [x] 6. React Native и Next.js, 8 страниц. React Native: `navigation` (React
       Navigation и Expo Router), `deep-linking`, `storage` (AsyncStorage, MMKV,
       SecureStore, SQLite), `performance`, `debugging` (React Native DevTools).

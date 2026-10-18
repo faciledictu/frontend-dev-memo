@@ -71,7 +71,8 @@ Applies to: Tailwind CSS 4, styled-components 6.
 - It is a layer on top of plain CSS or CSS Modules (`*.module.scss`), not a way
   of scoping. Tailwind 4 is not designed to be used with it.
 - Native CSS now has custom properties and nesting, so a preprocessor is needed
-  less often.
+  less often. See
+  [Custom Properties vs Sass Variables](../../html-css/custom-properties.md#custom-properties-vs-sass-variables).
 
 ### React Native
 
@@ -127,6 +128,7 @@ const Button = styled.button`
   a team that prefers regular CSS picks CSS Modules.
 - How do you make a dark theme without CSS-in-JS? With CSS custom properties:
   the variables are redefined under a selector such as `[data-theme='dark']`.
+  See [Theming](../../html-css/custom-properties.md#theming).
 - Why is runtime CSS-in-JS slower? The styles are serialized and inserted into
   the document during rendering, whenever the props they depend on change.
 

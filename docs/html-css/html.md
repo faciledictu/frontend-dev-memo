@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 description:
-  Semantic markup, script loading, block vs inline, data attributes, viewport,
+  Semantic markup, script loading, nesting rules, data attributes, viewport,
   form validation
 tags: [junior]
 ---
@@ -9,14 +9,12 @@ tags: [junior]
 # HTML
 
 HTML describes the **structure and meaning** of content, not its appearance.
-What is usually asked:
+**Semantic elements** (`<nav>`, `<main>`, `<button>`) give screen readers
+landmarks and a heading outline, give search engines meaning, and bring
+**keyboard support and focus** for free; `<div>` and `<span>` carry no meaning.
 
-- **Semantic markup**: elements are chosen by meaning (`<nav>`, `<main>`,
-  `<button>`), not by appearance.
-- **Script loading**: a plain `<script>` blocks the parser; `defer`, `async` and
-  `type="module"` do not.
-- **Block vs inline**, **`data-*` attributes**, the **viewport meta tag** and
-  built-in **form validation**.
+A plain `<script>` **blocks the parser** while it downloads and runs; `defer`
+and `type="module"` run after parsing, `async` as soon as it is downloaded.
 
 ## Details
 
@@ -57,29 +55,23 @@ elements come with keyboard support and focus for free.
 
 - `async` suits independent scripts such as analytics; `defer` suits application
   code that needs the DOM or depends on other scripts.
-- `defer` and `async` work only with `src`; on an inline classic script they are
-  ignored.
+- `defer` and `async` work only with `src` on a classic script; an inline module
+  is deferred anyway, and `async` works on it too.
 - Modules run in strict mode with their own scope, support `import` / `export`,
   and are executed once even when included several times.
 - A script added with `document.createElement('script')` behaves as `async`.
 
-### Block vs Inline
+### Nesting Rules
 
-|                    | Block                                       | Inline                              |
-| ------------------ | ------------------------------------------- | ----------------------------------- |
-| Position           | starts on a new line                        | flows inside a line of text         |
-| Width              | all available width                         | the width of its content            |
-| `width` / `height` | applied                                     | ignored                             |
-| Vertical margin    | applied                                     | ignored                             |
-| Default for        | `<div>`, `<p>`, `<h1>`, `<ul>`, `<section>` | `<span>`, `<a>`, `<strong>`, `<em>` |
+HTML defines which elements may be nested:
 
-- `inline-block` flows in a line but respects `width`, `height` and vertical
-  margins.
-- Replaced inline elements (`<img>`, `<input>`, `<video>`) are an exception:
-  they respect `width`, `height` and vertical margins.
-- This is the CSS `display` property and can be changed. What HTML itself
-  defines is which elements may be nested: a `<p>` cannot contain a `<div>`, the
-  parser closes the paragraph before it.
+- a `<p>` cannot contain block elements such as `<div>`: the parser closes the
+  paragraph before it;
+- interactive content (`<a>`, `<button>`) must not be nested in another
+  interactive element;
+- the parser repairs only some cases; the rest stays invalid and confuses
+  assistive technology. Block and inline display is CSS, see
+  [Box Model](./box-model.md#block-vs-inline).
 
 ### `data-*` Attributes
 
@@ -168,8 +160,16 @@ elements come with keyboard support and focus for free.
   that must not send the form needs `type="button"`.
 - Why does an input need a `<label>`? It gives the field a name for screen
   readers, and a click on the label focuses the field.
-- What is `alt` for? It is the text alternative of an image. A decorative image
-  gets an empty `alt=""`, so that screen readers skip it.
+- What is `alt` for? It is the text alternative of an image; a decorative image
+  gets `alt=""`. See
+  [Web Accessibility](../web-platform/accessibility/accessibility.md).
+- `<article>` or `<section>`? `<article>` is self-contained and makes sense on
+  its own (a post, a card); `<section>` groups related content inside a page.
+- Why does an input need a `name`? Without it the field is not included in the
+  submitted data; `id` is only for the label and scripts.
+- Why `defer` in `<head>` rather than a `<script>` at the end of `<body>`? The
+  download starts earlier, and the script still runs after parsing. See
+  [Loading Performance](../web-platform/performance/loading-performance.md).
 
 ## Common Mistakes
 
