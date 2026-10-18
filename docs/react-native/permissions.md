@@ -103,12 +103,13 @@ export async function ensureCameraPermission(): Promise<boolean> {
 ## Follow-up Questions
 
 - `check` or `request`? `check` never shows a dialog; call it first to decide
-  whether to explain why the permission is needed.
+  whether to explain why the permission is needed. On Android it never returns
+  `blocked`; only `request` reveals it.
 - Where do the iOS permission texts go in an Expo app? In config plugin options
-  in `app.json` (for example `cameraPermission` of `expo-camera`), applied at
+  in `app.json` (for example `expo-camera`'s `cameraPermission`), applied at
   prebuild.
-- How do you test the blocked state? Deny the permission twice on Android or
-  once on iOS, or turn it off in the system settings.
+- How do you test the blocked state? On iOS, turn it off in Settings; on
+  Android, deny it twice. Reinstall the app to start over.
 
 ## Common Mistakes
 

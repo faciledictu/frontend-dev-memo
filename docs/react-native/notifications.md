@@ -130,14 +130,15 @@ with an OAuth 2.0 access token of a service account.
 
 ## Follow-up Questions
 
-- Expo push token or device token? The Expo token wraps the APNs or FCM token;
-  Expo's push service forwards to them, so one backend call covers both
-  platforms.
+- Expo push token or device token? With the Expo token one call to Expo's push
+  service covers both platforms; with device tokens the backend talks to APNs
+  and FCM itself.
 - What is an Android notification channel? On Android 8+ the importance, sound
   and vibration belong to a channel, which must exist before the first
-  notification; the user controls it in the settings.
+  notification (on Android 13+, before the permission prompt); after creation
+  only the user can change it, the app only its name and description.
 - How do you open a screen on tap? Read `data` in the response listener and
-  navigate; for a cold start read the last notification response on launch.
+  navigate; for a cold start use `useLastNotificationResponse()`.
 
 ## Common Mistakes
 

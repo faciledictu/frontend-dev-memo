@@ -90,10 +90,12 @@ Objective-C.
 
 ## Follow-up Questions
 
-- Where do you store a user's token on the device? In the Keychain or Keystore
-  through `expo-secure-store` or `react-native-keychain`, not in AsyncStorage.
-- How do you change the API URL without a rebuild? Inlined values can't change;
-  fetch the configuration from the backend or make a build per environment.
+- Where do you store a user's token on the device? In the iOS Keychain or, on
+  Android, encrypted with a Keystore key, through `expo-secure-store` or
+  `react-native-keychain`, not in AsyncStorage.
+- How do you change the API URL without a rebuild? Publish an OTA update
+  (`EXPO_PUBLIC_` values are in the JS bundle) or fetch the configuration from
+  the backend at runtime; values in native code need a new build.
 
 ## Common Mistakes
 

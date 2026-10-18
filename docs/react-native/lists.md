@@ -141,13 +141,14 @@ export function Messages({ messages }: { messages: Message[] }) {
 
 ## Follow-up Questions
 
-- When `selectedId` changes in the example, how many rows re-render? Two: `Row`
-  is memoized, and only the old and the new selected rows get a different
-  `selected` prop.
-- What unit is `onEndReachedThreshold`? A fraction of the visible length: `0.5`
-  fires half a screen before the end.
-- How do you build a chat list that grows at the top? `inverted` on `FlatList`,
-  or `maintainVisibleContentPosition` in FlashList.
+- When `selectedId` changes in the example, how many rows re-render? Two `Row`s:
+  `renderItem` runs for every mounted item, but the memoized `Row` re-renders
+  only where `selected` changed.
+- What unit does `onEndReachedThreshold` use? Visible lengths of the list: `0.5`
+  fires when the end is half a list height away; the default is 2.
+- How do you build a chat list? `inverted` on `FlatList`; in FlashList 2,
+  `maintainVisibleContentPosition` with `startRenderingFromBottom`, without
+  inverting.
 
 ## Common Mistakes
 

@@ -77,6 +77,7 @@
     "interruptible",
     "IOCP",
     "janky",
+    "javascriptcore",
     "keyalg",
     "keysize",
     "keytool",

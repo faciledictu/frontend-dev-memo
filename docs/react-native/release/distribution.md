@@ -121,8 +121,8 @@ through adb or an extra confirmation flow.
 ## Common Mistakes
 
 - Uploading an `.apk` for a new app on Google Play: it requires an `.aab`.
-- Not increasing the build number: the store rejects the upload.
-- Keeping the upload key on one laptop only.
+- Keeping the upload keystore and its passwords on one laptop only: losing them
+  blocks releases until Google resets the key.
 
 ## See Also
 

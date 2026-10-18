@@ -146,10 +146,11 @@ export function Panel({ open }: { open: boolean }) {
 ## Follow-up Questions
 
 - How do you react to a shared value without a style? `useAnimatedReaction`.
-- Does a worklet see the latest React state? No, values are captured when the
-  worklet is created; pass changing data through a shared value.
-- What does the Babel plugin do? `react-native-worklets/plugin` extracts worklet
-  code and its closure so that it can run on the UI runtime.
+- Does a worklet see the latest React state? Only the copy from the render that
+  created it: `useAnimatedStyle` picks up new state after a re-render, but a
+  running gesture or animation callback keeps the old copy; put changing data in
+  a shared value.
+- Which Babel plugin is needed? `react-native-worklets/plugin`.
 
 ## Common Mistakes
 

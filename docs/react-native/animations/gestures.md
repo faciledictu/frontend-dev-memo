@@ -173,9 +173,11 @@ Every move event goes through the JS thread, so the drag lags when JS is busy.
 - How do you allow a horizontal swipe inside a vertical `ScrollView`?
   `activeOffsetX` and `failOffsetY`, so the pan activates only on a clear
   horizontal move.
-- What is `hitSlop`? It extends the touch area without changing the layout.
+- What is `hitSlop`? On `Pressable` it extends the touch area without changing
+  the layout, but not past the parent's bounds; in Gesture Handler negative
+  values shrink it.
 - Why does React Native still have the responder system? Core components such as
-  `ScrollView` and `Pressable` use it; Gesture Handler is a library.
+  `ScrollView` and `Pressable` use it; Gesture Handler is a third-party library.
 
 ## Common Mistakes
 

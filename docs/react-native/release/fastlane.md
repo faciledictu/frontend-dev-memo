@@ -58,8 +58,9 @@ end
 
 ## Follow-up Questions
 
-- How does CI get the certificates? A `match` repository with `MATCH_PASSWORD`
-  and an App Store Connect API key, stored as CI secrets.
+- How does CI get the certificates? `match(readonly: true)` fetches them from
+  the match repository and decrypts them with `MATCH_PASSWORD`; repository
+  access and the App Store Connect API key (for uploads) are CI secrets.
 - Why do iOS builds need macOS? Xcode runs only on macOS, hence macOS runners or
   EAS Build.
 

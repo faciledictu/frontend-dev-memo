@@ -16,7 +16,7 @@ update must target builds with compatible native code, which is what the
 **runtime version** is for. The standard client is **`expo-updates`** (works in
 bare apps too); updates are served by **EAS Update** (Expo's cloud service) or
 by your own server implementing the open Expo Updates protocol. Microsoft's
-**CodePush** no longer exists.
+**CodePush** service has been retired.
 
 Applies to: Expo SDK 57.
 
@@ -76,11 +76,12 @@ eas update --channel production --message "Fix crash on checkout"
 ## Follow-up Questions
 
 - Channel or branch? The channel is built into the app; updates are published to
-  a branch, and the channel points to a branch, so retargeting is a server
-  change.
+  a branch, and the channel points to a branch, so pointing a channel at another
+  branch needs no new build.
 - How does the app know an update is genuine? Code signing in `expo-updates`
   (`codeSigningCertificate`).
-- Can an OTA update add a permission or change the icon? No, both are native.
+- Can an OTA update change the app icon or the splash screen? No, both are
+  native assets.
 
 ## Common Mistakes
 

@@ -54,8 +54,7 @@ How it worked and what was wrong with it:
 since 0.84). It compiles JS to bytecode at build time, so the app starts faster
 and uses less memory than with a JIT engine.
 
-The legacy architecture code has been removed step by step since 0.83; since
-0.87 TurboModules are always on.
+Legacy architecture code is being removed since 0.84.
 
 ### From `setState` to Pixels (Fabric)
 
@@ -101,13 +100,12 @@ skip the JS thread.
 - What does Codegen generate? Native interfaces (C++, Objective-C, Java) from a
   typed spec, so a mismatch between JS and native signatures fails at build
   time.
-- Can a library written for the bridge still be used? Through the interop layer,
-  kept for compatibility; it is not a target for new code.
-- Which React 19 features does React Native get through Fabric? Suspense,
-  transitions, automatic batching, `use` and Actions, see
+
+- Which React features need Fabric? The concurrent ones: Suspense, transitions
+  and automatic batching, plus React 19's `use` and Actions built on them. See
   [React 19](../react/react-19.md).
-- Hermes or JavaScriptCore? Hermes precompiles to bytecode for a faster start
-  and less memory; JavaScriptCore is now only a community package.
+- Hermes or JavaScriptCore? Hermes is the default; JavaScriptCore is now only a
+  community package (`@react-native-community/javascriptcore`).
 
 ## Common Mistakes
 

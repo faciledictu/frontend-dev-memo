@@ -67,17 +67,17 @@ async function askNotificationPermission() {
 
 ## Follow-up Questions
 
-- What ends up in the bundle? With platform extensions Metro includes only the
-  matching file; `Platform.OS` branches ship both.
+- What ends up in the bundle? Only the matching platform file; in release builds
+  Metro also removes `Platform.OS` and `Platform.select` branches for other
+  platforms when `Platform` is imported directly from `react-native`.
 - Where does native configuration go in an Expo app? The `ios` and `android`
   keys and config plugins in `app.json`, not hand-edited `ios/` and `android/`
   folders.
 
 ## Common Mistakes
 
-- `Platform.select` without `default`: `undefined` on web and other platforms.
-- Comparing `Platform.Version` as a number on iOS: it is a string such as
-  `'26.0'`.
+- `Platform.select` without `default`: it returns `undefined` on web and other
+  platforms.
 
 ## See Also
 

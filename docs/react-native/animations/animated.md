@@ -120,11 +120,10 @@ export function FadeInCard() {
 
 ## Follow-up Questions
 
-- Why can't the native driver animate `width`? The native module sets view
-  properties directly, while layout properties need a Yoga layout pass.
+- Why can't the native driver animate `width` by default? It sets view
+  properties directly, bypassing the shadow tree, while layout properties need a
+  Yoga layout pass.
 - How do you animate a color? `interpolate` with color strings in `outputRange`.
-- When do you switch to Reanimated? For gestures, layout properties and logic
-  that must run on the UI thread, see [Reanimated](./reanimated.md).
 
 ## Common Mistakes
 

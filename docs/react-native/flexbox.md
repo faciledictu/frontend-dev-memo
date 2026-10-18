@@ -77,10 +77,12 @@ const styles = StyleSheet.create({
 
 ## Follow-up Questions
 
-- Why is the screen blank or the list not scrolling? The root `View` or the list
-  has no `flex: 1`, so its height is zero.
-- Is there CSS Grid? No: Flexbox, `position: 'absolute'` and `aspectRatio`,
-  which sizes one dimension from the other.
+- Why is the screen blank or the list not scrolling? A parent without `flex: 1`
+  or a fixed height: its `flex: 1` children get zero height, and a list without
+  a bounded height does not scroll.
+- Is there CSS Grid? No, only Flexbox (`flexWrap` and `gap` for grids),
+  `position: 'absolute'` and `aspectRatio`, which sizes one dimension from the
+  other.
 
 ## Common Mistakes
 
