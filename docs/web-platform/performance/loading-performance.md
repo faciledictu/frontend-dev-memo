@@ -3,6 +3,7 @@ sidebar_position: 2
 description:
   The critical rendering path, render-blocking resources, resource hints and
   fetchpriority, images, fonts, compression and caching
+tags: [middle, senior]
 ---
 
 # Critical Rendering Path and Loading Performance

@@ -3,6 +3,7 @@ sidebar_position: 3
 description:
   Dedicated and shared workers, postMessage and structured clone, transferable
   objects, SharedArrayBuffer, when a worker helps
+tags: [middle, senior]
 ---
 
 # Web Workers

@@ -1,6 +1,7 @@
 ---
 sidebar_position: 2
 description: Console, breakpoints, DevTools panels, React and Redux DevTools
+tags: [junior, middle]
 ---
 
 # Debugging Web Applications
@@ -14,21 +15,29 @@ Debugging is choosing the right tool for the kind of problem:
   pages and leaks.
 - **React DevTools** and **Redux DevTools** for components and store state.
 
+Applies to: Chrome DevTools, React DevTools 8.
+
 ## Details
 
 ### Console
 
-| Method                               | What it does                            |
-| ------------------------------------ | --------------------------------------- |
-| `console.log()`, `warn()`, `error()` | prints a message with a level           |
-| `console.table()`                    | shows an array of objects as a table    |
-| `console.group()` / `groupEnd()`     | groups related messages                 |
-| `console.count()`                    | counts how many times this call has run |
-| `console.time()` / `timeEnd()`       | measures how long an operation takes    |
-| `console.trace()`                    | prints the call stack                   |
+| Method                               | What it does                                   |
+| ------------------------------------ | ---------------------------------------------- |
+| `console.log()`, `warn()`, `error()` | prints a message with a level                  |
+| `console.table()`                    | shows an array of objects as a table           |
+| `console.group()` / `groupEnd()`     | groups related messages                        |
+| `console.count()`                    | counts how many times this call has run        |
+| `console.time()` / `timeEnd()`       | measures how long an operation takes           |
+| `console.trace()`                    | prints the call stack                          |
+| `console.dir()`                      | prints an object or a node as an object        |
+| `console.assert(condition, …)`       | prints an error only if the condition is false |
 
 The console shows a **live reference** to an object: when it is expanded, it
 shows the current state, not the state at the time of logging.
+
+Console utilities: `$0` is the element selected in Elements, `copy(value)`
+copies to the clipboard, `getEventListeners($0)` lists the element's handlers,
+`monitorEvents($0, 'click')` logs its events.
 
 ### Breakpoints
 
@@ -52,14 +61,17 @@ shows the current state, not the state at the time of logging.
 
 ### DevTools Panels
 
-| Panel       | What it is for                                                             |
-| ----------- | -------------------------------------------------------------------------- |
-| Elements    | the DOM tree, applied and computed styles, the box model                   |
-| Network     | requests: status, headers, payload, timing; throttling and disabling cache |
-| Performance | a recording of the main thread: long tasks, layout, paint, frames          |
-| Memory      | heap snapshots; comparing two of them shows what leaks                     |
-| Application | cookies, `localStorage`, IndexedDB, service workers                        |
-| Lighthouse  | an audit of performance, accessibility, SEO and best practices             |
+| Panel               | What it is for                                                                  |
+| ------------------- | ------------------------------------------------------------------------------- |
+| Elements            | the DOM tree, applied and computed styles, the box model                        |
+| Network             | requests: status, headers, payload, timing; throttling and disabling cache      |
+| Performance         | a recording of the main thread: long tasks, layout, paint, frames; React tracks |
+| Memory              | heap snapshots; comparing two of them shows what leaks                          |
+| Application         | cookies, `localStorage`, IndexedDB, service workers                             |
+| Lighthouse          | an audit of performance, accessibility, SEO and best practices                  |
+| Rendering           | paint flashing, layout shift regions, an FPS meter                              |
+| Coverage            | how much of each JS and CSS file was actually used                              |
+| Sources → Overrides | replace a production file with a local copy                                     |
 
 ### React DevTools
 
@@ -70,8 +82,8 @@ A browser extension that adds its own tabs to DevTools:
 - **Profiler**: records renders and shows which components rendered in each
   commit and how long it took; with the setting "Record why each component
   rendered while profiling", also why.
-- **Suspense** (since version 8): the Suspense boundaries and what made a
-  component suspend.
+- **Suspense** (on by default since version 8): the Suspense boundaries and what
+  made a component suspend.
 
 The general setting "Highlight updates when components render" outlines
 re-rendering components on the page.
@@ -97,6 +109,7 @@ users.sort((a, b) => a.age - b.age);
 console.timeEnd('sort'); // sort: 0.05ms
 
 function findUser(name) {
+  // highlight-next-line
   debugger; // execution stops here when DevTools is open
   return users.find((user) => user.name === name);
 }
@@ -113,6 +126,14 @@ function findUser(name) {
 - How do you debug an error that happens only in production? Use the stack trace
   from an error tracker with source maps, then reproduce it with the same data,
   network throttling and a production build.
+- How do you debug on a phone? Android: `chrome://inspect` with the device
+  connected over USB. iOS: Safari → Develop → the device.
+- Which code changed this element? A DOM breakpoint on the node; for the
+  handler, `getEventListeners($0)` or the Event Listeners tab in Elements.
+- How do you read a Performance recording? Long tasks are flagged on the main
+  thread, the Summary splits the time into scripting, rendering and painting,
+  and Bottom-Up finds the slowest functions. See
+  [Core Web Vitals](../performance/web-vitals.md).
 
 ## Common Mistakes
 
@@ -120,6 +141,8 @@ function findUser(name) {
   copy or a primitive value instead.
 - Leaving `debugger` and `console.log` in the code; linter rules catch both
   (`no-debugger`, `no-console`).
+- Profiling a development build: development mode and `StrictMode` make React
+  much slower. Profile a production build with CPU throttling.
 
 ## See Also
 

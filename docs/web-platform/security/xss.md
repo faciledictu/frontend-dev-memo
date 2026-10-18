@@ -3,6 +3,7 @@ sidebar_position: 1
 description:
   Stored, reflected and DOM-based XSS, escaping by context, sanitization, XSS in
   React, Trusted Types
+tags: [middle, senior]
 ---
 
 # Cross-Site Scripting (XSS)

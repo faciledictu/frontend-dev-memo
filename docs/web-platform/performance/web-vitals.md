@@ -2,6 +2,7 @@
 sidebar_position: 1
 description:
   LCP, INP and CLS, thresholds, field vs lab data, how to improve each metric
+tags: [middle, senior]
 ---
 
 # Core Web Vitals

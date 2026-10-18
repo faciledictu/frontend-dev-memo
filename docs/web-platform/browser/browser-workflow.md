@@ -2,6 +2,7 @@
 sidebar_position: 1
 description:
   From a URL to pixels - DNS, connection, parsing, the rendering pipeline
+tags: [junior, middle]
 ---
 
 # How the Browser Works
@@ -34,21 +35,25 @@ What happens after a user enters a URL:
 ### Rendering Pipeline
 
 1. **Parse HTML → DOM.** The parser works incrementally, while the bytes are
-   still arriving.
-2. **Parse CSS → CSSOM.** CSS is **render-blocking**: nothing is painted until
-   the styles found so far are loaded and parsed.
-3. **Run scripts.** A `<script>` without attributes is **parser-blocking**: the
-   parser stops until the script is downloaded and executed, and the script
-   itself waits for the stylesheets above it. `defer`, `async` and
-   `type="module"` scripts are downloaded without blocking the parser. See
-   [HTML](../../html-css/html.md#loading-scripts).
-4. **Style.** The DOM and the CSSOM are combined into the **render tree**: only
+   still arriving, and runs scripts along the way. A `<script>` without
+   attributes is **parser-blocking**: the parser stops until the script is
+   downloaded and executed, and the script itself waits for the stylesheets
+   above it. `defer` and `type="module"` scripts are downloaded in parallel and
+   run after parsing; an `async` script runs as soon as it arrives and pauses
+   the parser then. See [HTML](../../html-css/html.md#loading-scripts).
+2. **Parse CSS → CSSOM**, in parallel with the HTML. CSS is **render-blocking**:
+   nothing is painted until the styles found so far are loaded and parsed.
+3. **Style.** The DOM and the CSSOM are combined into the **render tree**: only
    the nodes that take part in rendering, with their computed styles.
    `display: none` elements are not in it.
-5. **Layout** (reflow). The size and position of every box are calculated.
-6. **Paint.** The boxes are drawn into layers: text, colors, borders, shadows.
-7. **Composite.** The layers are put together on the screen, usually on the GPU
+4. **Layout** (reflow). The size and position of every box are calculated.
+5. **Paint.** The boxes are drawn into layers: text, colors, borders, shadows.
+6. **Composite.** The layers are put together on the screen, usually on the GPU
    and off the main thread.
+
+While the parser waits for a script, the **preload scanner** reads the rest of
+the HTML and starts downloading the resources it finds. Resources whose URL is
+built by JavaScript or CSS are discovered late.
 
 `DOMContentLoaded` fires when the HTML is parsed and deferred scripts have run;
 `load` fires when all resources, including images, are loaded.
@@ -98,9 +103,12 @@ for (const item of items) {
 - What is the difference between `display: none` and `visibility: hidden`? The
   first removes the element from the render tree; the second keeps its place in
   the layout, but it is not painted.
-- How does JavaScript fit into rendering? Rendering happens between tasks, so a
-  long task delays the next frame. See
+- How does JavaScript fit into rendering? The browser renders once per frame
+  (about every 16.7 ms at 60 Hz), between tasks, after `requestAnimationFrame`
+  callbacks. A long task delays the next frame. See
   [Event Loop](../../javascript/event-loop.md).
+- Why not give every element its own layer with `will-change`? Each layer costs
+  GPU memory and compositing work; it is for elements that actually animate.
 
 ## Common Mistakes
 
@@ -108,6 +116,8 @@ for (const item of items) {
   during parsing and block it unless they are `defer`, `async` or modules.
 - "Any style change causes a reflow." Changes of `transform` and `opacity` can
   be handled by the compositor alone.
+- "Every request opens a new TCP connection." Connections are reused
+  (keep-alive), and HTTP/2 sends all requests over one.
 
 ## See Also
 

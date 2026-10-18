@@ -2,6 +2,7 @@
 sidebar_position: 1
 description:
   Methods, status codes, caching, HTTP versions and requests with fetch
+tags: [junior, middle]
 ---
 
 # HTTP
@@ -41,7 +42,7 @@ encrypted and the server proves its identity with a certificate.
 | ----- | ------------- | ---------------------------------------------------------------------------------------------------------------- |
 | `1xx` | Informational | `101 Switching Protocols` (WebSocket)                                                                            |
 | `2xx` | Success       | `200 OK`, `201 Created`, `204 No Content`                                                                        |
-| `3xx` | Redirection   | `301 Moved Permanently`, `302 Found`, `304 Not Modified`                                                         |
+| `3xx` | Redirection   | `301 Moved Permanently`, `302 Found`, `304 Not Modified`, `307`, `308`                                           |
 | `4xx` | Client error  | `400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, `404 Not Found`, `409 Conflict`, `429 Too Many Requests` |
 | `5xx` | Server error  | `500 Internal Server Error`, `502 Bad Gateway`, `503 Service Unavailable`, `504 Gateway Timeout`                 |
 
@@ -50,6 +51,8 @@ encrypted and the server proves its identity with a certificate.
 - `301` and `302` allow the client to change `POST` to `GET`; `308` and `307`
   are their counterparts that keep the method.
 - `304` has no body: the client uses its cached copy.
+- Headers worth naming: `Content-Type`, `Accept`, `Authorization`, `Cookie` /
+  `Set-Cookie`, `Location`, `Cache-Control`, `Content-Encoding`.
 
 ### Caching
 
@@ -89,7 +92,7 @@ and `DELETE`.
 
 - **`fetch`** is the standard promise-based API.
   - The promise is rejected only when there is no response at all: a network
-    failure, a [CORS](./cors.md) error or an abort. with `404` and `500` the
+    failure, a [CORS](./cors.md) error or an abort; with `404` and `500` the
     promise is fulfilled, so `response.ok` must be checked.
   - `AbortController` cancels a request; `AbortSignal.timeout(ms)` sets a
     timeout.
@@ -104,6 +107,7 @@ and `DELETE`.
 
 ```javascript
 async function getJson(url, { timeout = 5000 } = {}) {
+  // highlight-next-line
   const response = await fetch(url, {
     headers: { Accept: 'application/json' },
     signal: AbortSignal.timeout(timeout),
@@ -136,6 +140,15 @@ try {
   token sent with every request. See [Authentication](./authentication.md).
 - What happens between entering a URL and seeing the page? See
   [How the Browser Works](../browser/browser-workflow.md).
+- What happened to HTTP/2 Server Push? Browsers removed it; `103 Early Hints`
+  and `<link rel="preload">` replaced it.
+- `fetch` or axios? axios is built on XHR (upload progress), rejects on non-2xx
+  statuses, parses JSON and has interceptors. `fetch` is built in and supports
+  streams, but `response.ok` and timeouts are checked by hand.
+- How to make a `POST` retry safe? An `Idempotency-Key` header: the server
+  stores the result per key and returns it again for a repeated request.
+- What is `stale-while-revalidate`? The cache returns the stale copy at once and
+  refreshes it in the background: `max-age=60, stale-while-revalidate=600`.
 
 ## Common Mistakes
 
@@ -144,6 +157,9 @@ try {
 - "HTTP is a text protocol." Only HTTP/1.x; HTTP/2 and HTTP/3 are binary.
 - "`fetch` throws on `404`." It does not; check `response.ok`.
 - "`no-cache` forbids caching." That is `no-store`.
+- "No `Cache-Control` means no caching." Without it the browser caches
+  heuristically, based on `Last-Modified`; opt out with `no-store` or
+  `no-cache`.
 
 ## See Also
 

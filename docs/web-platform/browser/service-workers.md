@@ -3,6 +3,7 @@ sidebar_position: 4
 description:
   Service worker as a network proxy, registration and scope, lifecycle and
   updates, caching strategies, offline and PWA
+tags: [middle, senior]
 ---
 
 # Service Workers

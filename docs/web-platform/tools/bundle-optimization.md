@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 description: Bundle analysis, tree shaking, code splitting and lighter imports
+tags: [middle, senior]
 ---
 
 # Bundle Optimization
@@ -14,6 +15,8 @@ executed. The main techniques:
   on demand.
 - **Minification and compression**, and **lighter dependencies**.
 
+Applies to: Vite 8, webpack 5.
+
 ## Details
 
 ### Measuring
@@ -22,13 +25,17 @@ executed. The main techniques:
   and contains extra code.
 - An analyzer shows a treemap of what the bundle consists of:
   `webpack-bundle-analyzer` for webpack, `rollup-plugin-visualizer` for Vite and
-  Rollup, `source-map-explorer` for any bundler that emits source maps.
+  Rollup (it also supports Rolldown), `source-map-explorer` for any bundler that
+  emits source maps.
+- Look for **duplicate dependencies**: two versions of one library appear twice
+  in the treemap; `pnpm why` shows who pulls them in.
 
 ### Tree Shaking
 
 - It relies on **ES modules**: `import` and `export` are static, so the bundler
   can see what is used. CommonJS (`require`) cannot be analyzed reliably.
-- It works in production builds of webpack, Rollup, Vite and esbuild.
+- It works in production builds of webpack, Rollup, Rolldown (Vite 8) and
+  esbuild.
 - A library helps the bundler with `"sideEffects": false` in its `package.json`:
   a module that is imported or re-exported, but whose exports are not used, can
   then be dropped entirely. Files with side effects (CSS, polyfills) are listed
@@ -52,14 +59,17 @@ How the import style affects the bundle, with Lodash as an example:
 - In React, `lazy` together with `Suspense` loads a component on first render.
   Routers can load routes lazily, see
   [Routing](../../react/ecosystem/routing.md).
+- Vite adds `<link rel="modulepreload">` for the dependencies of a chunk when it
+  is requested. A chunk for likely navigation is prefetched with
+  `/* webpackPrefetch: true */` in webpack or `<link rel="prefetch">`.
 - Dependencies that rarely change can go into a separate **vendor chunk**
-  (`splitChunks` in webpack, `manualChunks` in Rollup), so that the browser
-  keeps it cached between releases. See
-  [HTTP caching](../network/http.md#caching).
+  (`splitChunks` in webpack, `codeSplitting` in Rolldown and Vite 8,
+  `manualChunks` in Rollup and Vite 7), so that the browser keeps it cached
+  between releases. See [HTTP caching](../network/http.md#caching).
 
 ### Other Techniques
 
-- **Minification** (Terser, esbuild, SWC) is done by the bundler;
+- **Minification** (Oxc in Vite 8, esbuild, SWC, Terser) is done by the bundler;
   **compression** (Brotli, gzip) is done by the server or the CDN.
 - **Lighter dependencies**: `date-fns` or `Intl` instead of Moment.js, native
   methods instead of utility libraries.
@@ -71,6 +81,7 @@ How the import style affects the bundle, with Lodash as an example:
 import { Suspense, lazy } from 'react';
 
 // The chart code is loaded only when <Dashboard> is rendered
+// highlight-next-line
 const Chart = lazy(() => import('./Chart'));
 
 function Dashboard() {
@@ -87,15 +98,25 @@ function Dashboard() {
 - Why does tree shaking not work for a library? It is published as CommonJS, or
   its modules have side effects and it does not declare `sideEffects`.
 - What is the downside of code splitting? More requests and a delay when a chunk
-  is needed for the first time. Chunks for likely navigation can be preloaded.
+  is needed for the first time; chunks for likely navigation are prefetched.
 - How do you find out what made the bundle bigger? Compare analyzer reports
   before and after the change.
+- Tree shaking or dead code elimination? Tree shaking drops unused exports; the
+  minifier drops unreachable code (`if (false)`, a `process.env.NODE_ENV` check
+  after it is replaced). Both work only in the production build.
+- How do you keep the bundle from growing back? A size budget in CI
+  (`size-limit`, Lighthouse budgets) and an analyzer diff on pull requests.
 
 ## Common Mistakes
 
 - "Named imports are always tree-shaken." Only from ES modules;
   `import { debounce } from 'lodash'` pulls in the whole library.
 - Measuring performance or bundle size on a development build.
+- Importing through barrel files (`index.ts` that re-exports everything): a
+  barrel that re-exports CommonJS modules or modules with side effects defeats
+  tree shaking.
+- Lazy-loading every component: dozens of tiny chunks load in a waterfall. Split
+  by route and by heavy, rarely used components.
 
 ## See Also
 

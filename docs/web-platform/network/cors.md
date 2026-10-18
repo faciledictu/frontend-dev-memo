@@ -1,6 +1,7 @@
 ---
 sidebar_position: 2
 description: Same-Origin Policy, what an origin is, preflight and credentials
+tags: [junior, middle]
 ---
 
 # CORS and the Same-Origin Policy
@@ -27,6 +28,9 @@ Compared with `https://example.com/page`:
 The policy limits **reading** from scripts. Embedding (`<img>`, `<script>`,
 `<link>`), form submissions and navigation to another origin are allowed, which
 is why [CSRF](../security/csrf.md) attacks are possible.
+
+The policy also keeps windows and iframes of different origins out of each
+other's DOM; they talk through `window.postMessage`.
 
 ### Simple Requests and Preflight
 
@@ -105,6 +109,13 @@ Access-Control-Max-Age: 600
 - Are `https://example.com` and `https://api.example.com` the same? They are
   different origins, but the same **site**, which is what `SameSite` cookies
   look at.
+- How do a page and a cross-origin iframe talk? `postMessage`, with a check of
+  `event.origin` on the receiving side.
+- Do `<img>`, `<script>` and fonts need CORS? Embedding does not, reading does:
+  a cross-origin image taints a `<canvas>`, while web fonts and module scripts
+  require CORS headers. The `crossorigin` attribute makes an element use CORS.
+- How long is a preflight cached? `Access-Control-Max-Age`, 5 seconds by
+  default; browsers cap it (Chrome at 2 hours).
 
 ## Common Mistakes
 
@@ -115,6 +126,10 @@ Access-Control-Max-Age: 600
   server; the browser only hides the response.
 - "`Access-Control-Allow-Origin: *` works for everything." Not for requests with
   credentials.
+- Setting `Access-Control-Allow-Origin` as a request header in `fetch`: it is a
+  response header, and the extra header only triggers a preflight.
+- "`mode: 'no-cors'` fixes it." The response becomes opaque: the script can't
+  read it.
 
 ## See Also
 

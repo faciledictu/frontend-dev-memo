@@ -3,6 +3,7 @@ sidebar_position: 3
 description:
   Content-Security-Policy header, directives and source values, strict CSP with
   nonces and strict-dynamic, Report-Only, frame-ancestors
+tags: [senior]
 ---
 
 # Content Security Policy (CSP)

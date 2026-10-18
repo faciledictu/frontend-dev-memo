@@ -2,9 +2,15 @@
 sidebar_position: 3
 description:
   Cookies vs localStorage vs sessionStorage, cookie attributes and security
+tags: [junior, middle]
 ---
 
 # Browser Storage
+
+**Cookies** are for what the server needs with every request, such as a session
+ID. **Web Storage** is for data that only the client uses: UI settings, drafts.
+For large or structured data there is **IndexedDB**, an asynchronous database in
+the browser.
 
 |                | Cookies                                 | `localStorage`         | `sessionStorage`        |
 | -------------- | --------------------------------------- | ---------------------- | ----------------------- |
@@ -13,11 +19,6 @@ description:
 | Sent to server | **yes**, with every matching request    | no                     | no                      |
 | Visible to     | domain and path; can include subdomains | all tabs of the origin | one tab                 |
 | Access from JS | `document.cookie`, unless `HttpOnly`    | yes                    | yes                     |
-
-**Cookies** are for what the server needs with every request, such as a session
-ID. **Web Storage** is for data that only the client uses: UI settings, drafts.
-For large or structured data there is **IndexedDB**, an asynchronous database in
-the browser.
 
 ## Details
 
@@ -33,10 +34,16 @@ A cookie is set by the server with the `Set-Cookie` header or by a script.
 | `Secure`              | sent only over HTTPS                                                                           |
 | `HttpOnly`            | hidden from JavaScript, so a script injected by XSS cannot read it. Only the server can set it |
 | `SameSite`            | whether the cookie is sent with cross-site requests; a defense against CSRF                    |
+| `Partitioned`         | a third-party cookie stored separately for each top-level site (CHIPS). Requires `Secure`      |
 
 `SameSite` values:
 
 - `Strict`: only requests from the same site.
+
+Name prefixes are checked by the browser: a `__Host-` cookie must be `Secure`,
+have `Path=/` and no `Domain`, so a subdomain can't overwrite it; a `__Secure-`
+cookie must be `Secure`. Browsers cap the lifetime of a cookie at 400 days.
+
 - `Lax`: the same, plus top-level navigation from another site with a safe
   method (`GET`), such as a click on a link. A cross-site `POST` form does not
   get the cookie. Chromium browsers use it when the attribute is missing.
@@ -88,6 +95,7 @@ Cookies in a script:
 
 ```javascript
 function setCookie(name, value, maxAge) {
+  // highlight-next-line
   document.cookie =
     `${encodeURIComponent(name)}=${encodeURIComponent(value)}` +
     `; max-age=${maxAge}; path=/; samesite=lax`;
@@ -117,6 +125,7 @@ const settings = JSON.parse(localStorage.getItem('settings') ?? '{}');
 console.log(settings.theme); // 'dark'
 
 // Fires in other tabs of the same origin
+// highlight-next-line
 window.addEventListener('storage', (event) => {
   console.log(event.key, event.oldValue, event.newValue);
 });
@@ -135,6 +144,14 @@ window.addEventListener('storage', (event) => {
   `credentials: 'include'`, and a cross-site request also needs
   `SameSite=None; Secure` on the cookie. Whether the script can read the
   response is decided by the [CORS](./cors.md#credentials) headers.
+- Is `localStorage` shared between `http://` and `https://` or between
+  subdomains? No, Web Storage is per origin. Cookies can span subdomains with
+  `Domain`.
+- What happens when the quota is exceeded? `setItem` throws
+  `QuotaExceededError`, so writes go in `try` / `catch`.
+- When to use IndexedDB? For large, structured or binary data. It is
+  asynchronous and, unlike Web Storage, available in workers; usually used
+  through `idb` or Dexie.
 
 ## Common Mistakes
 
@@ -144,6 +161,8 @@ window.addEventListener('storage', (event) => {
 - "`sessionStorage` is shared between tabs." Every tab has its own.
 - Storing an object without `JSON.stringify`: the value becomes
   `'[object Object]'`.
+- Deleting a cookie with `document.cookie = 'name='`: that sets an empty value.
+  Deletion is `max-age=0` with the same `path` and `domain`.
 
 ## See Also
 

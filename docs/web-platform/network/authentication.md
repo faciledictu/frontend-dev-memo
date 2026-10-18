@@ -1,6 +1,7 @@
 ---
 sidebar_position: 4
 description: Authentication vs authorization, sessions vs JWT, OAuth and OIDC
+tags: [middle, senior]
 ---
 
 # Authentication and Authorization
@@ -24,11 +25,15 @@ recognized on every request either by a **server session** or by a signed
 | Scaling          | all servers need access to the store    | any server with the key can verify the token     |
 | Usually sent in  | a cookie                                | the `Authorization: Bearer` header, or a cookie  |
 
+- A JWT is three base64url parts, `header.payload.signature`. The header names
+  the algorithm: `HS256` (a shared secret) or `RS256` / `ES256` (a key pair).
+  Standard claims: `sub`, `exp`, `iat`, `iss`, `aud`.
 - A JWT is **signed, not encrypted**: anyone can decode and read the payload, so
   it must not contain secrets.
 - Because a JWT is hard to revoke, the **access token** is made short-lived
   (minutes) and is renewed with a long-lived **refresh token** that the server
-  can revoke.
+  can revoke. With **rotation** every refresh issues a new refresh token, and
+  reuse of an old one revokes them all.
 
 ### Where to Keep the Token in the Browser
 
@@ -39,7 +44,9 @@ recognized on every request either by a **server session** or by a signed
 | Memory (variable) | harder to steal, lost on reload                                           | not affected                                         |
 
 The usual recommendation is an `HttpOnly; Secure; SameSite` cookie. See
-[Browser Storage](./storage.md#cookie-attributes).
+[Browser Storage](./storage.md#cookie-attributes). In the **BFF** (backend for
+frontend) pattern a server proxy keeps the OAuth tokens and gives the SPA a
+plain session cookie, so no token reaches the browser.
 
 ### Ways to Authenticate
 
@@ -48,7 +55,7 @@ The usual recommendation is an `HttpOnly; Secure; SameSite` cookie. See
 - **Multi-factor (MFA).** Two or more of: something the user knows (a password),
   has (a phone, a security key), is (biometrics).
 - **Passwordless.** Magic links, one-time codes, passkeys (WebAuthn).
-- **Single sign-on and social login.** Identity is confirmed by another service
+- **Single sign-on and social login.** Identity is confirmed by another service,
   usually through OpenID Connect (or SAML in corporate SSO).
 
 ### OAuth 2.0 and OpenID Connect
@@ -69,6 +76,46 @@ The usual recommendation is an `HttpOnly; Secure; SameSite` cookie. See
 - Rights are checked **on the server** for every request. Hiding a button or a
   route in the UI is convenience, not protection.
 
+## Example
+
+A decoded JWT:
+
+```text
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MiIsImV4cCI6MTc5MjAwMDAwMH0.<signature>
+
+header:  { "alg": "HS256", "typ": "JWT" }
+payload: { "sub": "42", "exp": 1792000000 }
+```
+
+A `fetch` wrapper that refreshes the session once on `401` and retries:
+
+```javascript
+let refreshing = null;
+
+function refresh() {
+  // One refresh for all requests that got 401 at the same time
+  refreshing ??= fetch('/api/refresh', { method: 'POST' }).finally(() => {
+    refreshing = null;
+  });
+  return refreshing;
+}
+
+async function apiFetch(url, options) {
+  let response = await fetch(url, options);
+
+  if (response.status === 401) {
+    const refreshed = await refresh();
+    if (!refreshed.ok) {
+      throw new Error('Session expired');
+    }
+    // highlight-next-line
+    response = await fetch(url, options);
+  }
+
+  return response;
+}
+```
+
 ## Follow-up Questions
 
 - How do you log a user out with JWT? Delete the token on the client and revoke
@@ -77,6 +124,15 @@ The usual recommendation is an `HttpOnly; Secure; SameSite` cookie. See
   `403`: authenticated, but not allowed.
 - Why is `localStorage` a risky place for a token? Any script on the page can
   read it, so one XSS hole gives away the session.
+- What does the server check in a JWT? The signature with the expected algorithm
+  (`alg: none` is rejected), then `exp`, `iss` and `aud`. The payload is trusted
+  only after that.
+- What is PKCE for? An intercepted authorization code is useless without the
+  `code_verifier` that only the client knows, so a public client needs no
+  secret.
+- How does the client handle a `401`? Refresh once (one refresh for parallel
+  requests), retry, and on a second `401` drop the session and go to the login
+  page.
 
 ## Common Mistakes
 
@@ -84,6 +140,8 @@ The usual recommendation is an `HttpOnly; Secure; SameSite` cookie. See
 - "OAuth is an authentication protocol." It is about authorization;
   authentication is added by OpenID Connect.
 - Checking rights only on the client.
+- Using the claims of a JWT decoded on the client for access decisions. They are
+  fine for the UI; the server verifies the signature and the rights.
 
 ## See Also
 

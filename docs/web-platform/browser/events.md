@@ -2,6 +2,7 @@
 sidebar_position: 2
 description:
   Capturing and bubbling, target vs currentTarget, delegation, listener options
+tags: [junior, middle]
 ---
 
 # DOM Events
@@ -48,6 +49,9 @@ button.removeEventListener('click', handleClick, options);
   `focusin` / `focusout`), `mouseenter` / `mouseleave` (`mouseover` /
   `mouseout`), `load` and `error` of resources. They can still be caught on an
   ancestor in the capturing phase.
+- A **custom event** carries data in `detail`:
+  `el.dispatchEvent(new CustomEvent('save', { detail, bubbles: true }))`. It is
+  listened to like any other event.
 
 ### Stopping an Event
 
@@ -68,8 +72,9 @@ button.removeEventListener('click', handleClick, options);
 | Page     | `DOMContentLoaded`, `load`, `resize`, `scroll`, `visibilitychange`, `pagehide`    |
 
 Deprecated: `keypress` (use `keydown`, or `input` for text) and `unload` (it is
-unreliable on mobile, disables the back/forward cache, and Chrome is phasing it
-out; use `visibilitychange` or `pagehide`).
+unreliable on mobile, disables the back/forward cache, and Chrome no longer
+fires it by default; use `visibilitychange` or `pagehide`). `beforeunload` is
+only for warning about unsaved changes.
 
 ## Example
 
@@ -86,8 +91,8 @@ Delegation: one handler for all items, including those added later.
 const menu = document.getElementById('menu');
 
 menu.addEventListener('click', (event) => {
-  // event.target can be the <span>, so matches('[data-action]') would fail.
-  // closest() checks the element itself and then its ancestors.
+  // event.target can be the <span>, so matches('[data-action]') would fail.  // closest() checks the element itself and then its ancestors.
+  // highlight-next-line
   const item = event.target.closest('[data-action]');
 
   if (!item || !menu.contains(item)) return;
@@ -104,6 +109,12 @@ menu.addEventListener('click', (event) => {
   them and call `controller.abort()`.
 - How does React attach handlers? It delegates: one listener per event type on
   the root container, not on every element.
+- What if the same handler is added twice? `addEventListener` ignores the
+  duplicate (same type, function and `capture`), so it runs once.
+- `input` or `change`? `input` fires on every change of the value; `change` when
+  the value is committed: on blur, Enter or selecting an option.
+- What is `event.target` for a click inside a Shadow DOM? Outside the shadow
+  tree it is retargeted to the host; `event.composedPath()` gives the real path.
 
 ## Common Mistakes
 
@@ -112,6 +123,8 @@ menu.addEventListener('click', (event) => {
 - Trying to remove a handler by passing a new function that looks the same.
 - Using `event.target.matches()` in delegation: it fails when the click lands on
   a nested element.
+- "`return false` cancels the default action." Only in `onclick="…"` attributes
+  and jQuery; with `addEventListener` call `preventDefault()`.
 
 ## See Also
 

@@ -3,6 +3,7 @@ sidebar_position: 1
 description:
   WCAG and its levels, semantic HTML, accessible names, keyboard and focus, ARIA
   rules, contrast, testing
+tags: [junior, middle]
 ---
 
 # Web Accessibility
