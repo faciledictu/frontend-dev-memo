@@ -35,7 +35,8 @@ So the order is: synchronous code → microtasks → rendering → the next task
   itself executes synchronously. See [Promises and async/await](./promises.mdx).
 - Code after `await` in async functions
 - `queueMicrotask()`
-- `MutationObserver`
+- `MutationObserver` callbacks (see
+  [Intersection, Resize and Mutation Observers](../web-platform/browser/observers.md))
 
 ### Tasks (Macrotasks)
 
@@ -49,7 +50,8 @@ So the order is: synchronous code → microtasks → rendering → the next task
 Rendering is not a task. After a task and all its microtasks are done, the
 browser may update the rendering (style, layout, paint) and only then takes the
 next task. `requestAnimationFrame` callbacks run in this step, right before the
-paint.
+paint. See
+[requestAnimationFrame and requestIdleCallback](../web-platform/browser/scheduling.md).
 
 That's why a long task or an endless chain of microtasks freezes the page. Heavy
 work should be split into several tasks or moved to a Web Worker.
@@ -99,8 +101,9 @@ console.log(7);
 - What happens if a microtask keeps scheduling new microtasks? The loop never
   reaches rendering and the next task: the page freezes.
 - How do you run heavy calculations without blocking the page? Split them into
-  chunks with `setTimeout` (or `scheduler.yield()`, not in Safari yet), or move
-  them to a Web Worker.
+  chunks with `scheduler.yield()` or `setTimeout`, or move them to a Web Worker.
+  See
+  [requestAnimationFrame and requestIdleCallback](../web-platform/browser/scheduling.md).
 
 ## Common Mistakes
 

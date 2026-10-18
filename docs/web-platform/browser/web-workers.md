@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 7
 description:
   Dedicated and shared workers, postMessage and structured clone, transferable
   objects, SharedArrayBuffer, when a worker helps

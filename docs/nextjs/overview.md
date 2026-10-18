@@ -74,7 +74,8 @@ URL must be served by only one of them.
   dynamic parts streamed into it; the default with Cache Components, see
   [Server Components](./app-router/server-components.mdx#rendering-strategies).
 - What is Proxy for? Code that runs before routing: redirects, rewrites,
-  headers, an optimistic auth check. Not for data fetching or heavy logic.
+  headers, an optimistic auth check. Not for data fetching or heavy logic. See
+  [Proxy](./proxy.md).
 
 ## Common Mistakes
 

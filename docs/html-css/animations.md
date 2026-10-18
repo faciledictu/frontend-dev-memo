@@ -62,7 +62,7 @@ Respect **`prefers-reduced-motion`**.
 - **JavaScript** when an animation depends on input or other animations:
   sequencing, scrubbing, physics, gestures, values computed at runtime; a
   per-frame loop uses `requestAnimationFrame`, not `setTimeout`, see
-  [Event Loop](../javascript/event-loop.md).
+  [requestAnimationFrame](../web-platform/browser/scheduling.md#requestanimationframe).
 - The **Web Animations API** (`element.animate(keyframes, options)`) is the same
   engine as CSS animations, controlled from JavaScript: it returns an
   `Animation` with `pause()`, `reverse()` and a `finished` promise. Motion uses

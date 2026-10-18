@@ -110,7 +110,7 @@ for (const item of items) {
 - How does JavaScript fit into rendering? The browser renders at most once per
   frame (about every 16.7 ms at 60 Hz), between tasks, after
   `requestAnimationFrame` callbacks. A long task delays the next frame. See
-  [Event Loop](../../javascript/event-loop.md).
+  [requestAnimationFrame and requestIdleCallback](./scheduling.md).
 - Why not give every element its own layer with `will-change`? Each layer costs
   GPU memory and compositing work; it is for elements that actually animate.
 

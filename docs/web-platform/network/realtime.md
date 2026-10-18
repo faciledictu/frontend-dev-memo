@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 description:
   Polling, long polling, Server-Sent Events and WebSocket, how each works and
   when to choose it

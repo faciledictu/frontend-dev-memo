@@ -137,6 +137,11 @@ export function PostForm() {
 - Server Action or Route Handler? An action for mutations from your own UI; a
   Route Handler for webhooks, other clients and non-POST methods. See
   [Route Handlers](./route-handlers.md#route-handler-vs-server-action).
+- Server Action or Server Function? Until September 2024 React called every
+  `'use server'` function a Server Action. Then it introduced the broader name
+  Server Function, because such a function can also be called outside a
+  mutation, for example to read data from a Client Component. A Server Action is
+  now a Server Function passed to `<form action>` or called inside a transition.
 - What happens to the page after an action? Next.js returns the updated RSC
   Payload in the same response when the action calls `updateTag`,
   `revalidatePath` or `refresh()`, changes cookies or redirects, so there is no

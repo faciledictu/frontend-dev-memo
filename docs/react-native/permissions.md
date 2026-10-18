@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 10
 description:
   Runtime permissions on iOS and Android, permission statuses, blocked
   permissions and settings, libraries

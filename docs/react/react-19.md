@@ -40,7 +40,7 @@ Applies to: React 19.3.
 | Server Components and Server Functions | Stable in React; the bundler integration is done by a framework                                                  | [Server Components](../nextjs/app-router/server-components.mdx)              |
 | Hydration errors                       | One error with a diff of the mismatch instead of several warnings                                                | [Hydration](./rendering/react-in-browser.md#hydration)                       |
 | Error reporting                        | `onCaughtError` and `onUncaughtError` options of `createRoot`; a caught error is logged once and not re-thrown   | [Error Boundaries](./basics/patterns.md#error-boundaries)                    |
-| Custom elements                        | Props are set as properties of a custom element, not only as attributes                                          | —                                                                            |
+| Custom elements                        | Props are set as properties of a custom element, not only as attributes                                          | [Web Components and Shadow DOM](../web-platform/browser/web-components.md)   |
 
 ### Minor Versions
 
@@ -161,3 +161,4 @@ function BlogPost({ post }) {
 
 - [React 19 release post](https://react.dev/blog/2024/12/05/react-19)
 - [React 19 Upgrade Guide](https://react.dev/blog/2024/04/25/react-19-upgrade-guide)
+- [Metadata and SEO in Next.js](../nextjs/app-router/metadata.md)
