@@ -10,8 +10,8 @@ Components are tested **the way a user uses them**: render the component, find
 elements by role or label, interact, check what is on the screen. The standard
 set is **React Testing Library** (RTL) with **user-event** on top of **Vitest**
 or **Jest** in a simulated DOM. State, instances and other implementation
-details are not tested. End-to-end tests run in a real browser, see
-[Testing](../../tooling/testing.md).
+details are not tested. End-to-end tests run in a real browser (see
+[Testing](../../tooling/testing.md)).
 
 Applies to: React Testing Library 16, user-event 14.
 

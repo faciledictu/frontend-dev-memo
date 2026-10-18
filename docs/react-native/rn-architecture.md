@@ -42,19 +42,17 @@ How it worked and what was wrong with it:
 
 ### New Architecture
 
-| Part         | What it is                                                                                        | What it gives                                                                       |
-| ------------ | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| JSI          | A C++ API between the JS engine and native code; native objects are exposed to JS as host objects | No JSON, no queue; synchronous calls are possible                                   |
-| TurboModules | Native modules built on JSI                                                                       | Loaded lazily on first use; can return values synchronously; can be written in C++  |
-| Fabric       | The renderer; its shadow tree is in C++ and shared by both platforms                              | Synchronous layout and measuring, React concurrent features (transitions, Suspense) |
-| Codegen      | Generates native interfaces from a TypeScript or Flow spec at build time                          | Type-safe JS ↔ native boundary                                                      |
-| Bridgeless   | The mode in which the bridge is not created at all                                                | Default with the New Architecture since 0.74; the only mode since 0.82              |
+| Part         | What it is                                                                                        | What it gives                                                                                                   |
+| ------------ | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| JSI          | A C++ API between the JS engine and native code; native objects are exposed to JS as host objects | No JSON, no queue; synchronous calls are possible                                                               |
+| TurboModules | Native modules built on JSI                                                                       | Loaded lazily on first use; can return values synchronously; can be written in C++                              |
+| Fabric       | The renderer; its shadow tree is in C++ and shared by both platforms                              | Synchronous layout and measuring, React concurrent features (transitions, Suspense)                             |
+| Codegen      | Generates native interfaces from a TypeScript or Flow spec at build time                          | Type-safe JS ↔ native boundary                                                                                  |
+| Bridgeless   | The mode in which the bridge is not created at all                                                | Default with the New Architecture since 0.74; the only mode since 0.82; legacy code is being removed since 0.84 |
 
 **Hermes** is the default JS engine (since 0.70; its new version, Hermes V1,
 since 0.84). It compiles JS to bytecode at build time, so the app starts faster
 and uses less memory than with a JIT engine.
-
-Legacy architecture code is being removed since 0.84.
 
 ### From `setState` to Pixels (Fabric)
 

@@ -174,8 +174,8 @@ Every move event goes through the JS thread, so the drag lags when JS is busy.
   `activeOffsetX` and `failOffsetY`, so the pan activates only on a clear
   horizontal move.
 - What is `hitSlop`? On `Pressable` it extends the touch area without changing
-  the layout, but not past the parent's bounds; in Gesture Handler negative
-  values shrink it.
+  the layout, but not past the parent's bounds; in Gesture Handler it mainly
+  shrinks it: negative values on both platforms, positive only on Android.
 - Why does React Native still have the responder system? Core components such as
   `ScrollView` and `Pressable` use it; Gesture Handler is a third-party library.
 

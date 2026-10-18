@@ -60,8 +60,8 @@ Applies to: GitHub Actions (`actions/checkout@v7`, `actions/setup-node@v7`,
 
 The JS part is checked as for the web; release builds add native steps:
 
-- Builds need signing and, for iOS, macOS runners, which are slower and more
-  expensive: EAS Build or fastlane, see
+- Build and sign with EAS Build or fastlane; iOS needs macOS runners, which are
+  slower and more expensive. See
   [Fastlane](../react-native/release/fastlane.md).
 - Releases go to testers and stores, see
   [Publishing and Distribution](../react-native/release/distribution.md).
@@ -175,7 +175,7 @@ deploy:
   Canary: the new version first gets a small share of traffic, which grows while
   metrics stay healthy.
 - How to cancel outdated runs when a PR gets new commits?
-  `concurrency: { group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true }`
+  `concurrency: { group: '${{ github.workflow }}-${{ github.ref }}', cancel-in-progress: true }`
   cancels the older run of the same ref.
 
 ## Common Mistakes

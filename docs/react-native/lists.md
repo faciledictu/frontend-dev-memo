@@ -141,9 +141,9 @@ export function Messages({ messages }: { messages: Message[] }) {
 
 ## Follow-up Questions
 
-- When `selectedId` changes in the example, how many rows re-render? Two `Row`s:
-  `renderItem` runs for every mounted item, but the memoized `Row` re-renders
-  only where `selected` changed.
+- When `selectedId` changes in the example, how many rows re-render? At most two
+  `Row`s (the old and the new selection): `renderItem` runs for every mounted
+  item, but the memoized `Row` re-renders only where `selected` changed.
 - What unit does `onEndReachedThreshold` use? Visible lengths of the list: `0.5`
   fires when the end is half a list height away; the default is 2.
 - How do you build a chat list? `inverted` on `FlatList`; in FlashList 2,

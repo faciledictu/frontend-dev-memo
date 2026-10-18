@@ -144,7 +144,9 @@ Average case unless stated.
   sequence until a free one is found).
 - When the table fills up (the **load factor** passes a threshold), it is
   resized and all entries are rehashed: O(_n_) once, O(1) amortized.
-- `Map` and plain objects are hash tables in practice; when to use which is in
+- `Map` is a hash table; a plain object behaves like one for dynamic keys (V8
+  keeps a fixed shape as a hidden class and switches to a dictionary when keys
+  are added and removed). When to use which is in
   [Map and Set](../javascript/map-set.md).
 
 ### Trees

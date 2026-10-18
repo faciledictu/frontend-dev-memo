@@ -144,9 +144,8 @@ with an OAuth 2.0 access token of a service account.
 
 - Testing remote pushes in Expo Go on Android: since SDK 53 they need a
   development build.
-- Expecting a notification to appear while the app is open with Firebase
-  messaging: it is delivered to the code; with `expo-notifications` the handler
-  decides.
+- Expecting a Firebase notification to appear while the app is open: in the
+  foreground it is only delivered to the code.
 - Relying on data-only pushes for important updates on iOS.
 - Storing the token once: it must be refreshed and tied to the current user, and
   removed on logout.

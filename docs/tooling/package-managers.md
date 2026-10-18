@@ -151,8 +151,8 @@ allowBuilds:
   transitive package is replaced without waiting for its parents.
 - How do you protect against a malicious new version? Install from the lockfile
   in CI, keep install scripts blocked and keep a minimum release age:
-  `minimumReleaseAge` in pnpm (one day by default since pnpm 11),
-  `min-release-age` in npm, `npmMinimalAgeGate` in Yarn.
+  `minimumReleaseAge` in pnpm (one day by default), `min-release-age` in npm,
+  `npmMinimalAgeGate` in Yarn.
 - `pnpm dlx` or `pnpm exec`? `dlx` downloads a package to a temporary location
   and runs it; `exec` runs a binary already installed in the project (`npx` does
   either).

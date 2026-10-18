@@ -3,6 +3,6 @@
   "position": 3,
   "link": {
     "type": "generated-index",
-    "description": "Core Web Vitals, loading performance and bundle size"
+    "description": "Core Web Vitals, loading performance and bundle size."
   }
 }
