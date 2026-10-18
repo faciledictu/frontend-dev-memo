@@ -1,10 +1,18 @@
 # Batch 9: React Native
 
-Status: proposed, not approved. React Native is the current focus of the cheat
+Status: approved by the user. React Native is the current focus of the cheat
 sheet. This batch covers the topics batch 6 deferred: core components, safe area
 and keyboard, `AppState` and background work, offline. It also adds native
 modules, a standard senior question. Six new pages in `docs/react-native/`, plus
 a list of pages for later. Starting point: `main` at 10f5e01.
+
+## Decisions
+
+- Safe area and keyboard are two pages: `safe-area` and `keyboard`.
+- `AppState` and background work are one page: `app-lifecycle`.
+- The React Native sidebar stays flat, no subgroups.
+- `native-modules` includes a short section on Fabric Native Components.
+- Next batch: accessibility and security in React Native (see "Later").
 
 ## Interview Questions the Section Does Not Answer Yet
 
@@ -33,6 +41,8 @@ in `tooling/testing.md`.
 
 - Versions: React Native 0.88 (React 19.3), Expo SDK 58 on React Native 0.88.
   0.88 adds `SceneDelegate` lifecycle support on iOS; one line at most.
+  **Re-check 0.88 before writing:** npm has `0.88.0` as `latest` since October
+  15, 2026, but the release post on reactnative.dev is dated October 19.
 - `SafeAreaView` from `react-native` is deprecated since 0.81 and covers iOS
   only; the docs point to `react-native-safe-area-context` (`SafeAreaProvider`,
   `SafeAreaView` with `edges`, `useSafeAreaInsets`).
@@ -161,7 +171,8 @@ debugging 20, Build and Release 21. Renumber the existing pages and the
 
 ## Later
 
-Candidates for the next React Native batch, by priority:
+Next batch: accessibility and security (items 1 and 2), planned separately. The
+rest are candidates, by priority:
 
 1. `accessibility.md`: `accessibilityLabel` / `accessibilityRole` /
    `accessibilityState`, VoiceOver and TalkBack, font scaling
@@ -180,20 +191,3 @@ Candidates for the next React Native batch, by priority:
    `npx expo install --fix`), brownfield (React Native inside an existing native
    app), monorepos: follow-ups in `overview.md` first, pages only if questions
    pile up.
-
-## Questions for the User
-
-1. Safe area and keyboard: two pages (`safe-area`, `keyboard`) or one? I
-   recommend two: both are frequent questions with different APIs, and one page
-   would break "one topic per page".
-2. `AppState` and background work: one page `app-lifecycle` or two? I recommend
-   one: `AppState` alone is a table and a hook, and the interview question is
-   usually "what happens in the background" as a whole.
-3. The sidebar grows to 21 items. Keep it flat or add subgroups (for example
-   "UI", "Device and OS", "Data")? I recommend keeping it flat in this batch and
-   deciding together with the "Later" pages.
-4. `native-modules` as a `[senior]` page with a short Fabric component section,
-   or modules only? I recommend including the short section: "how do you wrap a
-   native view" is the usual next question.
-5. Which "Later" pages go into the next batch? I recommend accessibility and
-   security first.

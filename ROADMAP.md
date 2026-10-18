@@ -291,6 +291,10 @@
       страница-указатель типовых задач на собеседовании (`bind`, `Promise.all`,
       `debounce`, глубокое копирование, мемоизация… со ссылками на страницы),
       error boundaries — отдельной страницей из `react/basics/patterns`.
+- [ ] 9. React Native, 6 страниц: `core-components`, `safe-area`, `keyboard`,
+      `native-modules`, `app-lifecycle` (`AppState` и фоновая работа),
+      `offline`; план —
+      [plans/batch-9-react-native.md](plans/batch-9-react-native.md).
 
 Обновление версий: строки `Applies to` сверяются раз в квартал
 (`grep -rh '^Applies to:' docs | sort | uniq -c`). Node.js 26 и PostgreSQL 19 —
