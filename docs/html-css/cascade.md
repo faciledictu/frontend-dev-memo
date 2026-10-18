@@ -1,8 +1,9 @@
 ---
 sidebar_position: 2
 description:
-  Cascade order, specificity, :is() / :where() / :has(), nesting, @layer,
-  inheritance and the inherit / initial / unset / revert keywords
+  Selectors in brief, cascade order, specificity, :is() / :where() / :has(),
+  nesting, @layer, inheritance and the inherit / initial / unset / revert
+  keywords
 tags: [junior, middle]
 ---
 
@@ -24,6 +25,27 @@ properties such as `color`, `font`) or takes its **initial value** (`margin`,
 `border`).
 
 ## Details
+
+### Selectors in Brief
+
+Only what is usually asked; the full list is on
+[MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors).
+
+| Selector          | Matches                                              |
+| ----------------- | ---------------------------------------------------- |
+| `.a .b`           | `.b` anywhere inside `.a`                            |
+| `.a > .b`         | `.b` that is a direct child of `.a`                  |
+| `.a + .b`         | `.b` right after `.a`, same parent                   |
+| `.a ~ .b`         | any `.b` after `.a`, same parent                     |
+| `.a.b`            | one element with both classes                        |
+| `[href^='https']` | attribute starts with; `$=` ends with, `*=` contains |
+
+- `:nth-child(2)` counts all siblings; `:nth-of-type(2)` counts only siblings of
+  the same element type.
+- `:focus-visible` matches keyboard focus (use it for focus rings);
+  `:focus-within` matches an element whose descendant has focus.
+- `::before` and `::after` render only with `content` (`content: ''` for a
+  decorative box).
 
 ### Specificity
 
@@ -174,8 +196,7 @@ body:has(dialog:modal) {
   overriding third-party inline styles.
 - What is the specificity of `nav ul li a.active:hover`? (0, 2, 4). Of
   `#main :not(.x) p`? (1, 1, 1).
-- `:nth-child(2)` vs `:nth-of-type(2)`? The second child among all siblings vs
-  the second sibling of this element type.
+
 - How does the browser match selectors? Right to left, from the rightmost part:
   `.nav li a` first finds every `a`, then checks its ancestors.
 

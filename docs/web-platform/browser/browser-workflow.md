@@ -72,7 +72,8 @@ After the first render, a change reruns the pipeline from the step it affects:
 | `transform`, `opacity`                                             | composite only, if the element has its own layer |
 
 - That is why animations should use `transform` and `opacity` instead of `top` /
-  `left` or `width` / `height`.
+  `left` or `width` / `height`. See
+  [CSS Transitions and Animations](../../html-css/animations.md).
 - **Layout thrashing.** The browser postpones layout until the next frame is
   rendered. Reading a layout property (`offsetWidth`, `getBoundingClientRect()`)
   after a style change forces it to run immediately. Doing it in a loop means a

@@ -5,6 +5,9 @@
   "ignorePaths": ["node_modules", "build", ".docusaurus", "pnpm-lock.yaml"],
   "words": [
     "accountabilities",
+    "animationend",
+    "animationiteration",
+    "animationstart",
     "antipatterns",
     "appstore",
     "asynchrony",
@@ -180,6 +183,7 @@
     "touchmove",
     "touchstart",
     "trackpad",
+    "transitionend",
     "treemap",
     "trygve",
     "ttfb",

@@ -264,9 +264,11 @@
       Flexbox), `positioning` (stacking context и `z-index`, центрирование,
       anchor positioning), `responsive-design` (единицы, `clamp()`, container
       queries, `srcset`), `custom-properties` (переменные, `@property`, темы,
-      `color-mix()`). Подгрупп нет; статусы по web-features 3.43.0. У `html`
-      после ревью Fable новый короткий ответ и follow-up вопросы, описание
-      раздела в `src/categories.ts` обновлено, обратные ссылки из
+      `color-mix()`); по решению пользователя добавлены `animations` (общие
+      вопросы про transitions и анимации, не справочник) и короткий блок о
+      селекторах в `cascade`. Подгрупп нет; статусы по web-features 3.43.0. У
+      `html` после ревью Fable новый короткий ответ и follow-up вопросы,
+      описание раздела в `src/categories.ts` обновлено, обратные ссылки из
       `react-native`, `react` и `web-platform`.
 - [ ] 6. React Native и Next.js, 8 страниц. React Native: `navigation` (React
       Navigation и Expo Router), `deep-linking`, `storage` (AsyncStorage, MMKV,

@@ -170,7 +170,7 @@ or move the menu to the top layer (`popover`) or a portal.
   flow, and its neighbors close the gap.
 - `transform: translate()` vs `top` / `left` for animation? `transform` is done
   by the compositor without layout, see
-  [How the Browser Works](../web-platform/browser/browser-workflow.md).
+  [CSS Transitions and Animations](./animations.md#what-to-animate).
 - Can a child with a negative `z-index` go behind its parent? Behind the
   parent's background only if the parent does not create a stacking context;
   otherwise it stays above the parent's background.

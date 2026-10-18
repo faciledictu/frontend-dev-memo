@@ -31,7 +31,7 @@ export const htmlCss: Category = {
   label: 'HTML & CSS',
   navbarLabel: 'HTML/CSS',
   description:
-    'Semantic HTML, the cascade, box model, Flexbox, Grid, positioning, responsive design and custom properties',
+    'Semantic HTML, the cascade, box model, Flexbox, Grid, positioning, responsive design, custom properties and animations',
   group: 'main',
 };
 
