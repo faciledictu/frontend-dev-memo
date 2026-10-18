@@ -50,13 +50,11 @@ All three work the same way: create an observer with a callback, call
   current state, even when the element is not visible, then on every threshold
   crossing. Check `entry.isIntersecting`; `entry.intersectionRatio` gives the
   visible share.
-- The browser computes intersections once per frame, after layout, so the code
-  does not force extra layouts the way `getBoundingClientRect()` in a `scroll`
-  handler does.
+
 - For images and iframes, `loading="lazy"` is enough. See
   [Critical Rendering Path and Loading Performance](../performance/loading-performance.md#images).
 - Version 2 (`trackVisibility`) also detects whether the element is covered by
-  other content; Chromium only.
+  other content.
 
 ### ResizeObserver
 
@@ -89,7 +87,8 @@ All three work the same way: create an observer with a callback, call
 - Changing the observed DOM inside the callback produces new records and can
   loop.
 
-Support: all three observers are Baseline.
+Support: all three observers are Baseline; IntersectionObserver v2 is Chromium
+only.
 
 ## Example
 
@@ -132,8 +131,12 @@ observer.observe(sentinel);
   loading.
 - How do you track that an ad was really seen? `threshold: 0.5` plus a timer:
   the element counts as seen after it stays half visible for a second.
-- Why does `MutationObserver` use microtasks and not run synchronously? To
-  deliver all changes of one script in one batch, after the DOM is consistent.
+- Does `IntersectionObserver` fire for an element with `display: none` or
+  `visibility: hidden`? `display: none` has no box and never intersects;
+  `visibility: hidden` still intersects, because v1 does not check visibility.
+- When is `ResizeObserver` the wrong tool? When only styles depend on the size:
+  CSS container queries do it without JavaScript. The observer is for layout
+  logic, charts and measuring text.
 - How do you watch an element inside a scroll container or an `iframe`? For a
   scroll container, pass it as `root`. Inside an iframe, the default
   `root: null` already measures against the top-level viewport, even
@@ -149,6 +152,8 @@ observer.observe(sentinel);
 - Resizing the observed element in the `ResizeObserver` callback without a
   check, which leads to the loop error.
 - Creating a separate observer for each of hundreds of list items.
+- `threshold: 1` for an element taller than the viewport: it can never be fully
+  visible, so the callback never reports it as fully visible.
 
 ## See Also
 

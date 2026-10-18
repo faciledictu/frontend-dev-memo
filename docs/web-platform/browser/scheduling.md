@@ -69,7 +69,7 @@ task → microtasks → rAF callbacks → style, layout → ResizeObserver → p
   and then `deadline.didTimeout` is `true`.
 - No DOM changes inside: the frame is already painted, and they would force a
   new layout. Schedule them with rAF instead.
-- Not supported in Safari: feature-detect it and fall back to `setTimeout`.
+- Feature-detect it and fall back to `setTimeout`.
 
 ### scheduler.yield() and postTask()
 
@@ -112,7 +112,13 @@ requestAnimationFrame(step);
 const idle =
   window.requestIdleCallback ??
   ((cb) =>
-    setTimeout(() => cb({ timeRemaining: () => 10, didTimeout: false })));
+    setTimeout(() => {
+      const start = Date.now();
+      cb({
+        timeRemaining: () => Math.max(0, 50 - (Date.now() - start)),
+        didTimeout: false,
+      });
+    }));
 
 const queue = [];
 
@@ -145,11 +151,12 @@ enqueue(() => prefetch('/next-page'));
 - How do you avoid layout thrashing? Read all the sizes first, then write all
   the styles, in one rAF callback. See
   [How the Browser Works](./browser-workflow.md#reflow-and-repaint).
-- Why does a `scheduler.yield()` continuation run before a `setTimeout`
-  scheduled earlier? Its task goes to the front of its priority queue, while
-  `setTimeout` goes to the end.
-- Can rIC replace a Web Worker? No: it still runs on the main thread in short
-  slices; long computation belongs in a worker.
+- In what order do `setTimeout(fn, 0)`, `Promise.resolve().then(fn)`,
+  `requestAnimationFrame(fn)` and `requestIdleCallback(fn)` fire? The microtask
+  first, rIC last; the timer and rAF depend on how soon the next frame is due,
+  so code must not rely on their order.
+- Why not send analytics or a request from rAF? rAF is paused in background
+  tabs, so the work may never run; that is a job for rIC or `postTask`.
 
 ## Common Mistakes
 
@@ -159,6 +166,7 @@ enqueue(() => prefetch('/next-page'));
 - Moving an element by a fixed step per frame: the speed then depends on the
   refresh rate. Use the timestamp.
 - Changing the DOM in `requestIdleCallback`.
+- Using rAF for non-visual work: in a background tab it never runs.
 - Relying on `requestIdleCallback` without `timeout` for work that must happen:
   on a busy page it may wait for seconds.
 

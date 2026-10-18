@@ -142,8 +142,9 @@ The delegation itself is explained in [DOM Events](./events.md).
 
 ## Follow-up Questions
 
-- Why does the URL change but nothing happens after `pushState`? The API only
-  updates the history and the address bar; rendering the view is the app's job.
+- How is `location.href = '/about'` different from
+  `pushState(null, '', '/about')`? The first is a real navigation: a request, a
+  new document, in-memory state lost; the second only adds a history entry.
 - How do you warn about unsaved changes before leaving? `beforeunload` for page
   loads; inside the SPA, the router has to block its own navigation (in the
   Navigation API, `event.preventDefault()` in `navigate`).
@@ -153,9 +154,9 @@ The delegation itself is explained in [DOM Events](./events.md).
 - How does the app restore the scroll position on back?
   `scrollRestoration = 'manual'`, the position saved in `history.state`
   (`replaceState` before leaving), and `scrollTo` after the view is rendered.
-- Why is the Navigation API simpler for routers? One event covers links, forms
-  and back / forward, and the browser tracks the loading state and aborts stale
-  navigations.
+- How do you know whether `history.back()` stays inside the app? The History API
+  cannot tell: `history.length` counts the whole tab, other sites included.
+  `navigation.canGoBack` and `navigation.entries()` answer it.
 
 ## Common Mistakes
 

@@ -38,8 +38,8 @@ shared between teams and for widgets embedded in other sites.
   they match `:not(:defined)`, which is used to hide them, and
   `customElements.whenDefined(name)` returns a promise.
 - **Autonomous** elements extend `HTMLElement` (`<my-button>`). **Customized
-  built-ins** extend a native element (`<button is="my-button">`), but Safari
-  does not support them, so in practice only autonomous elements are used.
+  built-ins** extend a native element (`<button is="my-button">`), but not every
+  browser supports them, so in practice only autonomous elements are used.
 - Attributes are strings; rich data (objects, arrays) is passed through
   **properties**. A common pattern is to reflect simple properties to
   attributes.
@@ -49,9 +49,9 @@ shared between teams and for widgets embedded in other sites.
 - `this.attachShadow({ mode: 'open' })` creates the shadow root. `open` exposes
   it as `element.shadowRoot`; `closed` returns `null` there. `closed` is not a
   security boundary: it only makes testing and styling harder.
-- What crosses the boundary into the shadow tree:
+- What crosses the shadow boundary:
 
-| Gets through                                                                  | Does not get through                                       |
+| Crosses                                                                       | Stays on its side                                          |
 | ----------------------------------------------------------------------------- | ---------------------------------------------------------- |
 | Inherited properties: `color`, `font`, `line-height`                          | Page selectors: `.button` does not match inside            |
 | **CSS custom properties** (`--accent`): the main theming tool                 | Page `id`s: `getElementById`, `<label for>`                |
@@ -99,11 +99,12 @@ shared between teams and for widgets embedded in other sites.
 - Lit (a thin library) and Stencil (a compiler) add reactive properties and
   templating on top of the standard.
 - Scoped registries (`new CustomElementRegistry()`) let two versions of one
-  element coexist on a page, so far not in Firefox.
+  element coexist on a page.
 
 Support: custom elements, Shadow DOM, `<template>`, `<slot>`, `::part`,
 constructed stylesheets, form-associated elements and Declarative Shadow DOM are
-Baseline.
+Baseline; customized built-ins are not in Safari, scoped registries not in
+Firefox.
 
 ## Example
 
@@ -181,8 +182,9 @@ customElements.define('my-counter', MyCounter);
   `connectedCallback` or `attributeChangedCallback`.
 - What happens to `document.querySelector` for elements inside a shadow root? It
   does not find them; query `element.shadowRoot` instead.
-- Why do Web Components and SSR not mix well? Without Declarative Shadow DOM the
-  shadow content exists only after the script runs, so the server HTML is empty.
+- Can Shadow DOM be used without a custom element? Yes: `attachShadow()` works
+  on `div`, `span`, `section`, `p` and other containers (not on `<a>`, `<img>`
+  or `<input>`). Third-party widgets use it to isolate their styles.
 - When are Web Components worse than React components? Inside a single React
   app: passing data, composing and server rendering are simpler with the
   framework's own components.

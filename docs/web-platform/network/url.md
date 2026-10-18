@@ -8,16 +8,15 @@ tags: [junior, middle]
 
 # URL and Encoding
 
-A URL consists of a **scheme**, a **host** with an optional port, a **path**, a
-**query** (`?…`) and a **fragment** (`#…`). The fragment is **not sent** to the
-server. Characters that are not allowed or have a special meaning (`&`, `=`,
-`#`, `?`, spaces, non-ASCII) are **percent-encoded**: each UTF-8 byte becomes
-`%XX`.
-
-URLs are not built by string concatenation: **`new URL(path, base)`** parses and
-normalizes them, and **`URLSearchParams`** encodes query parameters.
-`encodeURIComponent` encodes **one part** of a URL; `encodeURI` a whole URL, so
-it leaves `&`, `=`, `?`, `/` and `#` as they are.
+- A URL consists of a **scheme**, a **host** with an optional port, a **path**,
+  a **query** (`?…`) and a **fragment** (`#…`). The fragment is **not sent** to
+  the server.
+- Characters that are not allowed or have a special meaning (`&`, `=`, `#`, `?`,
+  spaces, non-ASCII) are **percent-encoded**: each UTF-8 byte becomes `%XX`.
+  `encodeURIComponent` encodes **one part** of a URL; `encodeURI` a whole URL,
+  so it leaves `&`, `=`, `?`, `/` and `#` as they are.
+- Build and parse URLs with **`new URL(path, base)`** and **`URLSearchParams`**,
+  not string concatenation.
 
 ## Details
 
@@ -54,6 +53,8 @@ The origin is what the Same-Origin Policy compares. See
 - `URLSearchParams` reads and builds the query: `get`, `getAll` (repeated keys),
   `set`, `append`, `delete`, `has`, `sort`, iteration. It accepts a string, an
   object or an array of pairs, and is accepted by `fetch` as a form body.
+- **`URLPattern`** matches URLs against patterns like `/users/:id` and returns
+  the parameters: a built-in alternative to route-matching libraries.
 
 ### Encoding Functions
 
@@ -83,9 +84,6 @@ The origin is what the Same-Origin Policy compares. See
 - Check the **origin** of a redirect target (`?next=…`), not a prefix of the
   string: `https://example.com.evil.com` starts with `https://example.com`.
 
-**`URLPattern`** matches URLs against patterns like `/users/:id` and returns the
-parameters, a built-in alternative to route-matching libraries.
-
 Support: `URL`, `URLSearchParams` and `URL.canParse()` are Baseline;
 `URL.parse()` and `URLPattern` became Baseline in 2024 and 2025.
 
@@ -114,8 +112,9 @@ url.searchParams.get('q'); // 'Tom & Jerry'
 - Why is the hash not sent to the server? It addresses a place inside the
   document, so the browser handles it; that is why hash routing needs no server
   configuration. See [History API](../browser/history-api.md).
-- `encodeURI` or `encodeURIComponent` for a query value? `encodeURIComponent`:
-  `encodeURI` leaves `&` and `=`, which break the query.
+- How do you pass an array in a query string? There is no standard: repeated
+  keys `?id=1&id=2` (built with `append`, read with `getAll`), or `id[]=` or
+  comma-separated values, as the server expects.
 - What does `new URL('api', 'https://ex.com/a/b')` return?
   `https://ex.com/a/api`: without a trailing slash, `b` is a file and is
   replaced.
