@@ -74,7 +74,8 @@ Other questions:
 - Why does a closure work at all? A function keeps a reference to the
   environment where it was defined. See
   [Execution Context](./execution-context.md).
-- Write `once(fn)` or `memoize(fn)`. Both keep their state in a closure.
+- Write `once(fn)` or `memoize(fn)`. Both keep their state in a closure; see
+  [Common Coding Tasks](./coding-tasks.md).
 
 ## Common Mistakes
 

@@ -146,7 +146,8 @@ for (const [key, value] of Object.entries(obj)) {
 ## Follow-up Questions
 
 - How do you compare two objects? `===` compares references. Compare the
-  contents field by field or with a deep-equal helper.
+  contents field by field or with a deep-equal helper; see
+  [Common Coding Tasks](./coding-tasks.md#deep-equal).
 - How do you make an object immutable? `Object.freeze()` is shallow; nested
   objects have to be frozen separately.
 - When should `Map` be used instead of an object? For keys that are not strings,

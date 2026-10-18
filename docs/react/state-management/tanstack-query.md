@@ -93,7 +93,7 @@ Applies to: TanStack Query 5.
 - One `QueryClient` for the app, passed through `QueryClientProvider`. It is
   created outside the component or once in `useState`, not in render.
 - `useSuspenseQuery`: the loading state goes to `<Suspense>`, errors go to an
-  error boundary, `data` is always defined.
+  [error boundary](../basics/error-boundaries.md), `data` is always defined.
 - SSR: the data is prefetched on the server (`queryClient.prefetchQuery`),
   serialized with `dehydrate` and restored with `<HydrationBoundary>`. In the
   Next.js App Router, data is often loaded in

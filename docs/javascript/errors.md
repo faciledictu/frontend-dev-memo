@@ -88,8 +88,8 @@ async function loadUser(id) {
   runs, and a `return` in `finally` overrides the previous one.
 - Does `try...catch` catch a rejected promise? Only if the promise is awaited
   inside `try`.
-- How do errors work in React? Rendering errors are caught by error boundaries,
-  not by `try...catch`.
+- How do errors work in React? Rendering errors are caught by
+  [error boundaries](../react/basics/error-boundaries.md), not by `try...catch`.
 
 ## Common Mistakes
 
