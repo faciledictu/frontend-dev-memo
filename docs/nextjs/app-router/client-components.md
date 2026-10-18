@@ -3,6 +3,7 @@ sidebar_position: 4
 description:
   "'use client' as a boundary, Server Components as children, serializable
   props, context providers"
+tags: [middle]
 ---
 
 # Client Components
@@ -13,7 +14,7 @@ It is **prerendered to HTML on the server** like any component and then
 **`'use client'`** directive at the top of a file marks a **boundary**, not a
 single component: the file and everything it imports become client code.
 
-Applies to: Next.js 16, React 19.
+Applies to: Next.js 16.4, React 19.3.
 
 ## Details
 
@@ -68,6 +69,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {/* children are still Server Components */}
+        {/* highlight-next-line */}
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
@@ -78,8 +80,9 @@ export default function RootLayout({
 ## Follow-up Questions
 
 - Does `'use client'` mean the component renders only in the browser? No, it is
-  prerendered on the server too. To skip the server render, use `next/dynamic`
-  with `ssr: false` inside a Client Component.
+  prerendered on the server too. To skip the server render, call
+  `use(browser())` (`browser` from `react-dom`) inside `<Suspense>`, or use
+  `next/dynamic` with `ssr: false` inside a Client Component.
 - Why can't you pass `onClick` from a Server Component? A function cannot be
   serialized into the RSC Payload; only Server Actions are passed, as
   references.
@@ -91,7 +94,9 @@ export default function RootLayout({
 - Marking every file with `'use client'` "to be safe": more JavaScript, and data
   fetching moves to the client.
 - Reading `window` during render: the component also renders on the server. Use
-  it in `useEffect` or event handlers.
+  it in `useEffect`, event handlers or behind `use(browser())`.
+- Wrapping `<html>` in the provider instead of `{children}`: the client boundary
+  moves up for no reason.
 
 ## See Also
 

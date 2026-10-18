@@ -3,6 +3,7 @@ sidebar_position: 2
 description:
   Link and prefetching, useRouter, usePathname, useSearchParams, redirect and
   where to redirect
+tags: [junior, middle]
 ---
 
 # Navigation and Redirecting
@@ -14,7 +15,7 @@ code there is **`useRouter()`** from `next/navigation`. On the server a redirect
 is made with **`redirect()`** (307) or **`permanentRedirect()`** (308); before
 routing, with `redirects` in `next.config` or in **Proxy**.
 
-Applies to: Next.js 16.
+Applies to: Next.js 16.4.
 
 ## Details
 
@@ -45,18 +46,18 @@ All are imported from `next/navigation` and work only in Client Components.
   `prefetch={true}` prefetches the full route, `prefetch={false}` turns it off.
 - With Partial Prefetching (`partialPrefetching: true`; requires Cache
   Components, both on in new 16.4 projects) the default prefetch is the route's
-  static shell with cached content, reused across links; `prefetch={true}` adds
-  cached content that depends on the link's URL.
+  **App Shell** (static and cached content), reused across links;
+  `prefetch={true}` adds cached content that depends on the link's URL.
 
 ### Where to Redirect
 
-| Where                           | How                                                     | When                                  |
-| ------------------------------- | ------------------------------------------------------- | ------------------------------------- |
-| `next.config` `redirects()`     | `{ source, destination, permanent }`                    | Known, static redirects (old URLs)    |
-| Proxy (`proxy.ts`)              | `NextResponse.redirect(new URL('/login', request.url))` | Before routing, by a cookie or header |
-| Server Component, Route Handler | `redirect('/login')`, `permanentRedirect('/new')`       | After reading data                    |
-| Server Action                   | `redirect(...)` (responds with 303)                     | After a mutation                      |
-| Client Component                | `router.push()` / `router.replace()`                    | After a user action                   |
+| Where                           | How                                                                                    | When                                  |
+| ------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------- |
+| `next.config` `redirects()`     | `{ source, destination, permanent }`                                                   | Known, static redirects (old URLs)    |
+| Proxy (`proxy.ts`)              | `NextResponse.redirect(new URL('/login', request.url))`                                | Before routing, by a cookie or header |
+| Server Component, Route Handler | `redirect('/login')`, `permanentRedirect('/new')`                                      | After reading data                    |
+| Server Action                   | `redirect(...)`: a client-side navigation; 303 for a form submitted without JavaScript | After a mutation                      |
+| Client Component                | `router.push()` / `router.replace()`                                                   | After a user action                   |
 
 - `redirect()` and `notFound()` throw a special error, so they are called
   outside `try/catch` (or the error is rethrown).
@@ -106,11 +107,23 @@ export default async function OrderPage({
   const order = await getOrder(id);
 
   if (!order) notFound();
+  // highlight-next-line
   if (order.status === 'draft') redirect(`/orders/${id}/edit`);
 
   return <h1>Order {order.number}</h1>;
 }
 ```
+
+## Follow-up Questions
+
+- `redirect()` or `router.push()`? `redirect()` while rendering on the server or
+  in a Server Action; `router.push()` in a client event handler.
+- What does `router.refresh()` do? Fetches the current route's RSC Payload again
+  and re-renders Server Components, keeping client state and scroll.
+- Why can a prefetched link still show a loading state? Only the static part is
+  prefetched by default; dynamic data still renders on navigation.
+- How do you link to an external URL? With a plain `<a>`: prefetching and
+  client-side navigation apply only to routes of the app.
 
 ## Common Mistakes
 

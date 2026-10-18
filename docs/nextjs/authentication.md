@@ -2,6 +2,7 @@
 sidebar_position: 4
 description:
   Sessions in cookies, Data Access Layer, Proxy, protecting Server Actions
+tags: [middle, senior]
 ---
 
 # Authentication in Next.js
@@ -13,7 +14,7 @@ Access Layer** that every page, Server Action and Route Handler goes through.
 **Proxy** (formerly Middleware) does only an optimistic check and a redirect; it
 is not protection on its own.
 
-Applies to: Next.js 16, App Router.
+Applies to: Next.js 16.4, App Router.
 
 The general theory (sessions vs JWT, OAuth, where to keep a token) is in
 [Authentication and Authorization](../web-platform/network/authentication.md).
@@ -29,6 +30,9 @@ The general theory (sessions vs JWT, OAuth, where to keep a token) is in
 | Server Actions, Route Handlers | Call `verifySession()` and check the rights at the start of each one                                            | Yes, they are public HTTP endpoints                         |
 | Layout                         | Unreliable: a shared layout is not re-rendered on client navigation, so its check does not run for the new page | No                                                          |
 | Client components              | Hide buttons and links                                                                                          | No, this is UX                                              |
+
+A Proxy-only check has failed before: CVE-2025-29927 let a crafted internal
+header skip Middleware entirely.
 
 ### Session
 
@@ -147,18 +151,25 @@ export const config = { matcher: ['/dashboard/:path*'] };
 
 - Why is Proxy not enough? It runs before routing and only for paths in its
   matcher. A Server Action is a POST request to the page that uses it, so a
-  matcher change or a moved action silently loses the check. In March 2025 a
-  vulnerability (CVE-2025-29927) let a special header skip Middleware entirely.
+  matcher change or a moved action silently loses the check.
 - How do you protect a Server Action? Check the session and the rights inside
   it, validate the arguments (Zod), and never take the user ID from the form.
 - Why not check auth in a layout? On client navigation between pages a shared
   layout is not re-rendered, so the check does not run for the new page.
 - Where is the user ID taken from in a mutation? From the session on the server,
   not from the request body.
+- How does a Client Component get the current user? It cannot import the Data
+  Access Layer (`server-only`): a parent Server Component reads the user and
+  passes a DTO as props or through a context provider.
+- Why not `await cookies()` at the top of a layout? The whole segment waits for
+  it before streaming. Read the session in a nested Server Component inside
+  `<Suspense>`, such as the user menu.
 
 ## Common Mistakes
 
 - Only checking in Proxy or only hiding links in the UI.
+- A database session lookup in Proxy: it runs on every request, prefetches
+  included. Only read the cookie there.
 - Reading a token from `FormData` or `localStorage` and trusting it.
 - Returning whole database records to the client: the Data Access Layer should
   return DTOs with only the fields the user may see.

@@ -1,6 +1,7 @@
 ---
 sidebar_position: 3
 description: Code splitting and next/dynamic, next/image, next/font, next/script
+tags: [middle]
 ---
 
 # Optimization Tools
@@ -12,7 +13,7 @@ with reserved space, against CLS and for LCP), **`next/font`** (self-hosted
 fonts without layout shift), **`next/script`** (third-party scripts with a
 loading strategy) and **`next/dynamic`** (lazy-loaded client components).
 
-Applies to: Next.js 16.
+Applies to: Next.js 16.4.
 
 ## Details
 
@@ -40,7 +41,7 @@ Applies to: Next.js 16.
 | `loading`         | `lazy` by default; `eager` for images visible on the first screen                                                                                  |
 | `preload`         | Adds a `<link rel="preload">` in `<head>` for the LCP image. Replaces `priority`, deprecated in 16                                                 |
 | `placeholder`     | `empty` (default), `blur` (with `blurDataURL` for remote images) or a `data:image/...` URL                                                         |
-| `quality`         | 75 by default; allowed values are listed in `images.qualities`                                                                                     |
+| `quality`         | 75 by default; a value outside `images.qualities` is rounded to the closest allowed one                                                            |
 
 - Images are resized on demand and served as WebP (AVIF if enabled in
   `images.formats`) depending on the browser's `Accept` header.
@@ -79,6 +80,7 @@ export default function Page() {
   return (
     <>
       {/* LCP image: preloaded, size and blur placeholder from the import */}
+      {/* highlight-next-line */}
       <Image src={hero} alt="Mountains at sunrise" preload placeholder="blur" />
 
       {/* Responsive image in a grid: sizes keeps the download small */}
@@ -87,6 +89,7 @@ export default function Page() {
           src="https://images.example.com/card.jpg"
           alt="Product photo"
           fill
+          // highlight-next-line
           sizes="(max-width: 768px) 100vw, 33vw"
           style={{ objectFit: 'cover' }}
         />
@@ -125,6 +128,7 @@ import dynamic from 'next/dynamic';
 
 // A heavy chart that uses window: separate chunk, no server render
 const Chart = dynamic(() => import('./chart'), {
+  // highlight-next-line
   ssr: false,
   loading: () => <p>Loading chart...</p>,
 });
@@ -146,6 +150,18 @@ export function ChartPanel({ show }: { show: boolean }) {
   full-width file.
 - Why self-host fonts? No extra connection to another origin and no layout shift
   when the font arrives.
+- `next/dynamic` or `React.lazy`? `next/dynamic` is `lazy` with `Suspense` plus
+  the `ssr` option, and works in both routers. Code is split only when the
+  dynamic import is in a Client Component.
+
+## Common Mistakes
+
+- `preload` or `fetchPriority="high"` on many images: lazy loading is lost, and
+  they compete with the real LCP image.
+- Loading Google Fonts with a `<link>` in the layout instead of `next/font`: an
+  extra origin and a layout shift.
+- `next/dynamic` with `ssr: false` in a Server Component: a build error; move it
+  into a Client Component.
 
 ## See Also
 

@@ -3,6 +3,7 @@ sidebar_position: 6
 description:
   Fetching in Server Components, waterfalls, parallel requests, streaming,
   preload, passing a promise to the client
+tags: [middle]
 ---
 
 # Data Fetching Patterns
@@ -15,7 +16,7 @@ have to be passed down through props. The main risk is a **waterfall**: start
 independent requests in parallel and wrap slow parts in `<Suspense>` so they do
 not block the page.
 
-Applies to: Next.js 16, React 19.
+Applies to: Next.js 16.4, React 19.3.
 
 ## Details
 
@@ -63,6 +64,7 @@ export default async function ArtistPage({
   const { id } = await params;
 
   // Both requests start at once
+  // highlight-next-line
   const [artist, albums] = await Promise.all([getArtist(id), getAlbums(id)]);
 
   return (
@@ -89,6 +91,7 @@ export function Playlists({
 }: {
   playlistsPromise: Promise<Playlist[]>;
 }) {
+  // highlight-next-line
   const playlists = use(playlistsPromise); // suspends until resolved
 
   return (
@@ -111,6 +114,17 @@ export function Playlists({
 - How is the same request in a layout and a page not made twice? `fetch` calls
   with the same URL and options are memoized for one render; for other functions
   use React `cache`.
+- What can go wrong with a promise passed to `use()`? It must be created in the
+  Server Component: created in the Client Component, it is new on every render.
+  A rejection goes to the nearest error boundary.
+
+## Common Mistakes
+
+- Awaiting independent requests one after another: a waterfall.
+- Fetching in `useEffect` what a Server Component could render.
+- Passing data down through many levels of props: thanks to deduplication each
+  component can fetch what it needs.
+- Awaiting all data at the top of the page, so nothing streams.
 
 ## See Also
 

@@ -3,6 +3,7 @@ sidebar_position: 1
 description:
   File conventions of the app/ directory, segments, route groups, parallel and
   intercepting routes
+tags: [junior, middle]
 ---
 
 # App Router
@@ -14,21 +15,22 @@ below it: `layout` (shared shell that keeps its state on navigation), `loading`
 (Suspense fallback), `error` (error boundary), `not-found`. All components are
 **Server Components** by default.
 
-Applies to: Next.js 16.
+Applies to: Next.js 16.4.
 
 ## Details
 
 ### Special Files
 
-| File            | Purpose                                                                        |
-| --------------- | ------------------------------------------------------------------------------ |
-| `page.tsx`      | The UI of the route; makes the segment publicly reachable                      |
-| `layout.tsx`    | Wraps the segment and its children; not re-rendered on navigation between them |
-| `template.tsx`  | Like a layout, but remounted on every navigation (state and effects reset)     |
-| `loading.tsx`   | Wraps the page in `<Suspense>` and shows this fallback while it loads          |
-| `error.tsx`     | Error boundary for the segment; must be a Client Component                     |
-| `not-found.tsx` | Shown when `notFound()` is called; the root one also handles unmatched URLs    |
-| `route.ts`      | [Route Handler](./route-handlers.md): an HTTP endpoint instead of a page       |
+| File               | Purpose                                                                        |
+| ------------------ | ------------------------------------------------------------------------------ |
+| `page.tsx`         | The UI of the route; makes the segment publicly reachable                      |
+| `layout.tsx`       | Wraps the segment and its children; not re-rendered on navigation between them |
+| `template.tsx`     | Like a layout, but remounted on every navigation (state and effects reset)     |
+| `loading.tsx`      | Wraps the page in `<Suspense>` and shows this fallback while it loads          |
+| `error.tsx`        | Error boundary for the segment; must be a Client Component                     |
+| `not-found.tsx`    | Shown when `notFound()` is called; the root one also handles unmatched URLs    |
+| `global-error.tsx` | Replaces the root layout when it throws; renders its own `<html>` and `<body>` |
+| `route.ts`         | [Route Handler](./route-handlers.md): an HTTP endpoint instead of a page       |
 
 The root `app/layout.tsx` is required and must render `<html>` and `<body>`.
 Other files in a folder (components, utilities) are not routes, so they can be
@@ -95,6 +97,7 @@ export default async function PostPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  // highlight-next-line
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) notFound();
@@ -108,10 +111,24 @@ export default async function PostPage({
 - What is the difference between `layout` and `template`? A layout persists
   across navigations and keeps its state; a template is remounted each time.
 - Why must `error.tsx` be a Client Component? It is a React error boundary. It
-  receives `retry()` (since 16.3), which fetches again and re-renders the
-  segment; the older `reset()` only clears the error state.
+  receives `retry()`, which fetches again and re-renders the segment; the older
+  `reset()` only clears the error state.
 - Can the App Router and the Pages Router be used together? Yes, during a
   migration, but the same URL in both directories is a build error.
+- How are dynamic routes prerendered at build time? `generateStaticParams`
+  returns the `params` to prerender, like `getStaticPaths` in the Pages Router;
+  other values render on request.
+- Where does `<title>` come from? A `metadata` object or `generateMetadata()`
+  exported from a layout or a page; nested segments override the parent's
+  fields.
+
+## Common Mistakes
+
+- A folder without `page.tsx` is not a route.
+- `<html>` and `<body>` in a nested layout: only the root layout renders them.
+- Expecting a layout to re-run on navigation, for example for an auth check.
+- Reading `params.slug` without `await`: `params` is a promise.
+- `route.ts` and `page.tsx` in the same folder: a build error.
 
 ## See Also
 

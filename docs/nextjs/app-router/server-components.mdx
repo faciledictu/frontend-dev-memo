@@ -3,6 +3,7 @@ sidebar_position: 3
 description:
   RSC vs SSR, what Server Components can't do, static and dynamic rendering,
   streaming
+tags: [middle, senior]
 ---
 
 import Tabs from '@theme/Tabs';
@@ -18,7 +19,7 @@ Payload**, a serialized tree that also holds references to Client Components;
 Next.js then turns it into HTML. RSC is not the same as SSR: SSR is about
 producing HTML, RSC is about where a component runs.
 
-Applies to: Next.js 16, React 19.
+Applies to: Next.js 16.4, React 19.3.
 
 ## Details
 
@@ -73,7 +74,7 @@ In the browser:
 How they combine depends on the caching model:
 
 <Tabs groupId="next-cache-model" queryString>
-<TabItem value="cache-components" label="Cache Components (16.4+)" default>
+<TabItem value="cache-components" label="Cache Components" default>
 
 - The choice is made **per component**, not per route (**Partial
   Prerendering**). At build time the static markup, the `'use cache'` parts and
@@ -84,7 +85,7 @@ How they combine depends on the caching model:
 - See [Caching](./caching.mdx).
 
 </TabItem>
-<TabItem value="previous" label="Previous model (15–16)">
+<TabItem value="previous" label="Previous model">
 
 - The choice is made **per route**: one `cookies()`, `headers()`,
   `searchParams`, `connection()` or `cache: 'no-store'` makes the **whole
@@ -180,6 +181,9 @@ export async function Users() {
   sooner instead of waiting for the slowest query.
 - How do you keep server-only code out of the client? Import `server-only` in
   the module: importing it from a Client Component becomes a build error.
+- Are Client Components server-rendered on client navigation? No: on navigation
+  only the RSC Payload is fetched, and Client Components render in the browser.
+  SSR happens only on the first load.
 
 ## Common Mistakes
 
@@ -187,6 +191,9 @@ export async function Users() {
   browser": Client Components are prerendered on the server as well.
 - Adding `'use client'` to a whole page because of one button: the boundary
   should be as low in the tree as possible.
+- Making a whole layout a Client Component to add a provider: wrap only
+  `{children}` in a small provider component, see
+  [Client Components](./client-components.md).
 
 ## See Also
 

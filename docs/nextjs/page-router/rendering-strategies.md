@@ -2,6 +2,7 @@
 sidebar_position: 2
 description:
   SSG, ISR, SSR and CSR in the Pages Router, hydration and hydration errors
+tags: [junior, middle]
 ---
 
 # Rendering Strategies
@@ -13,7 +14,7 @@ exports: none or **`getStaticProps`** → **SSG** (HTML at build time), plus
 page has loaded. In every case the browser receives HTML first and then React
 **hydrates** it.
 
-Applies to: Next.js 16 (Pages Router).
+Applies to: Next.js 16.4 (Pages Router).
 
 ## Details
 
@@ -52,6 +53,18 @@ Applies to: Next.js 16 (Pages Router).
   shared by all users.
 - Is CSR bad for SEO? Google runs JavaScript but indexes such pages later and
   less reliably; other crawlers and link previews often see only the shell.
+- What is automatic static optimization? A page without a blocking data function
+  is detected at build time and emitted as static HTML. A custom
+  `getInitialProps` in `_app` turns it off for all pages.
+
+## Common Mistakes
+
+- "Pages are SSR by default." Without `getServerSideProps` or `getInitialProps`
+  a page is prerendered statically.
+- "ISR is SSR with a cache." The regenerated page is shared by all users, so it
+  can't be personalized.
+- `suppressHydrationWarning` on a whole subtree instead of moving the
+  browser-only read into `useEffect`.
 
 ## See Also
 

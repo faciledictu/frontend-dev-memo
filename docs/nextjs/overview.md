@@ -2,6 +2,7 @@
 sidebar_position: 1
 description:
   What Next.js adds to React, App Router vs Pages Router, when not to use it
+tags: [junior]
 ---
 
 # Next.js Overview
@@ -13,7 +14,7 @@ request, streaming), data fetching and caching, **server code next to the UI**
 splitting and image, font and script optimization. There are two routers: the
 current **App Router** (`app/`) and the legacy **Pages Router** (`pages/`).
 
-Applies to: Next.js 16.
+Applies to: Next.js 16.4.
 
 ## Details
 
@@ -69,6 +70,20 @@ URL must be served by only one of them.
 - Why are `params` and `cookies()` async since Next.js 15? So that the part of a
   page that does not depend on the request can be prerendered, and only the part
   that awaits them waits for the request.
+- What is Partial Prerendering? One response with a prerendered static shell and
+  dynamic parts streamed into it; the default with Cache Components, see
+  [Server Components](./app-router/server-components.mdx#rendering-strategies).
+- What is Proxy for? Code that runs before routing: redirects, rewrites,
+  headers, an optimistic auth check. Not for data fetching or heavy logic.
+
+## Common Mistakes
+
+- "Next.js is an SSR framework." Static prerendering is the default; rendering
+  on request is one of the strategies.
+- "The Pages Router is removed." It is legacy but supported, and both routers
+  can live in one project.
+- "`'use client'` means rendering only in the browser." Client Components are
+  prerendered on the server too.
 
 ## See Also
 

@@ -3,6 +3,7 @@ sidebar_position: 5
 description:
   "'use server', forms and useActionState, validation, revalidation, why an
   action is a public endpoint"
+tags: [middle, senior]
 ---
 
 # Server Actions
@@ -15,7 +16,7 @@ them **Server Functions**; "Server Action" is one used for a mutation. Because
 anyone can call that endpoint, an action must **check authorization and validate
 its input** itself.
 
-Applies to: Next.js 16, React 19.
+Applies to: Next.js 16.4, React 19.3.
 
 ## Details
 
@@ -25,8 +26,9 @@ Applies to: Next.js 16, React 19.
   this file can be imported from Client Components.
 - `'use server'` at the start of a function body defines an inline action inside
   a Server Component.
-- Ways to call: `<form action={fn}>` and `<button formAction={fn}>`, event
-  handlers, `useEffect`, or a prop passed to a Client Component.
+- Ways to call: `<form action={fn}>` and `<button formAction={fn}>`, or from an
+  event handler or `useEffect` inside `startTransition`, so that the pending
+  state works.
 - Arguments and the return value must be **serializable**.
 - Actions are called one at a time per client and are meant for mutations, not
   for fetching data: read data in Server Components.
@@ -81,6 +83,7 @@ export async function createPost(
   _prev: State,
   formData: FormData
 ): Promise<State> {
+  // highlight-next-line
   const { userId } = await verifySession(); // the endpoint is public
 
   const values = {
@@ -136,7 +139,12 @@ export function PostForm() {
   [Route Handlers](./route-handlers.md#route-handler-vs-server-action).
 - What happens to the page after an action? Next.js returns the updated RSC
   Payload in the same response when the action revalidates or redirects, so
-  there is no extra round trip.
+  there is no extra round trip. `revalidateTag(tag, 'max')` only marks the tag
+  stale and does not re-render in the same response.
+- What does Next.js do to protect actions? It compares `Origin` with `Host`
+  (against CSRF), encrypts action IDs and closure variables, removes unused
+  actions from the client bundle and limits the body to 1 MB. None of it
+  replaces your own auth and validation.
 
 ## Common Mistakes
 
@@ -144,6 +152,8 @@ export function PostForm() {
 - Calling `redirect()` inside `try/catch`: it works by throwing.
 - Fetching data with an action from a Client Component instead of reading it in
   a Server Component.
+- Calling several actions with `Promise.all`: they still run one after another.
+  Do the parallel work inside one action.
 
 ## See Also
 

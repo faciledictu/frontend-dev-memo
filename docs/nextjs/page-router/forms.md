@@ -3,6 +3,7 @@ sidebar_position: 4
 description:
   API Routes in pages/api, submitting a form to an API Route, validation and
   errors
+tags: [junior]
 ---
 
 # API Routes and Forms
@@ -14,7 +15,7 @@ submitted from the client with `fetch` to such a route; the route **validates**
 the body and returns errors with a `4xx` status. In the App Router the same is
 done with Route Handlers and Server Actions.
 
-Applies to: Next.js 16 (Pages Router).
+Applies to: Next.js 16.4 (Pages Router).
 
 ## Details
 
@@ -49,6 +50,7 @@ export default async function handler(
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // highlight-next-line
   const parsed = schema.safeParse(req.body);
   if (!parsed.success) {
     return res.status(400).json({ error: 'Invalid email or password' });
@@ -112,6 +114,23 @@ export function RegisterForm() {
 ```
 
 </details>
+
+## Follow-up Questions
+
+- API Route or Route Handler? Node-style `req` / `res` in `pages/api` versus Web
+  `Request` / `Response` in `app/**/route.ts`; one URL is served by one of them.
+- How do you protect an API Route? Read the session from `req.cookies`, verify
+  it and respond with `401` or `403`, see
+  [Authentication](../authentication.md).
+- How do you upload a file? Turn off `bodyParser` in `export const config` and
+  parse `multipart/form-data` with a library, or use a Route Handler with
+  `request.formData()`.
+
+## Common Mistakes
+
+- Sending a `FormData` body with `Content-Type: application/json`.
+- Trusting `required` and `type="email"` on the client instead of validating on
+  the server.
 
 ## See Also
 

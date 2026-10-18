@@ -2,6 +2,7 @@
 sidebar_position: 1
 description:
   pages/ routing, dynamic routes, _app and _document, navigation and redirects
+tags: [junior]
 ---
 
 # Pages Router
@@ -13,7 +14,7 @@ hydrated; data comes from **`getStaticProps`** / **`getServerSideProps`**.
 App-wide wrappers live in **`_app`** and **`_document`**. It is **legacy**:
 supported, but new projects use the [App Router](../app-router/overview.md).
 
-Applies to: Next.js 16 (Pages Router).
+Applies to: Next.js 16.4 (Pages Router).
 
 ## Details
 
@@ -67,6 +68,7 @@ import { useRouter } from 'next/router';
 export default function Post() {
   const router = useRouter();
   // A static page gets the query only after hydration
+  // highlight-next-line
   if (!router.isReady) return null;
   const id = Number(router.query.id);
 
@@ -87,6 +89,18 @@ export default function Post() {
   (`router.isReady`).
 - How do you share a layout between pages? Render it in `_app`, or use the
   per-page `getLayout` pattern to keep the layout's state between pages.
+- Can you use Server Components in the Pages Router? No: all components in
+  `pages/` are prerendered and hydrated. Routers can be mixed per URL, not per
+  page.
+
+## Common Mistakes
+
+- Importing `useRouter` from `next/navigation` in `pages/`, or from
+  `next/router` in `app/`.
+- State, effects or event handlers in `_document`: it renders only on the
+  server.
+- Expecting Server Components or Server Actions in `pages/`: both are App Router
+  only.
 
 ## See Also
 
