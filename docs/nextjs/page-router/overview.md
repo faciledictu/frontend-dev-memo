@@ -51,13 +51,13 @@ does.
 
 ### Redirects
 
-| Where                     | How                                                                            |
-| ------------------------- | ------------------------------------------------------------------------------ |
-| `next.config` `redirects` | `{ source, destination, permanent }` for known URLs                            |
+| Where                     | How                                                             |
+| ------------------------- | --------------------------------------------------------------- |
+| `next.config` `redirects` | `{ source, destination, permanent }` for known URLs             |
 | Proxy (`proxy.ts`)        | `NextResponse.redirect(new URL(...))`, see [Proxy](../proxy.md) |
-| `getServerSideProps`      | Return `{ redirect: { destination, permanent } }`                              |
-| `getStaticProps`          | The same, but not during the build; works on ISR revalidation                  |
-| Client                    | `router.push()` / `router.replace()`                                           |
+| `getServerSideProps`      | Return `{ redirect: { destination, permanent } }`               |
+| `getStaticProps`          | The same, but not during the build; works on ISR revalidation   |
+| Client                    | `router.push()` / `router.replace()`                            |
 
 ## Example
 

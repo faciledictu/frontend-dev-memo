@@ -20,16 +20,16 @@ Applies to: React Native 0.88, Expo SDK 58.
 
 ### React vs React Native
 
-|            | React for the web                 | React Native                                                 |
-| ---------- | --------------------------------- | ------------------------------------------------------------ |
-| Renders to | DOM elements (`div`, `span`)      | Native views (`View` → `UIView` / `android.view.View`)       |
-| Primitives | HTML tags                         | `View`, `Text`, `Image`, `ScrollView`, `TextInput`, …        |
-| Styling    | CSS, cascade, classes             | JS objects, no cascade, Flexbox layout (Yoga)                |
-| Text       | Text can go anywhere              | Text only inside `<Text>`                                    |
+|            | React for the web                 | React Native                                                  |
+| ---------- | --------------------------------- | ------------------------------------------------------------- |
+| Renders to | DOM elements (`div`, `span`)      | Native views (`View` → `UIView` / `android.view.View`)        |
+| Primitives | HTML tags                         | `View`, `Text`, `Image`, `ScrollView`, `TextInput`, …         |
+| Styling    | CSS, cascade, classes             | JS objects, no cascade, Flexbox layout (Yoga)                 |
+| Text       | Text can go anywhere              | Text only inside `<Text>`                                     |
 | Navigation | URL and browser history           | A library: [React Navigation or Expo Router](./navigation.md) |
-| Runtime    | The browser's JS engine           | Hermes, bundled with the app                                 |
-| Delivery   | Deploy to a server, users refresh | Store builds with review; JS-only fixes via OTA updates      |
-| Shared     | Components, hooks, state, context | The same React: `react` is shared, only the renderer differs |
+| Runtime    | The browser's JS engine           | Hermes, bundled with the app                                  |
+| Delivery   | Deploy to a server, users refresh | Store builds with review; JS-only fixes via OTA updates       |
+| Shared     | Components, hooks, state, context | The same React: `react` is shared, only the renderer differs  |
 
 ### React Native vs Flutter vs Native
 
@@ -71,13 +71,13 @@ native projects with Xcode, Gradle, fastlane or their own CI.
 - Why do the React Native docs recommend a framework? Core has no navigation,
   native API library or native dependency management; without a framework you
   build these yourself.
-- What is a config plugin? A function that changes the generated native
-  projects during `npx expo prebuild` (`Info.plist`, `AndroidManifest.xml`,
-  Gradle files); libraries ship one so that native setup lives in `app.json`
-  instead of hand-edited `ios/` and `android/`.
-- When do you need a new native build instead of an OTA update? When native
-  code or native config changes: a new native library, permissions, the app
-  icon, an SDK upgrade. See [OTA Updates](./release/ota.md).
+- What is a config plugin? A function that changes the generated native projects
+  during `npx expo prebuild` (`Info.plist`, `AndroidManifest.xml`, Gradle
+  files); libraries ship one so that native setup lives in `app.json` instead of
+  hand-edited `ios/` and `android/`.
+- When do you need a new native build instead of an OTA update? When native code
+  or native config changes: a new native library, permissions, the app icon, an
+  SDK upgrade. See [OTA Updates](./release/ota.md).
 
 ## Common Mistakes
 
