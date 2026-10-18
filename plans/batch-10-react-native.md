@@ -25,6 +25,9 @@ To be answered by the user before writing; the plan follows the recommendation.
    for batch 9, or group it now? Recommendation: keep it flat in this batch;
    grouping is a separate change, so that two batches do not renumber the same
    pages at once.
+5. One PR or two: `accessibility` alone, then `authentication` and `security`
+   together? Recommendation: two PRs, so that each review covers one area (see
+   "Review").
 
 ## Interview Questions the Section Does Not Answer Yet
 
@@ -248,6 +251,35 @@ and Release 24. Renumber the pages from `lists` on and the `_category_.json` of
   `security.md`), `app-lifecycle.md` (See Also → `security.md`).
 - `tooling/testing.md`, "React Native": `getByRole` in the component row links
   to `react-native/accessibility.md`.
+
+## Review
+
+The usual passes from ROADMAP (stage 4) plus the following, because a wrong
+answer on these pages is worse than a missing one: it is unsafe advice or an app
+that a screen reader user cannot use.
+
+- **Sources for every claim.** The fact check lists each claim of the page with
+  a primary source: reactnative.dev, docs.expo.dev, library docs, Apple and
+  Android developer docs, OWASP MASVS / MASTG, RFC 8252 (OAuth for native apps),
+  RFC 9700 (OAuth security best practice). A claim with only a blog or a
+  question list behind it is removed or rewritten. The list goes into the PR
+  description, not onto the page.
+- **Each platform separately.** Every iOS / Android difference (props that work
+  on one platform only, focus and announcements, Keychain vs Keystore, ATS vs
+  cleartext) is checked against that platform's docs, not only against the React
+  Native docs.
+- **Separate fact checks.** Two fresh sessions in parallel: one for
+  `accessibility`, one for `authentication` and `security`.
+- **A security pass** on `authentication` and `security`, in addition to the
+  Fable review as an interviewer: does any advice create a hole if followed
+  literally (a single pin without a backup, biometrics as a boolean, root
+  detection as the only check, tokens in a WebView)? Every "do not" names the
+  attack it prevents.
+- **Examples.** They cannot run on a device here, so each one is type-checked in
+  a scratch Expo SDK 58 project with the real packages; the PR says which
+  examples are only type-checked.
+- **The user** reads the security and authentication short answers and the list
+  of claims before the merge.
 
 ## Later
 
