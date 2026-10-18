@@ -3,6 +3,7 @@ sidebar_position: 4
 description:
   One-to-one, one-to-many and many-to-many relationships, how each is built with
   foreign keys, junction tables, querying with JOIN
+tags: [junior, middle]
 ---
 
 # Relationships Between Tables
@@ -98,6 +99,7 @@ CREATE TABLE enrollments (
   student_id integer REFERENCES students (id) ON DELETE CASCADE,
   course_id integer REFERENCES courses (id) ON DELETE CASCADE,
   enrolled_at date NOT NULL DEFAULT CURRENT_DATE,
+  -- highlight-next-line
   PRIMARY KEY (student_id, course_id) -- a student enrolls in a course once
 );
 

@@ -3,6 +3,7 @@ sidebar_position: 4
 description:
   CommonJS vs ES modules in Node.js, how Node.js picks the module type,
   require(esm), module.exports vs exports, resolution and caching
+tags: [middle]
 ---
 
 # Module System in Node.js
@@ -10,11 +11,9 @@ description:
 Node.js has two module systems. **CommonJS** (CJS) is the original one:
 `require()` and `module.exports`, loaded **synchronously**, at run time. **ES
 modules** (ESM) are the JavaScript standard: `import` and `export`, analyzed
-**statically** before the code runs, with live bindings and top-level `await`. A
-file is ESM if it ends in `.mjs`, or ends in `.js` and the nearest
-`package.json` has `"type": "module"`; `.cjs` is always CommonJS. ESM can import
-CommonJS, and since Node.js 22.12 CommonJS can `require()` an ES module too, as
-long as it has no top-level `await`.
+**statically** before the code runs, with live bindings and top-level `await`.
+ESM can import CommonJS, and since Node.js 22.12 CommonJS can `require()` an ES
+module too, as long as it has no top-level `await`.
 
 Applies to: Node.js 24 LTS.
 
@@ -116,16 +115,14 @@ For `require('x')` and `import 'x'`:
 
 Live bindings vs a copy:
 
-```javascript
-// counter.mjs
+```javascript title="counter.mjs"
 export let count = 0;
 export function increment() {
   count++;
 }
 ```
 
-```javascript
-// counter.cjs
+```javascript title="counter.cjs"
 let count = 0;
 module.exports = {
   count,
@@ -135,12 +132,12 @@ module.exports = {
 };
 ```
 
-```javascript
-// main.mjs
+```javascript title="main.mjs"
 import { count, increment } from './counter.mjs';
 import counterCjs from './counter.cjs';
 
 increment();
+// highlight-next-line
 console.log(count); // 1: the binding is live
 
 counterCjs.increment();
@@ -149,8 +146,7 @@ console.log(counterCjs.count); // 0: the property was copied at export time
 
 The `exports` trap:
 
-```javascript
-// greet.cjs
+```javascript title="greet.cjs"
 // error-next-line
 exports = function greet() {}; // require('./greet.cjs') returns {}
 
@@ -165,8 +161,10 @@ module.exports = function greet() {};
 - How do you publish a package that works for both? The `exports` field with
   `import` and `require` conditions, or ESM only now that `require(esm)` works
   in all supported Node.js versions.
-- What is tree shaking and why does it need ESM? Bundlers remove unused exports;
-  this needs static `import`/`export`, which `require()` is not.
+- How do you use `require` inside an ES module? `createRequire(import.meta.url)`
+  from `node:module`.
+- Why does tree shaking need ESM? See
+  [ES Modules](../javascript/modules.md#follow-up-questions).
 - How do you get `__dirname` in ESM? `import.meta.dirname` (Node.js 20.11+), or
   `fileURLToPath(new URL('.', import.meta.url))` in older versions.
 

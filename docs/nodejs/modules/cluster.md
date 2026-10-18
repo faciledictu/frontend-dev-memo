@@ -3,6 +3,7 @@ sidebar_position: 6
 description:
   Using all CPU cores with cluster, how workers share a port, scaling with PM2
   or containers
+tags: [senior]
 ---
 
 # Cluster Module
@@ -12,9 +13,6 @@ core. `node:cluster` starts several copies of the application: the **primary**
 process forks **worker** processes (usually one per core), and all workers
 **share the same server port**. By default the primary accepts connections and
 hands them to workers in turn (round-robin; on Windows the OS distributes them).
-Workers are separate processes with separate memory, so shared state (sessions,
-caches) must live outside them, for example in Redis. For CPU-heavy tasks inside
-one process, use [`worker_threads`](./worker-threads.md) instead.
 
 Applies to: Node.js 24 LTS.
 
@@ -42,8 +40,7 @@ concurrent connections. See
 
 ## Example
 
-```javascript
-// server.mjs
+```javascript title="server.mjs"
 import cluster from 'node:cluster';
 import http from 'node:http';
 import { availableParallelism } from 'node:os';
@@ -62,6 +59,7 @@ if (cluster.isPrimary) {
 } else {
   http
     .createServer((req, res) => res.end(`Handled by ${process.pid}\n`))
+    // highlight-next-line
     .listen(8000); // every worker listens on the same port
 
   console.log(`Worker ${process.pid} started`);

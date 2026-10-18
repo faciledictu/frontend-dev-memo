@@ -3,6 +3,7 @@ sidebar_position: 5
 description:
   What an index is, B-tree and other index types, composite, partial and
   expression indexes, when an index is not used, EXPLAIN
+tags: [middle]
 ---
 
 # Indexes
@@ -95,6 +96,7 @@ ANALYZE orders;
 EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 42;
 -- Seq Scan on orders … Rows Removed by Filter: 199980 … Execution Time: 3.5 ms
 
+-- highlight-next-line
 CREATE INDEX orders_user_id_created_at_idx ON orders (user_id, created_at);
 
 EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 42;

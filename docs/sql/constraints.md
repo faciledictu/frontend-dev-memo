@@ -3,6 +3,7 @@ sidebar_position: 3
 description:
   NOT NULL, UNIQUE, PRIMARY KEY, FOREIGN KEY with ON DELETE actions, CHECK and
   DEFAULT, and how NULL interacts with them
+tags: [junior]
 ---
 
 # SQL Constraints
@@ -73,6 +74,7 @@ CREATE TABLE employees (
   id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   email text NOT NULL UNIQUE,
   age integer CHECK (age >= 18),
+  -- highlight-next-line
   department_id integer REFERENCES departments (id) ON DELETE CASCADE,
   start_date date NOT NULL DEFAULT CURRENT_DATE
 );

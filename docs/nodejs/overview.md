@@ -3,6 +3,7 @@ sidebar_position: 1
 description:
   What Node.js is, V8 and libuv, the thread pool, non-blocking I/O, when Node
   fits and when it does not, release lines
+tags: [junior]
 ---
 
 # What Is Node.js
@@ -11,11 +12,9 @@ description:
 servers, in CLI tools and in build scripts. It is built from the **V8** engine
 (the one in Chrome), which executes JavaScript, and **libuv**, a C library that
 provides the **event loop**, asynchronous I/O and a **thread pool**. JavaScript
-runs on one thread, and I/O does not block it. Network operations use the
-operating system's non-blocking mechanisms, while file system, DNS lookup and
-some crypto and compression operations run in the libuv thread pool (4 threads
-by default). That makes Node.js good at many concurrent I/O-bound connections
-and bad at long CPU-bound work on the main thread.
+runs on one thread, and I/O does not block it. That makes Node.js good at many
+concurrent I/O-bound connections and bad at long CPU-bound work on the main
+thread.
 
 Applies to: Node.js 24 LTS.
 
@@ -23,13 +22,13 @@ Applies to: Node.js 24 LTS.
 
 ### Architecture
 
-| Part                          | What it does                                                                                   |
-| ----------------------------- | ---------------------------------------------------------------------------------------------- |
-| V8                            | Compiles and runs JavaScript, manages memory (garbage collector)                               |
-| libuv                         | Event loop, non-blocking network I/O through the OS (epoll, kqueue, IOCP), thread pool         |
-| Thread pool                   | `fs`, `dns.lookup`, `crypto.pbkdf2`, `zlib` and similar; size set by `UV_THREADPOOL_SIZE`      |
-| Built-in modules              | `node:fs`, `node:http`, `node:stream`, `node:events` and others: JavaScript APIs over C++ code |
-| Globals from the Web Platform | `fetch`, `URL`, `AbortController`, `EventTarget`, `structuredClone`, Web Streams               |
+| Part                          | What it does                                                                                        |
+| ----------------------------- | --------------------------------------------------------------------------------------------------- |
+| V8                            | Compiles and runs JavaScript, manages memory (garbage collector)                                    |
+| libuv                         | Event loop, non-blocking network I/O through the OS (epoll, kqueue, IOCP), thread pool              |
+| Thread pool                   | `fs`, `dns.lookup`, `crypto.pbkdf2`, `zlib` and similar; 4 threads by default, `UV_THREADPOOL_SIZE` |
+| Built-in modules              | `node:fs`, `node:http`, `node:stream`, `node:events` and others: JavaScript APIs over C++ code      |
+| Globals from the Web Platform | `fetch`, `URL`, `AbortController`, `EventTarget`, `structuredClone`, Web Streams                    |
 
 There is no DOM, `window` or `document`. The global object is `globalThis` (also
 available as `global`), and process information is in `process`.

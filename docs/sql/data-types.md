@@ -3,6 +3,7 @@ sidebar_position: 2
 description:
   PostgreSQL data types, integers, numeric vs floating point, text, timestamp vs
   timestamptz, boolean, uuid, json vs jsonb, identity columns
+tags: [junior]
 ---
 
 # Data Types in SQL
@@ -83,6 +84,7 @@ SELECT * FROM events;
 -- local_time          | happened_at
 -- 2029-02-14 08:47:00 | 2029-02-14 08:47:00+00
 
+-- highlight-next-line
 SET TIME ZONE 'America/New_York';
 SELECT * FROM events;
 -- local_time          | happened_at

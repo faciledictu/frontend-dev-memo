@@ -3,6 +3,7 @@ sidebar_position: 7
 description:
   NoSQL data models (key-value, document, wide-column, graph), SQL vs NoSQL,
   transactions and consistency, CAP theorem, when to choose which
+tags: [middle]
 ---
 
 # NoSQL Databases

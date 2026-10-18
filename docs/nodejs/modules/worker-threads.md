@@ -3,6 +3,7 @@ sidebar_position: 7
 description:
   Worker threads for CPU-heavy work, messaging and shared memory, thread pools,
   worker_threads vs cluster and child_process
+tags: [middle, senior]
 ---
 
 # Worker Threads
@@ -51,8 +52,7 @@ Applies to: Node.js 24 LTS.
 
 ## Example
 
-```javascript
-// hash.mjs
+```javascript title="hash.mjs"
 import {
   Worker,
   isMainThread,
@@ -62,6 +62,7 @@ import {
 import { pbkdf2Sync } from 'node:crypto';
 
 if (isMainThread) {
+  // highlight-next-line
   const worker = new Worker(new URL(import.meta.url), { workerData: 'secret' });
   worker.on('message', (hash) => console.log('Hash:', hash));
   worker.on('error', (err) => console.error(err));

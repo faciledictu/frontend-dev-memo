@@ -3,6 +3,7 @@ sidebar_position: 2
 description:
   The fs module, promise vs callback vs sync APIs, common operations, paths,
   existence checks, streams for large files
+tags: [junior]
 ---
 
 # File System Module (`fs`)
@@ -85,6 +86,7 @@ async function loadSettings() {
   try {
     return JSON.parse(await readFile(file, 'utf8'));
   } catch (err) {
+    // highlight-next-line
     if (err.code === 'ENOENT') return {}; // no file yet: an expected case
     throw err; // anything else is a real error
   }
@@ -112,6 +114,8 @@ const c = fs.readFileSync('notes.txt', 'utf8'); // sync: blocks the event loop
 
 ## Follow-up Questions
 
+- `path.join` or `path.resolve`? `join` concatenates segments; `resolve` returns
+  an absolute path, starting from `process.cwd()` if needed.
 - Why not use `readFileSync` in a request handler? While it reads, the server
   cannot serve any other request.
 - How do you read a 10 GB file? With a stream, line by line with

@@ -3,6 +3,7 @@ sidebar_position: 3
 description:
   libuv event loop phases, process.nextTick and microtasks, setImmediate vs
   setTimeout, timers in Node.js
+tags: [middle]
 ---
 
 # Event Loop in Node.js
@@ -38,10 +39,6 @@ flowchart LR;
 | Poll              | Waits for new I/O events and runs almost all I/O callbacks (everything except timers, `setImmediate` and close callbacks). The loop blocks here when there is nothing else to do |
 | Check             | `setImmediate` callbacks                                                                                                                                                         |
 | Close callbacks   | `close` events, for example `socket.on('close', …)`                                                                                                                              |
-
-Since libuv 1.45 (Node.js 20), timers are checked after the poll phase in each
-iteration (and once before the loop starts). The order of phases in the diagram
-is still how the documentation describes it.
 
 ### Where Asynchronous Work Is Done
 
@@ -91,13 +88,14 @@ is still how the documentation describes it.
 
 ## Example
 
-```javascript
-// order.cjs — run with: node order.cjs
+```javascript title="order.cjs"
+// Run with: node order.cjs
 const fs = require('node:fs');
 
 console.log('1: sync');
 setTimeout(() => console.log('timeout'), 0);
 Promise.resolve().then(() => console.log('3: promise'));
+// highlight-next-line
 process.nextTick(() => console.log('2: nextTick'));
 
 fs.readFile(__filename, () => {
@@ -116,6 +114,9 @@ fs.readFile(__filename, () => {
 
 ## Follow-up Questions
 
+- `process.nextTick` or `setImmediate`? `nextTick` runs right after the current
+  callback, before promises; `setImmediate` runs in the check phase of the loop.
+  The names are the other way round from what they suggest.
 - How is this different from the browser event loop? The browser has tasks,
   microtasks and rendering; Node.js splits tasks into libuv phases and adds the
   `nextTick` queue and `setImmediate`. See

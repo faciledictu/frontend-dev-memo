@@ -3,6 +3,7 @@ sidebar_position: 5
 description:
   exec, execFile, spawn and fork, buffered vs streamed output, shell injection,
   IPC with fork
+tags: [middle]
 ---
 
 # Child Process Module
@@ -12,9 +13,8 @@ processes. **`exec`** runs a command in a **shell** and buffers the whole
 output; **`execFile`** runs a file directly, without a shell; **`spawn`**
 streams the output, which suits long-running processes and large output;
 **`fork`** starts another Node.js script with an **IPC channel** for
-`send()`/`'message'`. `exec`, `execFile` and `spawn` also have blocking `*Sync`
-versions. A child process has its own memory and event loop, so a crash or a
-CPU-heavy task in it does not affect the parent.
+`send()`/`'message'`. A child process has its own memory and event loop, so a
+crash or a CPU-heavy task in it does not affect the parent.
 
 Applies to: Node.js 24 LTS.
 
@@ -64,8 +64,7 @@ file.
 
 ## Example
 
-```javascript
-// parent.mjs
+```javascript title="parent.mjs"
 import { fork } from 'node:child_process';
 
 const child = fork('./child.mjs');
@@ -75,11 +74,11 @@ child.on('message', (result) => {
   child.disconnect(); // close the IPC channel so both processes can exit
 });
 
+// highlight-next-line
 child.send({ numbers: [1, 2, 3, 4] });
 ```
 
-```javascript
-// child.mjs
+```javascript title="child.mjs"
 process.on('message', ({ numbers }) => {
   const sum = numbers.reduce((a, b) => a + b, 0); // CPU work off the parent's thread
   process.send(sum);

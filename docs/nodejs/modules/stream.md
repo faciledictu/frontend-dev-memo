@@ -3,6 +3,7 @@ sidebar_position: 4
 description:
   Readable, Writable, Duplex and Transform streams, backpressure, pipeline vs
   pipe, async iteration, stream events
+tags: [middle]
 ---
 
 # Stream Module
@@ -86,6 +87,7 @@ import { createGzip } from 'node:zlib';
 
 let lines = 0;
 
+// highlight-next-line
 await pipeline(
   createReadStream('access.log'),
   async function* (source) {

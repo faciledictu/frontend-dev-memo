@@ -3,6 +3,7 @@ sidebar_position: 5
 description:
   Operational vs programmer errors, system errors and codes, error handling in
   callbacks, promises and EventEmitter, unhandled errors, Express middleware
+tags: [middle]
 ---
 
 # Error Handling in Node.js
@@ -98,7 +99,7 @@ process.on('uncaughtException', (error) => {
 
 Express 5 with a custom error class:
 
-```typescript
+```typescript title="app.ts"
 import express, {
   type NextFunction,
   type Request,

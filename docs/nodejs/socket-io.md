@@ -3,6 +3,7 @@ sidebar_position: 6
 description:
   Socket.IO vs WebSocket, transports, events and acknowledgements, rooms and
   namespaces, scaling with adapters
+tags: [middle]
 ---
 
 # Socket.IO
@@ -87,8 +88,7 @@ without writing them.
 
 ## Example
 
-```javascript
-// server.mjs
+```javascript title="server.mjs"
 import { Server } from 'socket.io';
 
 const io = new Server(3000, { cors: { origin: 'http://localhost:5173' } });
@@ -105,20 +105,24 @@ io.on('connection', (socket) => {
 });
 ```
 
-```javascript
-// client.mjs (browser or Node.js)
+```javascript title="client.mjs"
+// Browser or Node.js
 import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:3000');
 
 socket.on('chat:message', ({ from, text }) => console.log(`${from}: ${text}`));
 
+// highlight-next-line
 const { ok } = await socket.emitWithAck('room:join', 'general');
 if (ok) socket.emit('chat:message', 'general', 'Hello!');
 ```
 
 ## Follow-up Questions
 
+- How does Socket.IO notice a dead connection? A heartbeat: the server pings
+  every `pingInterval` (25 s) and drops the socket after `pingTimeout` (20 s)
+  without a pong; the client then reconnects.
 - Can you connect to a Socket.IO server with `new WebSocket(url)`? No: Socket.IO
   has its own handshake and packet format; you need the Socket.IO client.
 - Why start with long-polling? It works through proxies and firewalls that block

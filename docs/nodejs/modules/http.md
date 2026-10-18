@@ -3,6 +3,7 @@ sidebar_position: 1
 description:
   Creating an HTTP server with node:http, request and response as streams,
   reading the body, headers, making requests with fetch
+tags: [junior, middle]
 ---
 
 # HTTP Module
@@ -11,9 +12,8 @@ description:
 `http.createServer((req, res) => …)` calls the handler for every request: `req`
 (`IncomingMessage`) is a **readable stream** with the method, URL and headers,
 and `res` (`ServerResponse`) is a **writable stream** for the status, headers
-and body. There is no routing, body parsing or cookies: that is what Express,
-Fastify, Koa or Hono add on top. For **outgoing** requests, use the global
-**`fetch`** (built in and stable since Node.js 21) instead of `http.request`.
+and body. For **outgoing** requests, use the global **`fetch`** (built in and
+stable since Node.js 21) instead of `http.request`.
 
 Applies to: Node.js 24 LTS.
 
@@ -58,8 +58,7 @@ Applies to: Node.js 24 LTS.
 
 ## Example
 
-```javascript
-// server.mjs
+```javascript title="server.mjs"
 import http from 'node:http';
 
 const server = http.createServer(async (req, res) => {
@@ -73,6 +72,7 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === 'POST' && pathname === '/echo') {
     const chunks = [];
+    // highlight-next-line
     for await (const chunk of req) chunks.push(chunk); // chunks are Buffers
     const body = JSON.parse(Buffer.concat(chunks).toString('utf8'));
 
@@ -88,8 +88,7 @@ const server = http.createServer(async (req, res) => {
 server.listen(3000, () => console.log('http://localhost:3000'));
 ```
 
-```javascript
-// client.mjs
+```javascript title="client.mjs"
 const res = await fetch('http://localhost:3000/echo', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },

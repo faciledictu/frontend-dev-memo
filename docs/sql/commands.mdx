@@ -3,6 +3,7 @@ sidebar_position: 1
 description:
   DML, DDL, DCL and TCL, SELECT and the logical order of clauses, JOIN types,
   GROUP BY and HAVING, subqueries and CTEs, upsert and RETURNING
+tags: [junior]
 ---
 
 import Tabs from '@theme/Tabs';
@@ -118,7 +119,8 @@ SELECT name AS n FROM users WHERE name = 'Ada';
 ```sql
 SELECT u.name, o.total
 FROM users u
-JOIN orders o ON o.user_id = u.id;
+JOIN orders o ON o.user_id = u.id
+ORDER BY u.name, o.total;
 -- Ada   | 30.00
 -- Ada   | 70.00
 -- Linus | 15.00
@@ -253,6 +255,7 @@ VALUES (value1, value2), (value3, value4)
 -- Upsert: insert, or update if the email already exists
 INSERT INTO users (name, email)
 VALUES ('Ada L.', 'ada@example.com')
+-- highlight-next-line
 ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name
 RETURNING id, name;
 -- 1 | Ada L.

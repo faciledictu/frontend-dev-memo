@@ -3,6 +3,7 @@ sidebar_position: 3
 description:
   EventEmitter, synchronous listeners, the special error event, once and
   promises, listener leaks, EventEmitter vs EventTarget
+tags: [junior, middle]
 ---
 
 # Events Module
@@ -86,6 +87,7 @@ chat.on('message', ({ user, text }) => console.log(`${user}: ${text}`));
 chat.on('error', (err) => console.error('Chat error:', err.message));
 
 console.log('before');
+// highlight-next-line
 chat.send('Ada', 'Hello'); // the listener runs right here, synchronously
 console.log('after');
 chat.send('Ada', ''); // without the 'error' listener this line would throw
@@ -103,6 +105,9 @@ console.log('ready');
 
 ## Follow-up Questions
 
+- Can a listener be `async`? `emit` ignores the returned promise, so a rejection
+  is unhandled, unless the emitter is created with `captureRejections: true`,
+  which routes it to `'error'`.
 - Are listeners called asynchronously? No, `emit` calls them one by one before
   it returns. Use `setImmediate` or `queueMicrotask` inside a listener to defer
   work.
