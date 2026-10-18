@@ -77,14 +77,10 @@ skip the JS thread.
 - **Autolinking** (since 0.60): after installing a package, CocoaPods
   (`pod install`) and Gradle pick up its native code. The old
   `react-native link` command was removed in 0.69.
-- A library for the New Architecture is a **Turbo Native Module** (an API
-  without UI) or a **Fabric Native Component** (a native view), both described
-  by a Codegen spec.
 - Libraries written for the old architecture still work through the **interop
   layer**, but new code should not rely on it.
-- In Expo apps, native modules are usually written with the **Expo Modules API**
-  in Swift and Kotlin, and native config is changed by config plugins instead of
-  editing `ios/` and `android/` by hand.
+- Writing your own: Turbo Native Modules, Fabric Native Components, the Expo
+  Modules API and Nitro are compared on [Native Modules](./native-modules.md).
 
 ## Follow-up Questions
 

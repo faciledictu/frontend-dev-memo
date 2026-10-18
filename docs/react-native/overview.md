@@ -20,16 +20,16 @@ Applies to: React Native 0.88, Expo SDK 58.
 
 ### React vs React Native
 
-|            | React for the web                 | React Native                                                  |
-| ---------- | --------------------------------- | ------------------------------------------------------------- |
-| Renders to | DOM elements (`div`, `span`)      | Native views (`View` → `UIView` / `android.view.View`)        |
-| Primitives | HTML tags                         | `View`, `Text`, `Image`, `ScrollView`, `TextInput`, …         |
-| Styling    | CSS, cascade, classes             | JS objects, no cascade, Flexbox layout (Yoga)                 |
-| Text       | Text can go anywhere              | Text only inside `<Text>`                                     |
-| Navigation | URL and browser history           | A library: [React Navigation or Expo Router](./navigation.md) |
-| Runtime    | The browser's JS engine           | Hermes, bundled with the app                                  |
-| Delivery   | Deploy to a server, users refresh | Store builds with review; JS-only fixes via OTA updates       |
-| Shared     | Components, hooks, state, context | The same React: `react` is shared, only the renderer differs  |
+|            | React for the web                 | React Native                                                        |
+| ---------- | --------------------------------- | ------------------------------------------------------------------- |
+| Renders to | DOM elements (`div`, `span`)      | Native views (`View` → `UIView` / `android.view.View`)              |
+| Primitives | HTML tags                         | [Core components](./core-components.md): `View`, `Text`, `Image`, … |
+| Styling    | CSS, cascade, classes             | JS objects, no cascade, Flexbox layout (Yoga)                       |
+| Text       | Text can go anywhere              | Text only inside `<Text>`                                           |
+| Navigation | URL and browser history           | A library: [React Navigation or Expo Router](./navigation.md)       |
+| Runtime    | The browser's JS engine           | Hermes, bundled with the app                                        |
+| Delivery   | Deploy to a server, users refresh | Store builds with review; JS-only fixes via OTA updates             |
+| Shared     | Components, hooks, state, context | The same React: `react` is shared, only the renderer differs        |
 
 ### React Native vs Flutter vs Native
 

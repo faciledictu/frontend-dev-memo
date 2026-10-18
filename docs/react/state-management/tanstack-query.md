@@ -205,6 +205,9 @@ function Todo({ id }) {
 - How to make a query wait for another one? `enabled: Boolean(userId)`.
 - How to do infinite scroll? `useInfiniteQuery`: the pages are stored under one
   key, and `fetchNextPage` appends the next one.
+- Why does refetch on focus not work in React Native? There is no browser
+  `visibilitychange`: connect `focusManager` to `AppState` and `onlineManager`
+  to NetInfo; see [Offline Support](../../react-native/offline.md).
 
 ## Common Mistakes
 

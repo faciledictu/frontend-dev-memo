@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 10
 description:
   Custom URL schemes vs Universal Links and App Links, linking config, cold
   start vs a running app, opening a screen from a notification

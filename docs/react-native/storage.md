@@ -1,5 +1,5 @@
 ---
-sidebar_position: 12
+sidebar_position: 17
 description:
   AsyncStorage, MMKV, SecureStore and SQLite, where each kind of data goes on
   the device, tokens in Keychain / Keystore, persisting app state
@@ -59,7 +59,7 @@ Applies to: React Native 0.88, Expo SDK 58.
   `expo-sqlite` (with `SQLiteProvider` and `useSQLiteContext`) or op-sqlite.
   Drizzle and similar ORMs work on top of them.
 - Offline-first apps (local writes, sync with the server, conflicts) usually use
-  a sync engine on top of SQLite; that is a separate topic.
+  a sync engine on top of SQLite; see [Offline Support](./offline.md).
 
 ### Persisting App State
 
@@ -162,6 +162,7 @@ export const useCart = create<Cart>()(
 
 ## See Also
 
+- [Offline Support](./offline.md)
 - [Environment Configuration and Secrets](./release/env.md)
 - [Browser Storage](../web-platform/network/storage.md)
 - [Authentication and Authorization](../web-platform/network/authentication.md)

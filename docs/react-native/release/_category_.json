@@ -1,6 +1,6 @@
 {
   "label": "Build and Release",
-  "position": 15,
+  "position": 21,
   "link": {
     "type": "generated-index",
     "slug": "/react-native/release",

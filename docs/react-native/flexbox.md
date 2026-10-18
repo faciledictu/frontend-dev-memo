@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 description:
   How Flexbox in React Native differs from the web, alignment properties and
   their values

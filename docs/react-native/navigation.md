@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 9
 description:
   React Navigation vs Expo Router, stack / tabs / drawer, screens that stay
   mounted, navigate vs push vs popTo, typed params, auth flow
@@ -58,6 +58,8 @@ its screens and a stack inside each tab.
   to the screen. For "on every visit" (refresh data, start a camera) use
   **`useFocusEffect`** with a `useCallback`; `useIsFocused()` returns a boolean
   for rendering.
+- Screen focus is not app focus: sending the app to the background does not blur
+  the screen; see [App Lifecycle](./app-lifecycle.md).
 
 ### Moving Between Screens
 
@@ -238,5 +240,6 @@ export default function RootLayout() {
 ## See Also
 
 - [Deep Linking](./deep-linking.md)
+- [Safe Area and Edge-to-Edge](./safe-area.md)
 - [Routing in React](../react/ecosystem/routing.md)
 - [App Router in Next.js](../nextjs/app-router/overview.md)
