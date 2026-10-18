@@ -45,8 +45,8 @@ flowchart LR;
 - **Network I/O** (TCP, UDP, HTTP): the operating system's non-blocking sockets
   (epoll, kqueue, IOCP). No extra threads.
 - **File system, `dns.lookup`, some `crypto` and `zlib` functions**: the **libuv
-  thread pool** (4 threads by default, `UV_THREADPOOL_SIZE`). When the work is
-  done, its callback is queued for the poll phase.
+  thread pool** (4 threads by default, set with `UV_THREADPOOL_SIZE`). When the
+  work is done, its callback is queued for the poll phase.
 - **Your JavaScript callbacks**: always on the main thread, one at a time.
 
 ### `process.nextTick` and Microtasks
@@ -114,9 +114,8 @@ fs.readFile(__filename, () => {
 
 ## Follow-up Questions
 
-- `process.nextTick` or `setImmediate`? `nextTick` runs right after the current
-  callback, before promises; `setImmediate` runs in the check phase of the loop.
-  The names are the other way round from what they suggest.
+- `process.nextTick` or `setImmediate`? In effect the names are swapped:
+  `nextTick` runs before the loop continues, `setImmediate` in the check phase.
 - How is this different from the browser event loop? The browser has tasks,
   microtasks and rendering; Node.js splits tasks into libuv phases and adds the
   `nextTick` queue and `setImmediate`. See

@@ -120,9 +120,10 @@ if (ok) socket.emit('chat:message', 'general', 'Hello!');
 
 ## Follow-up Questions
 
-- How does Socket.IO notice a dead connection? A heartbeat: the server pings
-  every `pingInterval` (25 s) and drops the socket after `pingTimeout` (20 s)
-  without a pong; the client then reconnects.
+- How does Socket.IO notice a dead connection? A heartbeat: the server sends a
+  ping every `pingInterval` (25 s) and closes the connection if no pong arrives
+  within `pingTimeout` (20 s). The client treats the connection as closed if no
+  ping arrives within `pingInterval + pingTimeout` and reconnects.
 - Can you connect to a Socket.IO server with `new WebSocket(url)`? No: Socket.IO
   has its own handshake and packet format; you need the Socket.IO client.
 - Why start with long-polling? It works through proxies and firewalls that block

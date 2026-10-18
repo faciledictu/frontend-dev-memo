@@ -13,7 +13,7 @@ tags: [junior, middle]
 (`IncomingMessage`) is a **readable stream** with the method, URL and headers,
 and `res` (`ServerResponse`) is a **writable stream** for the status, headers
 and body. For **outgoing** requests, use the global **`fetch`** (built in and
-stable since Node.js 21) instead of `http.request`.
+stable) instead of `http.request`.
 
 Applies to: Node.js 24 LTS.
 

@@ -22,13 +22,13 @@ Applies to: Node.js 24 LTS.
 
 ### Architecture
 
-| Part                          | What it does                                                                                        |
-| ----------------------------- | --------------------------------------------------------------------------------------------------- |
-| V8                            | Compiles and runs JavaScript, manages memory (garbage collector)                                    |
-| libuv                         | Event loop, non-blocking network I/O through the OS (epoll, kqueue, IOCP), thread pool              |
-| Thread pool                   | `fs`, `dns.lookup`, `crypto.pbkdf2`, `zlib` and similar; 4 threads by default, `UV_THREADPOOL_SIZE` |
-| Built-in modules              | `node:fs`, `node:http`, `node:stream`, `node:events` and others: JavaScript APIs over C++ code      |
-| Globals from the Web Platform | `fetch`, `URL`, `AbortController`, `EventTarget`, `structuredClone`, Web Streams                    |
+| Part                          | What it does                                                                                                 |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| V8                            | Compiles and runs JavaScript, manages memory (garbage collector)                                             |
+| libuv                         | Event loop, non-blocking network I/O through the OS (epoll, kqueue, IOCP), thread pool                       |
+| Thread pool                   | `fs`, `dns.lookup`, `crypto.pbkdf2`, `zlib` and similar; 4 threads by default, set with `UV_THREADPOOL_SIZE` |
+| Built-in modules              | `node:fs`, `node:http`, `node:stream`, `node:events` and others: JavaScript APIs over C++ code               |
+| Globals from the Web Platform | `fetch`, `URL`, `AbortController`, `EventTarget`, `structuredClone`, Web Streams                             |
 
 There is no DOM, `window` or `document`. The global object is `globalThis` (also
 available as `global`), and process information is in `process`.

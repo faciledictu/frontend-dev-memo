@@ -114,8 +114,10 @@ const c = fs.readFileSync('notes.txt', 'utf8'); // sync: blocks the event loop
 
 ## Follow-up Questions
 
-- `path.join` or `path.resolve`? `join` concatenates segments; `resolve` returns
-  an absolute path, starting from `process.cwd()` if needed.
+- `path.join` or `path.resolve`? `join` joins the segments and normalizes the
+  result, which can stay relative; `resolve` works like a series of `cd`
+  commands: an absolute segment starts over, and `process.cwd()` is prepended if
+  the result is still relative.
 - Why not use `readFileSync` in a request handler? While it reads, the server
   cannot serve any other request.
 - How do you read a 10 GB file? With a stream, line by line with

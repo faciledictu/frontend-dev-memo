@@ -136,7 +136,8 @@ ORDER BY u.name, o.total;
 
 SELECT u.name, o.total
 FROM users u
-FULL JOIN orders o ON o.user_id = u.id;
+FULL JOIN orders o ON o.user_id = u.id
+ORDER BY u.name, o.total;
 -- the same plus: NULL | 5.00  <- the guest order
 ```
 

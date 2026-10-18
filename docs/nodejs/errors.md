@@ -128,6 +128,7 @@ app.get('/users/:id', async (req, res) => {
 });
 
 // Registered last; four parameters make it an error handler
+// highlight-next-line
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof HttpError) {
     res.status(err.statusCode).json({ error: err.message });

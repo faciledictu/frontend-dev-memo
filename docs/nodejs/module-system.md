@@ -12,8 +12,8 @@ Node.js has two module systems. **CommonJS** (CJS) is the original one:
 `require()` and `module.exports`, loaded **synchronously**, at run time. **ES
 modules** (ESM) are the JavaScript standard: `import` and `export`, analyzed
 **statically** before the code runs, with live bindings and top-level `await`.
-ESM can import CommonJS, and since Node.js 22.12 CommonJS can `require()` an ES
-module too, as long as it has no top-level `await`.
+ESM can import CommonJS, and CommonJS can now `require()` an ES module too, as
+long as it has no top-level `await`.
 
 Applies to: Node.js 24 LTS.
 

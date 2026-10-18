@@ -106,8 +106,8 @@ console.log('ready');
 ## Follow-up Questions
 
 - Can a listener be `async`? `emit` ignores the returned promise, so a rejection
-  is unhandled, unless the emitter is created with `captureRejections: true`,
-  which routes it to `'error'`.
+  is unhandled and by default exits the process. With `captureRejections: true`
+  (per emitter or `EventEmitter.captureRejections`) it is routed to `'error'`.
 - Are listeners called asynchronously? No, `emit` calls them one by one before
   it returns. Use `setImmediate` or `queueMicrotask` inside a listener to defer
   work.
