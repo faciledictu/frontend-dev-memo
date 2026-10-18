@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
 description:
   Mobile-first media queries and range syntax, CSS units, clamp() / min() /
   max(), container queries, srcset and sizes vs picture, user preference queries

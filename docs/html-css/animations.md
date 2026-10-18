@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 10
 description:
   Transitions vs keyframe animations, why to animate transform and opacity,
   will-change, CSS vs JavaScript animations, reduced motion
@@ -173,9 +173,6 @@ rendered has no previous value to transition from. `allow-discrete` keeps
   the old and new DOM states and cross-fades them; the parts are styled with
   `::view-transition-*` pseudo-elements. See
   [MDN](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API).
-- How is animation done in React Native? Off the JS thread: Reanimated (worklets
-  on the UI thread, CSS-like transitions in v4) or the built-in Animated with
-  `useNativeDriver`. See [Reanimated](../react-native/animations/reanimated.md).
 
 ## Common Mistakes
 
@@ -188,6 +185,8 @@ rendered has no previous value to transition from. `allow-discrete` keeps
 ## See Also
 
 - [How the Browser Works](../web-platform/browser/browser-workflow.md)
+- [Reanimated](../react-native/animations/reanimated.md): animations in React
+  Native
 - [Responsive Design](./responsive-design.md#user-preferences-and-input):
   `prefers-reduced-motion`
 - [Positioning and z-index](./positioning.md): `transform` creates a stacking

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 9
 description:
   CSS variables, var() with a fallback, cascade and inheritance, invalid at
   computed-value time, @property, theming with light-dark() and color-mix(), vs

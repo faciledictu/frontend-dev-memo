@@ -53,7 +53,8 @@ the European Accessibility Act and the ADA require, is level **AA**. The basics:
 - `tabindex="0"` adds a custom element to the Tab order; `tabindex="-1"` makes
   it focusable only from code. A positive `tabindex` breaks the order.
 - Never remove the outline without a replacement: style `:focus-visible`
-  instead, see [Selectors](../../html-css/cascade.md#selectors-in-brief).
+  instead, see
+  [CSS Selectors](../../html-css/selectors.md#state-pseudo-classes).
 - **Modals**: trap the focus, close on Esc, return the focus; `<dialog>` with
   `showModal()` does most of it. See [Portals](../../react/basics/portals.md).
 - **SPA navigation**: after a route change, move the focus to the new heading or
