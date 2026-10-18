@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 3
 description: Bundle analysis, tree shaking, code splitting and lighter imports
 tags: [middle, senior]
 ---
@@ -126,4 +126,5 @@ function Dashboard() {
 
 - [Optimization in React](../../react/performance/optimization.md)
 - [ES Modules](../../javascript/modules.md)
+- [Critical Rendering Path and Loading Performance](./loading-performance.md)
 - [How the Browser Works](../browser/browser-workflow.md)

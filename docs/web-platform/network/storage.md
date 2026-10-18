@@ -133,11 +133,9 @@ window.addEventListener('storage', (event) => {
 
 ## Follow-up Questions
 
-- Where should an auth token be stored? An `HttpOnly` cookie cannot be read by
-  an injected script (which can still send requests as the user), but is sent
-  automatically, so it needs CSRF protection (`SameSite`). `localStorage` has no
-  CSRF problem, but any script can read it. See
-  [Authentication](./authentication.md).
+- Where should an auth token be stored? Usually in an
+  `HttpOnly; Secure; SameSite` cookie; the trade-offs are in
+  [Authentication](./authentication.md#where-to-keep-the-token-in-the-browser).
 - What do `HttpOnly` and `SameSite` each protect against? `HttpOnly`: theft of
   the cookie by a script. `SameSite`: requests forged from another site.
 - Are cookies sent with a cross-origin `fetch`? Only with

@@ -79,7 +79,7 @@ CommonJS (`require`) and how Node.js picks the module type are covered in
 - The specifier can be any expression: ``import(`./locales/${lang}.js`)``.
 - Used for **code splitting**: bundlers put a dynamically imported module into a
   separate chunk that is loaded on demand. See
-  [Bundle Optimization](../web-platform/tools/bundle-optimization.md).
+  [Bundle Optimization](../web-platform/performance/bundle-optimization.md).
 - `React.lazy`, route-level splitting in Next.js and similar tools are built on
   it.
 
@@ -189,5 +189,5 @@ button.addEventListener('click', async () => {
 ## See Also
 
 - [Module System in Node.js](../nodejs/module-system.md)
-- [Bundle Optimization](../web-platform/tools/bundle-optimization.md)
+- [Bundle Optimization](../web-platform/performance/bundle-optimization.md)
 - [Variables](./variables.md): the temporal dead zone

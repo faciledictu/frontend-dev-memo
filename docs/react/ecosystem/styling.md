@@ -143,4 +143,4 @@ const Button = styled.button`
 ## See Also
 
 - [StyleSheet in React Native](../../react-native/stylesheet.md)
-- [Bundle Optimization](../../web-platform/tools/bundle-optimization.md)
+- [Bundle Optimization](../../web-platform/performance/bundle-optimization.md)

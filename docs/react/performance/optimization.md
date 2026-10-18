@@ -76,7 +76,8 @@ Applies to: React 19.3, React Compiler 1.0.
 - [Virtualization](./virtualization.md) for long lists.
 - [Transitions and `useDeferredValue`](../rendering/concurrent-rendering.md) to
   keep the UI responsive during a slow render.
-- [Code splitting](../../web-platform/tools/bundle-optimization.md) with `lazy`.
+- [Code splitting](../../web-platform/performance/bundle-optimization.md) with
+  `lazy`.
 - [Debounce or throttle](../../javascript/debounce-throttle.md) for frequent
   events.
 
@@ -194,4 +195,4 @@ export default function Catalog({ products }) {
 ## See Also
 
 - [Rendering and Reconciliation](../rendering/reconciliation.md)
-- [Bundle Optimization](../../web-platform/tools/bundle-optimization.md)
+- [Bundle Optimization](../../web-platform/performance/bundle-optimization.md)

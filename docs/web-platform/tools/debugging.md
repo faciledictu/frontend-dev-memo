@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 description: Console, breakpoints, DevTools panels, React and Redux DevTools
 tags: [junior, middle]
 ---
@@ -90,9 +90,10 @@ re-rendering components on the page.
 
 ### Redux DevTools
 
-- A log of all dispatched actions with the state and its diff after each one.
-- **Time travel**: jumping to the state after any action or skipping an action.
-- With Redux Toolkit it works without setup: `configureStore` enables it.
+- A log of dispatched actions with the state diff after each one, and **time
+  travel** to any of them.
+- `configureStore` of Redux Toolkit enables it; the `devtools` middleware of
+  Zustand uses the same extension.
 
 ## Example
 
@@ -149,5 +150,5 @@ function findUser(name) {
 
 ## See Also
 
-- [Bundle Optimization](./bundle-optimization.md)
+- [Bundle Optimization](../performance/bundle-optimization.md)
 - [How the Browser Works](../browser/browser-workflow.md)

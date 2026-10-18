@@ -19,14 +19,14 @@ Applies to: React 19.3.
 
 ### APIs
 
-| API                               | What it does                                                           | Use it when                                                       |
-| --------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| `useTransition`                   | Marks state updates as non-urgent, returns `isPending`                 | You own the state update that causes a slow render                |
-| `startTransition` (import)        | The same without `isPending`, works outside components                 | The update happens in a library or a plain function               |
-| `useDeferredValue(value)`         | Returns a copy of the value that lags behind during urgent updates     | The value comes from props or a hook you do not control           |
-| `<Suspense fallback>`             | Shows a fallback while something inside is not ready                   | Lazy components, data read with `use`, framework data             |
-| `use(promise)`                    | Suspends the component until the promise settles and returns its value | Reading a promise created outside the component                   |
-| `lazy(() => import('./Comp.js'))` | Loads the component code on first render                               | [Code splitting](../../web-platform/tools/bundle-optimization.md) |
+| API                               | What it does                                                           | Use it when                                                             |
+| --------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `useTransition`                   | Marks state updates as non-urgent, returns `isPending`                 | You own the state update that causes a slow render                      |
+| `startTransition` (import)        | The same without `isPending`, works outside components                 | The update happens in a library or a plain function                     |
+| `useDeferredValue(value)`         | Returns a copy of the value that lags behind during urgent updates     | The value comes from props or a hook you do not control                 |
+| `<Suspense fallback>`             | Shows a fallback while something inside is not ready                   | Lazy components, data read with `use`, framework data                   |
+| `use(promise)`                    | Suspends the component until the promise settles and returns its value | Reading a promise created outside the component                         |
+| `lazy(() => import('./Comp.js'))` | Loads the component code on first render                               | [Code splitting](../../web-platform/performance/bundle-optimization.md) |
 
 ### Transitions
 

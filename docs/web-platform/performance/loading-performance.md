@@ -62,9 +62,8 @@ but with a low priority and without blocking the render.
 
 - Compression: **Brotli** or gzip for text resources (HTML, CSS, JS, SVG).
 - HTTP/2 or HTTP/3 and a **CDN** close to the user.
-- Files with a hash in the name: `Cache-Control: max-age=31536000, immutable`.
-  HTML: `no-cache`, so that it is revalidated and points to the new files. See
-  [HTTP](../network/http.md).
+- Long caching for files with a hash in the name, revalidation for the HTML, see
+  [HTTP caching](../network/http.md#caching).
 - **103 Early Hints**: the server sends `Link: rel=preload` headers while the
   HTML is still being generated.
 
@@ -74,7 +73,7 @@ With client-side rendering the content appears only after the JavaScript is
 downloaded and executed. Server-side rendering or static generation puts the
 content into the HTML, so the first paint and LCP do not wait for the bundle.
 See [Next.js](../../nextjs.mdx) and
-[Bundle Optimization](../tools/bundle-optimization.md).
+[Bundle Optimization](./bundle-optimization.md).
 
 ## Example
 
@@ -160,4 +159,4 @@ The `<head>` and the first screen of an optimized page:
 
 - [Core Web Vitals](./web-vitals.md)
 - [How the Browser Works](../browser/browser-workflow.md)
-- [Bundle Optimization](../tools/bundle-optimization.md)
+- [Bundle Optimization](./bundle-optimization.md)

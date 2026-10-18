@@ -34,12 +34,12 @@ What a cross-site page **cannot** do: set custom headers or a JSON
 
 ### Defenses
 
-| Defense                     | How it works                                                                                                            | Limits                                                                     |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `SameSite=Lax` / `Strict`   | the browser does not send the cookie with cross-site requests (`Lax` still sends it on top-level `GET` navigation)      | a **site** is broader than an origin: a compromised subdomain is same-site |
-| CSRF token                  | the server puts a random token into the page and checks it in every state-changing request; another site cannot read it | must be added to every form and request                                    |
-| `Origin` / `Sec-Fetch-Site` | the server rejects state-changing requests whose `Origin` is foreign or whose `Sec-Fetch-Site` is `cross-site`          | decide what to do when the headers are missing                             |
-| Custom header or JSON only  | a cross-origin request with such a header or `Content-Type` needs a preflight, and the server does not allow it         | relies on a correct CORS setup; check the `Content-Type` exactly           |
+| Defense                     | How it works                                                                                                            | Limits                                                                                                            |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `SameSite=Lax` / `Strict`   | the browser does not send the cookie with cross-site requests (`Lax` still sends it on top-level `GET` navigation)      | a [site](../network/storage.md#cookie-attributes) is broader than an origin: a compromised subdomain is same-site |
+| CSRF token                  | the server puts a random token into the page and checks it in every state-changing request; another site cannot read it | must be added to every form and request                                                                           |
+| `Origin` / `Sec-Fetch-Site` | the server rejects state-changing requests whose `Origin` is foreign or whose `Sec-Fetch-Site` is `cross-site`          | decide what to do when the headers are missing                                                                    |
+| Custom header or JSON only  | a cross-origin request with such a header or `Content-Type` needs a preflight, and the server does not allow it         | relies on a correct CORS setup; check the `Content-Type` exactly                                                  |
 
 - **`SameSite`.** Set it explicitly. Chromium treats a cookie without the
   attribute as `Lax`, but still sends it with a top-level cross-site `POST`

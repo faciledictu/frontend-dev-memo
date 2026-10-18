@@ -255,5 +255,5 @@ export default function App() {
 
 ## See Also
 
-- [Bundle Optimization](../../web-platform/tools/bundle-optimization.md)
+- [Bundle Optimization](../../web-platform/performance/bundle-optimization.md)
 - [Authentication](../../web-platform/network/authentication.md)

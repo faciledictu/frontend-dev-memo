@@ -163,4 +163,4 @@ button.addEventListener('click', async () => {
 
 - [Critical Rendering Path and Loading Performance](./loading-performance.md)
 - [Optimization Tools in Next.js](../../nextjs/optimization.md)
-- [Bundle Optimization](../tools/bundle-optimization.md)
+- [Bundle Optimization](./bundle-optimization.md)

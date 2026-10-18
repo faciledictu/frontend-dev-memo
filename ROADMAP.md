@@ -258,6 +258,10 @@
       позиционирование, адаптивность.
 - [ ] 6. React Native и Next.js: навигация, производительность, Expo; RSC vs
       SSR, Metadata — если этого ещё нет на готовых страницах.
+- [ ] 7. Web Platform: браузерные API — Intersection / Resize / Mutation
+      Observer, History API, Web Components и Shadow DOM,
+      `requestAnimationFrame` и `requestIdleCallback`, URL и кодирование (пробел
+      из ревью Fable).
 
 ## На будущее
 

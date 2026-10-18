@@ -108,7 +108,7 @@ Access-Control-Max-Age: 600
   server knows about CORS before it gets anything else.
 - Are `https://example.com` and `https://api.example.com` the same? They are
   different origins, but the same **site**, which is what `SameSite` cookies
-  look at.
+  look at, see [Browser Storage](./storage.md#cookie-attributes).
 - How do a page and a cross-origin iframe talk?
   `postMessage(data, targetOrigin)` with an exact target origin, and a check of
   `event.origin` in the `message` handler.

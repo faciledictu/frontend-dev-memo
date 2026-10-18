@@ -150,5 +150,5 @@ export function ChartPanel({ show }: { show: boolean }) {
 ## See Also
 
 - [Core Web Vitals](../web-platform/performance/web-vitals.md)
-- [Bundle Optimization](../web-platform/tools/bundle-optimization.md)
+- [Bundle Optimization](../web-platform/performance/bundle-optimization.md)
 - [Performance in React](../react/performance/optimization.md)
