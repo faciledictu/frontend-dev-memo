@@ -55,9 +55,9 @@ Respect **`prefers-reduced-motion`**.
 - `height: auto` cannot be transitioned directly. A common workaround is a grid
   wrapper animated from `grid-template-rows: 0fr` to `1fr`, with
   `overflow: hidden` on its only child.
-- A custom property that is not registered jumps to the new value at 50% instead
-  of interpolating; register it with `@property`, see
-  [CSS Custom Properties](./custom-properties.md#property).
+- An unregistered custom property is not interpolated: it flips at 50% in an
+  animation and changes at once in a transition. Register it with `@property`,
+  see [CSS Custom Properties](./custom-properties.md#property).
 
 ### CSS vs JavaScript
 
@@ -70,8 +70,9 @@ Respect **`prefers-reduced-motion`**.
 - The **Web Animations API** (`element.animate(keyframes, options)`) is the same
   engine as CSS animations, controlled from JavaScript: it returns an
   `Animation` with `pause()`, `reverse()` and a `finished` promise. Motion
-  (formerly Framer Motion) is built on it. CSS transitions and animations are
-  `Animation` objects too: `element.getAnimations()`.
+  (formerly Framer Motion) uses it where it can and falls back to its own
+  `requestAnimationFrame` engine. CSS transitions and animations are `Animation`
+  objects too: `element.getAnimations()`.
 
 ## Example
 
@@ -110,8 +111,9 @@ Respect **`prefers-reduced-motion`**.
 }
 ```
 
-Shortening durations to `0.01ms` instead of `none` keeps end states and
-`animationend` listeners working; a global version is in
+`animation: none` also drops the `animation-fill-mode` end state and
+`animationend`; setting durations to `0.01ms` instead keeps both (and
+`transitionend`). A global version is in
 [Responsive Design](./responsive-design.md#user-preferences-and-input).
 
 <details>
@@ -154,13 +156,14 @@ rendered has no previous value to transition from. `allow-discrete` keeps
   including ones that should not move and ones that trigger layout.
 - How do you wait for an animation to finish in JavaScript? The `transitionend`
   or `animationend` event, or `element.animate(…).finished`. `transitionend`
-  fires once per longhand (`transition: padding` gives four events), not at all
-  if the transition is cancelled, and bubbles: a listener on the parent also
-  fires for children's transitions, so check `event.target` and
-  `event.propertyName`.
+  fires once per longhand (`transition: padding` gives up to four events, one
+  per side that changes), not at all if the transition is cancelled, and
+  bubbles: a listener on the parent also fires for children's transitions, so
+  check `event.target` and `event.propertyName`.
 - Why does a transition not run when an element is inserted and the class is
   added in the same task? The browser never computed the starting style. Use
-  `@starting-style`, force a style flush (`element.offsetWidth`) or a
+  `@starting-style`, force a style flush between inserting and adding the class
+  (read `element.offsetWidth`) or use a
   [double rAF](../web-platform/browser/scheduling.md#requestanimationframe).
 - How do you find out why an animation is janky? DevTools Performance panel:
   Layout or Recalculate Style entries during the animation mean a property that

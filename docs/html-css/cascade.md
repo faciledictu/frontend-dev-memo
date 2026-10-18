@@ -41,8 +41,7 @@ Only what is usually asked; the full list is on
 | `[href^='https']` | attribute starts with; `$=` ends with, `*=` contains |
 
 - `:nth-child(2)` counts all siblings; `:nth-of-type(2)` counts only siblings
-  with the same tag, so `.item:nth-of-type(2)` does not count `.item`s;
-  `:nth-child(2 of .item)` does.
+  with the same tag.
 - `:focus-visible` matches focus the browser would show a ring for (keyboard
   navigation, text fields), not a mouse click on a button; `:focus-within`
   matches an element that has focus or contains the focused element.
@@ -218,8 +217,6 @@ body:has(dialog:modal) {
   layer wins.
 - Expecting `.item:nth-of-type(2)` to count only `.item`s: it counts siblings
   with the same tag; use `:nth-child(2 of .item)`.
-- Adding `::before` to an `<img>` or `<input>`: replaced elements have no
-  content box for it.
 
 ## See Also
 
