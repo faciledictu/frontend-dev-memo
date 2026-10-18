@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 description: Code splitting and next/dynamic, next/image, next/font, next/script
 tags: [middle]
 ---

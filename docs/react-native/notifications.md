@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 11
 description:
   How push notifications work, device tokens, notification vs data messages,
   foreground / background / quit behavior, APNs keys, libraries
@@ -137,8 +137,9 @@ with an OAuth 2.0 access token of a service account.
   and vibration belong to a channel, which must exist before the first
   notification (on Android 13+, before the permission prompt); after creation
   only the user can change it, the app only its name and description.
-- How do you open a screen on tap? Read `data` in the response listener and
-  navigate; for a cold start use `useLastNotificationResponse()`.
+- How do you open a screen on tap? Put a URL or a screen name in `data` and
+  navigate from the response listener; see
+  [Deep Linking](./deep-linking.md#opening-a-screen-from-a-notification).
 
 ## Common Mistakes
 

@@ -165,3 +165,4 @@ export function Panel({ open }: { open: boolean }) {
 - [Animated API](./animated.md)
 - [Gestures](./gestures.md)
 - [Architecture](../rn-architecture.md)
+- [Performance](../performance.md)
