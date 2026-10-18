@@ -46,8 +46,8 @@ Applies to: Next.js 16.4 (Pages Router).
   and starts a regeneration in the background (stale-while-revalidate).
 - **On-demand**: an API Route calls `await res.revalidate('/posts/1')`, for
   example from a CMS webhook, and the page is regenerated at once.
-- ISR is for content that is the same for all users. It does not fit
-  user-specific data.
+- When ISR fits and when it does not is in
+  [Rendering Strategies](./rendering-strategies.md).
 
 ## Example
 

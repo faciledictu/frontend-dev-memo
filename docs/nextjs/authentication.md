@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 description:
   Sessions in cookies, Data Access Layer, Proxy, protecting Server Actions
 tags: [middle, senior]
@@ -30,6 +30,13 @@ The general theory (sessions vs JWT, OAuth, where to keep a token) is in
 | Server Actions, Route Handlers | Call `verifySession()` and check the rights at the start of each one                                            | Yes, they are public HTTP endpoints                         |
 | Layout                         | Unreliable: a shared layout is not re-rendered on client navigation, so its check does not run for the new page | No                                                          |
 | Client components              | Hide buttons and links                                                                                          | No, this is UX                                              |
+
+### Proxy
+
+- `proxy.ts` (formerly `middleware.ts`, deprecated in Next.js 16) exports a
+  `proxy` function that runs before routing, only on the Node.js runtime.
+- It suits redirects, rewrites, headers and an optimistic check of the session
+  cookie; the example is below.
 
 A Proxy-only check has failed before: CVE-2025-29927 let a crafted
 `x-middleware-subrequest` header skip Middleware in self-hosted apps.

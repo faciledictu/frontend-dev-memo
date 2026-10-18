@@ -33,17 +33,9 @@ Applies to: Next.js 16.4 (Pages Router).
   prerendered at build time even if it fetches data on the client.
 - The strategies mix: an SSG page can fetch user-specific parts on the client.
 
-### Hydration
-
-- **Hydration** attaches event handlers and state to server-rendered HTML. The
-  first client render must produce the same markup as the server.
-- A **hydration mismatch** happens when it does not: `Date.now()`,
-  `Math.random()`, `window` or `localStorage` read during render, locale-based
-  formatting, invalid HTML nesting (`<div>` inside `<p>`), browser extensions
-  changing the DOM.
-- Fixes: read browser-only values in `useEffect`, render the part only on the
-  client (`next/dynamic` with `ssr: false`), or use `suppressHydrationWarning`
-  for a single text node such as a timestamp.
+Hydration and how to fix a hydration mismatch are described in
+[Server Components](../app-router/server-components.mdx#hydration); they work
+the same in both routers.
 
 ## Follow-up Questions
 

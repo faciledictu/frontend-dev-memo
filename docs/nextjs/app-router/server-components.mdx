@@ -61,6 +61,18 @@ In the browser:
 2. The RSC Payload is used to reconcile the Server and Client Component trees.
 3. Client Components are hydrated and become interactive.
 
+### Hydration
+
+- **Hydration** attaches event handlers and state to server-rendered HTML. The
+  first client render must produce the same markup as the server.
+- A **hydration mismatch** happens when it does not: `Date.now()`,
+  `Math.random()`, `window` or `localStorage` read during render, locale-based
+  formatting, invalid HTML nesting (`<div>` inside `<p>`), browser extensions
+  changing the DOM.
+- Fixes: read browser-only values in `useEffect`, render the part only on the
+  client (`use(browser())` or `next/dynamic` with `ssr: false`), or use
+  `suppressHydrationWarning` for a single text node such as a timestamp.
+
 ### Rendering Strategies
 
 - **Static:** HTML is made at build time or on revalidation, cached and served

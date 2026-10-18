@@ -55,7 +55,7 @@ All are imported from `next/navigation` and work only in Client Components.
 | Where                           | How                                                                                    | When                                  |
 | ------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------- |
 | `next.config` `redirects()`     | `{ source, destination, permanent }`                                                   | Known, static redirects (old URLs)    |
-| Proxy (`proxy.ts`)              | `NextResponse.redirect(new URL('/login', request.url))`                                | Before routing, by a cookie or header |
+| Proxy (`proxy.ts`)              | `NextResponse.redirect(new URL(...))`, see [Proxy](../authentication.md#proxy)         | Before routing, by a cookie or header |
 | Server Component, Route Handler | `redirect('/login')`, `permanentRedirect('/new')`                                      | After reading data                    |
 | Server Action                   | `redirect(...)`: a client-side navigation; 303 for a form submitted without JavaScript | After a mutation                      |
 | Client Component                | `router.push()` / `router.replace()`                                                   | After a user action                   |
@@ -63,8 +63,6 @@ All are imported from `next/navigation` and work only in Client Components.
 - `redirect()` and `notFound()` throw a special error, so they are called
   outside `try/catch` (or the error is rethrown).
 - `notFound()` renders the closest `not-found.tsx` with a 404 status.
-- `middleware.ts` is deprecated in Next.js 16 in favor of `proxy.ts`: the
-  exported function is `proxy`, and it runs only on the Node.js runtime.
 
 ## Example
 
