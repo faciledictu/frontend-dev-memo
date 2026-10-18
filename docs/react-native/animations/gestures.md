@@ -3,6 +3,7 @@ sidebar_position: 3
 description:
   Gesture Responder System, Pressable, PanResponder, React Native Gesture
   Handler and gesture composition
+tags: [middle]
 ---
 
 # Gestures
@@ -114,6 +115,7 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={styles.root}>
+      {/* highlight-next-line */}
       <GestureDetector gesture={pan}>
         <Animated.View style={[styles.box, animatedStyle]} />
       </GestureDetector>
@@ -165,6 +167,15 @@ export function Draggable() {
 Every move event goes through the JS thread, so the drag lags when JS is busy.
 
 </details>
+
+## Follow-up Questions
+
+- How do you allow a horizontal swipe inside a vertical `ScrollView`?
+  `activeOffsetX` and `failOffsetY`, so the pan activates only on a clear
+  horizontal move.
+- What is `hitSlop`? It extends the touch area without changing the layout.
+- Why does React Native still have the responder system? Core components such as
+  `ScrollView` and `Pressable` use it; Gesture Handler is a library.
 
 ## Common Mistakes
 

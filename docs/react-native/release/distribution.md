@@ -3,6 +3,7 @@ sidebar_position: 1
 description:
   Publishing to the App Store and Google Play, signing, provisioning profiles,
   Play App Signing, test tracks, review and staged rollout
+tags: [middle]
 ---
 
 # Publishing and Distribution
@@ -33,9 +34,6 @@ can do it in the cloud instead, but they are optional.
 
 New personal Google Play accounts must run a closed test with at least 12
 testers for 14 days before the first production release.
-
-Older Expo projects used `expo build:ios` / `expo build:android` (classic
-builds); that service was shut down in January 2023.
 
 ### iOS Signing
 
@@ -114,6 +112,17 @@ through adb or an extra confirmation flow.
   [OTA Updates](./ota.md).
 - How do you automate releases? EAS Build and Submit, or fastlane. See
   [Fastlane](./fastlane.md).
+- `versionName` or `versionCode` (`CFBundleShortVersionString` or
+  `CFBundleVersion`)? The version shown to users versus a build number that must
+  grow with every upload.
+- Can the bundle ID or the application ID change? No, it is the app's identity
+  in the store.
+
+## Common Mistakes
+
+- Uploading an `.apk` for a new app on Google Play: it requires an `.aab`.
+- Not increasing the build number: the store rejects the upload.
+- Keeping the upload key on one laptop only.
 
 ## See Also
 

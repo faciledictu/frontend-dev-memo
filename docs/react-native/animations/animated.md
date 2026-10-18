@@ -3,6 +3,7 @@ sidebar_position: 1
 description:
   Animated values, timing / spring / decay, interpolate, composition, the native
   driver, LayoutAnimation, why not to animate with setState
+tags: [middle]
 ---
 
 # Animated API
@@ -92,6 +93,7 @@ export function FadeInCard() {
     const animation = Animated.timing(progress, {
       toValue: 1,
       duration: 300,
+      // highlight-next-line
       useNativeDriver: true,
     });
     animation.start();
@@ -115,6 +117,14 @@ export function FadeInCard() {
   );
 }
 ```
+
+## Follow-up Questions
+
+- Why can't the native driver animate `width`? The native module sets view
+  properties directly, while layout properties need a Yoga layout pass.
+- How do you animate a color? `interpolate` with color strings in `outputRange`.
+- When do you switch to Reanimated? For gestures, layout properties and logic
+  that must run on the UI thread, see [Reanimated](./reanimated.md).
 
 ## Common Mistakes
 

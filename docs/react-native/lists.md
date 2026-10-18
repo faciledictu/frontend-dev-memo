@@ -3,6 +3,7 @@ sidebar_position: 6
 description:
   ScrollView vs FlatList vs SectionList vs FlashList, virtualization, FlatList
   optimization props
+tags: [middle]
 ---
 
 # Lists: ScrollView, FlatList, FlashList
@@ -127,6 +128,7 @@ export function Messages({ messages }: { messages: Message[] }) {
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
       extraData={selectedId}
+      // highlight-next-line
       getItemLayout={(_, index) => ({
         length: ITEM_HEIGHT,
         offset: ITEM_HEIGHT * index,
@@ -136,6 +138,16 @@ export function Messages({ messages }: { messages: Message[] }) {
   );
 }
 ```
+
+## Follow-up Questions
+
+- When `selectedId` changes in the example, how many rows re-render? Two: `Row`
+  is memoized, and only the old and the new selected rows get a different
+  `selected` prop.
+- What unit is `onEndReachedThreshold`? A fraction of the visible length: `0.5`
+  fires half a screen before the end.
+- How do you build a chat list that grows at the top? `inverted` on `FlatList`,
+  or `maintainVisibleContentPosition` in FlashList.
 
 ## Common Mistakes
 

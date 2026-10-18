@@ -3,6 +3,7 @@ sidebar_position: 2
 description:
   Legacy bridge vs New Architecture (JSI, Fabric, TurboModules, Codegen),
   threads, rendering pipeline, native libraries and autolinking
+tags: [middle]
 ---
 
 # React Native Architecture: Bridge vs New Architecture
@@ -14,7 +15,7 @@ objects and call them directly, synchronously if needed. On top of JSI are
 **Fabric** (the renderer), **TurboModules** (native modules) and **Codegen**
 (typed bindings generated from a TS spec). The New Architecture is the default
 since 0.76, and since 0.82 it is the only one: the legacy architecture cannot be
-turned on, and its code is being removed since 0.84.
+turned on.
 
 Applies to: React Native 0.87.
 
@@ -47,19 +48,22 @@ How it worked and what was wrong with it:
 | TurboModules | Native modules built on JSI                                                                       | Loaded lazily on first use; can return values synchronously; can be written in C++  |
 | Fabric       | The renderer; its shadow tree is in C++ and shared by both platforms                              | Synchronous layout and measuring, React concurrent features (transitions, Suspense) |
 | Codegen      | Generates native interfaces from a TypeScript or Flow spec at build time                          | Type-safe JS ↔ native boundary                                                      |
-| Bridgeless   | The mode in which the bridge is not created at all                                                | Default since 0.74; the only mode since 0.82                                        |
+| Bridgeless   | The mode in which the bridge is not created at all                                                | Default with the New Architecture since 0.74; the only mode since 0.82              |
 
 **Hermes** is the default JS engine (since 0.70; its new version, Hermes V1,
 since 0.84). It compiles JS to bytecode at build time, so the app starts faster
 and uses less memory than with a JIT engine.
 
+The legacy architecture code has been removed step by step since 0.83; since
+0.87 TurboModules are always on.
+
 ### From `setState` to Pixels (Fabric)
 
 1. **Render** (JS thread): React calls components and reconciles the element
    tree; Fabric builds a C++ **shadow tree** from it.
-2. **Commit** (JS thread): Yoga computes the layout of the shadow tree, and the
-   new tree is promoted as the next one to mount. There is no separate shadow
-   thread any more.
+2. **Commit** (JS or a background thread, in C++): Yoga computes the layout of
+   the shadow tree, and the new tree is promoted as the next one to mount. There
+   is no separate shadow thread any more.
 3. **Mount** (UI thread): the difference between the old and new trees is
    applied to the real native views.
 
@@ -97,6 +101,13 @@ skip the JS thread.
 - What does Codegen generate? Native interfaces (C++, Objective-C, Java) from a
   typed spec, so a mismatch between JS and native signatures fails at build
   time.
+- Can a library written for the bridge still be used? Through the interop layer,
+  kept for compatibility; it is not a target for new code.
+- Which React 19 features does React Native get through Fabric? Suspense,
+  transitions, automatic batching, `use` and Actions, see
+  [React 19](../react/react-19.md).
+- Hermes or JavaScriptCore? Hermes precompiles to bytecode for a faster start
+  and less memory; JavaScriptCore is now only a community package.
 
 ## Common Mistakes
 

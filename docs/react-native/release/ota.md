@@ -3,6 +3,7 @@ sidebar_position: 4
 description:
   What over-the-air updates can change without the store, EAS Update, runtime
   versions, what happened to CodePush, store rules
+tags: [middle]
 ---
 
 # Over-the-Air (OTA) Updates
@@ -15,7 +16,7 @@ update must target builds with compatible native code, which is what the
 **runtime version** is for. The standard client is **`expo-updates`** (works in
 bare apps too); updates are served by **EAS Update** (Expo's cloud service) or
 by your own server implementing the open Expo Updates protocol. Microsoft's
-**CodePush** was shut down with App Center on March 31, 2025.
+**CodePush** no longer exists.
 
 Applies to: Expo SDK 57.
 
@@ -71,6 +72,15 @@ Applies to: Expo SDK 57.
 ```bash
 eas update --channel production --message "Fix crash on checkout"
 ```
+
+## Follow-up Questions
+
+- Channel or branch? The channel is built into the app; updates are published to
+  a branch, and the channel points to a branch, so retargeting is a server
+  change.
+- How does the app know an update is genuine? Code signing in `expo-updates`
+  (`codeSigningCertificate`).
+- Can an OTA update add a permission or change the icon? No, both are native.
 
 ## Common Mistakes
 

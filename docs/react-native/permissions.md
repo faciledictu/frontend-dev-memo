@@ -3,6 +3,7 @@ sidebar_position: 8
 description:
   Runtime permissions on iOS and Android, permission statuses, blocked
   permissions and settings, libraries
+tags: [middle]
 ---
 
 # Permissions
@@ -90,6 +91,7 @@ export async function ensureCameraPermission(): Promise<boolean> {
       'Turn it on in Settings to scan codes.',
       [
         { text: 'Cancel', style: 'cancel' },
+        // highlight-next-line
         { text: 'Open Settings', onPress: () => openSettings() },
       ]
     );
@@ -97,6 +99,16 @@ export async function ensureCameraPermission(): Promise<boolean> {
   return false;
 }
 ```
+
+## Follow-up Questions
+
+- `check` or `request`? `check` never shows a dialog; call it first to decide
+  whether to explain why the permission is needed.
+- Where do the iOS permission texts go in an Expo app? In config plugin options
+  in `app.json` (for example `cameraPermission` of `expo-camera`), applied at
+  prebuild.
+- How do you test the blocked state? Deny the permission twice on Android or
+  once on iOS, or turn it off in the system settings.
 
 ## Common Mistakes
 

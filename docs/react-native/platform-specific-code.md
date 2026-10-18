@@ -3,6 +3,7 @@ sidebar_position: 3
 description:
   Platform-specific file extensions, Platform.OS, Platform.select and
   Platform.Version
+tags: [junior]
 ---
 
 # Platform-Specific Code
@@ -45,6 +46,7 @@ import { Platform, StyleSheet, PermissionsAndroid } from 'react-native';
 const styles = StyleSheet.create({
   code: {
     padding: Platform.OS === 'ios' ? 20 : 10,
+    // highlight-next-line
     fontFamily: Platform.select({
       ios: 'Menlo',
       android: 'monospace',
@@ -62,6 +64,20 @@ async function askNotificationPermission() {
   }
 }
 ```
+
+## Follow-up Questions
+
+- What ends up in the bundle? With platform extensions Metro includes only the
+  matching file; `Platform.OS` branches ship both.
+- Where does native configuration go in an Expo app? The `ios` and `android`
+  keys and config plugins in `app.json`, not hand-edited `ios/` and `android/`
+  folders.
+
+## Common Mistakes
+
+- `Platform.select` without `default`: `undefined` on web and other platforms.
+- Comparing `Platform.Version` as a number on iOS: it is a string such as
+  `'26.0'`.
 
 ## See Also
 

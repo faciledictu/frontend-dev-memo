@@ -3,6 +3,7 @@ sidebar_position: 2
 description:
   What fastlane automates for iOS and Android releases, lanes, match, fastlane
   vs EAS
+tags: [middle]
 ---
 
 # Fastlane
@@ -40,6 +41,7 @@ cloud alternative.
 
 ```ruby
 lane :beta_ios do
+  # highlight-next-line
   match(type: "appstore")           # Fetch the certificate and profile
   increment_build_number(xcodeproj: "ios/MyApp.xcodeproj")
   build_app(workspace: "ios/MyApp.xcworkspace", scheme: "MyApp")
@@ -53,6 +55,13 @@ lane :beta_android do
   upload_to_play_store(track: "internal", aab: "android/app/build/outputs/bundle/release/app-release.aab")
 end
 ```
+
+## Follow-up Questions
+
+- How does CI get the certificates? A `match` repository with `MATCH_PASSWORD`
+  and an App Store Connect API key, stored as CI secrets.
+- Why do iOS builds need macOS? Xcode runs only on macOS, hence macOS runners or
+  EAS Build.
 
 ## Common Mistakes
 

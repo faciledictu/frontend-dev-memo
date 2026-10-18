@@ -3,6 +3,7 @@ sidebar_position: 5
 description:
   How Flexbox in React Native differs from the web, alignment properties and
   their values
+tags: [junior]
 ---
 
 # Flexbox in React Native
@@ -73,6 +74,13 @@ const styles = StyleSheet.create({
   title: { flex: 1 }, // pushes the actions to the right
 });
 ```
+
+## Follow-up Questions
+
+- Why is the screen blank or the list not scrolling? The root `View` or the list
+  has no `flex: 1`, so its height is zero.
+- Is there CSS Grid? No: Flexbox, `position: 'absolute'` and `aspectRatio`,
+  which sizes one dimension from the other.
 
 ## Common Mistakes
 

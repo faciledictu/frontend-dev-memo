@@ -3,6 +3,7 @@ sidebar_position: 4
 description:
   StyleSheet API, how styles differ from CSS, responsive sizes with
   useWindowDimensions, custom fonts
+tags: [junior]
 ---
 
 # StyleSheet
@@ -106,6 +107,13 @@ const styles = StyleSheet.create({
   },
 });
 ```
+
+## Follow-up Questions
+
+- How do you do dark mode? `useColorScheme()` plus your own theme object or a
+  styling library.
+- How do you adapt to the screen size? `useWindowDimensions()` and conditions in
+  styles; there are no media queries.
 
 ## Common Mistakes
 

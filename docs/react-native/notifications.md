@@ -3,6 +3,7 @@ sidebar_position: 9
 description:
   How push notifications work, device tokens, notification vs data messages,
   foreground / background / quit behavior, APNs keys, libraries
+tags: [middle]
 ---
 
 # Push Notifications
@@ -126,6 +127,17 @@ Sent as `POST https://fcm.googleapis.com/v1/projects/{project-id}/messages:send`
 with an OAuth 2.0 access token of a service account.
 
 </details>
+
+## Follow-up Questions
+
+- Expo push token or device token? The Expo token wraps the APNs or FCM token;
+  Expo's push service forwards to them, so one backend call covers both
+  platforms.
+- What is an Android notification channel? On Android 8+ the importance, sound
+  and vibration belong to a channel, which must exist before the first
+  notification; the user controls it in the settings.
+- How do you open a screen on tap? Read `data` in the response listener and
+  navigate; for a cold start read the last notification response on launch.
 
 ## Common Mistakes
 

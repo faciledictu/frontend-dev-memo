@@ -3,6 +3,7 @@ sidebar_position: 3
 description:
   Environment variables in React Native and Expo, why values in the JS bundle
   are not secret, where to keep real secrets
+tags: [middle]
 ---
 
 # Environment Configuration and Secrets
@@ -54,6 +55,7 @@ EXPO_PUBLIC_API_URL=https://api.example.com
 
 ```ts
 // Expo: inlined at build time
+// highlight-next-line
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 ```
 
@@ -85,6 +87,13 @@ On iOS, use `$(API_URL)` in `Info.plist` or `[RNCConfig envFor:@"API_URL"]` in
 Objective-C.
 
 </details>
+
+## Follow-up Questions
+
+- Where do you store a user's token on the device? In the Keychain or Keystore
+  through `expo-secure-store` or `react-native-keychain`, not in AsyncStorage.
+- How do you change the API URL without a rebuild? Inlined values can't change;
+  fetch the configuration from the backend or make a build per environment.
 
 ## Common Mistakes
 

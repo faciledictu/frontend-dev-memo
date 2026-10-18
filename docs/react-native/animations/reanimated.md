@@ -3,6 +3,7 @@ sidebar_position: 2
 description:
   Reanimated 4 shared values, worklets and the UI thread, animated styles,
   layout animations, CSS animations, why it is faster than Animated
+tags: [middle]
 ---
 
 # Reanimated
@@ -105,6 +106,7 @@ export function LikeButton({ onBounceEnd }: { onBounceEnd: () => void }) {
       withTiming(1.3, { duration: 100 }),
       withSpring(1, {}, (finished) => {
         // The callback is a worklet on the UI thread: go back to JS
+        // highlight-next-line
         if (finished) scheduleOnRN(onBounceEnd);
       })
     );
@@ -140,6 +142,14 @@ export function Panel({ open }: { open: boolean }) {
 ```
 
 </details>
+
+## Follow-up Questions
+
+- How do you react to a shared value without a style? `useAnimatedReaction`.
+- Does a worklet see the latest React state? No, values are captured when the
+  worklet is created; pass changing data through a shared value.
+- What does the Babel plugin do? `react-native-worklets/plugin` extracts worklet
+  code and its closure so that it can run on the UI runtime.
 
 ## Common Mistakes
 
