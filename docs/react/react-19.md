@@ -3,18 +3,19 @@ sidebar_position: 7
 description:
   Actions, use, ref as a prop and other changes of React 19 and its minor
   versions; removed APIs and migration
+tags: [middle, senior]
 ---
 
 # What's New in React 19
 
-React 19 (December 2024) is about **async UI and less boilerplate**: **Actions**
-(async functions in transitions, with `useActionState`, `useOptimistic`,
+React 19 is about **async UI and less boilerplate**: **Actions** (async
+functions in transitions, with `useActionState`, `useOptimistic`,
 `useFormStatus` and `<form action>`), the **`use`** API for promises and
 context, **`ref` as a regular prop** instead of `forwardRef`, **`<Context>` as a
 provider**, document metadata rendered from components, and stable **Server
 Components**. Minor versions added `<Activity>` and `useEffectEvent` (19.2),
 `<ViewTransition>` and Fragment refs (19.3). **React Compiler** is a separate
-build tool, stable since October 2025.
+build tool.
 
 Applies to: React 19.3.
 

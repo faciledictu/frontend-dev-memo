@@ -1,12 +1,23 @@
 ---
 sidebar_position: 2
 description: CSS Modules, Tailwind, CSS-in-JS and Sass compared
+tags: [middle]
 ---
 
 # Styling Approaches
 
-The approaches differ in two things: how styles are **scoped** to a component
-and whether they cost anything at **runtime**.
+The main approaches are **CSS Modules**, **utility classes** (Tailwind),
+**runtime CSS-in-JS** (styled-components, Emotion) and zero-runtime CSS-in-JS.
+They differ in two things: how styles are **scoped** to a component and whether
+they cost anything at **runtime**. A safe default is CSS Modules or Tailwind:
+both produce static CSS files and have no runtime. Runtime CSS-in-JS is chosen
+when styles depend heavily on props or a theme.
+
+Applies to: Tailwind CSS 4, styled-components 6.
+
+## Details
+
+### Comparison
 
 | Approach                                           | Scoping                               | Runtime cost | How props change styles                              |
 | -------------------------------------------------- | ------------------------------------- | ------------ | ---------------------------------------------------- |
@@ -16,14 +27,6 @@ and whether they cost anything at **runtime**.
 | **Runtime CSS-in-JS** (styled-components, Emotion) | generated class names                 | yes          | JavaScript in the styles                             |
 | Zero-runtime CSS-in-JS (vanilla-extract)           | generated class names                 | none         | variants, CSS variables                              |
 | Inline `style`                                     | one element                           | none         | the style object; no pseudo-classes or media queries |
-
-A safe default is CSS Modules or Tailwind: both produce static CSS files and
-have no runtime. Runtime CSS-in-JS is chosen when styles depend heavily on props
-or a theme.
-
-Applies to: Tailwind CSS 4, styled-components 6.
-
-## Details
 
 ### CSS Modules
 

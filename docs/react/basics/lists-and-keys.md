@@ -3,6 +3,7 @@ sidebar_position: 4
 description:
   Rendering lists with map, choosing a key, an index as a key, resetting state
   with a key
+tags: [junior, middle]
 ---
 
 # Lists and `key`

@@ -3,6 +3,7 @@ sidebar_position: 2
 description:
   Server state with TanStack Query, query keys, staleTime and gcTime, mutations,
   invalidation and optimistic updates
+tags: [middle]
 ---
 
 # Server State: TanStack Query

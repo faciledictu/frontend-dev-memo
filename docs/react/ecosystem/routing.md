@@ -3,6 +3,7 @@ sidebar_position: 1
 description:
   React Router modes, nested routes, navigation hooks, loaders and protected
   routes
+tags: [junior, middle]
 ---
 
 # React Router
@@ -15,7 +16,8 @@ ways to use it: **declarative** (`<BrowserRouter>` with `<Routes>`), **data**
 plugin with route modules and SSR, the successor of Remix).
 
 Applies to: React Router 8. In v7 the API is almost the same; in v6 everything
-is imported from `react-router-dom`, which no longer exists in v8.
+is imported from `react-router-dom`, which is not published for v8 (everything
+is in `react-router`).
 
 ## Details
 
@@ -235,6 +237,11 @@ export default function App() {
   `Link` for transient data.
 - How to split the code by routes? `lazy` in data mode, or `React.lazy` with
   `Suspense` in declarative mode.
+- A loader or fetching in `useEffect`? Loaders of all matched routes run in
+  parallel before render: no request waterfall and no loading flicker, and the
+  data is revalidated after an action.
+- What is a layout (pathless) route? A `<Route>` without `path` that only wraps
+  its children, like the `RequireAuth` route in the example.
 
 ## Common Mistakes
 

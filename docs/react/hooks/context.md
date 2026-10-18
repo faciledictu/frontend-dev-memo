@@ -2,6 +2,7 @@
 sidebar_position: 4
 description:
   createContext, providers, useContext and use, re-renders of consumers
+tags: [middle]
 ---
 
 # React Context
@@ -12,7 +13,7 @@ It is a **delivery mechanism**, not state management: the state itself lives in
 `useState` or `useReducer` of the component that renders the provider. When the
 value changes, **every component that reads the context re-renders**.
 
-Applies to: React 19.
+Applies to: React 19.3.
 
 ## Details
 
@@ -51,7 +52,8 @@ Applies to: React 19.
 - For shared state that changes often and is read in parts, a store with
   selectors ([Redux](../state-management/redux.md),
   [Zustand](../state-management/overview.md#example)) re-renders only the
-  components whose data changed.
+  components whose data changed. See
+  [When a Store Is Needed](../state-management/overview.md#when-a-store-is-needed).
 - Before reaching for context, check if
   [composition](../basics/patterns.md#composition) solves the prop drilling.
 
@@ -109,14 +111,17 @@ export default function App() {
   as low as possible, or move the state to a store.
 - What does a component get without a provider? The default value from
   `createContext`.
+- How does a child update the context? The provider puts the setter or
+  `dispatch` into the value, or into a second context for the actions.
 
 ## Common Mistakes
 
 - Calling context "a state manager".
 - Passing a new object as the value on every render.
 - One large context for the whole app state.
-- Forgetting the provider and silently working with the default value. A custom
-  hook that throws, as in the example, catches it.
+- Forgetting the provider and silently working with the default value, for
+  example `createContext({ user: null, login: () => {} })` with a no-op `login`.
+  A custom hook that throws, as in the example, catches it.
 
 ## See Also
 

@@ -3,6 +3,7 @@ sidebar_position: 1
 description:
   Kinds of state and where each belongs, client vs server state, when a store is
   needed, Zustand
+tags: [middle]
 ---
 
 # Where to Keep State

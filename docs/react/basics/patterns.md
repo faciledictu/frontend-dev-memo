@@ -3,6 +3,7 @@ sidebar_position: 7
 description:
   Composition, conditional rendering, compound components, render props, HOCs
   and error boundaries
+tags: [middle]
 ---
 
 # Common Patterns
@@ -207,6 +208,12 @@ const ProtectedSettings = withAuthorization(Settings);
   to `showBoundary` from the `useErrorBoundary` hook of `react-error-boundary`.
 - Composition or inheritance? Composition: React components are not extended
   from one another.
+- How to recover from an error boundary without a reload? Reset its state:
+  change its `key`, or call `resetErrorBoundary` (or set `resetKeys`) in
+  `react-error-boundary`.
+- What is a controlled compound component? The parent takes `value` and
+  `onChange` like an input, so the owner keeps the state (as in Radix and
+  Headless UI); the uncontrolled one takes `defaultValue`.
 
 ## Common Mistakes
 

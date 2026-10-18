@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 description: Components, elements and JSX, purity, fragments
+tags: [junior]
 ---
 
 # Components
@@ -92,6 +93,10 @@ export default function Blog({ posts }) {
   element, it does not call `Button`.
 - Why must component names be capitalized? JSX treats lowercase tags as HTML
   elements.
+- What does JSX compile to, and why is `import React` no longer needed? The
+  **automatic JSX transform** (React 17+, required in React 19) compiles
+  `<Button />` to `jsx(Button, {})` and imports `jsx` from `react/jsx-runtime`
+  itself.
 - Why are function components preferred over classes? Less code, no `this`,
   logic is reused with [custom hooks](../hooks/hooks.mdx#custom-hooks), and new
   features are built for hooks.
@@ -103,6 +108,9 @@ export default function Blog({ posts }) {
 - Calling a component as a function (`Button()`) instead of `<Button />`: its
   hooks become hooks of the caller.
 - Mutating props or outer variables during render.
+- "A component must return a single element": it can return a fragment, an
+  array, a string or `null`. The single root is a rule of JSX syntax, not of
+  components.
 
 ## See Also
 

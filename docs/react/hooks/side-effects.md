@@ -3,6 +3,7 @@ sidebar_position: 2
 description:
   useEffect dependencies, cleanup order, StrictMode, race conditions and
   useLayoutEffect
+tags: [junior, middle]
 ---
 
 # Side Effects
@@ -14,7 +15,7 @@ component with an external system for as long as it is on screen. It runs
 **after** React has updated the DOM, runs again when its **dependencies**
 change, and its **cleanup** function runs before the next run and on unmount.
 
-Applies to: React 19.
+Applies to: React 19.3.
 
 ## Details
 
@@ -148,10 +149,17 @@ export default function Profile({ userId }) {
 - How to run code only on mount? `useEffect(fn, [])`, as long as the effect
   really reads no reactive values.
 - When does the cleanup run? Before every re-run of the effect and on unmount.
+- How to read the latest props in an effect without re-subscribing? Move that
+  code into a **`useEffectEvent`** function and call it from the effect.
+- In what order do the effects of a parent and a child run? Children first. On
+  an update all cleanups run before all new setups.
 
 ## Common Mistakes
 
 - Omitting a dependency to "run once": the effect works with stale values.
+- Translating `componentDidMount` literally into `useEffect(fn, [])` while the
+  effect reads props or state: a stale closure. An effect describes
+  synchronization with the current values, not a lifecycle moment.
 - No cleanup for a subscription, a timer or a connection.
 - An `async` effect callback.
 - Updating state in an effect to store what could be computed during render: an

@@ -2,6 +2,7 @@
 sidebar_position: 2
 description:
   Passing data and callbacks, default values, children, typing and prop drilling
+tags: [junior]
 ---
 
 # Props
@@ -11,7 +12,7 @@ to the child. Props are **read-only**. Data flows **one way**: down through
 props, and back up through callback props. To change what a child shows, the
 parent re-renders and passes new props.
 
-Applies to: React 19.
+Applies to: React 19.3.
 
 ## Details
 
@@ -91,6 +92,9 @@ export default function Counter() {
 - Does a component re-render when its props change? It re-renders when its
   parent re-renders, whether or not the props changed. Comparing props is an
   optimization: [`memo`](../performance/optimization.md#memoization).
+- How to pass a component or an element as a prop, and how is it different from
+  `children`? It is the same mechanism: `children` is just the prop written
+  between the tags. Several such props (`header`, `footer`) work as named slots.
 
 ## Common Mistakes
 
@@ -100,3 +104,10 @@ export default function Counter() {
   later changes of the prop.
 - Relying on `defaultProps` or `propTypes` in function components on React 19.
 - Passing a new object or function to a memoized child on every render.
+
+## See Also
+
+- [State](./state.md)
+- [Context](../hooks/context.md)
+- [Lists and `key`](./lists-and-keys.md) — why `key` is not a prop
+- [Typing React](../../typescript/react.md)

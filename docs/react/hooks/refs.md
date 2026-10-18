@@ -2,6 +2,7 @@
 sidebar_position: 3
 description:
   useRef, DOM refs, callback refs, ref as a prop and useImperativeHandle
+tags: [junior, middle]
 ---
 
 # Refs
@@ -13,7 +14,7 @@ access to a **DOM node** (focus, scroll, measuring) and storing a value that is
 `ref.current` should not be read or written during rendering, only in event
 handlers and effects.
 
-Applies to: React 19.
+Applies to: React 19.3.
 
 ## Details
 
@@ -35,6 +36,9 @@ Applies to: React 19.
 - A ref is an escape hatch: use it for what React does not manage (focus,
   scroll, selection, measuring). Don't change the DOM structure that React
   renders.
+- Since React 19.3 a ref on a **`<Fragment>`** gives a `FragmentInstance`: it
+  adds listeners, focuses or observes all the fragment's DOM children without a
+  wrapper `<div>`.
 
 ### Callback Refs
 
@@ -72,11 +76,15 @@ function SearchInput({ ref, ...props }) {
   const inputRef = useRef(null);
 
   // The parent gets only `focus`, not the DOM node
-  useImperativeHandle(ref, () => ({
-    focus() {
-      inputRef.current.focus();
-    },
-  }));
+  useImperativeHandle(
+    ref,
+    () => ({
+      focus() {
+        inputRef.current.focus();
+      },
+    }),
+    []
+  );
 
   return <input ref={inputRef} {...props} />;
 }
@@ -164,6 +172,9 @@ export default function Measured({ children }) {
 - When is `forwardRef` needed? Only before React 19.
 - How to get refs for a list of items? A callback ref that stores nodes in a
   `Map` kept in a ref.
+- How to keep the previous value of a prop? For rendering, store it in state and
+  update it during render when the prop changes. For effects and handlers, a ref
+  written in an effect (`usePrevious`); reading it during render is a mistake.
 
 ## Common Mistakes
 

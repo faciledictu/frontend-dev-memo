@@ -2,6 +2,7 @@
 sidebar_position: 6
 description:
   Controlled and uncontrolled inputs, form Actions in React 19, form libraries
+tags: [junior, middle]
 ---
 
 # Working with Forms
@@ -13,7 +14,7 @@ passed to `<form action>` receives the `FormData`, and the hooks
 `useActionState`, `useFormStatus` and `useOptimistic` cover the pending state,
 the result and optimistic updates.
 
-Applies to: React 19.
+Applies to: React 19.3.
 
 ## Details
 
@@ -99,7 +100,7 @@ export default function SignupForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="email" name="email" defaultValue="" />
+      <input type="email" name="email" />
       <button>Sign up</button>
     </form>
   );
@@ -189,6 +190,12 @@ export default function ProfileForm() {
   form.
 - How to reset a form? Set the state back for controlled fields; `form.reset()`
   or a new `key` for uncontrolled ones.
+- `useActionState` or `useFormStatus`? `useActionState` owns the action and
+  returns its result and `isPending`. `useFormStatus` is read by a child of the
+  `<form>` and knows only that a submission is pending, not its result.
+- What happens to `useOptimistic` when the action fails? The optimistic value is
+  dropped and the real state is shown again. The error is returned by the action
+  as state or, if thrown, goes to the nearest error boundary.
 
 ## Common Mistakes
 
@@ -197,6 +204,8 @@ export default function ProfileForm() {
   the status of a parent form, so `pending` is always `false`.
 - Forgetting `event.preventDefault()` in `onSubmit` and getting a page reload.
 - Initializing a controlled field with `undefined` or `null`.
+- Expecting `<form action>` to clear controlled fields: React resets only
+  uncontrolled ones, controlled values stay until the state is set back.
 
 ## See Also
 

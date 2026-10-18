@@ -3,6 +3,7 @@ sidebar_position: 3
 description:
   React Testing Library queries, user-event, async tests, hooks and E2E with
   Playwright
+tags: [middle]
 ---
 
 # Testing React Components
@@ -152,8 +153,11 @@ test('adds a todo', async ({ page }) => {
 - How to test a component that fetches data? Mock the network with MSW (or pass
   the loader as a prop) and wait for the result with `findBy…`.
 - How to test a component that needs a router, a store or a context? Render it
-  inside the real providers with a helper: `MemoryRouter`, a store from
-  `configureStore`.
+  inside the real providers with a helper such as `renderWithProviders`:
+  `MemoryRouter`, a store from `configureStore`.
+- What is `act`? It applies React updates and effects before the assertions, so
+  they see the committed UI. RTL and user-event call it for you; a direct call
+  is needed when a test changes state outside them, as with `renderHook`.
 
 ## Common Mistakes
 
@@ -163,6 +167,8 @@ test('adds a todo', async ({ page }) => {
 - `getBy…` to assert absence: it throws before the assertion.
 - Forgetting `await` before `user.click` or `findBy…`.
 - Wrapping everything in `act` by hand.
+- Side effects or several unrelated assertions inside `waitFor`: the callback is
+  re-run until it passes, so the effects repeat.
 
 ## See Also
 

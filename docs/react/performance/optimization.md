@@ -3,6 +3,7 @@ sidebar_position: 1
 description:
   When to optimize, component structure, memo, useMemo, useCallback and React
   Compiler
+tags: [middle, senior]
 ---
 
 # Optimizing React Components
@@ -14,7 +15,7 @@ with **measuring** (the Profiler) and goes in this order: fix the **structure**
 automatically at build time), then **do less work** (virtualization,
 transitions, code splitting).
 
-Applies to: React 19, React Compiler 1.0.
+Applies to: React 19.3, React Compiler 1.0.
 
 ## Details
 
@@ -164,8 +165,13 @@ export default function Catalog({ products }) {
 
 ## Follow-up Questions
 
+- What is the difference between `memo` and `useMemo`? `memo` wraps a component
+  and skips its render when the props are equal; `useMemo` caches a value inside
+  a render.
 - What is the difference between `useMemo` and `useCallback`? `useMemo` caches
   the value returned by a function; `useCallback` caches the function.
+- How do you know the compiler memoized a component? React DevTools shows a ✨
+  badge next to it. The `"use no memo"` directive opts a component out.
 - Why not wrap everything in `memo`? It costs comparisons and memory, breaks
   silently on one unstable prop, and hides structural problems.
 - What does `memo` compare? Each prop with `Object.is` (a shallow comparison). A
@@ -181,6 +187,8 @@ export default function Catalog({ products }) {
 - `useMemo` for a trivial calculation.
 - Deep comparison in a custom `memo` comparator: it can cost more than the
   render.
+- "With React Compiler `memo` and `useMemo` are wrong": they stay valid escape
+  hatches, and the compiler keeps manual memoization.
 
 ## See Also
 

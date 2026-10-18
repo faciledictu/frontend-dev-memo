@@ -1,6 +1,7 @@
 ---
 sidebar_position: 4
 description: createRoot, hydrateRoot, hydration, StrictMode and flushSync
+tags: [middle, senior]
 ---
 
 # React in the Browser: `react-dom`
@@ -11,7 +12,7 @@ description into DOM nodes and keeps them up to date; React Native is another
 renderer. An app starts with **`createRoot`** (render on the client) or
 **`hydrateRoot`** (attach to HTML that was rendered on the server).
 
-Applies to: React 19.
+Applies to: React 19.3.
 
 ## Details
 
@@ -43,6 +44,9 @@ Applies to: React 19.
 - Fixes: read browser-only values in `useEffect`, generate IDs with `useId`, use
   `suppressHydrationWarning` on a single element for an unavoidable difference
   such as a timestamp.
+- A subtree that needs browser APIs calls **`use(browser())`** (from
+  `react-dom`, React 19.3) inside `<Suspense>`: the server renders the fallback,
+  the browser renders the content.
 - With `Suspense`, hydration is **selective**: each boundary hydrates
   independently, and the one the user interacts with goes first.
 
@@ -130,11 +134,17 @@ function TodoList() {
   attaches handlers.
 - Why does an effect run twice in development? Because of `StrictMode`, see
   [Side Effects](../hooks/side-effects.md#strictmode).
+- `renderToString` or `renderToPipeableStream`? `renderToString` waits for the
+  whole tree; the stream sends HTML in chunks, sends `Suspense` fallbacks first
+  and fills them in as data arrives.
+- Can a page have several React roots? Yes, each `createRoot` is independent,
+  for example when React is added to parts of an existing page.
 
 ## Common Mistakes
 
 - Rendering different content on the server and on the client
   (`typeof window !== 'undefined' ? a : b`) and getting a hydration mismatch.
+  `use(browser())` or an effect does it without a mismatch.
 - Removing `StrictMode` to "fix" a double effect instead of adding a cleanup.
 - Using `flushSync` as a regular way to update state.
 

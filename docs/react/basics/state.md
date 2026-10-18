@@ -2,6 +2,7 @@
 sidebar_position: 3
 description:
   useState and useReducer, state as a snapshot, batching, immutable updates
+tags: [junior, middle]
 ---
 
 # State
@@ -146,14 +147,21 @@ export default function Counter() {
 - `useState` or `useReducer`? They are equivalent in power. A reducer keeps the
   update logic in one place and makes it testable.
 - State or ref? State when the value is shown in the UI; a ref when it is not.
+- Why must state be immutable? React compares the old and the new value with
+  `Object.is`: a mutated object is the same reference, so React skips the
+  re-render, and `memo` and effect dependencies see no change.
+- What does the updater function receive and when does it run? The latest queued
+  state. Updaters run in order during the next render, which is why three
+  `setCount((c) => c + 1)` add three.
 
 ## Common Mistakes
 
 - Mutating state: `user.name = 'Bob'; setUser(user)` does not re-render.
 - Reading the state right after the setter and expecting the new value.
 - Storing derived data in state and synchronizing it in an effect.
-
 - `useState(expensiveFunction())` instead of `useState(expensiveFunction)`.
+- Calling the setter during render (`setCount(count + 1)` in the component
+  body): every render queues a new one, React stops with "Too many re-renders".
 
 ## See Also
 

@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 description: Built-in hooks at a glance, the Rules of Hooks and custom hooks
+tags: [junior, middle]
 ---
 
 import Tabs from '@theme/Tabs';
@@ -15,33 +16,33 @@ level** (not in conditions, loops, nested functions or after an early return)
 and only **from React functions** (components and custom hooks). The reason is
 that React matches a hook call with its stored state by the **order of calls**.
 
-Applies to: React 19.
+Applies to: React 19.3.
 
 ## Details
 
 ### Built-in Hooks
 
-| Hook                   | Purpose                                                              | Page                                                                  |
-| ---------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `useState`             | State of a component                                                 | [State](../basics/state.md)                                           |
-| `useReducer`           | State with update logic in a reducer                                 | [State](../basics/state.md#usereducer)                                |
-| `useContext`           | Read a context value                                                 | [Context](./context.md)                                               |
-| `useRef`               | A mutable value that does not cause re-renders; access to DOM nodes  | [Refs](./refs.md)                                                     |
-| `useImperativeHandle`  | Customize what a ref to the component exposes                        | [Refs](./refs.md#useimperativehandle)                                 |
-| `useEffect`            | Synchronize with an external system after render                     | [Side Effects](./side-effects.md)                                     |
-| `useLayoutEffect`      | The same, but before the browser paints                              | [Side Effects](./side-effects.md#uselayouteffect)                     |
-| `useInsertionEffect`   | Insert styles before layout effects; for CSS-in-JS libraries         | —                                                                     |
-| `useEffectEvent`       | A function that reads the latest props and state inside an effect    | [Side Effects](./side-effects.md#dependencies)                        |
-| `useMemo`              | Cache a computed value between renders                               | [Optimization](../performance/optimization.md#memoization)            |
-| `useCallback`          | Cache a function between renders                                     | [Optimization](../performance/optimization.md#memoization)            |
-| `useTransition`        | Mark a state update as non-urgent                                    | [Concurrent Rendering](../rendering/concurrent-rendering.md)          |
-| `useDeferredValue`     | A value that lags behind during urgent updates                       | [Concurrent Rendering](../rendering/concurrent-rendering.md)          |
-| `useId`                | A unique ID that is the same on the server and the client            | —                                                                     |
-| `useSyncExternalStore` | Subscribe to a store outside of React                                | —                                                                     |
-| `useActionState`       | State and pending flag of an Action                                  | [Forms](../basics/forms.md#actions)                                   |
-| `useOptimistic`        | Show the expected result while an Action is pending                  | [Forms](../basics/forms.md#actions)                                   |
-| `useFormStatus`        | Status of the parent `<form>` (from `react-dom`)                     | [Forms](../basics/forms.md#actions)                                   |
-| `use`                  | Read a promise or a context. Not a hook: can be called conditionally | [Concurrent Rendering](../rendering/concurrent-rendering.md#suspense) |
+| Hook                   | Purpose                                                             | Page                                                                  |
+| ---------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `useState`             | State of a component                                                | [State](../basics/state.md)                                           |
+| `useReducer`           | State with update logic in a reducer                                | [State](../basics/state.md#usereducer)                                |
+| `useContext`           | Read a context value                                                | [Context](./context.md)                                               |
+| `useRef`               | A mutable value that does not cause re-renders; access to DOM nodes | [Refs](./refs.md)                                                     |
+| `useImperativeHandle`  | Customize what a ref to the component exposes                       | [Refs](./refs.md#useimperativehandle)                                 |
+| `useEffect`            | Synchronize with an external system after render                    | [Side Effects](./side-effects.md)                                     |
+| `useLayoutEffect`      | The same, but before the browser paints                             | [Side Effects](./side-effects.md#uselayouteffect)                     |
+| `useInsertionEffect`   | Insert styles before layout effects; for CSS-in-JS libraries        | —                                                                     |
+| `useEffectEvent`       | A function that reads the latest props and state inside an effect   | [Side Effects](./side-effects.md#dependencies)                        |
+| `useMemo`              | Cache a computed value between renders                              | [Optimization](../performance/optimization.md#memoization)            |
+| `useCallback`          | Cache a function between renders                                    | [Optimization](../performance/optimization.md#memoization)            |
+| `useTransition`        | Mark a state update as non-urgent                                   | [Concurrent Rendering](../rendering/concurrent-rendering.md)          |
+| `useDeferredValue`     | A value that lags behind during urgent updates                      | [Concurrent Rendering](../rendering/concurrent-rendering.md)          |
+| `useId`                | A unique ID that is the same on the server and the client           | —                                                                     |
+| `useSyncExternalStore` | Subscribe to a store outside of React                               | —                                                                     |
+| `useActionState`       | State and pending flag of an Action                                 | [Forms](../basics/forms.md#actions)                                   |
+| `useOptimistic`        | Show the expected result while an Action is pending                 | [Forms](../basics/forms.md#actions)                                   |
+| `useFormStatus`        | Status of the parent `<form>` (from `react-dom`)                    | [Forms](../basics/forms.md#actions)                                   |
+| `use`                  | Read a promise or a context. An API, not a hook: allowed in `if`    | [Concurrent Rendering](../rendering/concurrent-rendering.md#suspense) |
 
 ### Rules of Hooks
 
@@ -51,8 +52,8 @@ Applies to: React 19.
 2. **Only call hooks from React functions**: function components and custom
    hooks. Not from regular functions, class components or event handlers.
 
-- `use` is the exception to the first rule: it can be called in a condition or a
-  loop, but still only inside a component or a hook.
+- `use` is an API, not a hook, so the first rule does not apply to it: it can be
+  called in a condition or a loop, but still only inside a component or a hook.
 - The rules are checked by `eslint-plugin-react-hooks`.
 
 ### Custom Hooks
@@ -134,6 +135,9 @@ export default function ToggleButton() {
 
 ## Follow-up Questions
 
+- What problems did hooks solve? Stateful logic is reused without HOC and
+  render-prop wrappers, a component's logic is split by concern instead of by
+  lifecycle method, and there is no `this`.
 - Why can't hooks be called conditionally? React identifies a hook by its call
   order, not by a name.
 - Do two components that use the same custom hook share state? No. To share
@@ -147,3 +151,10 @@ export default function ToggleButton() {
 - Calling a hook inside a callback, an event handler or `useMemo`.
 - Giving "not in conditions" and "not in loops" as the two rules: that is one
   rule; the second one is about where hooks can be called from.
+
+## See Also
+
+- [Side Effects](./side-effects.md)
+- [Refs](./refs.md)
+- [React Context](./context.md)
+- [Common Patterns](../basics/patterns.md)

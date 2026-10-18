@@ -3,6 +3,7 @@ sidebar_position: 5
 description:
   Event handlers, SyntheticEvent, event delegation on the root and differences
   from DOM events
+tags: [junior, middle]
 ---
 
 # Synthetic Events

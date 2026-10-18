@@ -3,6 +3,7 @@ sidebar_position: 2
 description:
   What makes a component re-render, what does not, why children re-render and
   how to find the cause
+tags: [middle]
 ---
 
 # When Does a Component Re-render?

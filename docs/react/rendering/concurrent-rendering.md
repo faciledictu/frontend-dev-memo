@@ -1,6 +1,7 @@
 ---
 sidebar_position: 3
 description: Transitions, useDeferredValue, Suspense and use
+tags: [middle, senior]
 ---
 
 # Concurrent Rendering
@@ -12,7 +13,7 @@ thread, and rendering is split into chunks with pauses for the browser. It is
 opt-in per update through **transitions** and **`useDeferredValue`**, and
 **`Suspense`** builds on it.
 
-Applies to: React 19.
+Applies to: React 19.3.
 
 ## Details
 
@@ -33,7 +34,8 @@ Applies to: React 19.
   on screen, renders the new one in the background and sets `isPending` to
   `true`.
 - The background render is **interruptible**: a new urgent update or a newer
-  transition makes React drop the unfinished work.
+  transition of the same state makes React drop the unfinished work. Unrelated
+  transitions render independently (React 19.3).
 - React can only yield **between components**. One component with a slow body
   still blocks the thread; a slow tree of many components does not.
 - A transition does not replace already visible content with a `Suspense`
@@ -172,6 +174,9 @@ export default function App() {
 - Why is the commit phase not interruptible? A partially applied update would
   show an inconsistent UI, see
   [Rendering and Reconciliation](./reconciliation.md#render-and-commit).
+- What is `<Activity>`? It hides a subtree but keeps its state and DOM, and can
+  pre-render hidden content at low priority, see
+  [React 19.2](../react-19.md#minor-versions).
 
 ## Common Mistakes
 
@@ -180,6 +185,8 @@ export default function App() {
 - Expecting `Suspense` to show a fallback for a request made in `useEffect`.
 - Creating the promise for `use` inside the same component on every render.
 - Wrapping the update of a controlled input in `startTransition`.
+- In an async Action, setting state after `await` without another
+  `startTransition`: that update is no longer part of the transition.
 
 ## See Also
 

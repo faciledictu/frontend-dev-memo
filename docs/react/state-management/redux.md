@@ -3,6 +3,7 @@ sidebar_position: 3
 description:
   Store, actions and reducers, Redux Toolkit slices, React Redux hooks and
   memoized selectors
+tags: [middle]
 ---
 
 # Redux
@@ -209,6 +210,12 @@ export default function App() {
 
 ## Follow-up Questions
 
+- Why Redux Toolkit instead of plain Redux? It removes the boilerplate of action
+  types and action creators, mutates drafts safely through Immer, and includes
+  thunks, DevTools and serializability checks by default.
+- What is a thunk? A function `(dispatch, getState) => …` dispatched instead of
+  an action; the thunk middleware calls it, so it can run async code and
+  dispatch real actions.
 - Why must reducers be pure and the state immutable? Changes are detected by
   reference comparison, and DevTools can replay actions only if the same input
   always gives the same output.
@@ -226,6 +233,8 @@ export default function App() {
 
 - Mutating the state outside of `createSlice` (in a selector, a component or a
   hand-written reducer).
+- In a `createSlice` reducer, both mutating the draft and returning a new value:
+  Immer throws. Do one or the other.
 - Returning a new object or array from a `useSelector` selector without
   memoization.
 - Selecting the whole state: `useSelector((state) => state)` re-renders on every

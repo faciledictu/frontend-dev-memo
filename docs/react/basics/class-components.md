@@ -2,6 +2,7 @@
 sidebar_position: 9
 description:
   Legacy class components, lifecycle methods and their hook equivalents
+tags: [junior, middle]
 ---
 
 # Class Components and Lifecycle Methods
@@ -11,6 +12,8 @@ method. State is kept in `this.state` and updated with `this.setState()`, and
 **lifecycle methods** are used instead of hooks. It is a **legacy** API: new
 code uses function components. The only common feature that still needs a class
 is an [error boundary](./patterns.md#error-boundaries).
+
+Applies to: React 19.3.
 
 ## Details
 
@@ -79,6 +82,30 @@ export default class Timer extends Component {
   }
 }
 ```
+
+## Follow-up Questions
+
+- Where is data fetched in a class? In `componentDidMount`, not in the
+  constructor: the constructor is part of the render phase and must be pure.
+- Is `this.setState` synchronous? No, updates are batched as with hooks. The
+  second argument is a callback that runs after the update is committed.
+- Why were `componentWillMount` and `componentWillReceiveProps` deprecated? They
+  run in the render phase, which may run several times or be thrown away under
+  [concurrent rendering](../rendering/concurrent-rendering.md); side effects in
+  them were unsafe.
+- `PureComponent` or `Component`? `PureComponent` skips the re-render when props
+  and state are shallowly equal.
+- Are class components removed in React 19? No, they are still supported, but
+  hooks, `use` and Actions are not available in them.
+
+## Common Mistakes
+
+- Mutating `this.state` directly instead of calling `setState`: there is no
+  re-render.
+- Calling `setState` in `render`: an infinite loop.
+- Passing a method as a handler without binding `this`.
+- Copying props into state with `getDerivedStateFromProps` instead of computing
+  the value during render.
 
 ## See Also
 

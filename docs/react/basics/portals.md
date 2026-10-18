@@ -1,6 +1,7 @@
 ---
 sidebar_position: 8
 description: createPortal, event bubbling through portals, modal accessibility
+tags: [middle]
 ---
 
 # Portals
@@ -35,6 +36,7 @@ A portal moves only the DOM nodes. A modal also needs:
 
 The native **`<dialog>`** element with `showModal()` does all of this except the
 label and renders in the browser's top layer, so a portal is often unnecessary.
+Tooltips and menus get the top layer from the **`popover`** attribute.
 
 ## Example
 
@@ -79,6 +81,18 @@ export default function App() {
 - Does a portal break context or event handling? No, both follow the React tree.
 - Where is the content in the DOM? In the target node, usually a sibling of the
   app root in `<body>`.
+- When is a portal not needed? When `<dialog>` with `showModal()` or a `popover`
+  element is enough: both render in the top layer above any `overflow` or
+  `z-index`.
+
+## Common Mistakes
+
+- Expecting a portal to stop event bubbling: events still reach the React
+  parents.
+- Calling `document.getElementById` at module level or during a server render:
+  there is no `document` on the server.
+- Treating the portal as the whole modal: focus management, `Escape` and
+  `aria-modal` are still needed.
 
 ## See Also
 
