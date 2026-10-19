@@ -1,33 +1,24 @@
 # Batch 10: React Native Accessibility and Security
 
-Status: proposed, not approved. The user chose accessibility and security in
-React Native as the batch after batch 9 (see "Later" in
+Status: approved by the user. The user chose accessibility and security in React
+Native as the batch after batch 9 (see "Later" in
 [batch 9](batch-9-react-native.md)). Three new pages in `docs/react-native/`:
 `accessibility`, `authentication`, `security`. Starting point: `main` at
 1cbd2c4. Batch 9 is written in parallel; this batch starts after it is merged,
 and the positions below continue its order.
 
-## Open Questions
+## Decisions
 
-To be answered by the user before writing; the plan follows the recommendation.
+Approved by the user; the plan below follows them.
 
-1. Login and tokens: a separate `authentication.md` or a section of
-   `security.md`? Recommendation: a separate page. "How did you build login in
-   your app?" is asked on its own, and `security.md` stays a page about the
-   threat model.
-2. Accessibility: one page or two (font scaling, reduce motion and other system
-   settings as a separate page)? Recommendation: one page, like
-   `web-platform/accessibility`; split only if it grows past the web page.
-3. WebView: a short section in `security.md` now and a full `webview.md` later
-   (when to use it, `postMessage`, cookies, performance)? Recommendation: yes,
-   `webview.md` goes to "Later".
-4. The sidebar grows to 24 entries without subgroups. Keep it flat, as decided
-   for batch 9, or group it now? Recommendation: keep it flat in this batch;
-   grouping is a separate change, so that two batches do not renumber the same
-   pages at once.
-5. One PR or two: `accessibility` alone, then `authentication` and `security`
-   together? Recommendation: two PRs, so that each review covers one area (see
-   "Review").
+1. Login and tokens get a separate `authentication.md`; `security.md` stays a
+   page about the threat model.
+2. Accessibility is one page, like `web-platform/accessibility`.
+3. WebView: a short section in `security.md` now; a full `webview.md` is in
+   "Later".
+4. The sidebar stays flat in this batch; grouping the React Native section is a
+   separate task in ROADMAP.
+5. Two PRs: `accessibility` first, then `authentication` and `security`.
 
 ## Interview Questions the Section Does Not Answer Yet
 

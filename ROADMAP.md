@@ -303,6 +303,12 @@
       RN 0.88, Expo SDK 58; страницы раздела перенумерованы, ссылки на новые
       страницы добавлены в 11 существующих (в `tanstack-query` — follow-up про
       refetch on focus).
+- [ ] 10. React Native: доступность и безопасность, 3 страницы: `accessibility`,
+      `authentication`, `security` (с разделом про WebView); план —
+      [plans/batch-10-react-native.md](plans/batch-10-react-native.md).
+- [ ] Группировка раздела React Native в подгруппы (после пачки 10 в сайдбаре 24
+      пункта), например UI, устройство, данные, релиз — отдельной правкой, не
+      вместе с пачкой.
 
 Обновление версий: строки `Applies to` сверяются раз в квартал
 (`grep -rh '^Applies to:' docs | sort | uniq -c`). Node.js 26 и PostgreSQL 19 —
