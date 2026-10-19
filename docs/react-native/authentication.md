@@ -50,9 +50,9 @@ which is what PKCE and verified links are for.
 
 - PKCE and the code flow in general: see
   [Authentication and Authorization](../web-platform/network/authentication.md).
-- A **client secret** never goes into the app: it is in the bundle, see
-  [Environment Configuration](./release/env.md). A provider that requires one
-  needs the code exchange on your server.
+- A **client secret** never goes into the app: it would be readable in the
+  bundle, see [Environment Configuration](./release/env.md). A provider that
+  requires one needs the code exchange on your server.
 - OAuth does not work in Expo Go; test it in a development build.
 
 ### Redirect URI
@@ -68,17 +68,18 @@ Setting up schemes and verified links: [Deep Linking](./deep-linking.md).
 ### Native Sign-In
 
 - **Sign in with Apple** (`expo-apple-authentication`): native sheet, no
-  browser. App Store guideline 4.8: an app whose main login is a third-party or
-  social one (Google, Facebook) must also offer an equivalent option that limits
-  data to name and email, lets the user hide the email and does not collect
-  interactions for advertising without consent; Sign in with Apple is the usual
-  one. Not needed when the app has only its own accounts.
+  browser. Guideline 4.8: an app with a third-party login (Google, Facebook)
+  must also offer an option that limits data to name and email, lets the user
+  hide the email and does not track for ads without consent; Sign in with Apple
+  qualifies. Not needed with only your own accounts.
 - **Google** on Android: the native flow is **Credential Manager**; the old
   Google Sign-In for Android SDK is deprecated, and Google no longer accepts
-  custom schemes for Android OAuth clients. Use a wrapper library around the
-  native flow; it needs a development build.
-- The native SDK returns an **ID token**; send it to your server, verify it
-  there and issue your own session.
+  custom schemes for Android OAuth clients. Use a native wrapper
+  (`@react-native-google-signin/google-signin`); it needs a development build.
+- The native SDK returns an **ID token**; send it to your server, verify the
+  signature, `aud` (your client ID) and the `nonce` you sent, and issue your own
+  session. Without these checks a token issued for another app, or a replayed
+  one, logs the attacker in.
 - **Passkeys**: WebAuthn through community libraries (`react-native-passkey`);
   they need the same domain association files as verified links, with their own
   entries (`webcredentials:` on iOS, `get_login_creds` in `assetlinks.json`).
@@ -89,13 +90,13 @@ The refresh-once pattern and rotation are the same as on the web, see
 [Authentication and Authorization](../web-platform/network/authentication.md).
 On mobile:
 
-| Step    | What happens                                                                                      |
-| ------- | ------------------------------------------------------------------------------------------------- |
-| Login   | Code + PKCE → access token, refresh token, ID token                                               |
-| Storage | Access token in memory; refresh token in `expo-secure-store` / `react-native-keychain`            |
-| Launch  | Keep the splash screen, read the refresh token, refresh; then show the app or the login screen    |
-| Refresh | Write the **rotated** refresh token back to the secure store before the old one is used again     |
-| Logout  | Revoke on the server, delete from the secure store, clear caches and state; ignore late refreshes |
+| Step    | What happens                                                                                                                           |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Login   | Code + PKCE → access token, refresh token, ID token                                                                                    |
+| Storage | Access token in memory; refresh token in `expo-secure-store` / `react-native-keychain`                                                 |
+| Launch  | Keep the splash screen (`SplashScreen.preventAutoHideAsync`), read the refresh token, refresh; then show the app or the login screen   |
+| Refresh | One shared refresh for all `401`s; write the **rotated** refresh token back before the old one is used again (reuse revokes the chain) |
+| Logout  | Revoke on the server, delete from the secure store, clear caches and state; ignore late refreshes; end the provider's browser session  |
 
 - Refresh fails with `400` / `401` (expired, revoked): clear the session and
   show the login screen; the navigator switches screens by the session, see
@@ -106,7 +107,7 @@ On mobile:
 
 ### Biometric Login
 
-| Approach                                                           | Against hooking (Frida) on a rooted device                   |
+| Approach                                                           | What an attacker on the device gets                          |
 | ------------------------------------------------------------------ | ------------------------------------------------------------ |
 | `LocalAuthentication.authenticateAsync()` → `if (success) login`   | Hooked to return `success: true`: the check is gone          |
 | Secret in a Keychain / Keystore item with `requireAuthentication`  | The OS releases it only after a real biometric check         |
@@ -121,13 +122,18 @@ On mobile:
   when the user adds a fingerprint or re-enrolls Face ID: handle `null` as "log
   in with the password again".
 - So do not put the refresh token that rotates on every refresh behind it:
-  silent refresh would prompt every time. Protect a separate secret that is read
-  once at launch to restore the session, or use a key pair (the last row).
+  silent refresh would prompt every time. Either the server issues a long-lived,
+  non-rotating credential when the user turns on biometric login, kept behind
+  the prompt and exchanged at launch for tokens that then live **only in
+  memory**; or use a key pair (the last row). A biometric prompt next to a
+  refresh token readable without it protects nothing: the attacker uses the
+  token.
 
 ## Example
 
-A fetch wrapper that keeps the refresh token in the secure store and shares one
-refresh between parallel requests:
+A fetch wrapper for tokens issued by your own backend (with an OIDC provider,
+call its token endpoint through `refreshAsync` instead): the refresh token is in
+the secure store, one refresh is shared by parallel requests.
 
 ```ts title="api.ts"
 import * as SecureStore from 'expo-secure-store';
@@ -136,9 +142,6 @@ const API = 'https://api.example.com';
 let accessToken: string | null = null;
 let refreshing: Promise<string | null> | null = null;
 let session = 0; // bumped on logout, so a late refresh cannot restore it
-
-let onSessionExpired = () => {};
-export const setOnSessionExpired = (cb: () => void) => (onSessionExpired = cb);
 
 async function refreshTokens(): Promise<string | null> {
   const started = session;
@@ -150,8 +153,7 @@ async function refreshTokens(): Promise<string | null> {
     body: JSON.stringify({ refreshToken }),
   });
   if (res.status === 400 || res.status === 401) {
-    await logout(); // revoked or expired: back to the login screen
-    onSessionExpired();
+    await logout(); // revoked or expired: the navigator shows the login screen
     return null;
   }
   if (!res.ok) return null; // 5xx or offline: keep the session, retry later
@@ -185,8 +187,8 @@ export async function apiFetch(path: string, init: RequestInit = {}) {
 export async function logout() {
   session++;
   accessToken = null;
+  // Before deleting: send the refresh token to the revoke endpoint
   await SecureStore.deleteItemAsync('refreshToken');
-  // and revoke the refresh token on the server
 }
 ```
 
@@ -213,8 +215,9 @@ export function LoginButton({
   const discovery = AuthSession.useAutoDiscovery('https://auth.example.com');
   const redirectUri = AuthSession.makeRedirectUri({
     scheme: 'com.example.app',
+    path: 'oauth',
   });
-  const exchanged = useRef(false); // a code can be used only once
+  const exchangedCode = useRef<string>(null); // a code can be used only once
 
   // PKCE is on by default: the request holds the code verifier
   const [request, response, promptAsync] = AuthSession.useAuthRequest(
@@ -227,8 +230,8 @@ export function LoginButton({
     if (response?.type !== 'success' || !discovery || !request?.codeVerifier) {
       return;
     }
-    if (exchanged.current) return;
-    exchanged.current = true;
+    if (exchangedCode.current === response.params.code) return;
+    exchangedCode.current = response.params.code;
     AuthSession.exchangeCodeAsync(
       {
         clientId,
@@ -257,24 +260,25 @@ export function LoginButton({
   MFA and fraud checks, and a phishing app looks the same.
 - Is the implicit flow acceptable for a mobile app? No: RFC 9700 says clients
   should not use it; the token comes in the URL and there is no refresh token.
-- Why does Apple reject an app with only "Sign in with Google"? Guideline 4.8: a
-  third-party login needs an equivalent privacy-focused option next to it.
-- How do you restore the session without a flash of the login screen? Keep the
-  splash screen until the refresh finishes
-  (`SplashScreen.preventAutoHideAsync`).
-- The user reinstalled the app on iOS and is still signed in. Why? Keychain
-  items can survive an uninstall; clear them on the first launch, see
-  [Storage](./storage.md#secrets).
+- Five requests get `401` at once: do you refresh five times? No: one in-flight
+  refresh promise is shared, the others await it and retry. With rotation,
+  parallel refreshes look like token reuse, and the server revokes the session.
+- The user logs out, taps "Sign in" and is in again without a password. Why? The
+  provider's session cookie in the system browser is still alive; a full logout
+  also calls the OIDC `end_session_endpoint` (or sends `prompt=login` next
+  time).
 
 ## Common Mistakes
 
 - Login in a WebView "to keep the user in the app".
-- A client secret in the app; tokens in AsyncStorage or in persisted Redux
-  state.
+- A client secret in the app; tokens in AsyncStorage or in persisted Redux state
+  (readable on a rooted device and in backups).
 - `if ((await authenticateAsync()).success)` as the only check before using a
   stored token.
 - The rotating refresh token behind `requireAuthentication`: a biometric prompt
   on every silent refresh.
+- A biometric prompt in front of a session whose refresh token is also readable
+  without it.
 - Logging the user out on any failed refresh, including a timeout or a `503`.
 - A refresh that finishes after logout and writes the token back.
 

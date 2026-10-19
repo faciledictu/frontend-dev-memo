@@ -28,16 +28,16 @@ Applies to: React Native 0.88, Expo SDK 58, OWASP MASVS 2.1.
 MASVS 2.1 sorts its controls into eight groups; the levels L1 / L2 / R are now
 MAS testing profiles, not part of the standard.
 
-| Group      | What it means in React Native                                          | Where                                                  |
-| ---------- | ---------------------------------------------------------------------- | ------------------------------------------------------ |
-| STORAGE    | Tokens in the secure store, nothing sensitive in AsyncStorage or logs  | [Storage](./storage.md), [below](#sensitive-data)      |
-| CRYPTO     | Platform crypto (`expo-crypto`), keys in the Keystore / Secure Enclave | —                                                      |
-| AUTH       | OAuth with PKCE, refresh, biometrics bound to a key                    | [Authentication](./authentication.md)                  |
-| NETWORK    | HTTPS, no cleartext, pinning where needed                              | [below](#network)                                      |
-| PLATFORM   | Deep links, WebView, permissions, the clipboard                        | [Deep Linking](./deep-linking.md), [WebView](#webview) |
-| CODE       | Updated dependencies, signed OTA updates, input validation             | [OTA Updates](./release/ota.md)                        |
-| RESILIENCE | Obfuscation, root and tampering detection, attestation                 | [below](#device-integrity)                             |
-| PRIVACY    | Least data and permissions, consent, tracking                          | [Permissions](./permissions.md)                        |
+| Group      | What it means in React Native                                                 | Where                                                                               |
+| ---------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| STORAGE    | Tokens in the secure store, nothing sensitive in AsyncStorage or logs         | [Storage](./storage.md), [below](#sensitive-data)                                   |
+| CRYPTO     | Platform crypto (`expo-crypto`), keys in the Keystore / Secure Enclave        | —                                                                                   |
+| AUTH       | OAuth with PKCE, refresh, biometrics bound to a key                           | [Authentication](./authentication.md)                                               |
+| NETWORK    | HTTPS, no cleartext, pinning where needed                                     | [below](#network)                                                                   |
+| PLATFORM   | Deep links, WebView, permissions, the clipboard                               | [Deep Linking](./deep-linking.md), [WebView](#webview)                              |
+| CODE       | Updated dependencies (the supply chain), signed OTA updates, input validation | [OTA Updates](./release/ota.md), [Package Managers](../tooling/package-managers.md) |
+| RESILIENCE | Obfuscation, root and tampering detection, attestation                        | [below](#device-integrity)                                                          |
+| PRIVACY    | Least data and permissions, consent, tracking                                 | [Permissions](./permissions.md)                                                     |
 
 The **OWASP Mobile Top 10** (2024) is the list of risks: M1 improper credential
 usage, M2 supply chain, M3 authentication and authorization, M4 input and output
@@ -79,8 +79,8 @@ misconfiguration, M9 data storage, M10 cryptography.
 - `react-native-ssl-public-key-pinning` pins `fetch` and `XMLHttpRequest` (axios
   too): OkHttp `CertificatePinner` on Android, TrustKit on iOS, which requires
   two hashes. Native SDKs with their own networking are not covered. It needs a
-  development build; in Expo iOS dev builds turn off the network inspector
-  (`expo-build-properties`, `ios.networkInspector: false`).
+  development build (pinning on in an iOS dev build also needs Expo's network
+  inspector off).
 - Android also has `<pin-set>` in `network_security_config.xml`, with an
   `expiration` after which pinning turns off.
 - Pinning breaks debugging proxies (Proxyman, Charles); keep it off in debug
@@ -99,7 +99,11 @@ misconfiguration, M9 data storage, M10 cryptography.
 
 - `@expo/app-integrity` wraps both: on Android `requestIntegrityCheckAsync`
   returns a token that the server decrypts through Google's API; on iOS
-  `attestKeyAsync` and `generateAssertionAsync` sign a server challenge.
+  `attestKeyAsync` and `generateAssertionAsync` sign a challenge. Bind every
+  check to a nonce from the server (`requestHash` on Android), or a verdict
+  obtained once is replayed with any request.
+- Call it at login and before risky actions, not on every request: Play
+  Integrity has daily quotas and adds latency.
 - Decide on the server: block, ask for extra verification, limit features. A
   client check that only shows "Your device is rooted" is removed by patching
   the app.
@@ -112,9 +116,10 @@ misconfiguration, M9 data storage, M10 cryptography.
   screenshots.
 - **App switcher** on iOS: `enableAppSwitcherProtectionAsync` blurs the
   snapshot, see [App Lifecycle](./app-lifecycle.md).
-- **Logs**: `console.log` stays in release builds and goes to the device log;
-  strip it (`babel-plugin-transform-remove-console`) and scrub tokens and
-  personal data from crash reports and analytics (`beforeSend` in Sentry).
+- **Logs**: `console.log` stays in release builds and goes to the device log,
+  readable with `adb logcat` or Console on a connected computer; strip it
+  (`babel-plugin-transform-remove-console`) and scrub tokens and personal data
+  from crash reports and analytics (`beforeSend` in Sentry).
 - **Inputs**: `secureTextEntry` masks passwords (not with `multiline`);
   `autoComplete` lets the password manager fill them.
 - **Clipboard**: the keyboard, the app the user pastes into and clipboard sync
@@ -122,6 +127,9 @@ misconfiguration, M9 data storage, M10 cryptography.
   hides the preview on Android 13+) or do not copy them.
 - **Persisted state**: a persisted Redux or Zustand store is a plain file;
   exclude tokens and form data with personal details.
+- **Backups**: app files can land in an ADB or cloud backup; the React Native
+  template sets `android:allowBackup="false"`, keep it (`android.allowBackup` in
+  Expo's app config) or exclude the sensitive files.
 
 ### WebView
 
@@ -136,19 +144,18 @@ misconfiguration, M9 data storage, M10 cryptography.
 - **No tokens in injected JS**: any script on the page can read what
   `injectedJavaScript` sets, and `injectedJavaScriptObject` is visible to every
   iframe. Pass a short-lived one-time code and let the page exchange it.
-- Keep the defaults: no file access, `mixedContentMode="never"`, debugging off
-  in release. Content from your server still needs a CSP, see
-  [XSS](../web-platform/security/xss.md).
+- Keep the defaults: no file access (a page could read the app's files through
+  `file://`), `mixedContentMode="never"` (an HTTP script injected into an HTTPS
+  page on a hostile network), debugging off in release (anyone with the device
+  and `chrome://inspect` reads the page, its storage and cookies). Content from
+  your server still needs a CSP, see [XSS](../web-platform/security/xss.md).
 - Never do login in a WebView, see
   [Authentication](./authentication.md#why-the-system-browser-not-a-webview).
 
-Dependencies and OTA updates are the supply chain: lock files and audits, see
-[Package Managers](../tooling/package-managers.md); code signing of updates, see
-[OTA Updates](./release/ota.md).
-
 ## Example
 
-SSL pinning with a backup pin, before the first request:
+SSL pinning with a backup pin; await it before the first request and before SDKs
+start, or those requests go unpinned:
 
 ```ts title="pinning.ts"
 import {
@@ -162,7 +169,8 @@ import { reportError } from './monitoring';
 export async function setUpPinning() {
   if (__DEV__) return;
   if (!isSslPinningAvailable()) {
-    reportError(new Error('SSL pinning is not available')); // do not fail silently
+    // Fail open: the app runs unpinned; a banking app would block requests here
+    reportError(new Error('SSL pinning is not available'));
     return;
   }
 
@@ -233,9 +241,10 @@ export function CardDetailsScreen({ cardNumber }: { cardNumber: string }) {
   legitimate, unmodified instance of your app; Play Integrity also gives device
   and install-source verdicts, App Attest is not a jailbreak check. Neither
   proves who the user is.
-- What can go wrong with a WebView bridge? A page you did not expect (a
-  redirect, an ad iframe) calls `postMessage` and triggers native code, or reads
-  a token from injected JS.
+- How do you stop requests that do not come from your app? Fully, you cannot:
+  the API authenticates every request as if any client could call it and
+  rate-limits; attestation with a nonce raises the bar, an "app secret" in the
+  bundle does not.
 
 ## Common Mistakes
 
