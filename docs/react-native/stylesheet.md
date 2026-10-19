@@ -49,6 +49,8 @@ In a style array, later entries override earlier ones; `false`, `null` and
 
 - `useWindowDimensions()` returns `{ width, height, scale, fontScale }` and
   re-renders the component when the window changes (rotation, split screen).
+  `fontScale` is the system font size; layouts must grow with it, see
+  [Accessibility](./accessibility.md#font-scaling).
 - `Dimensions.get('window')` returns the size once. Called at module level, for
   example inside `StyleSheet.create`, it never updates.
 - The window includes the areas under the status bar, the notch and the home

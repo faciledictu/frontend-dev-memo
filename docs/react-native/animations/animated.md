@@ -124,6 +124,9 @@ export function FadeInCard() {
   properties directly, bypassing the shadow tree, while layout properties need a
   Yoga layout pass.
 - How do you animate a color? `interpolate` with color strings in `outputRange`.
+- Does `Animated` respect Reduce Motion? No: check
+  `AccessibilityInfo.isReduceMotionEnabled()` and skip or shorten the animation,
+  see [Accessibility](../accessibility.md#reduce-motion).
 
 ## Common Mistakes
 

@@ -175,7 +175,9 @@ Every move event goes through the JS thread, so the drag lags when JS is busy.
   horizontal move.
 - What is `hitSlop`? On `Pressable` it extends the touch area without changing
   the layout, but not past the parent's bounds; in Gesture Handler it mainly
-  shrinks it: negative values on both platforms, positive only on Android.
+  shrinks it: negative values on both platforms, positive only on Android. For
+  the minimum target size see
+  [Accessibility](../accessibility.md#touch-targets).
 - Why does React Native still have the responder system? Core components such as
   `ScrollView` and `Pressable` use it; Gesture Handler is a third-party library.
 
@@ -191,4 +193,5 @@ Every move event goes through the JS thread, so the drag lags when JS is busy.
 
 - [Core Components](../core-components.md)
 - [Reanimated](./reanimated.md)
+- [Accessibility](../accessibility.md)
 - [Animated API](./animated.md)

@@ -109,6 +109,7 @@
     "logcat",
     "Logpoint",
     "longblob",
+    "longpress",
     "macrotask",
     "macrotasks",
     "MAXBUFFER",

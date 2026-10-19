@@ -79,6 +79,8 @@ from `Pressable` and `Text`.
   same, do not set both), `autoCapitalize="none"` for emails.
 - Focus, the next field and the keyboard covering the input:
   [Keyboard Handling](./keyboard.md).
+- Labels, roles, grouping and font scaling for `Pressable`, `Text` and
+  `TextInput`: [Accessibility](./accessibility.md).
 
 ### `Modal` vs a Navigation Modal
 

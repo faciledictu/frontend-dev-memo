@@ -151,6 +151,9 @@ export function Panel({ open }: { open: boolean }) {
   running gesture or animation callback keeps the old copy; put changing data in
   a shared value.
 - Which Babel plugin is needed? `react-native-worklets/plugin`.
+- Does Reanimated respect Reduce Motion? Yes: animations default to
+  `ReduceMotion.System` and finish at once when the setting is on, see
+  [Accessibility](../accessibility.md#reduce-motion).
 
 ## Common Mistakes
 
