@@ -11,33 +11,38 @@ tags: [middle]
 
 There is no DOM and no semantic HTML: a `View` is just a box, so the **role**,
 **name** and **state** that VoiceOver (iOS) and TalkBack (Android) read come
-from **props**, mapped to the native accessibility APIs. Give every control a
-role and a label (`role`, `accessibilityLabel` or `aria-label`), **group**
-related content into one element, **hide** decorative parts, keep **touch
-targets** large, let **text scale** with the system font size, and respect
-**Reduce Motion**. Many props work on one platform only, so test with both
-screen readers.
+from **props**, mapped to the native accessibility APIs. A `Pressable` is
+focusable but has **no role** until you set one, so give every control a role
+and a label (`role`, `aria-label`), **group** related content into one element,
+**hide** decorative parts, keep **touch targets** large, let **text scale** with
+the system font size, and respect **Reduce Motion**. Many props work on one
+platform only, so test with both screen readers.
 
 Applies to: React Native 0.88, Expo SDK 58, Reanimated 4.
 
 ## Details
 
+WCAG, contrast, the ARIA rules and the laws (the European Accessibility Act also
+covers e-commerce, banking and transport apps) are the same as on the web and
+are not repeated here, see
+[Web Accessibility](../web-platform/accessibility/accessibility.md).
+
 ### Main Props
 
-| Prop                                                                  | `aria-*` form                                         | What it gives                                              | Platform                                        |
-| --------------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------- | ----------------------------------------------- |
-| `accessible`                                                          | —                                                     | Makes the view one focus stop; its children are not        | Both                                            |
-| `accessibilityLabel`                                                  | `aria-label`                                          | The name; without it, the text of the children is read     | Both                                            |
-| `accessibilityHint`                                                   | —                                                     | What happens on activation: "Opens the cart"               | iOS reads it only if hints are on; Android does |
-| `role` / `accessibilityRole`                                          | —                                                     | `button`, `link`, `heading` / `header`, `switch`, `tab`, … | Both; `role` wins if both are set               |
-| `accessibilityState`                                                  | `aria-disabled`, `-selected`, `-checked`, `-expanded` | State; `checked` can be `'mixed'`                          | Both                                            |
-| `accessibilityValue`                                                  | `aria-valuemin`, `-max`, `-now`, `-text`              | Value of a slider or a progress bar                        | Both                                            |
-| `accessibilityLiveRegion`                                             | `aria-live`                                           | Announces content changes                                  | Android only                                    |
-| `accessibilityViewIsModal`                                            | `aria-modal`                                          | Screen reader ignores the sibling views                    | iOS only                                        |
-| `importantForAccessibility`, `accessibilityElementsHidden`            | `aria-hidden` (both platforms)                        | Hide a subtree from the screen reader                      | Android / iOS                                   |
-| `accessibilityLabelledBy`                                             | `aria-labelledby`                                     | Takes the label from another view by `nativeID`            | Android only                                    |
-| `accessibilityActions` + `onAccessibilityAction`                      | —                                                     | Custom actions in the screen reader menu                   | Both                                            |
-| `accessibilityLanguage`, `accessibilityShowsLargeContentViewer`, etc. | —                                                     | Language of the label, large content viewer                | iOS only                                        |
+| Prop                                                       | `aria-*` form                                                  | What it gives                                              | Platform                                                         |
+| ---------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------- |
+| `accessible`                                               | —                                                              | Makes the view one focus stop; its children are not        | Both                                                             |
+| `accessibilityLabel`                                       | `aria-label`                                                   | The name; without it, the text of the children is read     | Both                                                             |
+| `accessibilityHint`                                        | —                                                              | What happens on activation: "Opens the cart"               | iOS: only if hints are on in VoiceOver settings; Android: always |
+| `role` / `accessibilityRole`                               | —                                                              | `button`, `link`, `heading` / `header`, `switch`, `tab`, … | Both; `role` wins if both are set                                |
+| `accessibilityState`                                       | `aria-disabled`, `-selected`, `-checked`, `-expanded`, `-busy` | State; `checked` can be `'mixed'`                          | Both                                                             |
+| `accessibilityValue`                                       | `aria-valuemin`, `-max`, `-now`, `-text`                       | Value of a slider or a progress bar                        | Both                                                             |
+| `accessibilityLiveRegion`                                  | `aria-live`                                                    | Announces content changes                                  | Android only                                                     |
+| `accessibilityViewIsModal`                                 | `aria-modal`                                                   | Screen reader ignores the sibling views                    | iOS only                                                         |
+| `importantForAccessibility`, `accessibilityElementsHidden` | `aria-hidden` (both platforms)                                 | Hide a subtree from the screen reader                      | Android / iOS                                                    |
+| `accessibilityLabelledBy`                                  | `aria-labelledby`                                              | Takes the label from another view by `nativeID`            | Android only                                                     |
+| `accessibilityActions` + `onAccessibilityAction`           | —                                                              | Custom actions in the screen reader menu                   | Both                                                             |
+| `accessibilityLanguage`                                    | —                                                              | Language the label is read in                              | iOS only                                                         |
 
 - Neither the `role` / `aria-*` props nor the `accessibilityRole` /
   `accessibility*` props are deprecated, and the docs do not prefer one. `role`
@@ -46,10 +51,9 @@ Applies to: React Native 0.88, Expo SDK 58, Reanimated 4.
 - `role` values are web-like (`heading`, `img`, `slider`), `accessibilityRole`
   values are the older ones (`header`, `image`, `adjustable`). For navigation
   inside the app use `button`, not `link`.
-- Touchable components (`Pressable`, `Touchable*`, `Button`), `Text` (on Android
-  only when pressable), `TextInput` and `Switch` are accessible by default; a
-  plain `View` is not. A `Pressable` has no role until you set one; `Text` with
-  `onPress` gets the `link` role on its own.
+- `Pressable`, `Touchable*`, `TextInput` and `Switch` are focus stops by
+  default; a plain `View` is not. `Text` with `onPress` gets the `link` role on
+  its own.
 
 ### Grouping and Hiding
 
@@ -63,20 +67,32 @@ Applies to: React Native 0.88, Expo SDK 58, Reanimated 4.
   not group a container that has its own buttons.
 - An icon-only button needs a label and a role, or it is read as just "button"
   or as nothing useful.
-- Decorative images and icons inside a labeled element are already covered; on
-  their own, hide them with `aria-hidden`.
+- Images: an informative one gets `alt`; a decorative one inside a labeled
+  element is already covered, on its own it gets `aria-hidden`.
 - `experimental_accessibilityOrder` (an array of `nativeID`s) sets the focus
   order; it is experimental, and by default the order follows the layout.
 
-### Modals
+### Form Fields
+
+- There is no `<label for>`: put the label on the `TextInput` itself
+  (`aria-label` or `accessibilityLabel`). `aria-labelledby` pointing to a
+  visible `Text` works only on Android.
+- A `placeholder` is not a label: it disappears once the user types.
+- A validation error must be heard, not only seen: announce it, or add it to the
+  field's label or hint while it is shown.
+
+### Modals and Overlays
 
 - `aria-modal` / `accessibilityViewIsModal` makes VoiceOver ignore the
   **siblings** of the view: put the dialog and the content it covers at the same
   level, or the background stays reachable.
 - The `Modal` component is presented as a separate native layer (a view
   controller on iOS, a dialog window on Android), so the screen under it is
-  normally not reachable; check `transparent` modals with VoiceOver. On Android
-  `onRequestClose` must close it on the back button.
+  normally not reachable; check `transparent` modals with VoiceOver.
+- A custom bottom sheet or overlay on Android has no `aria-modal`: hide the
+  background with `aria-hidden`
+  (`importantForAccessibility="no-hide-descendants"`) and move focus into the
+  sheet.
 
 ### Focus and Announcements
 
@@ -87,16 +103,18 @@ Applies to: React Native 0.88, Expo SDK 58, Reanimated 4.
 | Is a screen reader on?                        | `isScreenReaderEnabled()`, `screenReaderChanged` event   | The same                                        |
 | Give more time before a toast or a hint hides | —                                                        | `getRecommendedTimeoutMillis()`                 |
 
-- Live regions do not work on iOS; `announceForAccessibility` works on both, but
-  the Android API behind it is deprecated since Android 16, so a live region is
-  the safer choice there. `announceForAccessibilityWithOptions` with
-  `{ queue: true }` waits for the current speech on iOS. The view that gets
-  focus must be `accessible`.
+- Live regions do not work on iOS: UIKit has no such concept, VoiceOver speaks
+  only when the app posts an announcement, which is what
+  `announceForAccessibility` does. It works on Android too, but the Android API
+  behind it is deprecated since Android 16, so a live region is the safer choice
+  there. `announceForAccessibilityWithOptions` with `{ queue: true }` waits for
+  the current speech on iOS.
 - **After navigation** screen reader focus may stay where it was or land at the
   top, depending on the platform and the navigator. Check with VoiceOver and
   TalkBack; if needed, move it to the screen title in `useFocusEffect` with
-  `sendAccessibilityEvent(titleRef.current, 'focus')`. The deprecated
-  `setAccessibilityFocus` took a node handle.
+  `sendAccessibilityEvent(titleRef.current, 'focus')` (it replaces the
+  deprecated `setAccessibilityFocus`). The view that gets focus must be
+  `accessible`.
 - Swipe-to-delete, drag and drop, long press menus: a screen reader user cannot
   perform the gesture, so add the same actions to `accessibilityActions`
   (`{ name: 'delete', label: 'Delete' }`) and handle them in
@@ -122,10 +140,8 @@ Applies to: React Native 0.88, Expo SDK 58, Reanimated 4.
 
 - Minimum size: **44 × 44 pt** on iOS (Apple HIG), **48 × 48 dp** on Android
   (Material); WCAG 2.2 asks for 24 × 24.
-- A small icon gets a bigger target with `hitSlop` on `Pressable` without
-  changing the layout, but not past the parent's bounds, see
-  [Gestures](./animations/gestures.md). Padding or `minWidth` / `minHeight` work
-  too.
+- A small icon gets a bigger target with `hitSlop` on `Pressable` (see
+  [Gestures](./animations/gestures.md)) or with padding and `minHeight`.
 
 ### Reduce Motion
 
@@ -135,7 +151,8 @@ Applies to: React Native 0.88, Expo SDK 58, Reanimated 4.
   default, so it jumps straight to its final value when the setting is on.
   `useReducedMotion()` reads the setting synchronously but only once, at
   startup; it does not re-render on change. `<ReducedMotionConfig mode={…} />`
-  overrides this for every animation in the app.
+  overrides this for every animation in the app. Keep `ReduceMotion.Never` on
+  animations that carry meaning, such as a progress bar.
 - The core `Animated` API does not check the setting: read it yourself, see
   [Animated](./animations/animated.md).
 
@@ -152,10 +169,6 @@ Applies to: React Native 0.88, Expo SDK 58, Reanimated 4.
   excluded by default. See [Testing](../tooling/testing.md#react-native).
 - `eslint-plugin-react-native-a11y` catches missing labels, but has not had a
   release since 2024.
-
-WCAG, contrast, the ARIA rules and the laws (the European Accessibility Act also
-covers e-commerce, banking and transport apps) are the same as on the web, see
-[Web Accessibility](../web-platform/accessibility/accessibility.md).
 
 ## Example
 
@@ -206,7 +219,7 @@ export function ProductCard({
         onPress={onFavorite}
         role="button"
         aria-label={`Add ${product.name} to favorites`}
-        hitSlop={12}
+        hitSlop={12} // 20 + 2 × 12 = 44 pt
       >
         <Ionicons name="heart-outline" size={20} />
       </Pressable>
@@ -220,7 +233,7 @@ export function ProductCard({
 <summary>An announcement and a custom action</summary>
 
 ```tsx title="CartRow.tsx"
-import { AccessibilityInfo, Platform, Pressable, Text } from 'react-native';
+import { AccessibilityInfo, Pressable, Text } from 'react-native';
 
 export function CartRow({
   title,
@@ -233,10 +246,9 @@ export function CartRow({
 }) {
   function remove() {
     onDelete();
-    // iOS; on Android a live region (aria-live) on the cart counter does it
-    if (Platform.OS === 'ios') {
-      AccessibilityInfo.announceForAccessibility(`${title} removed`);
-    }
+    // Both platforms; on Android a live region on the cart counter
+    // (aria-live="polite") is the alternative to the deprecated API
+    AccessibilityInfo.announceForAccessibility(`${title} removed`);
   }
 
   return (
@@ -269,16 +281,14 @@ export function CartRow({
   `now`, and the `increment` / `decrement` actions, which VoiceOver triggers
   with a swipe up or down.
 - What is Magic Tap? A two-finger double tap in VoiceOver for the main action of
-  the screen (play / pause, answer a call); handle it with `onMagicTap`.
-- A screen reader user cannot reach a button inside a card. Why? The card has
-  `accessible` (or is a `Pressable`), which makes the whole card one element for
-  VoiceOver; move the button out or give the card an action.
+  the screen (play / pause, answer a call); handle it as the `magicTap` action
+  in `accessibilityActions` (or with the older `onMagicTap` prop).
+- `accessible={false}` or `aria-hidden`: what is the difference? The first only
+  stops the view from being a focus stop, its children are still read; the
+  second hides the whole subtree.
 - How do you know a screen reader is on, and should the UI change? Use
   `isScreenReaderEnabled()`; change only what cannot work otherwise, such as
   auto-hiding controls or a carousel that advances on its own.
-- How does the accessibility tree differ from the web? There is no DOM: the
-  native views with their accessibility properties form it, and `accessible` /
-  grouping decide which views are elements.
 
 ## Common Mistakes
 
@@ -288,6 +298,9 @@ export function CartRow({
 - Fixed heights and `allowFontScaling={false}` everywhere to keep the design.
 - Testing only on the iOS Simulator: TalkBack and VoiceOver differ, and many
   props are one-platform only.
+- `aria-live` or `aria-labelledby` used and tested only on Android: they do
+  nothing on iOS.
+- `accessible` on a card that has its own buttons: VoiceOver cannot reach them.
 - Gestures without an alternative: swipe actions, drag to reorder.
 - Using `link` for in-app navigation, or roles without the matching state
   (`switch` without `checked`, a tab without `selected`).
