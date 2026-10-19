@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 10
 description:
   React Navigation vs Expo Router, stack / tabs / drawer, screens that stay
   mounted, navigate vs push vs popTo, typed params, auth flow

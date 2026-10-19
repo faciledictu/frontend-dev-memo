@@ -1,5 +1,5 @@
 ---
-sidebar_position: 15
+sidebar_position: 16
 description:
   How push notifications work, device tokens, notification vs data messages,
   foreground / background / quit behavior, APNs keys, libraries

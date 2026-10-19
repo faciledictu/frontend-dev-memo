@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 9
 description:
   ScrollView vs FlatList vs SectionList vs FlashList, virtualization, FlatList
   optimization props

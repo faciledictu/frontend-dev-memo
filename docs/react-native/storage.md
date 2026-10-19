@@ -1,5 +1,5 @@
 ---
-sidebar_position: 17
+sidebar_position: 18
 description:
   AsyncStorage, MMKV, SecureStore and SQLite, where each kind of data goes on
   the device, tokens in Keychain / Keystore, persisting app state

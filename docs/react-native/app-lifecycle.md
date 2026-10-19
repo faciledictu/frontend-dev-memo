@@ -1,5 +1,5 @@
 ---
-sidebar_position: 16
+sidebar_position: 17
 description:
   AppState states and events, refresh on return, hiding content in the app
   switcher, why JS stops in the background, expo-background-task, Headless JS,

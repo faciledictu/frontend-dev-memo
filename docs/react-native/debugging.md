@@ -1,5 +1,5 @@
 ---
-sidebar_position: 20
+sidebar_position: 21
 description:
   React Native DevTools and its panels, LogBox, native logs from Xcode and
   logcat, crash reporting in production with source maps
