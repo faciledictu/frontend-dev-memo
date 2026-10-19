@@ -208,3 +208,4 @@ declare function syncOutbox(): Promise<void>;
 - [Push Notifications](./notifications.md)
 - [Permissions](./permissions.md)
 - [Offline Support](./offline.md)
+- [Mobile App Security](./security.md)

@@ -67,7 +67,9 @@ frontend) pattern a server proxy keeps the OAuth tokens and gives the SPA an
   **authentication**: an ID token (a JWT) that says who the user is. "Sign in
   with Google" is OIDC.
 - Browser and mobile applications use the **Authorization Code flow with PKCE**.
-  The implicit flow is deprecated.
+  The implicit flow is deprecated. Mobile specifics (the system browser, the
+  redirect URI, token refresh):
+  [Authentication in React Native](../../react-native/authentication.md).
 
 ### Authorization
 
@@ -149,3 +151,4 @@ async function apiFetch(url, options) {
 - [CORS and the Same-Origin Policy](./cors.md)
 - [XSS](../security/xss.md)
 - [CSRF](../security/csrf.md)
+- [Authentication in React Native](../../react-native/authentication.md)

@@ -97,3 +97,4 @@ eas update --channel production --message "Fix crash on checkout"
 
 - [Publishing and Distribution](./distribution.md)
 - [Environment Configuration and Secrets](./env.md)
+- [Mobile App Security](../security.md)

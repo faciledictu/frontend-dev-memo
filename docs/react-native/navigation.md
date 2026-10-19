@@ -90,6 +90,8 @@ ID, not a whole object.
   `redirectTo` (SDK 58) names where a denied navigation goes (by default, the
   first available screen). It is a client-side check: the API still verifies the
   token.
+- The session itself (login, tokens, restoring it on launch) is in
+  [Authentication](./authentication.md).
 
 ### Expo Router Files
 
