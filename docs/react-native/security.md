@@ -25,8 +25,8 @@ Applies to: React Native 0.88, Expo SDK 58, OWASP MASVS 2.1.
 
 ### MASVS in React Native
 
-MASVS 2.1 groups the requirements; the levels L1 / L2 / R are now MAS testing
-profiles, not part of the standard.
+MASVS 2.1 sorts its controls into eight groups; the levels L1 / L2 / R are now
+MAS testing profiles, not part of the standard.
 
 | Group      | What it means in React Native                                          | Where                                                  |
 | ---------- | ---------------------------------------------------------------------- | ------------------------------------------------------ |
@@ -49,10 +49,10 @@ misconfiguration, M9 data storage, M10 cryptography.
 - The JS bundle is a file inside the APK / IPA. With Hermes it is bytecode, and
   decompilers (`hermes-dec`, listed in the OWASP MASTG) turn it back into
   readable code: strings, endpoints, feature flags and the logic are visible.
-- Obfuscation and Hermes only slow the attacker down; they are not protection.
-- Any key in the app is public: `EXPO_PUBLIC_*` and `react-native-config` values
-  are in the bundle. Secret keys stay on a server that calls the third-party API
-  for the app, see [Environment Configuration](./release/env.md).
+- Obfuscation and Hermes only slow the attacker down; they are not a security
+  boundary.
+- So any key in the app is public, see
+  [Environment Configuration](./release/env.md).
 - Client checks ("the button is hidden for non-premium users") are only UX: the
   API must check the same rule.
 
@@ -61,33 +61,34 @@ misconfiguration, M9 data storage, M10 cryptography.
 - **iOS**: App Transport Security blocks plain HTTP by default;
   `NSAllowsArbitraryLoads` needs a justification in App Review. The React Native
   template allows only local networking, for Metro.
-- **Android**: cleartext is off by default since Android 9 (API 28). The React
+- **Android**: cleartext is off by default for apps targeting API 28+. The React
   Native Gradle plugin sets `usesCleartextTraffic` to `true` only in debug
   builds, for Metro. A release that talks to `http://` fails.
-- **SSL pinning**: the app accepts only certificates with a known public key, so
-  a proxy with a user-installed CA (or a compromised CA) cannot read the
-  traffic. HTTPS alone trusts every CA the device trusts.
+- **SSL pinning**: the app accepts only certificates with a known public key.
+  HTTPS alone trusts every CA the system trusts: pinning protects against a
+  compromised or mis-issued public CA and, on iOS, against a CA profile the user
+  installed (Android apps ignore user-added CAs since API 24).
 
-| Pinning rule                            | Why                                                                      |
-| --------------------------------------- | ------------------------------------------------------------------------ |
-| Pin the **public key** (SPKI SHA-256)   | Survives a certificate renewal with the same key                         |
-| At least **two pins**: current + backup | A key rotation or a lost key does not brick every installed version      |
-| An expiration date or a kill switch     | An old app that cannot be updated still works when the pins are outdated |
-| Only your own API domains               | Third-party SDK hosts rotate keys without telling you                    |
+| Pinning rule                            | Why                                                                                                                 |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Pin the **public key** (SPKI SHA-256)   | Survives a certificate renewal with the same key                                                                    |
+| At least **two pins**: current + backup | A key rotation or a lost key does not brick every installed version                                                 |
+| An expiration date or a kill switch     | An old app still works when the pins are outdated; but after expiry pinning is off, so pair it with a forced update |
+| Only your own API domains               | Third-party SDK hosts rotate keys without telling you                                                               |
 
 - `react-native-ssl-public-key-pinning` pins `fetch` and `XMLHttpRequest` (axios
   too): OkHttp `CertificatePinner` on Android, TrustKit on iOS, which requires
   two hashes. Native SDKs with their own networking are not covered. It needs a
-  development build; in Expo dev builds turn off the network inspector
+  development build; in Expo iOS dev builds turn off the network inspector
   (`expo-build-properties`, `ios.networkInspector: false`).
 - Android also has `<pin-set>` in `network_security_config.xml`, with an
   `expiration` after which pinning turns off.
 - Pinning breaks debugging proxies (Proxyman, Charles); keep it off in debug
   builds, see [Debugging](./debugging.md).
 - Worth it for banking, health and payments; for most apps HTTPS with the system
-  defaults is enough, and a wrong pin is an outage. Pinning is also bypassed
-  with Frida on a rooted device, so it protects the user on a hostile network,
-  not the API from the device owner.
+  defaults is enough, and a wrong pin is an outage. Pinning is also easy to
+  bypass with Frida on a rooted device, so it protects the user on a hostile
+  network, not the API from the device owner.
 
 ### Device Integrity
 
@@ -116,14 +117,15 @@ misconfiguration, M9 data storage, M10 cryptography.
   personal data from crash reports and analytics (`beforeSend` in Sentry).
 - **Inputs**: `secureTextEntry` masks passwords (not with `multiline`);
   `autoComplete` lets the password manager fill them.
-- **Clipboard**: other apps can read it; mark copied secrets as sensitive
-  (`expo-clipboard` `isSensitive` on Android) or do not copy them.
+- **Clipboard**: the keyboard, the app the user pastes into and clipboard sync
+  can see it; mark copied secrets as sensitive (`expo-clipboard` `isSensitive`
+  hides the preview on Android 13+) or do not copy them.
 - **Persisted state**: a persisted Redux or Zustand store is a plain file;
   exclude tokens and form data with personal details.
 
 ### WebView
 
-`react-native-webview` is a browser inside the app, and a bridge to it:
+`react-native-webview` is a browser inside the app, and a bridge to native code:
 
 - **Allow only your origins**: `originWhitelist` (by default any `http` and
   `https` page) and `onShouldStartLoadWithRequest` to open other URLs in the
@@ -131,9 +133,9 @@ misconfiguration, M9 data storage, M10 cryptography.
 - **Check `onMessage`**: any page loaded in the WebView, including an iframe or
   a redirect, can call `postMessage`; check the origin of
   `event.nativeEvent.url` and validate the data before acting on it.
-- **No tokens in injected JS** (`injectedJavaScript`,
-  `injectedJavaScriptObject`): every frame of the page can read them. Pass a
-  short-lived one-time code and let the page exchange it.
+- **No tokens in injected JS**: any script on the page can read what
+  `injectedJavaScript` sets, and `injectedJavaScriptObject` is visible to every
+  iframe. Pass a short-lived one-time code and let the page exchange it.
 - Keep the defaults: no file access, `mixedContentMode="never"`, debugging off
   in release. Content from your server still needs a CSP, see
   [XSS](../web-platform/security/xss.md).
@@ -154,9 +156,15 @@ import {
   initializeSslPinning,
   isSslPinningAvailable,
 } from 'react-native-ssl-public-key-pinning';
+import { reportError } from './monitoring';
 
+// Off in debug so that proxies work; test it in a preview or release build
 export async function setUpPinning() {
-  if (__DEV__ || !isSslPinningAvailable()) return; // proxies work in debug
+  if (__DEV__) return;
+  if (!isSslPinningAvailable()) {
+    reportError(new Error('SSL pinning is not available')); // do not fail silently
+    return;
+  }
 
   await initializeSslPinning({
     'api.example.com': {
@@ -166,13 +174,14 @@ export async function setUpPinning() {
         // highlight-next-line
         'hxqRlPTu1bMS/0DITB1SSu0vd4u/8l8TjPgfaAp63Gc=', // backup key, not yet in use
       ],
-      expirationDate: '2027-12-31', // after this, the app falls back to HTTPS only
+      // After this date pinning is off: ship new pins or force an update before
+      expirationDate: '2027-12-31',
     },
   });
 
   addSslPinningErrorListener((error) => {
-    // report the host to monitoring: a spike means a rotation or an attack
-    console.warn('Pinning failed for', error.serverHostname);
+    // A spike means a key rotation or an attack
+    reportError(new Error(`Pinning failed for ${error.serverHostname}`));
   });
 }
 ```
@@ -207,30 +216,31 @@ export function CardDetailsScreen({ cardNumber }: { cardNumber: string }) {
 
 ## Follow-up Questions
 
-- Is Hermes bytecode a protection? No: it is decompiled; treat everything in the
-  bundle as public.
-- HTTPS already encrypts the traffic; why pin? HTTPS trusts every CA on the
-  device, including one the user or an MDM installed; pinning trusts only your
-  key. It does not stop the device owner.
+- What is the difference between MASVS and the Mobile Top 10? MASVS is a
+  standard of controls to build and test against; the Top 10 is an awareness
+  list of the most common risks.
+- A secret API key has already shipped in the app. What do you do? Treat it as
+  leaked: rotate it, move the calls behind your server, and force an update for
+  the versions that still use the old key.
+- How do you check that pinning works? Run a release or preview build through a
+  proxy (Proxyman, Charles) with its CA trusted: the requests must fail and the
+  error listener must fire. Android ignores user CAs anyway, so there install
+  the proxy CA as a system one on an emulator.
 - The certificate was rotated and the app stopped working. What went wrong? The
   app pinned the certificate or a single key without a backup; pin the public
   key, ship a backup pin and an expiration.
-- Why is client-side root detection not enough? The attacker controls the code
-  that runs the check and patches it out; only a verdict signed by Google or
-  Apple and checked on the server can be trusted.
-- What do Play Integrity and App Attest prove? That the request comes from your
-  unmodified app on a genuine device (Play Integrity also reports the device and
-  the install source); they do not prove who the user is.
-- How do you hide a card number from the app switcher? iOS:
-  `enableAppSwitcherProtectionAsync` or an overlay on `inactive`; Android:
-  `FLAG_SECURE`.
+- What do Play Integrity and App Attest prove? That the request comes from a
+  legitimate, unmodified instance of your app; Play Integrity also gives device
+  and install-source verdicts, App Attest is not a jailbreak check. Neither
+  proves who the user is.
 - What can go wrong with a WebView bridge? A page you did not expect (a
   redirect, an ad iframe) calls `postMessage` and triggers native code, or reads
   a token from injected JS.
 
 ## Common Mistakes
 
-- An API key "hidden" in the bundle or in an env variable.
+- An API key "hidden" in the bundle or in an env variable, see
+  [Environment Configuration](./release/env.md).
 - A single pin without a backup, or pinning a third-party SDK's domain.
 - Root detection on the device as the only protection; or blocking rooted
   devices for an app that has nothing to protect.
