@@ -8,37 +8,47 @@ Native на настоящих устройствах: клавиатура, Voi
 Expo SDK 58, React Native 0.88, React Navigation 7. Development build, не Expo
 Go: в приложении есть нативные библиотеки (`react-native-keyboard-controller`).
 
-## Первая сборка
+## Сборка
 
-Нужны Node 22+, pnpm (через `corepack enable`) и аккаунт Expo. Команды — из
-папки `lab/`.
+Локально через Expo CLI, команды — из папки `lab/`. Нужны Node 22+ и pnpm (через
+`corepack enable`).
 
 ```sh
 pnpm install
-npx eas-cli@latest login
-npx eas-cli@latest init   # создаёт проект в EAS и пишет projectId в app.json — закоммитить
 ```
 
-iOS: зарегистрировать iPhone для internal distribution (один раз на устройство):
+Папки `android/` и `ios/` генерирует `expo run` (prebuild), в git их нет; после
+изменения `app.json` или новой нативной библиотеки —
+`npx expo prebuild --clean`.
+
+### Android
+
+Нужны Android Studio (Android SDK) и JDK 17. На телефоне включить отладку по USB
+(Developer options → USB debugging) и подключить его кабелем.
 
 ```sh
-npx eas-cli@latest device:create
+pnpm android --device   # выбрать телефон из списка; собирает, ставит и запускает
 ```
 
-Сборка в облаке EAS, Xcode и Android Studio не нужны:
+### iOS
+
+Нужен Mac с Xcode. На iPhone включить Developer Mode (Settings → Privacy &
+Security → Developer Mode) и подключить его кабелем.
+
+Подпись: добавить в `app.json` в `expo.ios` свой Team ID —
+`"appleTeamId": "XXXXXXXXXX"` (developer.apple.com → Membership); иначе один раз
+выбрать команду в Xcode: `ios/MemoLab.xcworkspace` → Signing & Capabilities.
 
 ```sh
-npx eas-cli@latest build --profile development --platform all
+pnpm ios --device       # выбрать iPhone из списка
 ```
-
-Когда сборка готова, EAS даёт ссылку и QR-код для установки: на Android это APK,
-на iOS — установка по ссылке (если iOS попросит, включить Developer Mode:
-Settings → Privacy & Security → Developer Mode).
 
 Bundle ID и package — `dev.faciledictu.memolab` (в `app.json`), можно поменять
 до первой сборки.
 
-## Каждый раз
+### Каждый раз
+
+После первой сборки приложение остаётся на телефоне. Чтобы работать с ним:
 
 ```sh
 pnpm start
@@ -46,9 +56,18 @@ pnpm start
 
 Открыть Memo Lab на телефоне: он подключится к серверу на компьютере (одна сеть
 Wi-Fi; если не видит — `pnpm start --tunnel`). Изменения в JS приходят без
-пересборки; новая нативная библиотека — новая сборка.
+пересборки; новая нативная библиотека — снова `pnpm android --device` /
+`pnpm ios --device`.
 
-Без EAS, локально: `pnpm android` (Android Studio) или `pnpm ios` (Xcode).
+Release-сборка без сервера (JS внутри приложения), например чтобы проверить
+поведение как у пользователя: `pnpm android --device --variant release`,
+`pnpm ios --device --configuration Release`.
+
+### Через EAS, если понадобится
+
+Облачная сборка без Android Studio и Xcode: профили в `eas.json`,
+`npx eas-cli@latest init`, `device:create` для iPhone, затем
+`npx eas-cli@latest build --profile development --platform all`.
 
 ## Как проверять
 
