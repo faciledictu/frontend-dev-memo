@@ -10,10 +10,12 @@ Go: в приложении есть нативные библиотеки (`rea
 
 ## Сборка
 
-Локально через Expo CLI, команды — из папки `lab/`. Нужны Node 22+ и pnpm (через
-`corepack enable`).
+Локально через Expo CLI, все команды — из папки `lab/`: в корне репозитория
+`pnpm android` запускает не скрипт, а Android CLI от Google, если он установлен.
+Нужны Node 22+ и pnpm (через `corepack enable`).
 
 ```sh
+cd lab
 pnpm install
 ```
 
@@ -27,7 +29,7 @@ pnpm install
 (Developer options → USB debugging) и подключить его кабелем.
 
 ```sh
-pnpm android --device   # выбрать телефон из списка; собирает, ставит и запускает
+npx expo run:android --device   # выбрать телефон из списка; собирает, ставит и запускает
 ```
 
 ### iOS
@@ -40,7 +42,7 @@ Security → Developer Mode) и подключить его кабелем.
 выбрать команду в Xcode: `ios/MemoLab.xcworkspace` → Signing & Capabilities.
 
 ```sh
-pnpm ios --device       # выбрать iPhone из списка
+npx expo run:ios --device       # выбрать iPhone из списка
 ```
 
 Bundle ID и package — `dev.faciledictu.memolab` (в `app.json`), можно поменять
@@ -56,12 +58,12 @@ pnpm start
 
 Открыть Memo Lab на телефоне: он подключится к серверу на компьютере (одна сеть
 Wi-Fi; если не видит — `pnpm start --tunnel`). Изменения в JS приходят без
-пересборки; новая нативная библиотека — снова `pnpm android --device` /
-`pnpm ios --device`.
+пересборки; новая нативная библиотека — снова `npx expo run:android --device` /
+`npx expo run:ios --device`.
 
 Release-сборка без сервера (JS внутри приложения), например чтобы проверить
-поведение как у пользователя: `pnpm android --device --variant release`,
-`pnpm ios --device --configuration Release`.
+поведение как у пользователя: `npx expo run:android --device --variant release`,
+`npx expo run:ios --device --configuration Release`.
 
 ### Через EAS, если понадобится
 
