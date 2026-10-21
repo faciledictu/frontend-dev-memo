@@ -13,6 +13,7 @@ export function AnnouncementsTest() {
   const [textAriaLive, setTextAriaLive] = useState(0);
   const [textLiveRegion, setTextLiveRegion] = useState(0);
   const [viewAriaLive, setViewAriaLive] = useState(0);
+  const [viewNotCollapsable, setViewNotCollapsable] = useState(0);
   const [cart, setCart] = useState(['Mug', 'Teapot']);
   const [lastActivated, setLastActivated] = useState('nothing');
 
@@ -85,6 +86,10 @@ export function AnnouncementsTest() {
           title="C: View aria-live"
           onPress={() => setViewAriaLive((value) => value + 1)}
         />
+        <Button
+          title="D: View aria-live, collapsable false"
+          onPress={() => setViewNotCollapsable((value) => value + 1)}
+        />
       </View>
       <Text aria-live="polite" style={styles.text}>
         Cart A: {textAriaLive} items
@@ -94,6 +99,11 @@ export function AnnouncementsTest() {
       </Text>
       <View aria-live="polite">
         <Text style={styles.text}>Cart C: {viewAriaLive} items</Text>
+      </View>
+      {/* Without collapsable={false} Fabric may flatten a View that has no
+          style, and the live region goes with it */}
+      <View aria-live="polite" collapsable={false}>
+        <Text style={styles.text}>Cart D: {viewNotCollapsable} items</Text>
       </View>
 
       <Text role="heading" style={styles.sectionTitle}>
