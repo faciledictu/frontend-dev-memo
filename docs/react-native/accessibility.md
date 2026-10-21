@@ -47,16 +47,28 @@ are not repeated here, see
 - Neither the `role` / `aria-*` props nor the `accessibilityRole` /
   `accessibility*` props are deprecated, and the docs do not prefer one. `role`
   and `aria-*` look like the web, but `aria-live` and `aria-labelledby` still
-  work only on Android and `aria-modal` only on iOS. Not every component maps
-  every `aria-*` prop: in 0.88 `View` drops `aria-modal` and `Text` drops
-  `aria-live`, so for these two use `accessibilityViewIsModal` and
-  `accessibilityLiveRegion`.
+  work only on Android and `aria-modal` only on iOS. For a modal view and a live
+  region use the `accessibility*` form, see the note below.
 - `role` values are web-like (`heading`, `img`, `slider`), `accessibilityRole`
   values are the older ones (`header`, `image`, `adjustable`). For navigation
   inside the app use `button`, not `link`.
 - `Pressable`, `Touchable*`, `TextInput` and `Switch` are focus stops by
   default; a plain `View` is not. `Text` with `onPress` gets the `link` role on
   its own.
+
+:::note[Differs from the official docs]
+
+The `View` docs list `aria-modal` as a prop that takes precedence over
+`accessibilityViewIsModal`, but in the 0.88 source `View` does not pass it to
+the native view. The author's test with
+[Memo Lab](https://github.com/faciledictu/frontend-dev-memo/tree/main/lab) on
+iOS 27 confirmed it: with `aria-modal` VoiceOver still reached the background,
+with `accessibilityViewIsModal` it did not. On Android 16 a `Text` with
+`aria-live` stayed silent and the same `Text` with `accessibilityLiveRegion`
+worked; a `View` with `aria-live` was silent until it got `collapsable={false}`,
+because Fabric removes a `View` that has no style.
+
+:::
 
 ### Grouping and Hiding
 
@@ -66,8 +78,8 @@ are not repeated here, see
   separate stops, and an image without `alt` is skipped.
 - `accessible` on a container does the same for non-pressable content, for
   example a row "Rating 4.5, 120 reviews". On iOS, VoiceOver cannot focus the
-  children of such an element (TalkBack may still reach nested buttons), so do
-  not group a container that has its own buttons.
+  children of such an element (TalkBack still reaches nested buttons), so do not
+  group a container that has its own buttons.
 - An icon-only button needs a label and a role, or it is read as just "button"
   or as nothing useful.
 - Images: an informative one gets `alt`; a decorative one inside a labeled
