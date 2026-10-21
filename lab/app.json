@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Memo Lab",
+    "slug": "memo-lab",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "ios": {
+      "bundleIdentifier": "dev.faciledictu.memolab",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "dev.faciledictu.memolab",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": ["expo-dev-client"]
+  }
+}

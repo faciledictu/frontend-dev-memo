@@ -3,5 +3,7 @@
   "extends": "@docusaurus/tsconfig",
   "compilerOptions": {
     "baseUrl": "."
-  }
+  },
+  // lab/ is a separate Expo project with its own tsconfig
+  "exclude": ["node_modules", "lab"]
 }
