@@ -12,6 +12,7 @@ import { Button, styles } from '../ui';
 export function AnnouncementsTest() {
   const [count, setCount] = useState(0);
   const [cart, setCart] = useState(['Mug', 'Teapot']);
+  const [lastActivated, setLastActivated] = useState('nothing');
 
   function remove(title: string) {
     setCart((items) => items.filter((item) => item !== title));
@@ -69,7 +70,8 @@ export function AnnouncementsTest() {
         <Pressable
           key={title}
           role="button"
-          onPress={() => {}}
+          // Activating the row only shows it here: removing is the custom action
+          onPress={() => setLastActivated(title)}
           accessibilityActions={[{ name: 'delete', label: 'Remove from cart' }]}
           onAccessibilityAction={(event) => {
             if (event.nativeEvent.actionName === 'delete') remove(title);
@@ -79,6 +81,7 @@ export function AnnouncementsTest() {
           <Text style={styles.text}>{title}</Text>
         </Pressable>
       ))}
+      <Text style={styles.muted}>Last activated: {lastActivated}</Text>
       <Button
         title="Reset the cart"
         onPress={() => setCart(['Mug', 'Teapot'])}

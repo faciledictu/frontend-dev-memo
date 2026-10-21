@@ -15,6 +15,7 @@ type Variant =
   | 'modal-transparent'
   | 'overlay'
   | 'overlay-aria-modal'
+  | 'overlay-view-is-modal'
   | 'overlay-hide-background';
 
 const variants: { value: Variant; title: string }[] = [
@@ -22,6 +23,10 @@ const variants: { value: Variant; title: string }[] = [
   { value: 'modal-transparent', title: 'Modal, transparent' },
   { value: 'overlay', title: 'Overlay, no hiding' },
   { value: 'overlay-aria-modal', title: 'Overlay, aria-modal' },
+  {
+    value: 'overlay-view-is-modal',
+    title: 'Overlay, accessibilityViewIsModal',
+  },
   {
     value: 'overlay-hide-background',
     title: 'Overlay, background aria-hidden',
@@ -71,6 +76,8 @@ export function ModalTest() {
         <View
           style={[StyleSheet.absoluteFill, local.backdrop]}
           aria-modal={open === 'overlay-aria-modal'}
+          // In React Native 0.88 View does not map aria-modal to this prop
+          accessibilityViewIsModal={open === 'overlay-view-is-modal'}
         >
           <Dialog title={title} moveFocus onClose={() => setOpen(null)} />
         </View>

@@ -63,13 +63,14 @@ export const cases: Case[] = [
     steps: [
       'Open the test. Each button opens a dialog with a Close button over a screen with three "Background item" buttons.',
       'In each dialog, swipe right through all elements, then try touching where a background item is (touch exploration).',
-      'Variants: Modal; Modal with transparent; custom overlay with no hiding; custom overlay with aria-modal; custom overlay with the background aria-hidden.',
+      'Variants: Modal; Modal with transparent; custom overlay with no hiding; custom overlay with aria-modal; custom overlay with accessibilityViewIsModal; custom overlay with the background aria-hidden.',
     ],
     expected: [
       'Modal: the background is not reachable on either platform.',
       'Modal transparent: the page says "check with VoiceOver", no claim.',
       'Custom overlay with no hiding: the background is reachable on both platforms.',
       'Custom overlay with aria-modal: iOS ignores the siblings of the overlay; Android ignores aria-modal, the background stays reachable.',
+      'Custom overlay with accessibilityViewIsModal: the same as aria-modal (the page treats them as one prop).',
       'Custom overlay with the background aria-hidden: the background is hidden on both platforms.',
     ],
     record: [
