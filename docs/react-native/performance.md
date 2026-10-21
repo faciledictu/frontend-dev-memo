@@ -1,5 +1,5 @@
 ---
-sidebar_position: 19
+sidebar_position: 22
 description:
   Why a React Native app lags, the frame budget of the JS and UI threads,
   measuring in release builds, common causes and fixes, startup time

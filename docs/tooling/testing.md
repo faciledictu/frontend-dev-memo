@@ -94,12 +94,12 @@ under test: the more is mocked, the less the test proves.
 
 ### React Native
 
-| Layer     | Tools                                                                          |
-| --------- | ------------------------------------------------------------------------------ |
-| Static    | TypeScript, ESLint (both in the default template)                              |
-| Unit      | Jest (in the React Native template; added with the `jest-expo` preset in Expo) |
-| Component | React Native Testing Library: renders without a device, user-centric queries   |
-| E2E       | Maestro (YAML flows) or Detox (gray-box, JS tests) on emulators or devices     |
+| Layer     | Tools                                                                                                                                                     |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Static    | TypeScript, ESLint (both in the default template)                                                                                                         |
+| Unit      | Jest (in the React Native template; added with the `jest-expo` preset in Expo)                                                                            |
+| Component | React Native Testing Library: renders without a device, user-centric queries (`getByRole`, see [Accessibility](../react-native/accessibility.md#testing)) |
+| E2E       | Maestro (YAML flows) or Detox (gray-box, JS tests) on emulators or devices                                                                                |
 
 ## Example
 

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 18
+sidebar_position: 19
 description:
   NetInfo and expo-network, isConnected vs isInternetReachable, cached reads,
   queued writes, offline-first, TanStack Query onlineManager and focusManager,

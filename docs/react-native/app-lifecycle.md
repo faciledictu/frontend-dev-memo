@@ -1,5 +1,5 @@
 ---
-sidebar_position: 16
+sidebar_position: 17
 description:
   AppState states and events, refresh on return, hiding content in the app
   switcher, why JS stops in the background, expo-background-task, Headless JS,
@@ -208,3 +208,4 @@ declare function syncOutbox(): Promise<void>;
 - [Push Notifications](./notifications.md)
 - [Permissions](./permissions.md)
 - [Offline Support](./offline.md)
+- [Mobile App Security](./security.md)

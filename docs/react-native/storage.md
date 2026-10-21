@@ -1,5 +1,5 @@
 ---
-sidebar_position: 17
+sidebar_position: 18
 description:
   AsyncStorage, MMKV, SecureStore and SQLite, where each kind of data goes on
   the device, tokens in Keychain / Keystore, persisting app state
@@ -44,7 +44,8 @@ Applies to: React Native 0.88, Expo SDK 58.
   value is encrypted with a key held in the **Keystore** (hardware-backed where
   available).
 - `requireAuthentication` asks for Face ID / fingerprint before reading; such a
-  value becomes unreadable when the biometrics change.
+  value becomes unreadable when the biometrics change. Using it for biometric
+  login: [Authentication](./authentication.md#biometric-login).
 - Keep values small (a token, not a profile): some iOS versions rejected values
   over about 2 KB.
 - MMKV's `encryptionKey` is not a place for secrets: the key is in the JS bundle
@@ -140,8 +141,8 @@ export const useCart = create<Cart>()(
   async round trip and no JSON serialization, values are typed (numbers,
   booleans).
 - Where do you keep a refresh token and where the access token? The refresh
-  token in the Keychain / Keystore; the short-lived access token can stay in
-  memory and be restored from the refresh token on launch.
+  token in the Keychain / Keystore, the access token in memory; see
+  [Authentication](./authentication.md#token-lifecycle).
 - What happens to the data on an app update or uninstall? It survives an update
   (keep migrations for the shape); it is removed on uninstall, except iOS
   Keychain items.
@@ -166,3 +167,4 @@ export const useCart = create<Cart>()(
 - [Environment Configuration and Secrets](./release/env.md)
 - [Browser Storage](../web-platform/network/storage.md)
 - [Authentication and Authorization](../web-platform/network/authentication.md)
+- [Mobile App Security](./security.md)

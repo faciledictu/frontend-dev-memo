@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 10
 description:
   React Navigation vs Expo Router, stack / tabs / drawer, screens that stay
   mounted, navigate vs push vs popTo, typed params, auth flow
@@ -90,6 +90,8 @@ ID, not a whole object.
   `redirectTo` (SDK 58) names where a denied navigation goes (by default, the
   first available screen). It is a client-side check: the API still verifies the
   token.
+- The session itself (login, tokens, restoring it on launch) is in
+  [Authentication](./authentication.md).
 
 ### Expo Router Files
 

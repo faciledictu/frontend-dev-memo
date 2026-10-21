@@ -303,9 +303,11 @@
       RN 0.88, Expo SDK 58; страницы раздела перенумерованы, ссылки на новые
       страницы добавлены в 11 существующих (в `tanstack-query` — follow-up про
       refetch on focus).
-- [ ] 10. React Native: доступность и безопасность, 3 страницы: `accessibility`,
+- [x] 10. React Native: доступность и безопасность, 3 страницы: `accessibility`,
       `authentication`, `security` (с разделом про WebView); план —
-      [plans/batch-10-react-native.md](plans/batch-10-react-native.md).
+      [plans/batch-10-react-native.md](plans/batch-10-react-native.md). Сделано
+      двумя PR: RN 0.88, Expo SDK 58, OWASP MASVS 2.1; страницы раздела
+      перенумерованы, ссылки на новые страницы добавлены в 15 существующих.
 - [ ] Группировка раздела React Native в подгруппы (после пачки 10 в сайдбаре 24
       пункта), например UI, устройство, данные, релиз — отдельной правкой, не
       вместе с пачкой.
@@ -364,7 +366,3 @@ Fable в процессе (этап 3 и пачки 1–2 этапа 4), по р
   webpack, HMR), frontend system design и архитектура (тема большая), `Symbol` /
   `Proxy` / `Reflect` в JavaScript, i18n и `Intl`.
 - Иконки для разделов `html-css`, `tooling` и `react-native`.
-- Прогнать [lab/](lab/README.md) на Android 15+ и iOS: `KeyboardAvoidingView` и
-  keyboard-controller, модалки, группировка с `accessible`, фокус после
-  навигации, объявления, поля форм; по отчёту поправить
-  `react-native/keyboard.md` и `react-native/accessibility.md`.

@@ -73,12 +73,15 @@ from `Pressable` and `Text`.
 - **Uncontrolled**: `defaultValue`; `onChangeText` stores the value in a ref,
   and it is read on submit. Fewer re-renders in large forms.
 - Keyboard and autofill: `keyboardType` (`email-address`, `number-pad`,
-  `decimal-pad`, `phone-pad`), `secureTextEntry` for passwords, `autoComplete`
-  for password managers and SMS codes (`email`, `current-password`,
-  `new-password`, `one-time-code`; the older iOS-only `textContentType` does the
-  same, do not set both), `autoCapitalize="none"` for emails.
+  `decimal-pad`, `phone-pad`), `secureTextEntry` for passwords (see
+  [Security](./security.md#sensitive-data)), `autoComplete` for password
+  managers and SMS codes (`email`, `current-password`, `new-password`,
+  `one-time-code`; the older iOS-only `textContentType` does the same, do not
+  set both), `autoCapitalize="none"` for emails.
 - Focus, the next field and the keyboard covering the input:
   [Keyboard Handling](./keyboard.md).
+- Labels, roles, grouping and font scaling for `Pressable`, `Text` and
+  `TextInput`: [Accessibility](./accessibility.md).
 
 ### `Modal` vs a Navigation Modal
 

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 11
+sidebar_position: 12
 description:
   Platform-specific file extensions, Platform.OS, Platform.select and
   Platform.Version
