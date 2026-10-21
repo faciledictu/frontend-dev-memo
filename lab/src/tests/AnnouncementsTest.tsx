@@ -10,7 +10,9 @@ import {
 import { Button, styles } from '../ui';
 
 export function AnnouncementsTest() {
-  const [count, setCount] = useState(0);
+  const [textAriaLive, setTextAriaLive] = useState(0);
+  const [textLiveRegion, setTextLiveRegion] = useState(0);
+  const [viewAriaLive, setViewAriaLive] = useState(0);
   const [cart, setCart] = useState(['Mug', 'Teapot']);
   const [lastActivated, setLastActivated] = useState('nothing');
 
@@ -26,6 +28,19 @@ export function AnnouncementsTest() {
           title="Announce"
           onPress={() =>
             AccessibilityInfo.announceForAccessibility('Item added to the cart')
+          }
+        />
+        <Button
+          title="Announce in 2 s"
+          onPress={() =>
+            // Lets TalkBack finish the activation feedback first
+            setTimeout(
+              () =>
+                AccessibilityInfo.announceForAccessibility(
+                  'Item added to the cart'
+                ),
+              2000
+            )
           }
         />
         <Button
@@ -49,15 +64,37 @@ export function AnnouncementsTest() {
             AccessibilityInfo.announceForAccessibility('Second message');
           }}
         />
-        <Button
-          title="Live region +1"
-          onPress={() => setCount((value) => value + 1)}
-        />
       </View>
 
-      <Text aria-live="polite" style={styles.text}>
-        Cart: {count} items
+      <Text role="heading" style={styles.sectionTitle}>
+        Live regions
       </Text>
+      <Text style={styles.muted}>
+        Each button changes its own counter. Activate one, then wait.
+      </Text>
+      <View style={styles.row}>
+        <Button
+          title="A: Text aria-live"
+          onPress={() => setTextAriaLive((value) => value + 1)}
+        />
+        <Button
+          title="B: Text accessibilityLiveRegion"
+          onPress={() => setTextLiveRegion((value) => value + 1)}
+        />
+        <Button
+          title="C: View aria-live"
+          onPress={() => setViewAriaLive((value) => value + 1)}
+        />
+      </View>
+      <Text aria-live="polite" style={styles.text}>
+        Cart A: {textAriaLive} items
+      </Text>
+      <Text accessibilityLiveRegion="polite" style={styles.text}>
+        Cart B: {textLiveRegion} items
+      </Text>
+      <View aria-live="polite">
+        <Text style={styles.text}>Cart C: {viewAriaLive} items</Text>
+      </View>
 
       <Text role="heading" style={styles.sectionTitle}>
         Custom action
