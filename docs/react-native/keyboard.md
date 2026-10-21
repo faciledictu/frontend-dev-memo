@@ -11,12 +11,13 @@ tags: [middle]
 
 On **iOS** the keyboard is drawn **over** the app: the app moves the content
 itself, usually with **`KeyboardAvoidingView`** (`behavior="padding"`) or a
-scroll view that scrolls to the focused input. On **Android** the window is
-resized for the keyboard (`adjustResize`), and Expo's guide sets no `behavior`
-there; on Android 15+ (edge-to-edge) check on a device and set one if the input
-stays covered. For long forms and chats, **`react-native-keyboard-controller`**
-gives the same behavior on both platforms. A tap while the keyboard is open is
-controlled by **`keyboardShouldPersistTaps`** on the scroll view.
+scroll view that scrolls to the focused input. On **Android 15+** the app is
+edge-to-edge: the window keeps its height and the keyboard covers the bottom
+too, so the "no `behavior` on Android" advice from Expo's guide leaves the input
+covered; use `padding` with the header offset on both platforms. For long forms
+and chats, **`react-native-keyboard-controller`** gives the same behavior on
+both platforms. A tap while the keyboard is open is controlled by
+**`keyboardShouldPersistTaps`** on the scroll view.
 
 Applies to: React Native 0.88, Expo SDK 58, react-native-keyboard-controller
 1.22.
@@ -25,16 +26,17 @@ Applies to: React Native 0.88, Expo SDK 58, react-native-keyboard-controller
 
 ### Platforms
 
-|                        | iOS                                      | Android                                                       |
-| ---------------------- | ---------------------------------------- | ------------------------------------------------------------- |
-| Default                | Keyboard covers the bottom of the screen | `adjustResize`; on Android 15+ the keyboard comes as an inset |
-| `KeyboardAvoidingView` | `behavior="padding"`                     | Expo's guide: `behavior={undefined}`                          |
-| Events                 | `keyboardWill*` and `keyboardDid*`       | Only `keyboardDidShow` / `keyboardDidHide`                    |
+|                        | iOS                                      | Android                                                           |
+| ---------------------- | ---------------------------------------- | ----------------------------------------------------------------- |
+| Default                | Keyboard covers the bottom of the screen | 15+: the window keeps its height, the keyboard is an inset        |
+| `KeyboardAvoidingView` | `behavior="padding"`                     | `behavior="padding"` too; with no `behavior` the input is covered |
+| Events                 | `keyboardWill*` and `keyboardDid*`       | Only `keyboardDidShow` / `keyboardDidHide`                        |
 
-- Edge-to-edge (Android 15+) does not resize the window by itself: the app gets
-  the keyboard as a bottom inset. If an input stays covered there, set a
-  `behavior` (`KeyboardAvoidingView` handles the inset since React Native 0.86)
-  or use keyboard-controller, which behaves the same on every version.
+- Edge-to-edge (Android 15+) does not resize the window: the app gets the
+  keyboard as a bottom inset. Checked on Android 16 and 17: with no `behavior`
+  the input stays covered; `padding` or `height` with the header offset keeps it
+  right above the keyboard (`KeyboardAvoidingView` handles the inset since React
+  Native 0.86). keyboard-controller behaves the same on every version.
 - `adjustPan` (`softwareKeyboardLayoutMode: "pan"` in Expo's `app.json`) moves
   the whole window up instead of resizing it. It stops a bottom tab bar from
   riding above the keyboard; `tabBarHideOnKeyboard: true` hides the tab bar
@@ -93,8 +95,10 @@ Needs Reanimated and a development build (not in Expo Go).
 | `useKeyboardHandler`                    | Keyboard height on every animation frame, for custom animations  |
 
 Unlike the core `KeyboardAvoidingView`, the library follows the keyboard
-animation frame by frame. `KeyboardStickyView` is the cross-platform replacement
-for `InputAccessoryView` (iOS only, deprecated in 0.88).
+animation frame by frame. The core component jumps: on Android the input moves
+up before the keyboard finishes opening, on iOS it briefly goes under the
+keyboard and then catches up. `KeyboardStickyView` is the cross-platform
+replacement for `InputAccessoryView` (iOS only, deprecated in 0.88).
 
 ### Moving to the Next Field
 
@@ -111,7 +115,6 @@ for `InputAccessoryView` (iOS only, deprecated in 0.88).
 import { useRef } from 'react';
 import {
   KeyboardAvoidingView,
-  Platform,
   Pressable,
   ScrollView,
   Text,
@@ -128,7 +131,7 @@ export function SignInScreen({ onSubmit }: { onSubmit: () => void }) {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       // highlight-next-line
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior="padding"
       keyboardVerticalOffset={headerHeight}
     >
       <ScrollView
@@ -215,6 +218,8 @@ export function SignInForm() {
 - `KeyboardAvoidingView` without `flex: 1`.
 - Not testing on a real Android 15+ device: edge-to-edge changes how the
   keyboard is reported.
+- No `behavior` on Android, as older guides advise: on Android 15+ the input
+  stays under the keyboard.
 - Keyboard listeners without `remove()` in the cleanup.
 - A form inside a `ScrollView` without `keyboardShouldPersistTaps`.
 - Waiting for `keyboardWillShow` on Android: only the `Did` events fire there.

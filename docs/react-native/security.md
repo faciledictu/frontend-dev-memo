@@ -127,9 +127,10 @@ misconfiguration, M9 data storage, M10 cryptography.
   hides the preview on Android 13+) or do not copy them.
 - **Persisted state**: a persisted Redux or Zustand store is a plain file;
   exclude tokens and form data with personal details.
-- **Backups**: app files can land in an ADB or cloud backup; the React Native
-  template sets `android:allowBackup="false"`, keep it (`android.allowBackup` in
-  Expo's app config) or exclude the sensitive files.
+- **Backups**: app files can land in an ADB or cloud backup. The React Native
+  template sets `android:allowBackup="false"`, keep it; Expo's prebuild sets
+  `true` unless `android.allowBackup` is `false` in the app config. Or exclude
+  the sensitive files.
 
 ### WebView
 

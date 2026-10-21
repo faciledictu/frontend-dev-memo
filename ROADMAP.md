@@ -366,7 +366,3 @@ Fable в процессе (этап 3 и пачки 1–2 этапа 4), по р
   webpack, HMR), frontend system design и архитектура (тема большая), `Symbol` /
   `Proxy` / `Reflect` в JavaScript, i18n и `Intl`.
 - Иконки для разделов `html-css`, `tooling` и `react-native`.
-- Прогнать [lab/](lab/README.md) на Android 15+ и iOS: `KeyboardAvoidingView` и
-  keyboard-controller, модалки, группировка с `accessible`, фокус после
-  навигации, объявления, поля форм; по отчёту поправить
-  `react-native/keyboard.md` и `react-native/accessibility.md`.

@@ -37,8 +37,8 @@ are not repeated here, see
 | `role` / `accessibilityRole`                               | —                                                              | `button`, `link`, `heading` / `header`, `switch`, `tab`, … | Both; `role` wins if both are set                                |
 | `accessibilityState`                                       | `aria-disabled`, `-selected`, `-checked`, `-expanded`, `-busy` | State; `checked` can be `'mixed'`                          | Both                                                             |
 | `accessibilityValue`                                       | `aria-valuemin`, `-max`, `-now`, `-text`                       | Value of a slider or a progress bar                        | Both                                                             |
-| `accessibilityLiveRegion`                                  | `aria-live`                                                    | Announces content changes                                  | Android only                                                     |
-| `accessibilityViewIsModal`                                 | `aria-modal`                                                   | Screen reader ignores the sibling views                    | iOS only                                                         |
+| `accessibilityLiveRegion`                                  | `aria-live`                                                    | Announces content changes                                  | Android only; `Text` drops `aria-live`                           |
+| `accessibilityViewIsModal`                                 | `aria-modal`                                                   | Screen reader ignores the sibling views                    | iOS only; `View` drops `aria-modal`                              |
 | `importantForAccessibility`, `accessibilityElementsHidden` | `aria-hidden` (both platforms)                                 | Hide a subtree from the screen reader                      | Android / iOS                                                    |
 | `accessibilityLabelledBy`                                  | `aria-labelledby`                                              | Takes the label from another view by `nativeID`            | Android only                                                     |
 | `accessibilityActions` + `onAccessibilityAction`           | —                                                              | Custom actions in the screen reader menu                   | Both                                                             |
@@ -47,7 +47,10 @@ are not repeated here, see
 - Neither the `role` / `aria-*` props nor the `accessibilityRole` /
   `accessibility*` props are deprecated, and the docs do not prefer one. `role`
   and `aria-*` look like the web, but `aria-live` and `aria-labelledby` still
-  work only on Android and `aria-modal` only on iOS.
+  work only on Android and `aria-modal` only on iOS. Not every component maps
+  every `aria-*` prop: in 0.88 `View` drops `aria-modal` and `Text` drops
+  `aria-live`, so for these two use `accessibilityViewIsModal` and
+  `accessibilityLiveRegion`.
 - `role` values are web-like (`heading`, `img`, `slider`), `accessibilityRole`
   values are the older ones (`header`, `image`, `adjustable`). For navigation
   inside the app use `button`, not `link`.
@@ -83,35 +86,43 @@ are not repeated here, see
 
 ### Modals and Overlays
 
-- `aria-modal` / `accessibilityViewIsModal` makes VoiceOver ignore the
-  **siblings** of the view: put the dialog and the content it covers at the same
-  level, or the background stays reachable.
+- `accessibilityViewIsModal` makes VoiceOver ignore the **siblings** of the
+  view: put the dialog and the content it covers at the same level, or the
+  background stays reachable. `aria-modal` on a `View` does nothing in 0.88.
 - The `Modal` component is presented as a separate native layer (a view
-  controller on iOS, a dialog window on Android), so the screen under it is
-  normally not reachable; check `transparent` modals with VoiceOver.
-- A custom bottom sheet or overlay on Android has no `aria-modal`: hide the
+  controller on iOS, a dialog window on Android), so the screen under it is not
+  reachable, with `transparent` too.
+- A custom bottom sheet or overlay on Android has no modal prop: hide the
   background with `aria-hidden`
   (`importantForAccessibility="no-hide-descendants"`) and move focus into the
   sheet.
 
 ### Focus and Announcements
 
-| Task                                          | iOS                                                      | Android                                         |
-| --------------------------------------------- | -------------------------------------------------------- | ----------------------------------------------- |
-| Move focus to a view                          | `AccessibilityInfo.sendAccessibilityEvent(ref, 'focus')` | The same                                        |
-| "Item added" without moving focus             | `AccessibilityInfo.announceForAccessibility('…')`        | A live region on the text: `aria-live="polite"` |
-| Is a screen reader on?                        | `isScreenReaderEnabled()`, `screenReaderChanged` event   | The same                                        |
-| Give more time before a toast or a hint hides | —                                                        | `getRecommendedTimeoutMillis()`                 |
+| Task                                          | iOS                                                      | Android                                                         |
+| --------------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------- |
+| Move focus to a view                          | `AccessibilityInfo.sendAccessibilityEvent(ref, 'focus')` | The same                                                        |
+| "Item added" without moving focus             | `AccessibilityInfo.announceForAccessibility('…')`        | A live region: `accessibilityLiveRegion="polite"` on the `Text` |
+| Is a screen reader on?                        | `isScreenReaderEnabled()`, `screenReaderChanged` event   | The same                                                        |
+| Give more time before a toast or a hint hides | —                                                        | `getRecommendedTimeoutMillis()`                                 |
 
 - Live regions do not work on iOS: UIKit has no such concept, VoiceOver speaks
   only when the app posts an announcement, which is what
-  `announceForAccessibility` does. It works on Android too, but the Android API
-  behind it is deprecated since Android 16, so a live region is the safer choice
-  there. `announceForAccessibilityWithOptions` with `{ queue: true }` waits for
-  the current speech on iOS.
-- **After navigation** screen reader focus may stay where it was or land at the
-  top, depending on the platform and the navigator. Check with VoiceOver and
-  TalkBack; if needed, move it to the screen title in `useFocusEffect` with
+  `announceForAccessibility` does. It works on Android too (still on Android
+  16), but the Android API behind it is deprecated since Android 16, so a live
+  region is the safer choice there. `announceForAccessibilityWithOptions` with
+  `{ queue: true }` waits for the current speech on iOS; TalkBack plays
+  announcements one after another anyway.
+- A live region on Android: `accessibilityLiveRegion` on the `Text`, or
+  `aria-live` on a `View` with `collapsable={false}`. Without
+  `collapsable={false}` Fabric flattens a `View` that has no style, and the live
+  region is gone with it.
+- **After navigation** in a React Navigation 7 native stack, VoiceOver focuses
+  the first element of the new screen and TalkBack the header's back button.
+  Going back, TalkBack returns focus to the button that opened the screen and
+  reads the screen title and the button; VoiceOver puts focus on the back button
+  of the previous screen, not on that button, and says nothing. To land on the
+  title, move focus in `useFocusEffect` with
   `sendAccessibilityEvent(titleRef.current, 'focus')` (it replaces the
   deprecated `setAccessibilityFocus`). The view that gets focus must be
   `accessible`.
@@ -247,7 +258,7 @@ export function CartRow({
   function remove() {
     onDelete();
     // Both platforms; on Android a live region on the cart counter
-    // (aria-live="polite") is the alternative to the deprecated API
+    // (accessibilityLiveRegion) is the alternative to the deprecated API
     AccessibilityInfo.announceForAccessibility(`${title} removed`);
   }
 
@@ -300,6 +311,8 @@ export function CartRow({
   props are one-platform only.
 - `aria-live` or `aria-labelledby` used and tested only on Android: they do
   nothing on iOS.
+- `aria-modal` on a `View` or `aria-live` on a `Text`: React Native drops them
+  without a warning.
 - `accessible` on a card that has its own buttons: VoiceOver cannot reach them.
 - Gestures without an alternative: swipe actions, drag to reorder.
 - Using `link` for in-app navigation, or roles without the matching state
