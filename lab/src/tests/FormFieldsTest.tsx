@@ -41,14 +41,13 @@ export function FormFieldsTest() {
           onChangeText={setName}
           style={[styles.input, error && { borderColor: colors.fail }]}
         />
-        {error ? (
-          <Text
-            aria-live="assertive"
-            style={[styles.text, { color: colors.fail }]}
-          >
-            {error}
-          </Text>
-        ) : null}
+        {/* Always mounted: a live region added together with its text may stay
+            silent. View, because Text drops aria-live */}
+        <View aria-live="assertive">
+          {error ? (
+            <Text style={[styles.text, { color: colors.fail }]}>{error}</Text>
+          ) : null}
+        </View>
       </View>
 
       <View style={{ gap: 4 }}>

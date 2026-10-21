@@ -126,14 +126,18 @@ export const cases: Case[] = [
     setup: ['Turn on VoiceOver or TalkBack.'],
     steps: [
       'Open the test. Activate each button and listen.',
-      'Announce: announceForAccessibility. Queued: announceForAccessibilityWithOptions with queue. Live region: changes a counter that has aria-live="polite".',
+      'Announce: announceForAccessibility. Announce in 2 s: the same after a delay, so the activation feedback cannot interrupt it. Queued: announceForAccessibilityWithOptions with queue.',
+      'Live regions: three counters with polite live regions. A is a Text with aria-live, B is a Text with accessibilityLiveRegion, C is a View with aria-live around the Text. In React Native 0.88 Text does not map aria-live to the native prop, so A is expected to stay silent.',
+      'Remove from cart: open the actions (iOS rotor, TalkBack menu) on a row and pick the action.',
     ],
     expected: [
       'iOS: Announce speaks; Queued waits for the current speech; Live region says nothing (live regions do not work on iOS).',
-      'Android: Live region speaks the new value; Announce still works, but its API is deprecated since Android 16.',
+      'Android: a live region speaks the new value; Announce still works, but its API is deprecated since Android 16.',
+      'Android: the page writes the live region as aria-live on the text; that is variant A.',
     ],
     record: [
-      'For each button and platform: spoken, not spoken, or interrupted.',
+      'For each button and platform: spoken, not spoken, or interrupted. For the "Two" buttons: was the first message, the second, or only the button name heard?',
+      'Which of the live regions A, B, C speak.',
       'The Android version.',
     ],
   },
@@ -145,7 +149,8 @@ export const cases: Case[] = [
     steps: [
       'Open the test and swipe through the fields.',
       'Field 1 has aria-label. Field 2 has only a placeholder. Field 3 uses aria-labelledby pointing to the visible "Email" text.',
-      'Leave field 1 empty and activate Submit: the error is shown and announced.',
+      'Leave field 1 empty and activate Submit: the error is shown and announced (iOS: an announcement; Android: an always mounted View with aria-live around the error).',
+      'Then move focus back to field 1: the error is its hint now.',
     ],
     expected: [
       'Field 1: the label is read.',
@@ -155,7 +160,7 @@ export const cases: Case[] = [
     ],
     record: [
       'What is read for each field, empty and filled.',
-      'Whether the error was heard.',
+      'Whether the error was heard after Submit, and on field 1 afterwards.',
     ],
   },
 ];
