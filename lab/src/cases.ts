@@ -127,7 +127,7 @@ export const cases: Case[] = [
     steps: [
       'Open the test. Activate each button and listen.',
       'Announce: announceForAccessibility. Announce in 2 s: the same after a delay, so the activation feedback cannot interrupt it. Queued: announceForAccessibilityWithOptions with queue.',
-      'Live regions: three counters with polite live regions. A is a Text with aria-live, B is a Text with accessibilityLiveRegion, C is a View with aria-live around the Text. In React Native 0.88 Text does not map aria-live to the native prop, so A is expected to stay silent.',
+      'Live regions: four counters with polite live regions. A is a Text with aria-live, B is a Text with accessibilityLiveRegion, C is a View with aria-live around the Text, D is the same View with collapsable={false}. In React Native 0.88 Text does not map aria-live to the native prop, so A is expected to stay silent; Fabric may flatten the View in C, which would silence it too.',
       'Remove from cart: open the actions (iOS rotor, TalkBack menu) on a row and pick the action.',
     ],
     expected: [
@@ -137,7 +137,7 @@ export const cases: Case[] = [
     ],
     record: [
       'For each button and platform: spoken, not spoken, or interrupted. For the "Two" buttons: was the first message, the second, or only the button name heard?',
-      'Which of the live regions A, B, C speak.',
+      'Which of the live regions A, B, C, D speak.',
       'The Android version.',
     ],
   },
@@ -149,7 +149,7 @@ export const cases: Case[] = [
     steps: [
       'Open the test and swipe through the fields.',
       'Field 1 has aria-label. Field 2 has only a placeholder. Field 3 uses aria-labelledby pointing to the visible "Email" text.',
-      'Leave field 1 empty and activate Submit: the error is shown and announced (iOS: an announcement; Android: an always mounted View with aria-live around the error).',
+      'Leave field 1 empty and activate Submit: the error is shown and announced (iOS: an announcement; Android: an always mounted View with aria-live and collapsable={false} around the error).',
       'Then move focus back to field 1: the error is its hint now.',
     ],
     expected: [

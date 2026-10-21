@@ -42,8 +42,9 @@ export function FormFieldsTest() {
           style={[styles.input, error && { borderColor: colors.fail }]}
         />
         {/* Always mounted: a live region added together with its text may stay
-            silent. View, because Text drops aria-live */}
-        <View aria-live="assertive">
+            silent. View, because Text drops aria-live; not collapsable, or
+            Fabric flattens it away */}
+        <View aria-live="assertive" collapsable={false}>
           {error ? (
             <Text style={[styles.text, { color: colors.fail }]}>{error}</Text>
           ) : null}
