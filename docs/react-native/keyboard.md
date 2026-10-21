@@ -37,6 +37,17 @@ Applies to: React Native 0.88, Expo SDK 58, react-native-keyboard-controller
   the input stays covered; `padding` or `height` with the header offset keeps it
   right above the keyboard (`KeyboardAvoidingView` handles the inset since React
   Native 0.86). keyboard-controller behaves the same on every version.
+
+:::note[Differs from the official docs]
+
+Expo's keyboard guide sets no `behavior` on Android. In the author's test with
+[Memo Lab](https://github.com/faciledictu/frontend-dev-memo/tree/main/lab) (Expo
+SDK 58, React Native 0.88, Android 16 on a Samsung phone and Android 17 on the
+emulator) the input stayed under the keyboard that way; only `padding` or
+`height` with the header offset kept it visible.
+
+:::
+
 - `adjustPan` (`softwareKeyboardLayoutMode: "pan"` in Expo's `app.json`) moves
   the whole window up instead of resizing it. It stops a bottom tab bar from
   riding above the keyboard; `tabBarHideOnKeyboard: true` hides the tab bar
