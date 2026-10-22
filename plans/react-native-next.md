@@ -117,6 +117,15 @@ list all `View` props.
 - On Android only the first id is used (`BaseViewManager`); iOS has no
   `accessibilityLabelledBy` at all.
 
+Already in progress upstream, by other authors (open PRs, October 2026):
+react/react-native#59072 maps `aria-hidden` on `ScrollView` and
+`ActivityIndicator` (not on `Switch` and `RefreshControl`, on purpose);
+react/react-native#58173 passes `accessibilityLabelledBy` and `aria-labelledby`
+through `Button` and `Touchable*`. Nobody covers `aria-label` and the state
+props on `Switch`, `ScrollView` and `ActivityIndicator`. The Memo Lab case
+`aria-pass-through` checks these rows; a fix waits for its results and builds on
+#59072 instead of repeating it.
+
 Next areas: keyboard events, `Pressable` and `Touchable*` (they convert `aria-*`
 themselves, possibly not all of them). `Switch` on iOS is covered by
 react/react-native#59333 (not ours), which maps `disabled` only.
