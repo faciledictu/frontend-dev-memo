@@ -140,5 +140,12 @@ of props to their `View`, and `role` is not on any of the lists. Next areas:
 keyboard events. `Switch` on iOS is covered by react/react-native#59333 (not
 ours), which maps `disabled` only.
 
+`ActivityIndicator` on iOS ignores `accessibilityLabel` too (device, iOS 27):
+the label goes to the host view, which is not an accessibility element, and
+VoiceOver reads the inner `UIActivityIndicatorView` ("In progress"). With
+`accessible` the host is read with the label but loses the indicator's value.
+`RCTSwitchComponentView` solves the same case by returning the inner view from
+`accessibilityElement`; a separate issue and a native PR after #59377.
+
 Upstream so far: react/react-native#59328, #59329, #59330 (merged), #59335,
 #59377 (the `aria-*` and `role` gaps above); expo/expo#52032.
