@@ -140,5 +140,5 @@ of props to their `View`, and `role` is not on any of the lists. Next areas:
 keyboard events. `Switch` on iOS is covered by react/react-native#59333 (not
 ours), which maps `disabled` only.
 
-Upstream so far: react/react-native#59328, #59329, #59330 (merged), #59335;
-expo/expo#52032.
+Upstream so far: react/react-native#59328, #59329, #59330 (merged), #59335,
+#59377 (the `aria-*` and `role` gaps above); expo/expo#52032.
