@@ -94,15 +94,18 @@ The native view configs list raw `aria-*`, but neither the Fabric C++ props
 parser nor the Android view managers read them, so a prop the JS component does
 not convert is dropped silently.
 
-| Component                                                              | Typed but not mapped                                                                        | Status                                                                                             |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `View`                                                                 | `aria-modal`                                                                                | Device (iOS); react/react-native#59328 open, approved                                              |
-| `View`                                                                 | `aria-live` works, but a `View` with only a live region is flattened                        | Device (Android); issue react/react-native#59329, fix react/react-native#59335 open                |
-| `Text`                                                                 | `aria-live`                                                                                 | Device (Android); fixed by react/react-native#59330, merged on 22 October 2026, after 0.88         |
-| `Text`                                                                 | `aria-labelledby`, `aria-modal`, `aria-value*`                                              | Code                                                                                               |
-| `TextInput`                                                            | `aria-live`, `aria-modal`, `aria-value*`                                                    | Code                                                                                               |
-| `Image`                                                                | `aria-live`, `aria-modal`, `aria-value*`                                                    | Code                                                                                               |
-| `Switch`, `ScrollView`, `ActivityIndicator`, `RefreshControl`, `Modal` | All `aria-*`, including `aria-label`, `aria-hidden` and `aria-disabled`: none are converted | Code; the first candidate for a device check (`<Switch aria-label="Wi-Fi" />` would have no label) |
+| Component                                                              | Typed but not mapped                                                                                      | Status                                                                                     |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `View`                                                                 | `aria-modal`                                                                                              | Device (iOS); react/react-native#59328 open, approved                                      |
+| `View`                                                                 | `aria-live` works, but a `View` with only a live region is flattened                                      | Device (Android); issue react/react-native#59329, fix react/react-native#59335 open        |
+| `Text`                                                                 | `aria-live`                                                                                               | Device (Android); fixed by react/react-native#59330, merged on 22 October 2026, after 0.88 |
+| `Text`                                                                 | `aria-labelledby`, `aria-modal`, `aria-value*`                                                            | Code                                                                                       |
+| `TextInput`                                                            | `aria-live`, `aria-modal`, `aria-value*`                                                                  | Code                                                                                       |
+| `Image`                                                                | `aria-live`, `aria-modal`, `aria-value*`                                                                  | Code                                                                                       |
+| `Switch`, `ScrollView`, `ActivityIndicator`, `RefreshControl`, `Modal` | All `aria-*`, `id` and `tabIndex`: none are converted; `role` works, the native side reads it             | Code; `aria-hidden` on `ScrollView` and `ActivityIndicator`: react/react-native#59072 open |
+| `TouchableOpacity`, `TouchableNativeFeedback`                          | `role`, `aria-labelledby`                                                                                 | Code; `aria-labelledby`: react/react-native#58173 open                                     |
+| `TouchableHighlight`                                                   | `role`, `aria-labelledby`, `aria-busy`, `aria-checked`, `aria-disabled`, `aria-expanded`, `aria-selected` | Code                                                                                       |
+| `TouchableWithoutFeedback`                                             | `role`, `aria-label`, `aria-labelledby`                                                                   | Code                                                                                       |
 
 Not every gap is a bug: some props make no sense on some components
 (`aria-labelledby` on `Text`, `aria-modal` on `Image`). The `Switch` row is the
@@ -126,9 +129,14 @@ props on `Switch`, `ScrollView` and `ActivityIndicator`. The Memo Lab case
 `aria-pass-through` checks these rows; a fix waits for its results and builds on
 #59072 instead of repeating it.
 
-Next areas: keyboard events, `Pressable` and `Touchable*` (they convert `aria-*`
-themselves, possibly not all of them). `Switch` on iOS is covered by
-react/react-native#59333 (not ours), which maps `disabled` only.
+Checked: every component exported from `react-native` except the deprecated ones
+(`DrawerLayoutAndroid`, `ProgressBarAndroid`), `SafeAreaView`,
+`InputAccessoryView` and `VirtualView`. `Pressable`, `Button`,
+`KeyboardAvoidingView`, `ImageBackground` and the lists render a `View`,
+`ScrollView` or `Image` and inherit their gaps. `Touchable*` copy a fixed list
+of props to their `View`, and `role` is not on any of the lists. Next areas:
+keyboard events. `Switch` on iOS is covered by react/react-native#59333 (not
+ours), which maps `disabled` only.
 
 Upstream so far: react/react-native#59328, #59329, #59330 (merged), #59335;
 expo/expo#52032.
