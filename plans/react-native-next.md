@@ -145,8 +145,10 @@ the label goes to the host view, which is not an accessibility element, and
 VoiceOver reads the inner `UIActivityIndicatorView` ("In progress"). With
 `accessible` the host is read with the label but loses the indicator's value.
 `RCTSwitchComponentView` solves the same case by returning the inner view from
-`accessibilityElement`; a separate issue and a native PR after #59377.
+`accessibilityElement`: issue react/react-native#59380, fix #59381 (checked on
+the simulator, the label is used and the value kept).
 
 Upstream so far: react/react-native#59328, #59329, #59330 (merged), #59335,
 #59377 (the `aria-*` and `role` gaps above) with the fixes #59378 (`Touchable*`)
-and #59379 (`Switch`, `ScrollView`, `ActivityIndicator`); expo/expo#52032.
+and #59379 (`Switch`, `ScrollView`, `ActivityIndicator`); #59380 with the fix
+#59381 (`ActivityIndicator` on iOS); expo/expo#52032.
