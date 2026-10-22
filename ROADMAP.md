@@ -311,6 +311,11 @@
 - [ ] Группировка раздела React Native в подгруппы (после пачки 10 в сайдбаре 24
       пункта), например UI, устройство, данные, релиз — отдельной правкой, не
       вместе с пачкой.
+- [ ] 11. React Native: `brownfield`, `testing`, view flattening, `i18n`,
+      `media`, `code-sharing`; рядом — проверки страниц в Memo Lab и находки,
+      где React Native расходится со своей документацией (отдельно от страниц
+      для собеседований). План —
+      [plans/react-native-next.md](plans/react-native-next.md), предложение.
 
 Обновление версий: строки `Applies to` сверяются раз в квартал
 (`grep -rh '^Applies to:' docs | sort | uniq -c`). Node.js 26 и PostgreSQL 19 —
