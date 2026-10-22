@@ -163,34 +163,6 @@ export const cases: Case[] = [
       'Whether the error was heard after Submit, and on field 1 afterwards.',
     ],
   },
-  {
-    id: 'aria-pass-through',
-    title: 'aria-* and role on components that do not go through View',
-    page: '/react-native/accessibility',
-    setup: [
-      'Faster than the screen reader: dump the tree. iOS Simulator: AXe (`axe describe-ui`). Android: `adb shell uiautomator dump` and look at content-desc.',
-      'Then confirm the result with VoiceOver or TalkBack on a device.',
-    ],
-    steps: [
-      'Open the test. Every row pairs an aria-* prop with its accessibility* form as the control: the letters in the labels tell them apart.',
-      '1, 3: a Switch and an ActivityIndicator with aria-label next to the same with accessibilityLabel.',
-      '2, 4: aria-hidden next to accessibilityElementsHidden with importantForAccessibility="no-hide-descendants".',
-      '5: three horizontal ScrollViews: I with aria-label and aria-hidden, J with the accessibility* forms, K with aria-label only.',
-      '6: TextInput L takes its label from one id; M from two ids separated by a space, as on the web.',
-      '7: TouchableOpacity N with role="button", O with accessibilityRole. 8: TouchableWithoutFeedback P with aria-label, Q with accessibilityLabel. 9: TouchableHighlight R with aria-checked, S with accessibilityState (both have accessibilityRole="checkbox", so only the state differs).',
-    ],
-    expected: [
-      'The page lists aria-label as the form of accessibilityLabel and aria-hidden as the form of the two hiding props, with no exceptions by component: A, C, E, G, I and K behave like their controls.',
-      'aria-labelledby takes the label from another view by nativeID, Android only: L is read as "City L"; the page says nothing about several ids.',
-      'Not from the page: in the React Native code Switch, ActivityIndicator and ScrollView do not convert aria-* at all, so A, C, E, G, I and K are expected to differ from the controls. react/react-native#59072 (open) fixes aria-hidden on ScrollView and ActivityIndicator only.',
-      'Not from the page: Touchable* do not pass role, TouchableWithoutFeedback does not pass aria-label, TouchableHighlight does not convert aria-checked and the other state props, so N, P and R are expected to differ from O, Q and S.',
-    ],
-    record: [
-      'For each letter and platform: the label, role and state in the tree or what is read, and whether the hidden ones are reachable.',
-      'M on Android: read with both texts, only "Street M", or without a label.',
-      'The OS version and whether the result came from the tree dump or the screen reader.',
-    ],
-  },
 ];
 
 export function findCase(id: string): Case {

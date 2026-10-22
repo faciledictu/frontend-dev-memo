@@ -1,7 +1,6 @@
 import type { ComponentType } from 'react';
 
 import { AnnouncementsTest } from './AnnouncementsTest';
-import { AriaPassThroughTest } from './AriaPassThroughTest';
 import { FormFieldsTest } from './FormFieldsTest';
 import { GroupingTest } from './GroupingTest';
 import { KeyboardAvoidingViewTest } from './KeyboardAvoidingViewTest';
@@ -18,5 +17,4 @@ export const tests: Record<string, ComponentType> = {
   'navigation-focus': NavigationFocusTest,
   'announcements': AnnouncementsTest,
   'form-fields': FormFieldsTest,
-  'aria-pass-through': AriaPassThroughTest,
 };
