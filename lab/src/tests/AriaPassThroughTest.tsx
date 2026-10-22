@@ -5,6 +5,9 @@ import {
   Switch,
   Text,
   TextInput,
+  TouchableHighlight,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 
@@ -12,7 +15,8 @@ import { styles } from '../ui';
 
 // Each pair: the aria-* prop and its accessibility* counterpart as the control.
 // Switch, ActivityIndicator and ScrollView pass props to the native side as
-// they are, and the native side reads only accessibility*
+// they are, and the native side reads only accessibility*. Touchable* copy a
+// fixed list of props to their View, and role is not on it
 
 function Pair({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -116,6 +120,55 @@ export function AriaPassThroughTest() {
         </Text>
         <TextInput aria-labelledby="m-label m-hint" style={styles.input} />
       </View>
+
+      <Pair title="7. TouchableOpacity: N role, O accessibilityRole">
+        <TouchableOpacity role="button" onPress={() => {}} style={styles.card}>
+          <Text style={styles.text}>Save N</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          accessibilityRole="button"
+          onPress={() => {}}
+          style={styles.card}
+        >
+          <Text style={styles.text}>Save O</Text>
+        </TouchableOpacity>
+      </Pair>
+
+      <Pair title="8. TouchableWithoutFeedback: P aria-label, Q accessibilityLabel">
+        <TouchableWithoutFeedback aria-label="Close P" onPress={() => {}}>
+          <View style={styles.card}>
+            <Text style={styles.text}>×</Text>
+          </View>
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback
+          accessibilityLabel="Close Q"
+          onPress={() => {}}
+        >
+          <View style={styles.card}>
+            <Text style={styles.text}>×</Text>
+          </View>
+        </TouchableWithoutFeedback>
+      </Pair>
+
+      <Pair title="9. TouchableHighlight: R aria-checked, S accessibilityState">
+        <TouchableHighlight
+          role="checkbox"
+          accessibilityRole="checkbox"
+          aria-checked
+          onPress={() => {}}
+          style={styles.card}
+        >
+          <Text style={styles.text}>Terms R</Text>
+        </TouchableHighlight>
+        <TouchableHighlight
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: true }}
+          onPress={() => {}}
+          style={styles.card}
+        >
+          <Text style={styles.text}>Terms S</Text>
+        </TouchableHighlight>
+      </Pair>
     </ScrollView>
   );
 }
