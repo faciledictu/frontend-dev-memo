@@ -1,8 +1,7 @@
 # React Native: Next Steps
 
-Status: approved by the user, except the name of the findings section. Starting
-point: `main` at a16c016, after batch 10 and the Memo Lab device checks (PR
-#56–#61).
+Status: approved by the user. Starting point: `main` at a16c016, after batch 10
+and the Memo Lab device checks (PR #56–#61).
 
 Three tracks: new interview pages, device checks of existing pages, and findings
 where React Native behaves differently from its docs. The tracks run in parallel
@@ -19,8 +18,8 @@ Approved by the user.
    how it was checked, the result, the upstream link. An interview page keeps
    one line ("`View` drops `aria-modal`, use `accessibilityViewIsModal`") and a
    link to the post. The two "Differs from the official docs" notes on
-   `keyboard` and `accessibility` move there. The section name is still open
-   ("Lab notes" was rejected).
+   `keyboard` and `accessibility` move there. The section is called "Field
+   Notes": not every finding is a gotcha.
 2. **The three tracks run in parallel.** Sidebar grouping stays a separate task.
 3. **Formatting.** A compact "checked on a device" mark (a small MDX component
    in `src/components/`: platform, OS version, date, link to the post) replaces
@@ -79,8 +78,8 @@ Claims that are cheap to check and likely to be wrong or outdated:
 - `app-lifecycle`: which `AppState` events each platform really sends.
 - `animations/gestures`: a gesture inside a scroll view.
 
-Each check is a Memo Lab case; results go into the page, a finding into Lab
-notes.
+Each check is a Memo Lab case; results go into the page, a finding into Field
+Notes.
 
 ## Track C: Docs Against Code
 
