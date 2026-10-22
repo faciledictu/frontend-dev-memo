@@ -18,4 +18,4 @@
 - [Пачка 9: React Native](batch-9-react-native.md)
 - [Пачка 10: доступность и безопасность в React Native](batch-10-react-native.md)
 - [React Native: дальше](react-native-next.md) — пачка 11, проверки в Memo Lab,
-  находки; предложение, ещё не утверждено
+  находки

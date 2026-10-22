@@ -1,29 +1,34 @@
 # React Native: Next Steps
 
-Status: proposal, not approved yet. Starting point: `main` at a16c016, after
-batch 10 and the Memo Lab device checks (PR #56–#61).
+Status: approved by the user, except the name of the findings section. Starting
+point: `main` at a16c016, after batch 10 and the Memo Lab device checks (PR
+#56–#61).
 
 Three tracks: new interview pages, device checks of existing pages, and findings
-where React Native behaves differently from its docs. The tracks are kept apart:
-interview pages stay short, findings go elsewhere (decision 1).
+where React Native behaves differently from its docs. The tracks run in parallel
+and stay apart: interview pages stay short, findings go elsewhere.
 
-## Decisions for the User
+## Decisions
 
-1. **Where findings live.** Findings such as "`aria-modal` on `View` does
-   nothing" are not interview answers: they are dated, tied to a version and
-   have an upstream issue or PR whose status changes. Proposal: a separate "Lab
-   notes" section on the site, made with the Docusaurus blog plugin (now off),
-   one note per finding: date, versions, the claim, how it was checked, the
-   result, the upstream link. An interview page keeps one line ("`View` drops
-   `aria-modal`, use `accessibilityViewIsModal`") and a link to the note. The
-   two "Differs from the official docs" notes on `keyboard` and `accessibility`
-   move there.
-2. **Order.** Proposal: sidebar grouping first (24 pages already), then batch
-   11, with Memo Lab checks and findings between batches, as time allows.
-3. **Page formatting.** If a page needs more than admonitions, `<details>` and
-   tables (for example iOS / Android tabs, or a compact "checked on a device"
-   mark instead of a note block), list the cases first; then decide between
-   Docusaurus `Tabs` and a small MDX component in `src/components/`.
+Approved by the user.
+
+1. **Findings live in a blog-like section**, made with the Docusaurus blog
+   plugin (now off), not on interview pages. Findings such as "`aria-modal` on
+   `View` does nothing" are dated, tied to a version and have an upstream issue
+   or PR whose status changes. One post per finding: date, versions, the claim,
+   how it was checked, the result, the upstream link. An interview page keeps
+   one line ("`View` drops `aria-modal`, use `accessibilityViewIsModal`") and a
+   link to the post. The two "Differs from the official docs" notes on
+   `keyboard` and `accessibility` move there. The section name is still open
+   ("Lab notes" was rejected).
+2. **The three tracks run in parallel.** Sidebar grouping stays a separate task.
+3. **Formatting.** A compact "checked on a device" mark (a small MDX component
+   in `src/components/`: platform, OS version, date, link to the post) replaces
+   note blocks. Docusaurus `Tabs` where a page compares iOS and Android at
+   length; tables stay the default.
+4. **No live code.** No Expo Snack embeds or other runnable examples: the site
+   reworks the official docs into answers, it does not repeat them; readers go
+   to the official site for the docs.
 
 ## Verification Rule
 
