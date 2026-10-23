@@ -41,10 +41,10 @@ Applies to: React Native 0.88, Expo SDK 58, react-native-keyboard-controller
 :::note[Differs from the official docs]
 
 Expo's keyboard guide sets no `behavior` on Android. In the author's test with
-[Memo Lab](https://github.com/faciledictu/frontend-dev-memo/tree/main/lab) (Expo
-SDK 58, React Native 0.88, Android 16 on a Samsung phone and Android 17 on the
-emulator) the input stayed under the keyboard that way; only `padding` or
-`height` with the header offset kept it visible.
+[Memo Lab](https://github.com/faciledictu/memo-lab) (Expo SDK 58, React Native
+0.88, Android 16 on a Samsung phone and Android 17 on the emulator) the input
+stayed under the keyboard that way; only `padding` or `height` with the header
+offset kept it visible.
 
 :::
 

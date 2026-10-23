@@ -3,9 +3,9 @@
 Status: approved by the user. Starting point: `main` at a16c016, after batch 10
 and the Memo Lab device checks (PR #56–#61).
 
-Three tracks: new interview pages, device checks of existing pages, and findings
-where React Native behaves differently from its docs. The tracks run in parallel
-and stay apart: interview pages stay short, findings go elsewhere.
+Two tracks: new interview pages and device checks of existing pages. Findings
+where React Native behaves differently from its docs go to Field Notes, not to
+interview pages.
 
 ## Decisions
 
@@ -20,7 +20,7 @@ Approved by the user.
    link to the post. The two "Differs from the official docs" notes on
    `keyboard` and `accessibility` move there. The section is called "Field
    Notes": not every finding is a gotcha.
-2. **The three tracks run in parallel.** Sidebar grouping stays a separate task.
+2. **The two tracks run in parallel.** Sidebar grouping stays a separate task.
 3. **Formatting.** A compact "checked on a device" mark (a small MDX component
    in `src/components/`: platform, OS version, date, link to the post) replaces
    note blocks. Docusaurus `Tabs` where a page compares iOS and Android at
@@ -32,8 +32,8 @@ Approved by the user.
 ## Verification Rule
 
 Claims about platform behavior (accessibility, keyboard, focus, lifecycle) are
-checked in [Memo Lab](../lab/README.md) before a page is merged, or worded as
-unverified. Cheaper ways than a screen reader by gesture:
+checked in [Memo Lab](https://github.com/faciledictu/memo-lab) before a page is
+merged, or worded as unverified. Cheaper ways than a screen reader by gesture:
 
 | What is checked                                      | iOS                                                                               | Android                                                     |
 | ---------------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------- |
@@ -80,23 +80,3 @@ Claims that are cheap to check and likely to be wrong or outdated:
 
 Each check is a Memo Lab case; results go into the page, a finding into Field
 Notes.
-
-## Track C: Docs Against Code
-
-A systematic pass instead of chance finds: for each core component, the props
-its types accept against the props it passes to the native side. A first pass
-over `aria-*` on `main` (October 2026), not yet checked on a device:
-
-| Component   | Typed but not mapped                                                                   |
-| ----------- | -------------------------------------------------------------------------------------- |
-| `View`      | `aria-modal` (react/react-native#59328)                                                |
-| `Text`      | `aria-live` (react/react-native#59330), `aria-labelledby`, `aria-modal`, `aria-value*` |
-| `TextInput` | `aria-live`, `aria-modal`, `aria-value*`                                               |
-| `Image`     | `aria-live`, `aria-modal`, `aria-value*`                                               |
-
-Not every gap is a bug: some props make no sense on some components. The first
-candidate is `aria-labelledby` on `Text`. Next areas: `Switch` (see
-react/react-native#59333), `Modal`, `ScrollView`, keyboard events.
-
-Upstream so far: react/react-native#59328, #59329, #59330 and the C++ fix for
-#59329; expo/expo#52032.

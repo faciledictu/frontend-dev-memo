@@ -61,12 +61,12 @@ are not repeated here, see
 The `View` docs list `aria-modal` as a prop that takes precedence over
 `accessibilityViewIsModal`, but in the 0.88 source `View` does not pass it to
 the native view. The author's test with
-[Memo Lab](https://github.com/faciledictu/frontend-dev-memo/tree/main/lab) on
-iOS 27 confirmed it: with `aria-modal` VoiceOver still reached the background,
-with `accessibilityViewIsModal` it did not. On Android 16 a `Text` with
-`aria-live` stayed silent and the same `Text` with `accessibilityLiveRegion`
-worked; a `View` with `aria-live` was silent until it got `collapsable={false}`,
-because Fabric removes a `View` that has no style.
+[Memo Lab](https://github.com/faciledictu/memo-lab) on iOS 27 confirmed it: with
+`aria-modal` VoiceOver still reached the background, with
+`accessibilityViewIsModal` it did not. On Android 16 a `Text` with `aria-live`
+stayed silent and the same `Text` with `accessibilityLiveRegion` worked; a
+`View` with `aria-live` was silent until it got `collapsable={false}`, because
+Fabric removes a `View` that has no style.
 
 :::
 

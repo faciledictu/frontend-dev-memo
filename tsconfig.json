@@ -4,6 +4,5 @@
   "compilerOptions": {
     "baseUrl": "."
   },
-  // lab/ is a separate Expo project with its own tsconfig
-  "exclude": ["node_modules", "lab"]
+  "exclude": ["node_modules"]
 }
