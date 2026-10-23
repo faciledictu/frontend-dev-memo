@@ -32,8 +32,8 @@ Approved by the user.
 ## Verification Rule
 
 Claims about platform behavior (accessibility, keyboard, focus, lifecycle) are
-checked in [Memo Lab](../lab/README.md) before a page is merged, or worded as
-unverified. Cheaper ways than a screen reader by gesture:
+checked in [Memo Lab](https://github.com/faciledictu/memo-lab) before a page is
+merged, or worded as unverified. Cheaper ways than a screen reader by gesture:
 
 | What is checked                                      | iOS                                                                               | Android                                                     |
 | ---------------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------- |
