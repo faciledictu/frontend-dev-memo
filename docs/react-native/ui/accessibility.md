@@ -145,6 +145,10 @@ are not repeated here, see
   `onAccessibilityAction`. Standard names: `activate`, `increment`, `decrement`
   on both platforms; `magicTap`, `escape` on iOS; `longpress`, `expand`,
   `collapse` on Android.
+- On iOS a VoiceOver double tap does not reach `onAccessibilityAction` as
+  `activate`: it calls `onPress`, and `activate` shows up as a separate custom
+  action. Put the main action in `onPress`, and handle the two-finger scrub with
+  `onAccessibilityEscape` rather than the `escape` action.
 
 ### Font Scaling
 
