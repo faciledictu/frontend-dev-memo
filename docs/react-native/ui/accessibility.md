@@ -59,6 +59,9 @@ are not repeated here, see
 - `role` values are web-like (`heading`, `img`, `slider`), `accessibilityRole`
   values are the older ones (`header`, `image`, `adjustable`). For navigation
   inside the app use `button`, not `link`.
+- On iOS some `role` values give the element no trait: `role="slider"` is not
+  adjustable, `role="searchbox"` is not a search field. Use the
+  `accessibilityRole` value there (`adjustable`, `search`).
 - `Pressable`, `Touchable*`, `TextInput` and `Switch` are focus stops by
   default; a plain `View` is not. `Text` with `onPress` gets the `link` role on
   its own.
@@ -297,13 +300,15 @@ export function CartRow({
   The label is what the element is ("Delete"); the hint is what happens
   ("Removes the message"). iOS users can turn hints off, so never put the only
   important information there.
-- How do you make a custom slider accessible? `role="slider"`
-  (`accessibilityRole="adjustable"`), `accessibilityValue` with `min`, `max` and
+- How do you make a custom slider accessible? `accessibilityRole="adjustable"`
+  (not `role="slider"`, see above), `accessibilityValue` with `min`, `max` and
   `now`, and the `increment` / `decrement` actions, which VoiceOver triggers
   with a swipe up or down.
 - What is Magic Tap? A two-finger double tap in VoiceOver for the main action of
-  the screen (play / pause, answer a call); handle it as the `magicTap` action
-  in `accessibilityActions` (or with the older `onMagicTap` prop).
+  the screen (play / pause, answer a call); React Native exposes it as the
+  `magicTap` action in `accessibilityActions` and as the `onMagicTap` prop. On
+  the New Architecture neither may fire: check with VoiceOver on an iPhone, and
+  keep the action reachable as a normal button.
 - `accessible={false}` or `aria-hidden`: what is the difference? The first only
   stops the view from being a focus stop, its children are still read; the
   second hides the whole subtree.
