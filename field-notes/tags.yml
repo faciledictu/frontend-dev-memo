@@ -1,0 +1,18 @@
+react-native:
+  label: React Native
+  description: Findings about React Native core components and APIs
+expo:
+  label: Expo
+  description: Findings about Expo SDK modules and Expo guides
+accessibility:
+  label: Accessibility
+  description: Screen readers, accessibility props and the accessibility tree
+keyboard:
+  label: Keyboard
+  description: The software keyboard, insets and KeyboardAvoidingView
+ios:
+  label: iOS
+  description: Checked on iOS
+android:
+  label: Android
+  description: Checked on Android

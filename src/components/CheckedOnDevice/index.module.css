@@ -1,0 +1,14 @@
+.mark {
+  display: inline-block;
+  padding: 0 0.5rem;
+  border: 1px solid var(--ifm-color-success-dark);
+  border-radius: var(--ifm-global-radius);
+  color: var(--ifm-color-success-darkest);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+[data-theme='dark'] .mark {
+  border-color: var(--ifm-color-success);
+  color: var(--ifm-color-success-lightest);
+}

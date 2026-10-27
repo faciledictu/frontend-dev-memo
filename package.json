@@ -15,7 +15,7 @@
     "typecheck": "tsc",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint:md": "markdownlint-cli2 \"docs/**/*.{md,mdx}\" \"*.md\"",
+    "lint:md": "markdownlint-cli2 \"docs/**/*.{md,mdx}\" \"field-notes/**/*.{md,mdx}\" \"*.md\"",
     "lint:spell": "cspell --no-progress",
     "lint": "pnpm format:check && pnpm lint:md && pnpm lint:spell"
   },

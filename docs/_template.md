@@ -27,6 +27,26 @@ Every page has level tags, one or two of:
 Browser support and release dates ("since Safari 26") age quickly: at most one
 line in Details, never in the short answer or the follow-up questions.
 
+Library bugs, behavior that differs from the library's docs and "fixed in
+version X" change with the next release, and the page would not. A page names
+them only in general terms, with the advice that works ("not every core
+component passes every `aria-*` prop on; if one has no effect, use its
+`accessibility*` form"): no versions, no upstream issues or PRs. The details go
+to [Field Notes](/field-notes) as dated posts with versions; the post format is
+in `field-notes/_template.md`.
+
+A claim that differs from the docs and was checked on a device gets a mark that
+links to the post:
+
+```mdx
+<CheckedOnDevice
+  platform="Android"
+  version="16"
+  date="2026-10-21"
+  note="/field-notes/keyboard-avoiding-view-android-edge-to-edge"
+/>
+```
+
 ## Details
 
 What stands behind the short answer: how it works, edge cases, comparison

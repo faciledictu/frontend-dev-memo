@@ -37,8 +37,8 @@ are not repeated here, see
 | `role` / `accessibilityRole`                               | —                                                              | `button`, `link`, `heading` / `header`, `switch`, `tab`, … | Both; `role` wins if both are set                                |
 | `accessibilityState`                                       | `aria-disabled`, `-selected`, `-checked`, `-expanded`, `-busy` | State; `checked` can be `'mixed'`                          | Both                                                             |
 | `accessibilityValue`                                       | `aria-valuemin`, `-max`, `-now`, `-text`                       | Value of a slider or a progress bar                        | Both                                                             |
-| `accessibilityLiveRegion`                                  | `aria-live`                                                    | Announces content changes                                  | Android only; `Text` drops `aria-live`                           |
-| `accessibilityViewIsModal`                                 | `aria-modal`                                                   | Screen reader ignores the sibling views                    | iOS only; `View` drops `aria-modal`                              |
+| `accessibilityLiveRegion`                                  | `aria-live`                                                    | Announces content changes                                  | Android only                                                     |
+| `accessibilityViewIsModal`                                 | `aria-modal`                                                   | Screen reader ignores the sibling views                    | iOS only                                                         |
 | `importantForAccessibility`, `accessibilityElementsHidden` | `aria-hidden` (both platforms)                                 | Hide a subtree from the screen reader                      | Android / iOS                                                    |
 | `accessibilityLabelledBy`                                  | `aria-labelledby`                                              | Takes the label from another view by `nativeID`            | Android only                                                     |
 | `accessibilityActions` + `onAccessibilityAction`           | —                                                              | Custom actions in the screen reader menu                   | Both                                                             |
@@ -47,28 +47,21 @@ are not repeated here, see
 - Neither the `role` / `aria-*` props nor the `accessibilityRole` /
   `accessibility*` props are deprecated, and the docs do not prefer one. `role`
   and `aria-*` look like the web, but `aria-live` and `aria-labelledby` still
-  work only on Android and `aria-modal` only on iOS. For a modal view and a live
-  region use the `accessibility*` form, see the note below.
+  work only on Android and `aria-modal` only on iOS.
+- The `accessibility*` props map directly to the native accessibility APIs; the
+  `aria-*` aliases came later, and in current versions not every core component
+  passes all of them on, without a warning. Fixes are under way. If an `aria-*`
+  prop has no effect, use its `accessibility*` form.
+
+  <CheckedOnDevice platform="iOS" version="27" date="2026-10-21" note="/field-notes/aria-props-in-react-native-0-88" />
+  <CheckedOnDevice platform="Android" version="16" date="2026-10-21" note="/field-notes/aria-props-in-react-native-0-88" />
+
 - `role` values are web-like (`heading`, `img`, `slider`), `accessibilityRole`
   values are the older ones (`header`, `image`, `adjustable`). For navigation
   inside the app use `button`, not `link`.
 - `Pressable`, `Touchable*`, `TextInput` and `Switch` are focus stops by
   default; a plain `View` is not. `Text` with `onPress` gets the `link` role on
   its own.
-
-:::note[Differs from the official docs]
-
-The `View` docs list `aria-modal` as a prop that takes precedence over
-`accessibilityViewIsModal`, but in the 0.88 source `View` does not pass it to
-the native view. The author's test with
-[Memo Lab](https://github.com/faciledictu/memo-lab) on iOS 27 confirmed it: with
-`aria-modal` VoiceOver still reached the background, with
-`accessibilityViewIsModal` it did not. On Android 16 a `Text` with `aria-live`
-stayed silent and the same `Text` with `accessibilityLiveRegion` worked; a
-`View` with `aria-live` was silent until it got `collapsable={false}`, because
-Fabric removes a `View` that has no style.
-
-:::
 
 ### Grouping and Hiding
 
@@ -100,7 +93,10 @@ Fabric removes a `View` that has no style.
 
 - `accessibilityViewIsModal` makes VoiceOver ignore the **siblings** of the
   view: put the dialog and the content it covers at the same level, or the
-  background stays reachable. `aria-modal` on a `View` does nothing in 0.88.
+  background stays reachable. Prefer it to `aria-modal` on a `View`.
+
+  <CheckedOnDevice platform="iOS" version="27" date="2026-10-21" note="/field-notes/view-aria-modal" />
+
 - The `Modal` component is presented as a separate native layer (a view
   controller on iOS, a dialog window on Android), so the screen under it is not
   reachable, with `transparent` too.
@@ -126,9 +122,11 @@ Fabric removes a `View` that has no style.
   `{ queue: true }` waits for the current speech on iOS; TalkBack plays
   announcements one after another anyway.
 - A live region on Android: `accessibilityLiveRegion` on the `Text`, or
-  `aria-live` on a `View` with `collapsable={false}`. Without
-  `collapsable={false}` Fabric flattens a `View` that has no style, and the live
-  region is gone with it.
+  `aria-live` on a `View` around it with `collapsable={false}`, so that view
+  flattening does not remove the view.
+
+  <CheckedOnDevice platform="Android" version="16" date="2026-10-21" note="/field-notes/view-live-region" />
+
 - **After navigation** in a React Navigation 7 native stack, VoiceOver focuses
   the first element of the new screen and TalkBack the header's back button.
   Going back, TalkBack returns focus to the button that opened the screen and
@@ -323,8 +321,8 @@ export function CartRow({
   props are one-platform only.
 - `aria-live` or `aria-labelledby` used and tested only on Android: they do
   nothing on iOS.
-- `aria-modal` on a `View` or `aria-live` on a `Text`: React Native drops them
-  without a warning.
+- Trusting an `aria-*` prop on a core component without checking it with a
+  screen reader: some components drop some of them without a warning.
 - `accessible` on a card that has its own buttons: VoiceOver cannot reach them.
 - Gestures without an alternative: swipe actions, drag to reorder.
 - Using `link` for in-app navigation, or roles without the matching state
