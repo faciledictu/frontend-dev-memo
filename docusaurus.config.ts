@@ -78,7 +78,21 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           editUrl: `${REPO_URL}/tree/main/`,
         },
-        blog: false,
+        blog: {
+          path: 'field-notes',
+          routeBasePath: 'field-notes',
+          blogTitle: 'Field Notes',
+          blogDescription:
+            'Dated findings from device tests: where a library behaves differently from its docs',
+          blogSidebarTitle: 'All notes',
+          blogSidebarCount: 'ALL',
+          showReadingTime: false,
+          editUrl: `${REPO_URL}/tree/main/`,
+          tags: 'tags.yml',
+          onInlineTags: 'throw',
+          onInlineAuthors: 'throw',
+          onUntruncatedBlogPosts: 'throw',
+        },
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -107,6 +121,11 @@ const config: Config = {
           label: 'Related',
           position: 'left',
           items: relatedCategories.map(toDropdownItem),
+        },
+        {
+          to: '/field-notes',
+          label: 'Field Notes',
+          position: 'left',
         },
         {
           href: REPO_URL,
@@ -168,7 +187,8 @@ const config: Config = {
       '@easyops-cn/docusaurus-search-local',
       {
         hashed: true,
-        indexBlog: false,
+        blogDir: 'field-notes',
+        blogRouteBasePath: 'field-notes',
         docsRouteBasePath: '/',
         highlightSearchTermsOnTargetPage: true,
         explicitSearchResultPath: true,

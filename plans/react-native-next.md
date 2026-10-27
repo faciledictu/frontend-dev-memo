@@ -12,14 +12,18 @@ interview pages.
 Approved by the user.
 
 1. **Findings live in a blog-like section**, made with the Docusaurus blog
-   plugin (now off), not on interview pages. Findings such as "`aria-modal` on
-   `View` does nothing" are dated, tied to a version and have an upstream issue
-   or PR whose status changes. One post per finding: date, versions, the claim,
-   how it was checked, the result, the upstream link. An interview page keeps
-   one line ("`View` drops `aria-modal`, use `accessibilityViewIsModal`") and a
-   link to the post. The two "Differs from the official docs" notes on
-   `keyboard` and `accessibility` move there. The section is called "Field
-   Notes": not every finding is a gotcha.
+   plugin, not on interview pages. Findings such as "`aria-modal` on `View` does
+   nothing" are dated, tied to a version and have an upstream issue or PR whose
+   status changes. One post per finding: date, versions, the claim, how it was
+   checked, the result, the upstream link. The two "Differs from the official
+   docs" notes on `keyboard` and `accessibility` move there. The section is
+   called "Field Notes": not every finding is a gotcha.
+   - **Interview pages do not describe React Native bugs and do not link to
+     upstream PRs and issues** (decided on 27 October 2026). A bug is temporary,
+     and a line about it on a page would be forgotten after the fix. Everything
+     tied to a version (behavior that differs from the docs, a bug, a fix in a
+     given version) goes only to Field Notes, where a post has a date and
+     versions.
 2. **The two tracks run in parallel.** Sidebar grouping stays a separate task.
 3. **Formatting.** A compact "checked on a device" mark (a small MDX component
    in `src/components/`: platform, OS version, date, link to the post) replaces

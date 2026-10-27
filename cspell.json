@@ -1,7 +1,7 @@
 {
   "version": "0.2",
   "language": "en-US",
-  "files": ["docs/**/*.{md,mdx}", "README.md"],
+  "files": ["docs/**/*.{md,mdx}", "field-notes/**/*.{md,mdx}", "README.md"],
   "ignorePaths": ["node_modules", "build", ".docusaurus", "pnpm-lock.yaml"],
   "words": [
     "accountabilities",
@@ -224,6 +224,7 @@
     "turbopack",
     "Twitterbot",
     "udids",
+    "uiautomator",
     "unawaited",
     "Uncapitalize",
     "unhandledrejection",

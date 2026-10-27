@@ -27,6 +27,12 @@ Every page has level tags, one or two of:
 Browser support and release dates ("since Safari 26") age quickly: at most one
 line in Details, never in the short answer or the follow-up questions.
 
+Library bugs, behavior that differs from the library's docs and "fixed in
+version X" are not described on a page, and upstream issues and PRs are not
+linked: they change with the next release, and the page would not. Such findings
+go to [Field Notes](/field-notes) as dated posts with versions; the post format
+is in `field-notes/_template.md`.
+
 ## Details
 
 What stands behind the short answer: how it works, edge cases, comparison
