@@ -19,19 +19,21 @@ with `accessibilityLiveRegion="polite"` is announced on every change.
 - **Devices:** Samsung phone (SM-A276B), Android 16, TalkBack
 - **Upstream:**
   [react/react-native#59330](https://github.com/react/react-native/pull/59330):
-  merged in `main`
+  merged into `main`
 
 ## How It Was Checked
 
-Two counters that change every few seconds by themselves, so that nothing else
-moves the TalkBack focus. Focus is left on another element and the announcements
-are listened to.
+The `announcements` case of [Memo Lab](https://github.com/faciledictu/memo-lab):
+counters in live regions, each changed by its own button; activate a button and
+wait for the announcement.
 
 ```tsx
-// A: silent
-<Text aria-live="polite">{count}</Text>
-// B: announced on every change
-<Text accessibilityLiveRegion="polite">{count}</Text>
+<>
+  {/* A: silent */}
+  <Text aria-live="polite">Cart A: {countA} items</Text>
+  {/* B: announced on every change */}
+  <Text accessibilityLiveRegion="polite">Cart B: {countB} items</Text>
+</>
 ```
 
 ## Result

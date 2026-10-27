@@ -1,6 +1,7 @@
 ---
 title:
-  KeyboardAvoidingView Without behavior Leaves the Input Covered on Android 15+
+  KeyboardAvoidingView Without behavior Leaves the Input Covered on Edge-to-Edge
+  Android
 slug: keyboard-avoiding-view-android-edge-to-edge
 description:
   Expo's keyboard guide sets no behavior on Android; on an edge-to-edge app the
@@ -10,10 +11,11 @@ tags: [expo, react-native, keyboard, android]
 ---
 
 Expo's keyboard guide sets
-`behavior={Platform.OS === 'ios' ? 'padding' : undefined}`. Expo apps are
-edge-to-edge on Android, and on Android 15+ the window no longer shrinks for the
-keyboard, so with no `behavior` the input stays under the keyboard. `padding` or
-`height` with the header offset keeps it right above the keyboard.
+`behavior={Platform.OS === 'ios' ? 'padding' : undefined}`. An edge-to-edge app
+(every Expo SDK 54+ app on Android 16, and Android 15 enforces it for apps
+targeting API 35) does not shrink its window for the keyboard, so with no
+`behavior` the input stays under the keyboard. `padding` or `height` with the
+header offset keeps it right above the keyboard. Checked on Android 16 and 17.
 
 {/* truncate */}
 
@@ -24,10 +26,12 @@ keyboard, so with no `behavior` the input stays under the keyboard. `padding` or
 
 ## How It Was Checked
 
-A screen under a navigation header with a `KeyboardAvoidingView` and an input at
-the bottom; switches set `behavior` (none, `padding`, `height`) and
-`keyboardVerticalOffset` (0 or the header height). For each combination: tap the
-input, type, and look where the input is.
+The `keyboard-avoiding-view` case of
+[Memo Lab](https://github.com/faciledictu/memo-lab): a screen under a navigation
+header with a `KeyboardAvoidingView` and an input at the bottom; switches set
+`behavior` (none, `padding`, `height`) and `keyboardVerticalOffset` (0 or the
+header height). For each combination: tap the input, type, and look where the
+input is.
 
 ```tsx
 <KeyboardAvoidingView

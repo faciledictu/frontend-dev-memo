@@ -1,16 +1,17 @@
 ---
-title: A View Live Region Without a Style Is Flattened Away
+title: A View Live Region With Only Layout Styles Is Flattened Away
 slug: view-live-region
 description:
-  In React Native 0.88 Fabric removes a View that has only aria-live or
-  accessibilityLiveRegion, so TalkBack never announces it
+  In React Native 0.88 Fabric removes a View that has aria-live or
+  accessibilityLiveRegion and nothing that keeps it, so TalkBack never announces
+  it
 tags: [react-native, accessibility, android]
 ---
 
-A `View` with `aria-live` or `accessibilityLiveRegion` and no style is removed
-from the native tree by view flattening in React Native 0.88, so the live region
-does not exist and TalkBack announces nothing. `collapsable={false}` keeps the
-view and the live region works.
+A `View` with `aria-live` or `accessibilityLiveRegion` and no style (or only
+layout styles) is removed from the native tree by view flattening in React
+Native 0.88, so the live region does not exist and TalkBack announces nothing.
+`collapsable={false}` keeps the view and the live region works.
 
 {/* truncate */}
 
@@ -19,24 +20,29 @@ view and the live region works.
 - **Devices:** Samsung phone (SM-A276B), Android 16, TalkBack
 - **Upstream:**
   [react/react-native#59329](https://github.com/react/react-native/issues/59329),
-  fix [#59335](https://github.com/react/react-native/pull/59335): merged in
+  fix [#59335](https://github.com/react/react-native/pull/59335): landed in
   `main`
 
 ## How It Was Checked
 
-Counters that change by themselves, each wrapped in a `View` live region; the
-[reproducer](https://github.com/faciledictu/rn-live-region-repro) has the same
-cases.
+The `announcements` case of [Memo Lab](https://github.com/faciledictu/memo-lab):
+counters in live regions, each changed by its own button; activate a button and
+wait for the announcement. Later the
+[reproducer](https://github.com/faciledictu/rn-live-region-repro) (plain React
+Native CLI, counters that change by themselves) showed the same, and was used to
+check the fix with React Native built from source.
 
 ```tsx
-// Silent: the View has no style and is flattened
-<View aria-live="polite">
-  <Text>{count}</Text>
-</View>
-// Announced
-<View aria-live="polite" collapsable={false}>
-  <Text>{count}</Text>
-</View>
+<>
+  {/* Silent: the View is flattened */}
+  <View aria-live="polite">
+    <Text>Cart: {count} items</Text>
+  </View>
+  {/* Announced */}
+  <View aria-live="polite" collapsable={false}>
+    <Text>Cart: {count} items</Text>
+  </View>
+</>
 ```
 
 ## Result
@@ -48,8 +54,10 @@ cases.
   `accessibilityElementsHidden` and `importantForAccessibility`, but not for a
   live region. A live region is announced without the view being `accessible`,
   so it needs a view of its own.
-- A `View` with a style, `testID` or `nativeID` is kept anyway, which is why a
-  quick test often does not show the problem.
+- A `View` with a background color, a border, `opacity`, a `transform`, `testID`
+  or `nativeID` is kept anyway, which is why a quick test often does not show
+  the problem. Layout styles such as `padding` or `flexDirection` do not keep
+  it.
 
 ## Upstream
 

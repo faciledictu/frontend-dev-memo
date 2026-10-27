@@ -121,9 +121,9 @@ are not repeated here, see
   region is the safer choice there. `announceForAccessibilityWithOptions` with
   `{ queue: true }` waits for the current speech on iOS; TalkBack plays
   announcements one after another anyway.
-- A live region on Android: `accessibilityLiveRegion` on the `Text`, or on a
-  `View` around it with `collapsable={false}`, so that view flattening does not
-  remove the view.
+- A live region on Android: `accessibilityLiveRegion` on the `Text`, or
+  `aria-live` on a `View` around it with `collapsable={false}`, so that view
+  flattening does not remove the view.
 
   <CheckedOnDevice platform="Android" version="16" date="2026-10-21" note="/field-notes/view-live-region" />
 

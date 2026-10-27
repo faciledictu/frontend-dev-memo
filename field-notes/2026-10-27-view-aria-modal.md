@@ -19,13 +19,14 @@ custom dialog, with `accessibilityViewIsModal` it does not.
 - **Devices:** iPhone, iOS 27, VoiceOver
 - **Upstream:**
   [react/react-native#59328](https://github.com/react/react-native/pull/59328):
-  merged in `main`
+  landed in `main`
 
 ## How It Was Checked
 
-A screen with three background buttons and a custom overlay that is their
-sibling. With the dialog open, swipe right through all elements, then touch
-where a background button is.
+The `modal` case of [Memo Lab](https://github.com/faciledictu/memo-lab): a
+screen with three background buttons and a custom overlay that is their sibling.
+With the dialog open, swipe right through all elements, then touch where a
+background button is.
 
 ```tsx
 <View style={{ flex: 1 }}>

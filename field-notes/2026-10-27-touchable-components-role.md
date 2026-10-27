@@ -15,7 +15,7 @@ drops `aria-label`, and `TouchableHighlight` drops `aria-checked` and the other
 
 {/* truncate */}
 
-- **Checked:** 22 October 2026
+- **Checked:** 22–23 October 2026
 - **Versions:** React Native 0.88.0
 - **Devices:** iOS 27.0 Simulator (Accessibility Inspector), Android 17 emulator
   (`uiautomator dump`)
@@ -29,24 +29,26 @@ Pairs in the [reproducer](https://github.com/faciledictu/rn-aria-props-repro),
 the `aria-*` or `role` prop next to its `accessibility*` form:
 
 ```tsx
-<TouchableOpacity role="button" onPress={save}>
-  <Text>Save G</Text>
-</TouchableOpacity>
-<TouchableOpacity accessibilityRole="button" onPress={save}>
-  <Text>Save H</Text>
-</TouchableOpacity>
+<>
+  <TouchableOpacity role="button" onPress={save}>
+    <Text>Save G</Text>
+  </TouchableOpacity>
+  <TouchableOpacity accessibilityRole="button" onPress={save}>
+    <Text>Save H</Text>
+  </TouchableOpacity>
+</>
 ```
 
 ## Result
 
-| Component                  | Prop                 | Android 17                     | iOS 27                    |
-| -------------------------- | -------------------- | ------------------------------ | ------------------------- |
-| `TouchableOpacity`         | `role="button"`      | `android.view.ViewGroup`       | No Button trait           |
-| `TouchableWithoutFeedback` | `aria-label="Close"` | `content-desc="×"` (the child) | Label "×"                 |
-| `TouchableHighlight`       | `aria-checked`       | `checkable="false"`            | No "checked" in the value |
+| Component                  | Prop                   | Android 17                     | iOS 27                    |
+| -------------------------- | ---------------------- | ------------------------------ | ------------------------- |
+| `TouchableOpacity`         | `role="button"`        | `android.view.ViewGroup`       | No Button trait           |
+| `TouchableWithoutFeedback` | `aria-label="Close I"` | `content-desc="×"` (the child) | Label "×"                 |
+| `TouchableHighlight`       | `aria-checked`         | `checkable="false"`            | No "checked" in the value |
 
 With the `accessibility*` form each of them is right: `android.widget.Button`
-and the Button trait, the label "Close", `checked="true"`.
+and the Button trait, the label "Close J", `checked="true"`.
 
 - `TouchableNativeFeedback` drops `role` too (read from the code, not run).
 - `aria-labelledby` is dropped by all four (read from the code).

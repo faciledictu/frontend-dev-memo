@@ -10,12 +10,11 @@ tags: [react-native, accessibility, ios, android]
 `Switch`, `ScrollView` and `ActivityIndicator` accept all `View` props in their
 types and docs, but in React Native 0.88 they pass `aria-*`, `id` and `tabIndex`
 to the native side unconverted, where nothing reads them.
-`<Switch aria-label="Wi-Fi" />` has no name; `accessibilityLabel` works. `role`
-works.
+`<Switch aria-label="Wi-Fi" />` has no name; `accessibilityLabel` works.
 
 {/* truncate */}
 
-- **Checked:** 22 October 2026
+- **Checked:** 22–23 October 2026
 - **Versions:** React Native 0.88.0
 - **Devices:** iOS 27.0 Simulator (Accessibility Inspector), Android 17 emulator
   (`uiautomator dump`)
@@ -30,18 +29,20 @@ the left element uses the `aria-*` prop, the right one its `accessibility*`
 form. The accessibility tree was read without a screen reader.
 
 ```tsx
-<Switch aria-label="Wi-Fi A" value={on} onValueChange={setOn} />
-<Switch accessibilityLabel="Wi-Fi B" value={on} onValueChange={setOn} />
+<>
+  <Switch aria-label="Wi-Fi A" value={on} onValueChange={setOn} />
+  <Switch accessibilityLabel="Wi-Fi B" value={on} onValueChange={setOn} />
+</>
 ```
 
 ## Result
 
-| Pair                         | `aria-label`                                         | `accessibilityLabel`       |
-| ---------------------------- | ---------------------------------------------------- | -------------------------- |
-| `Switch`, Android            | `content-desc=""`, marked `NAF` (no accessible name) | `content-desc="Wi-Fi B"`   |
-| `Switch`, iOS                | No label                                             | Label "Wi-Fi B"            |
-| `ActivityIndicator`, Android | `content-desc=""`                                    | `content-desc="Loading D"` |
-| `ScrollView`, Android        | `content-desc=""`                                    | `content-desc="Photos F"`  |
+| Pair                         | `aria-label`                                                            | `accessibilityLabel`       |
+| ---------------------------- | ----------------------------------------------------------------------- | -------------------------- |
+| `Switch`, Android            | `content-desc=""`, marked `NAF` (focusable, but no text or description) | `content-desc="Wi-Fi B"`   |
+| `Switch`, iOS                | No label                                                                | Label "Wi-Fi B"            |
+| `ActivityIndicator`, Android | `content-desc=""`                                                       | `content-desc="Loading D"` |
+| `ScrollView`, Android        | `content-desc=""`                                                       | `content-desc="Photos F"`  |
 
 - The cause: `View`, `Text`, `TextInput` and `Image` convert `aria-*` to
   `accessibility*` in JS. `Switch`, `ScrollView` and `ActivityIndicator` render

@@ -2,19 +2,20 @@
 title: ActivityIndicator Ignores Its Label on iOS
 slug: activity-indicator-label-ios
 description:
-  In React Native 0.88 VoiceOver reads an ActivityIndicator as "In progress"
-  whatever accessibilityLabel says; accessible fixes the label but loses the
-  value
+  In React Native 0.88 an ActivityIndicator on iOS is exposed with the label "In
+  progress" whatever accessibilityLabel says; accessible fixes the label but
+  loses the value
 tags: [react-native, accessibility, ios]
 ---
 
-On iOS, `<ActivityIndicator accessibilityLabel="Loading orders" />` is read as
-"In progress", the default label of the native indicator. The label goes to a
-wrapper view that is not an accessibility element. Android uses the label.
+On iOS, `<ActivityIndicator accessibilityLabel="Loading orders" />` is exposed
+to VoiceOver with the label "In progress", the default label of the native
+indicator. The label goes to a wrapper view that is not an accessibility
+element. Android uses the label.
 
 {/* truncate */}
 
-- **Checked:** 22 October 2026
+- **Checked:** 22–23 October 2026
 - **Versions:** React Native 0.88.0
 - **Devices:** iOS 27.0 Simulator (Accessibility Inspector); Android 17 emulator
 - **Upstream:**
