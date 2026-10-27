@@ -104,7 +104,6 @@
   React, а не про CSS, и переехала в `react/ecosystem/styling.md` (шаг 4 этапа
   3).
 - Event loop в JavaScript и Node.js не слит (поправка из аудита).
-- У новых разделов нет своих иконок: `html-css` и `tooling` показывают общую.
 
 Шаблон страницы — [docs/\_template.md](docs/_template.md) (Docusaurus не
 публикует файлы с `_` в начале имени):
@@ -372,4 +371,3 @@ Fable в процессе (этап 3 и пачки 1–2 этапа 4), по р
 - Возможные страницы, если появится экспертиза: инструменты сборки (Vite vs
   webpack, HMR), frontend system design и архитектура (тема большая), `Symbol` /
   `Proxy` / `Reflect` в JavaScript, i18n и `Intl`.
-- Иконки для разделов `html-css`, `tooling` и `react-native`.

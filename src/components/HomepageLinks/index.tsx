@@ -5,11 +5,14 @@ import clsx from 'clsx';
 import CategoryBrowser from '@site/static/img/category-browser.svg';
 import CategoryCommon from '@site/static/img/category-common.svg';
 import CategoryGit from '@site/static/img/category-git.svg';
+import CategoryHtmlCss from '@site/static/img/category-html-css.svg';
 import CategoryJavascript from '@site/static/img/category-javascript.svg';
 import CategoryNextjs from '@site/static/img/category-nextjs.svg';
 import CategoryNodejs from '@site/static/img/category-nodejs.svg';
 import CategoryReact from '@site/static/img/category-react.svg';
+import CategoryReactNative from '@site/static/img/category-react-native.svg';
 import CategorySql from '@site/static/img/category-sql.svg';
+import CategoryTooling from '@site/static/img/category-tooling.svg';
 import CategoryTypescript from '@site/static/img/category-typescript.svg';
 import {
   generalCategories,
@@ -31,10 +34,12 @@ type CategoryLink = {
 const icons: Record<string, Icon> = {
   'programming': CategoryCommon,
   'git': CategoryGit,
+  'tooling': CategoryTooling,
   'javascript': CategoryJavascript,
   'web-platform': CategoryBrowser,
+  'html-css': CategoryHtmlCss,
   'react': CategoryReact,
-  'react-native': CategoryReact,
+  'react-native': CategoryReactNative,
   'nextjs': CategoryNextjs,
   'typescript': CategoryTypescript,
   'nodejs': CategoryNodejs,
