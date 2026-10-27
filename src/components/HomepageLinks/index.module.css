@@ -14,7 +14,7 @@
 }
 
 .card:hover {
-  border-color: var(--ifm-color-primary);
+  border-color: var(--site-color-accent);
 }
 
 .stretch {
