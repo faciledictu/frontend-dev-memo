@@ -13,10 +13,10 @@ On **iOS** the keyboard is drawn **over** the app: the app moves the content
 itself, usually with **`KeyboardAvoidingView`** (`behavior="padding"`) or a
 scroll view that scrolls to the focused input. On **Android 15+** the app is
 edge-to-edge: the window keeps its height and the keyboard covers the bottom
-too, so the "no `behavior` on Android" advice from Expo's guide leaves the input
-covered; use `padding` with the header offset on both platforms. For long forms
-and chats, **`react-native-keyboard-controller`** gives the same behavior on
-both platforms. A tap while the keyboard is open is controlled by
+too, so with no `behavior` the input stays covered; use `padding` with the
+header offset on both platforms. For long forms and chats,
+**`react-native-keyboard-controller`** gives the same behavior on both
+platforms. A tap while the keyboard is open is controlled by
 **`keyboardShouldPersistTaps`** on the scroll view.
 
 Applies to: React Native 0.88, Expo SDK 58, react-native-keyboard-controller
@@ -33,20 +33,11 @@ Applies to: React Native 0.88, Expo SDK 58, react-native-keyboard-controller
 | Events                 | `keyboardWill*` and `keyboardDid*`       | Only `keyboardDidShow` / `keyboardDidHide`                        |
 
 - Edge-to-edge (Android 15+) does not resize the window: the app gets the
-  keyboard as a bottom inset. Checked on Android 16 and 17: with no `behavior`
-  the input stays covered; `padding` or `height` with the header offset keeps it
-  right above the keyboard (`KeyboardAvoidingView` handles the inset since React
-  Native 0.86). keyboard-controller behaves the same on every version.
+  keyboard as a bottom inset. With no `behavior` the input stays covered;
+  `padding` or `height` with the header offset keeps it right above the
+  keyboard. keyboard-controller behaves the same.
 
-:::note[Differs from the official docs]
-
-Expo's keyboard guide sets no `behavior` on Android. In the author's test with
-[Memo Lab](https://github.com/faciledictu/memo-lab) (Expo SDK 58, React Native
-0.88, Android 16 on a Samsung phone and Android 17 on the emulator) the input
-stayed under the keyboard that way; only `padding` or `height` with the header
-offset kept it visible.
-
-:::
+  <CheckedOnDevice platform="Android" version="16" date="2026-10-21" note="/field-notes/keyboard-avoiding-view-android-edge-to-edge" />
 
 - `adjustPan` (`softwareKeyboardLayoutMode: "pan"` in Expo's `app.json`) moves
   the whole window up instead of resizing it. It stops a bottom tab bar from

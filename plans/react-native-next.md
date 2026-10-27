@@ -18,17 +18,21 @@ Approved by the user.
    checked, the result, the upstream link. The two "Differs from the official
    docs" notes on `keyboard` and `accessibility` move there. The section is
    called "Field Notes": not every finding is a gotcha.
-   - **Interview pages do not describe React Native bugs and do not link to
-     upstream PRs and issues** (decided on 27 October 2026). A bug is temporary,
-     and a line about it on a page would be forgotten after the fix. Everything
-     tied to a version (behavior that differs from the docs, a bug, a fix in a
-     given version) goes only to Field Notes, where a post has a date and
-     versions.
+   - **Interview pages do not describe React Native bugs in detail and do not
+     link to upstream PRs and issues** (decided on 27 October 2026). A bug is
+     temporary, and a line about it on a page would be forgotten after the fix.
+     Everything tied to a version (behavior that differs from the docs, a bug, a
+     fix in a given version) goes to Field Notes, where a post has a date and
+     versions. A page keeps at most a general line with the advice that works
+     ("not every core component passes every `aria-*` prop on; use the
+     `accessibility*` form") and the "checked on a device" mark.
 2. **The two tracks run in parallel.** Sidebar grouping stays a separate task.
-3. **Formatting.** A compact "checked on a device" mark (a small MDX component
-   in `src/components/`: platform, OS version, date, link to the post) replaces
-   note blocks. Docusaurus `Tabs` where a page compares iOS and Android at
-   length; tables stay the default.
+3. **Formatting.** A compact "checked on a device" mark (`<CheckedOnDevice>` in
+   `src/components/`: platform, OS version, date, link to the post) replaces
+   note blocks. It goes next to a claim that differs from the docs or a common
+   guide and was checked on a device, so the reader sees it is not a guess.
+   Docusaurus `Tabs` where a page compares iOS and Android at length; tables
+   stay the default.
 4. **No live code.** No Expo Snack embeds or other runnable examples: the site
    reworks the official docs into answers, it does not repeat them; readers go
    to the official site for the docs.

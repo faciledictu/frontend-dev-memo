@@ -62,8 +62,7 @@ safe area: see [Keyboard Handling](keyboard.md).
 - Expo SDK 54+: always edge-to-edge on Android 16; on older Android versions the
   `edgeToEdgeEnabled` setting decides. Bare app: `edgeToEdgeEnabled=true` in
   `gradle.properties` makes it edge-to-edge on every Android version, not only
-  where the OS enforces it. React Native 0.86 fixed `KeyboardAvoidingView`,
-  `measureInWindow` and `Dimensions` in this mode.
+  where the OS enforces it.
 - What breaks in an old layout: content and headers slide under the status bar,
   bottom buttons hide behind the navigation bar, and the status bar background
   color can no longer be set. The fix is the same as on iOS: apply insets.

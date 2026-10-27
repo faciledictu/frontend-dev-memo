@@ -320,7 +320,14 @@
       Native расходится со своей документацией (отдельно от страниц для
       собеседований). План —
       [plans/react-native-next.md](plans/react-native-next.md); направления идут
-      параллельно.
+      параллельно. Сделано: раздел [Field Notes](field-notes/) (блог-плагин,
+      `/field-notes`) с 8 постами — какие `aria-*` и `role` доходят до нативной
+      части в RN 0.88 (обзор и 6 постов по компонентам) и `KeyboardAvoidingView`
+      без `behavior` на Android 15+; метка `<CheckedOnDevice>`; примечания
+      «Differs from the official docs» и описания багов убраны со страниц
+      `keyboard`, `accessibility` и `safe-area`. Правило: на странице о баге —
+      только общая строка с работающим советом, без версий и ссылок на upstream
+      ([docs/\_template.md](docs/_template.md)).
 
 Обновление версий: строки `Applies to` сверяются раз в квартал
 (`grep -rh '^Applies to:' docs | sort | uniq -c`). Node.js 26 и PostgreSQL 19 —
