@@ -1,5 +1,5 @@
 ---
-sidebar_position: 19
+sidebar_position: 2
 description:
   NetInfo and expo-network, isConnected vs isInternetReachable, cached reads,
   queued writes, offline-first, TanStack Query onlineManager and focusManager,
@@ -46,7 +46,7 @@ Applies to: React Native 0.88, Expo SDK 58, TanStack Query 5.
 | Offline-first | Everything; the network is optional | A local database (SQLite) is read and written by the UI; a sync engine exchanges changes with the server |
 
 Where to keep the data (AsyncStorage, MMKV, SQLite):
-[Storing Data on the Device](./storage.md).
+[Storing Data on the Device](storage.md).
 
 ### TanStack Query in React Native
 
@@ -66,8 +66,8 @@ Where to keep the data (AsyncStorage, MMKV, SQLite):
   persisted, only the key and variables), then call
   `queryClient.resumePausedMutations()` in the provider's `onSuccess`.
 - **Optimistic updates** work as on the web, see
-  [TanStack Query](../react/state-management/tanstack-query.md); the `variables`
-  of a paused mutation are what the UI shows as "Sending…".
+  [TanStack Query](../../react/state-management/tanstack-query.md); the
+  `variables` of a paused mutation are what the UI shows as "Sending…".
 
 ### Sync Engines on SQLite
 
@@ -206,8 +206,8 @@ export function AddTodoButton() {
 - When is a sync engine worth it? When users edit data offline for long periods
   or on several devices; for "see the last data" a persisted cache is enough.
 - How do you sync in the background? A periodic task, see
-  [App Lifecycle](./app-lifecycle.md); but sync on launch and on return to the
-  foreground first: background runs are not guaranteed.
+  [App Lifecycle](../device/app-lifecycle.md); but sync on launch and on return
+  to the foreground first: background runs are not guaranteed.
 
 ## Common Mistakes
 
@@ -222,7 +222,7 @@ export function AddTodoButton() {
 
 ## See Also
 
-- [Storing Data on the Device](./storage.md)
-- [App Lifecycle and Background Work](./app-lifecycle.md)
-- [TanStack Query](../react/state-management/tanstack-query.md)
+- [Storing Data on the Device](storage.md)
+- [App Lifecycle and Background Work](../device/app-lifecycle.md)
+- [TanStack Query](../../react/state-management/tanstack-query.md)
 - [TanStack Query in React Native](https://tanstack.com/query/latest/docs/framework/react/react-native)

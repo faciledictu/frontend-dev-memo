@@ -1,5 +1,5 @@
 ---
-sidebar_position: 13
+sidebar_position: 4
 description:
   Turbo Native Modules, Expo Modules API and Nitro Modules, Codegen spec, sync
   vs async methods, events, Fabric Native Components, config plugins
@@ -41,7 +41,7 @@ Applies to: React Native 0.88, Expo SDK 58, Nitro Modules 0.37.
 | Fits        | Libraries for any app, no dependencies                         | App-specific modules and libraries for Expo apps                  | Performance-critical libraries with frequent calls (MMKV 4)   |
 
 The architecture behind them (JSI, bridgeless, Codegen) is on
-[Architecture](./rn-architecture.md).
+[Architecture](rn-architecture.md).
 
 ### Turbo Native Module Step by Step
 
@@ -218,8 +218,7 @@ export default requireNativeModule<DeviceInfoModule>('DeviceInfo');
   so a mismatch between JS and native signatures fails at build time, not at
   runtime.
 - Do old (bridge) modules still work? Yes, through the interop layer, but new
-  code should be a Turbo or Expo module; see
-  [Architecture](./rn-architecture.md).
+  code should be a Turbo or Expo module; see [Architecture](rn-architecture.md).
 - How do you pass binary data? An `ArrayBuffer` instead of a base64 string:
   Nitro supports it, and since 0.88 Java Turbo Modules too.
 - Why does a module work in a development build but not in Expo Go? Expo Go
@@ -243,8 +242,8 @@ export default requireNativeModule<DeviceInfoModule>('DeviceInfo');
 
 ## See Also
 
-- [Architecture](./rn-architecture.md)
-- [Platform-Specific Code](./platform-specific-code.md)
+- [Architecture](rn-architecture.md)
+- [Platform-Specific Code](platform-specific-code.md)
 - [Turbo Native Modules (reactnative.dev)](https://reactnative.dev/docs/turbo-native-modules-introduction)
 - [Expo Modules API](https://docs.expo.dev/modules/overview/)
 - [Nitro Modules](https://nitro.margelo.com/)

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 21
+sidebar_position: 4
 description:
   Threat model of a mobile app, OWASP MASVS and Mobile Top 10, what the bundle
   reveals, HTTPS and SSL pinning, root detection vs attestation, sensitive data
@@ -28,16 +28,16 @@ Applies to: React Native 0.88, Expo SDK 58, OWASP MASVS 2.1.
 MASVS 2.1 sorts its controls into eight groups; the levels L1 / L2 / R are now
 MAS testing profiles, not part of the standard.
 
-| Group      | What it means in React Native                                                 | Where                                                                               |
-| ---------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| STORAGE    | Tokens in the secure store, nothing sensitive in AsyncStorage or logs         | [Storage](./storage.md), [below](#sensitive-data)                                   |
-| CRYPTO     | Platform crypto (`expo-crypto`), keys in the Keystore / Secure Enclave        | —                                                                                   |
-| AUTH       | OAuth with PKCE, refresh, biometrics bound to a key                           | [Authentication](./authentication.md)                                               |
-| NETWORK    | HTTPS, no cleartext, pinning where needed                                     | [below](#network)                                                                   |
-| PLATFORM   | Deep links, WebView, permissions, the clipboard                               | [Deep Linking](./deep-linking.md), [WebView](#webview)                              |
-| CODE       | Updated dependencies (the supply chain), signed OTA updates, input validation | [OTA Updates](./release/ota.md), [Package Managers](../tooling/package-managers.md) |
-| RESILIENCE | Obfuscation, root and tampering detection, attestation                        | [below](#device-integrity)                                                          |
-| PRIVACY    | Least data and permissions, consent, tracking                                 | [Permissions](./permissions.md)                                                     |
+| Group      | What it means in React Native                                                 | Where                                                                                   |
+| ---------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| STORAGE    | Tokens in the secure store, nothing sensitive in AsyncStorage or logs         | [Storage](storage.md), [below](#sensitive-data)                                         |
+| CRYPTO     | Platform crypto (`expo-crypto`), keys in the Keystore / Secure Enclave        | —                                                                                       |
+| AUTH       | OAuth with PKCE, refresh, biometrics bound to a key                           | [Authentication](authentication.md)                                                     |
+| NETWORK    | HTTPS, no cleartext, pinning where needed                                     | [below](#network)                                                                       |
+| PLATFORM   | Deep links, WebView, permissions, the clipboard                               | [Deep Linking](../device/deep-linking.md), [WebView](#webview)                          |
+| CODE       | Updated dependencies (the supply chain), signed OTA updates, input validation | [OTA Updates](../release/ota.md), [Package Managers](../../tooling/package-managers.md) |
+| RESILIENCE | Obfuscation, root and tampering detection, attestation                        | [below](#device-integrity)                                                              |
+| PRIVACY    | Least data and permissions, consent, tracking                                 | [Permissions](../device/permissions.md)                                                 |
 
 The **OWASP Mobile Top 10** (2024) is the list of risks: M1 improper credential
 usage, M2 supply chain, M3 authentication and authorization, M4 input and output
@@ -52,7 +52,7 @@ misconfiguration, M9 data storage, M10 cryptography.
 - Obfuscation and Hermes only slow the attacker down; they are not a security
   boundary.
 - So any key in the app is public, see
-  [Environment Configuration](./release/env.md).
+  [Environment Configuration](../release/env.md).
 - Client checks ("the button is hidden for non-premium users") are only UX: the
   API must check the same rule.
 
@@ -84,7 +84,7 @@ misconfiguration, M9 data storage, M10 cryptography.
 - Android also has `<pin-set>` in `network_security_config.xml`, with an
   `expiration` after which pinning turns off.
 - Pinning breaks debugging proxies (Proxyman, Charles); keep it off in debug
-  builds, see [Debugging](./debugging.md).
+  builds, see [Debugging](../quality/debugging.md).
 - Worth it for banking, health and payments; for most apps HTTPS with the system
   defaults is enough, and a wrong pin is an outage. Pinning is also easy to
   bypass with Frida on a rooted device, so it protects the user on a hostile
@@ -115,7 +115,7 @@ misconfiguration, M9 data storage, M10 cryptography.
   also blanks the recent-apps preview; on iOS it blocks recording and
   screenshots.
 - **App switcher** on iOS: `enableAppSwitcherProtectionAsync` blurs the
-  snapshot, see [App Lifecycle](./app-lifecycle.md).
+  snapshot, see [App Lifecycle](../device/app-lifecycle.md).
 - **Logs**: `console.log` stays in release builds and goes to the device log,
   readable with `adb logcat` or Console on a connected computer; strip it
   (`babel-plugin-transform-remove-console`) and scrub tokens and personal data
@@ -149,9 +149,9 @@ misconfiguration, M9 data storage, M10 cryptography.
   `file://`), `mixedContentMode="never"` (an HTTP script injected into an HTTPS
   page on a hostile network), debugging off in release (anyone with the device
   and `chrome://inspect` reads the page, its storage and cookies). Content from
-  your server still needs a CSP, see [XSS](../web-platform/security/xss.md).
+  your server still needs a CSP, see [XSS](../../web-platform/security/xss.md).
 - Never do login in a WebView, see
-  [Authentication](./authentication.md#why-the-system-browser-not-a-webview).
+  [Authentication](authentication.md#why-the-system-browser-not-a-webview).
 
 ## Example
 
@@ -250,7 +250,7 @@ export function CardDetailsScreen({ cardNumber }: { cardNumber: string }) {
 ## Common Mistakes
 
 - An API key "hidden" in the bundle or in an env variable, see
-  [Environment Configuration](./release/env.md).
+  [Environment Configuration](../release/env.md).
 - A single pin without a backup, or pinning a third-party SDK's domain.
 - Root detection on the device as the only protection; or blocking rooted
   devices for an app that has nothing to protect.
@@ -261,9 +261,9 @@ export function CardDetailsScreen({ cardNumber }: { cardNumber: string }) {
 
 ## See Also
 
-- [Authentication in React Native](./authentication.md)
-- [Storage](./storage.md)
-- [Deep Linking](./deep-linking.md)
-- [XSS](../web-platform/security/xss.md)
+- [Authentication in React Native](authentication.md)
+- [Storage](storage.md)
+- [Deep Linking](../device/deep-linking.md)
+- [XSS](../../web-platform/security/xss.md)
 - [Security (React Native docs)](https://reactnative.dev/docs/security)
 - [OWASP MASVS](https://mas.owasp.org/MASVS/)

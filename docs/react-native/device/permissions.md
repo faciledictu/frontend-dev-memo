@@ -1,5 +1,5 @@
 ---
-sidebar_position: 15
+sidebar_position: 1
 description:
   Runtime permissions on iOS and Android, permission statuses, blocked
   permissions and settings, libraries
@@ -111,7 +111,7 @@ export async function ensureCameraPermission(): Promise<boolean> {
 - How do you get location in the background? A separate permission, asked after
   the foreground one: "Always" on iOS, `ACCESS_BACKGROUND_LOCATION` on Android
   (on Android 11+ the request opens Settings). The tracking itself is covered in
-  [App Lifecycle](./app-lifecycle.md#background-options).
+  [App Lifecycle](app-lifecycle.md#background-options).
 - How do you test the blocked state? On iOS, turn it off in Settings; on
   Android, deny it twice. Reinstall the app to start over.
 
@@ -126,6 +126,6 @@ export async function ensureCameraPermission(): Promise<boolean> {
 
 ## See Also
 
-- [Push Notifications](./notifications.md)
-- [App Lifecycle and Background Work](./app-lifecycle.md)
-- [Platform-Specific Code](./platform-specific-code.md)
+- [Push Notifications](notifications.md)
+- [App Lifecycle and Background Work](app-lifecycle.md)
+- [Platform-Specific Code](../fundamentals/platform-specific-code.md)

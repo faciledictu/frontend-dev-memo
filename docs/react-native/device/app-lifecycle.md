@@ -1,5 +1,5 @@
 ---
-sidebar_position: 17
+sidebar_position: 3
 description:
   AppState states and events, refresh on return, hiding content in the app
   switcher, why JS stops in the background, expo-background-task, Headless JS,
@@ -43,7 +43,7 @@ subscription with `remove()`.
 ### Typical Uses
 
 - **Refresh on return**: `background` → `active`; with TanStack Query, pass the
-  state to `focusManager` (see [Offline Support](./offline.md)).
+  state to `focusManager` (see [Offline Support](../data-security/offline.md)).
 - **Pause** video, audio, the camera or a game loop; close a socket and reopen
   it on return.
 - **Hide private content** in the app switcher: iOS takes a snapshot right after
@@ -58,7 +58,7 @@ subscription with `remove()`.
 **App state is not screen focus.** Leaving a screen in the navigator fires
 `useFocusEffect` cleanup but not `AppState`; sending the app to the background
 fires `AppState` but not a blur of the screen. A camera screen needs both; see
-[Navigation](./navigation.md#mount-vs-focus).
+[Navigation](../ui/navigation.md#mount-vs-focus).
 
 ### Why JS Stops in the Background
 
@@ -76,7 +76,7 @@ fires `AppState` but not a blur of the screen. A camera screen needs both; see
 | Option                                | What it is for                                             | Limits                                                                             |
 | ------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | `expo-background-task`                | Periodic deferrable work: sync, prefetch, cleanup          | `minimumInterval` ≥ 15 min, only a hint; runs with enough battery and network      |
-| Silent (data-only) push               | The server wakes the app to fetch new data                 | Throttled on iOS; see [Push Notifications](./notifications.md#message-types)       |
+| Silent (data-only) push               | The server wakes the app to fetch new data                 | Throttled on iOS; see [Push Notifications](notifications.md#message-types)         |
 | Background location (`expo-location`) | Tracking a trip, geofences                                 | "Always" permission, iOS background mode, Android foreground service; store review |
 | Background audio                      | Music and podcast players                                  | iOS `audio` background mode; Android media service                                 |
 | Headless JS (Android)                 | JS started by a native service or broadcast                | Native code to start it; no UI; a timeout per task                                 |
@@ -182,13 +182,13 @@ declare function syncOutbox(): Promise<void>;
   swipes the app away.
 - How do you keep a WebSocket alive in the background? You do not: close it on
   `background`, reopen and refetch on `active`, and send anything urgent as a
-  push, see [Push Notifications](./notifications.md).
+  push, see [Push Notifications](notifications.md).
 - What happens to an in-flight request when the app goes to the background? It
   may finish, fail or hang until the app returns; make writes retryable and
-  idempotent, see [Offline Support](./offline.md).
+  idempotent, see [Offline Support](../data-security/offline.md).
 - How does a push arrive when the app is closed? The OS shows it without your
   JS; code runs only for a tap or a background handler, see
-  [Push Notifications](./notifications.md).
+  [Push Notifications](notifications.md).
 
 ## Common Mistakes
 
@@ -204,8 +204,8 @@ declare function syncOutbox(): Promise<void>;
 
 ## See Also
 
-- [Navigation](./navigation.md)
-- [Push Notifications](./notifications.md)
-- [Permissions](./permissions.md)
-- [Offline Support](./offline.md)
-- [Mobile App Security](./security.md)
+- [Navigation](../ui/navigation.md)
+- [Push Notifications](notifications.md)
+- [Permissions](permissions.md)
+- [Offline Support](../data-security/offline.md)
+- [Mobile App Security](../data-security/security.md)

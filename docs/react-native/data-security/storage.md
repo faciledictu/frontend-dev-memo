@@ -1,5 +1,5 @@
 ---
-sidebar_position: 18
+sidebar_position: 1
 description:
   AsyncStorage, MMKV, SecureStore and SQLite, where each kind of data goes on
   the device, tokens in Keychain / Keystore, persisting app state
@@ -45,7 +45,7 @@ Applies to: React Native 0.88, Expo SDK 58.
   available).
 - `requireAuthentication` asks for Face ID / fingerprint before reading; such a
   value becomes unreadable when the biometrics change. Using it for biometric
-  login: [Authentication](./authentication.md#biometric-login).
+  login: [Authentication](authentication.md#biometric-login).
 - Keep values small (a token, not a profile): some iOS versions rejected values
   over about 2 KB.
 - MMKV's `encryptionKey` is not a place for secrets: the key is in the JS bundle
@@ -60,16 +60,16 @@ Applies to: React Native 0.88, Expo SDK 58.
   `expo-sqlite` (with `SQLiteProvider` and `useSQLiteContext`) or op-sqlite.
   Drizzle and similar ORMs work on top of them.
 - Offline-first apps (local writes, sync with the server, conflicts) usually use
-  a sync engine on top of SQLite; see [Offline Support](./offline.md).
+  a sync engine on top of SQLite; see [Offline Support](offline.md).
 
 ### Persisting App State
 
 - Zustand: the `persist` middleware with `createJSONStorage(() => storage)`,
   where `storage` is an AsyncStorage instance or an MMKV adapter. See
-  [Where to Keep State](../react/state-management/overview.md).
+  [Where to Keep State](../../react/state-management/overview.md).
 - TanStack Query: `persistQueryClient` with
   `@tanstack/query-async-storage-persister` keeps the cache between launches.
-  See [TanStack Query](../react/state-management/tanstack-query.md).
+  See [TanStack Query](../../react/state-management/tanstack-query.md).
 - Store a version with persisted state and migrate it: after an app update the
   old shape is still on the device.
 
@@ -142,7 +142,7 @@ export const useCart = create<Cart>()(
   booleans).
 - Where do you keep a refresh token and where the access token? The refresh
   token in the Keychain / Keystore, the access token in memory; see
-  [Authentication](./authentication.md#token-lifecycle).
+  [Authentication](authentication.md#token-lifecycle).
 - What happens to the data on an app update or uninstall? It survives an update
   (keep migrations for the shape); it is removed on uninstall, except iOS
   Keychain items.
@@ -163,8 +163,8 @@ export const useCart = create<Cart>()(
 
 ## See Also
 
-- [Offline Support](./offline.md)
-- [Environment Configuration and Secrets](./release/env.md)
-- [Browser Storage](../web-platform/network/storage.md)
-- [Authentication and Authorization](../web-platform/network/authentication.md)
-- [Mobile App Security](./security.md)
+- [Offline Support](offline.md)
+- [Environment Configuration and Secrets](../release/env.md)
+- [Browser Storage](../../web-platform/network/storage.md)
+- [Authentication and Authorization](../../web-platform/network/authentication.md)
+- [Mobile App Security](security.md)

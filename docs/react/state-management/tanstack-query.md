@@ -207,7 +207,8 @@ function Todo({ id }) {
   key, and `fetchNextPage` appends the next one.
 - Why does refetch on focus not work in React Native? There is no browser
   `visibilitychange`: connect `focusManager` to `AppState` and `onlineManager`
-  to NetInfo; see [Offline Support](../../react-native/offline.md).
+  to NetInfo; see
+  [Offline Support](../../react-native/data-security/offline.md).
 
 ## Common Mistakes
 

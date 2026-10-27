@@ -1,5 +1,5 @@
 ---
-sidebar_position: 22
+sidebar_position: 1
 description:
   Why a React Native app lags, the frame budget of the JS and UI threads,
   measuring in release builds, common causes and fixes, startup time
@@ -30,20 +30,20 @@ Applies to: React Native 0.88, Expo SDK 58.
 - **Perf Monitor** (Dev Menu → Perf Monitor): live JS and UI frame rates; shows
   which thread drops frames.
 - Profilers: the React Profiler and the Performance panel in
-  [React Native DevTools](./debugging.md) for JS; Xcode Instruments and Android
+  [React Native DevTools](debugging.md) for JS; Xcode Instruments and Android
   Studio Profiler for native code.
 
 ### Causes and Fixes
 
-| Symptom                                 | Cause                                         | Fix                                                                                          |
-| --------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| Everything is slow after a state change | Re-renders of large trees                     | Move state down, memoize, React Compiler; see [Re-renders](../react/rendering/re-renders.md) |
-| Long lists jank or show blank areas     | `ScrollView` with many items, heavy rows      | `FlatList` / FlashList, light memoized rows; see [Lists](./lists.md)                         |
-| Animations stutter while JS is busy     | Animation computed on the JS thread           | Reanimated or `useNativeDriver`; see [Reanimated](./animations/reanimated.md)                |
-| A press feels late                      | Heavy work in `onPress` before the UI updates | Update the UI first, then run the work (`setTimeout`), or move it off the JS thread          |
-| Slow release builds with many logs      | `console.log` with large objects              | Strip logs in release (`babel-plugin-transform-remove-console`)                              |
-| Memory spikes, crashes on image screens | Full-size images scaled down in the view      | Resized images from the server, `expo-image` with caching                                    |
-| A screen transition stutters            | The new screen renders everything on mount    | Render the heavy part after the transition (`transitionEnd` listener)                        |
+| Symptom                                 | Cause                                         | Fix                                                                                             |
+| --------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Everything is slow after a state change | Re-renders of large trees                     | Move state down, memoize, React Compiler; see [Re-renders](../../react/rendering/re-renders.md) |
+| Long lists jank or show blank areas     | `ScrollView` with many items, heavy rows      | `FlatList` / FlashList, light memoized rows; see [Lists](../ui/lists.md)                        |
+| Animations stutter while JS is busy     | Animation computed on the JS thread           | Reanimated or `useNativeDriver`; see [Reanimated](../animations/reanimated.md)                  |
+| A press feels late                      | Heavy work in `onPress` before the UI updates | Update the UI first, then run the work (`setTimeout`), or move it off the JS thread             |
+| Slow release builds with many logs      | `console.log` with large objects              | Strip logs in release (`babel-plugin-transform-remove-console`)                                 |
+| Memory spikes, crashes on image screens | Full-size images scaled down in the view      | Resized images from the server, `expo-image` with caching                                       |
+| A screen transition stutters            | The new screen renders everything on mount    | Render the heavy part after the transition (`transitionEnd` listener)                           |
 
 ### Startup Time
 
@@ -65,8 +65,9 @@ Applies to: React Native 0.88, Expo SDK 58.
 ### Memory Leaks
 
 - Typical causes: listeners and subscriptions without cleanup
-  ([`AppState`](./app-lifecycle.md), [`Keyboard`](./keyboard.md), `Linking`,
-  sockets), timers, closures held by a module-level cache, and large images.
+  ([`AppState`](../device/app-lifecycle.md), [`Keyboard`](../ui/keyboard.md),
+  `Linking`, sockets), timers, closures held by a module-level cache, and large
+  images.
 - Screens in a stack stay mounted, so a leak in a screen grows with each push.
 - Find them with the Memory panel (heap snapshots) in React Native DevTools and
   with Xcode / Android Studio memory tools for native memory.
@@ -121,7 +122,7 @@ export function ReportButton() {
   the same.
 - How do you find which JS code is slow? Record in the Performance panel of
   React Native DevTools (a flame chart of JS and React tracks) and in the React
-  Profiler; see [Debugging](./debugging.md).
+  Profiler; see [Debugging](debugging.md).
 
 ## Common Mistakes
 
@@ -133,6 +134,6 @@ export function ReportButton() {
 
 ## See Also
 
-- [Debugging React Native](./debugging.md)
-- [Architecture](./rn-architecture.md)
-- [Optimization in React](../react/performance/optimization.md)
+- [Debugging React Native](debugging.md)
+- [Architecture](../fundamentals/rn-architecture.md)
+- [Optimization in React](../../react/performance/optimization.md)

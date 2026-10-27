@@ -77,8 +77,8 @@ Applies to: Tailwind CSS 4, styled-components 6.
 ### React Native
 
 There is no CSS in React Native: styles are JavaScript objects. See
-[StyleSheet](../../react-native/stylesheet.md). `styled-components/native` and
-NativeWind add CSS-in-JS and Tailwind syntax on top of it.
+[StyleSheet](../../react-native/ui/stylesheet.md). `styled-components/native`
+and NativeWind add CSS-in-JS and Tailwind syntax on top of it.
 
 ## Example
 
@@ -144,5 +144,5 @@ const Button = styled.button`
 
 ## See Also
 
-- [StyleSheet in React Native](../../react-native/stylesheet.md)
+- [StyleSheet in React Native](../../react-native/ui/stylesheet.md)
 - [Bundle Optimization](../../web-platform/performance/bundle-optimization.md)

@@ -68,9 +68,9 @@ For an urgent update from a UI event, the whole pipeline can run synchronously
 on the UI thread.
 
 The render phase can be interrupted by a more urgent update, as with
-[concurrent rendering](../react/rendering/concurrent-rendering.md) on the web.
-Updates triggered from the UI thread (for example a Reanimated animation) can
-skip the JS thread.
+[concurrent rendering](../../react/rendering/concurrent-rendering.md) on the
+web. Updates triggered from the UI thread (for example a Reanimated animation)
+can skip the JS thread.
 
 ### Native Libraries and Linking
 
@@ -80,7 +80,7 @@ skip the JS thread.
 - Libraries written for the old architecture still work through the **interop
   layer**, but new code should not rely on it.
 - Writing your own: Turbo Native Modules, Fabric Native Components, the Expo
-  Modules API and Nitro are compared on [Native Modules](./native-modules.md).
+  Modules API and Nitro are compared on [Native Modules](native-modules.md).
 
 ## Follow-up Questions
 
@@ -97,7 +97,7 @@ skip the JS thread.
 
 - Which React features need Fabric? The concurrent ones: Suspense, transitions
   and automatic batching, plus React 19's `use` and Actions built on them. See
-  [React 19](../react/react-19.md).
+  [React 19](../../react/react-19.md).
 - Hermes or JavaScriptCore? Hermes is the default; JavaScriptCore is now only a
   community package (`@react-native-community/javascriptcore`).
 
@@ -112,7 +112,7 @@ skip the JS thread.
 
 ## See Also
 
-- [What Is React Native](./overview.md)
-- [Reanimated](./animations/reanimated.md)
-- [Performance](./performance.md)
-- [Rendering and Reconciliation in React](../react/rendering/reconciliation.md)
+- [What Is React Native](overview.md)
+- [Reanimated](../animations/reanimated.md)
+- [Performance](../quality/performance.md)
+- [Rendering and Reconciliation in React](../../react/rendering/reconciliation.md)

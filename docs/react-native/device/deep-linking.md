@@ -1,5 +1,5 @@
 ---
-sidebar_position: 11
+sidebar_position: 4
 description:
   Custom URL schemes vs Universal Links and App Links, linking config, cold
   start vs a running app, opening a screen from a notification
@@ -38,7 +38,7 @@ Applies to: React Native 0.88, React Navigation 7, Expo SDK 58.
   the upload key.
 - A hijacked scheme can catch an OAuth redirect with the authorization code;
   this is why OAuth in apps uses **PKCE** or verified links, see
-  [Authentication](./authentication.md#redirect-uri).
+  [Authentication](../data-security/authentication.md#redirect-uri).
 
 ### From URL to Screen
 
@@ -190,8 +190,8 @@ adb shell am start -W -a android.intent.action.VIEW -d "https://example.com/user
 
 ## See Also
 
-- [Navigation](./navigation.md)
-- [Push Notifications](./notifications.md)
-- [Authentication](../web-platform/network/authentication.md)
-- [Authentication in React Native](./authentication.md)
-- [Mobile App Security](./security.md)
+- [Navigation](../ui/navigation.md)
+- [Push Notifications](notifications.md)
+- [Authentication](../../web-platform/network/authentication.md)
+- [Authentication in React Native](../data-security/authentication.md)
+- [Mobile App Security](../data-security/security.md)

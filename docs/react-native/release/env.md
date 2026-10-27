@@ -91,7 +91,7 @@ Objective-C.
 ## Follow-up Questions
 
 - Where do you store a user's token on the device? In the Keychain / Keystore,
-  not in AsyncStorage; see [Storing Data](../storage.md).
+  not in AsyncStorage; see [Storing Data](../data-security/storage.md).
 - How do you change the API URL without a rebuild? Publish an OTA update
   (`EXPO_PUBLIC_` values are in the JS bundle) or fetch the configuration from
   the backend at runtime; values in native code need a new build.
@@ -109,4 +109,4 @@ Objective-C.
 
 - [Publishing and Distribution](./distribution.md)
 - [OTA Updates](./ota.md)
-- [Mobile App Security](../security.md)
+- [Mobile App Security](../data-security/security.md)

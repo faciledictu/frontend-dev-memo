@@ -1,0 +1,9 @@
+{
+  "label": "Fundamentals",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "slug": "/react-native/fundamentals",
+    "description": "What React Native is, its architecture, platform-specific code and native modules."
+  }
+}
