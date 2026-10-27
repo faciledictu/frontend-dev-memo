@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <path d="M16.74,12.75A7.5,7.5,0,0,1,30.57,13.5H22V18.5H30.57A7.5,7.5,0,0,1,16.74,19.25H1.25A3.25,3.25,0,0,1,1.25,12.75ZM1.75,16a1.25,1.25,0,1,0,2.5,0a1.25,1.25,0,1,0,-2.5,0Z" transform="rotate(-45 16 16)" style="fill: var(--ifm-color-primary); fill-rule: evenodd; stroke-width: 0px;"/>
+</svg>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect x="6.5" y="1.5" width="19" height="29" rx="4.5" ry="4.5" style="fill: none; stroke: var(--ifm-color-primary); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.25px;"/>
+  <path d="M14,25.5h4" style="fill: none; stroke: var(--ifm-color-primary); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.25px;"/>
+  <ellipse cx="16" cy="14.5" rx="6.75" ry="2.6" style="fill: none; stroke: var(--ifm-color-primary); stroke-width: 1.4px;"/>
+  <ellipse cx="16" cy="14.5" rx="6.75" ry="2.6" transform="rotate(60 16 14.5)" style="fill: none; stroke: var(--ifm-color-primary); stroke-width: 1.4px;"/>
+  <ellipse cx="16" cy="14.5" rx="6.75" ry="2.6" transform="rotate(-60 16 14.5)" style="fill: none; stroke: var(--ifm-color-primary); stroke-width: 1.4px;"/>
+  <circle cx="16" cy="14.5" r="1.5" style="fill: var(--ifm-color-primary); stroke-width: 0px;"/>
+</svg>
