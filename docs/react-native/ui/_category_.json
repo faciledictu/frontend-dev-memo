@@ -1,0 +1,9 @@
+{
+  "label": "UI",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "slug": "/react-native/ui",
+    "description": "Core components, styling, layout, safe area, keyboard, accessibility, lists and navigation."
+  }
+}

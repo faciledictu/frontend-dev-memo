@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 3
 description:
   How Flexbox in React Native differs from the web, alignment properties and
   their values
@@ -94,5 +94,5 @@ const styles = StyleSheet.create({
 
 ## See Also
 
-- [StyleSheet](./stylesheet.md)
-- [Flexbox on the web](../html-css/flexbox.md)
+- [StyleSheet](stylesheet.md)
+- [Flexbox on the web](../../html-css/flexbox.md)

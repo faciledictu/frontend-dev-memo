@@ -169,4 +169,4 @@ window.addEventListener('storage', (event) => {
 - [CORS and the Same-Origin Policy](./cors.md)
 - [XSS](../security/xss.md)
 - [CSRF](../security/csrf.md)
-- [Storing Data in React Native](../../react-native/storage.md)
+- [Storing Data in React Native](../../react-native/data-security/storage.md)

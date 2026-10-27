@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 6
 description:
   VoiceOver and TalkBack, accessibility props and their aria-* forms, grouping
   and hiding, focus and announcements, font scaling, touch targets, reduce
@@ -25,7 +25,7 @@ Applies to: React Native 0.88, Expo SDK 58, Reanimated 4.
 WCAG, contrast, the ARIA rules and the laws (the European Accessibility Act also
 covers e-commerce, banking and transport apps) are the same as on the web and
 are not repeated here, see
-[Web Accessibility](../web-platform/accessibility/accessibility.md).
+[Web Accessibility](../../web-platform/accessibility/accessibility.md).
 
 ### Main Props
 
@@ -156,7 +156,7 @@ Fabric removes a `View` that has no style.
   text wrap (`numberOfLines` only where truncation is fine), switch a row to a
   column at large font scales. The current scale is
   `useWindowDimensions().fontScale` or `PixelRatio.getFontScale()`, see
-  [StyleSheet](./stylesheet.md#screen-size).
+  [StyleSheet](stylesheet.md#screen-size).
 - Test with the largest size, including the extra accessibility sizes on iOS.
 
 ### Touch Targets
@@ -164,7 +164,7 @@ Fabric removes a `View` that has no style.
 - Minimum size: **44 × 44 pt** on iOS (Apple HIG), **48 × 48 dp** on Android
   (Material); WCAG 2.2 asks for 24 × 24.
 - A small icon gets a bigger target with `hitSlop` on `Pressable` (see
-  [Gestures](./animations/gestures.md)) or with padding and `minHeight`.
+  [Gestures](../animations/gestures.md)) or with padding and `minHeight`.
 
 ### Reduce Motion
 
@@ -177,7 +177,7 @@ Fabric removes a `View` that has no style.
   overrides this for every animation in the app. Keep `ReduceMotion.Never` on
   animations that carry meaning, such as a progress bar.
 - The core `Animated` API does not check the setting: read it yourself, see
-  [Animated](./animations/animated.md).
+  [Animated](../animations/animated.md).
 
 ### Testing
 
@@ -189,7 +189,7 @@ Fabric removes a `View` that has no style.
 - React Native Testing Library: `getByRole('button', { name: 'Add to cart' })`
   fails if the element loses its role, its label or its accessibility (a `View`
   with a role but without `accessible` does not match). Hidden elements are
-  excluded by default. See [Testing](../tooling/testing.md#react-native).
+  excluded by default. See [Testing](../../tooling/testing.md#react-native).
 - `eslint-plugin-react-native-a11y` catches missing labels, but has not had a
   release since 2024.
 
@@ -332,8 +332,8 @@ export function CartRow({
 
 ## See Also
 
-- [Web Accessibility](../web-platform/accessibility/accessibility.md)
-- [Core Components](./core-components.md)
-- [Gestures](./animations/gestures.md)
-- [Reanimated](./animations/reanimated.md)
+- [Web Accessibility](../../web-platform/accessibility/accessibility.md)
+- [Core Components](core-components.md)
+- [Gestures](../animations/gestures.md)
+- [Reanimated](../animations/reanimated.md)
 - [Accessibility (React Native docs)](https://reactnative.dev/docs/accessibility)

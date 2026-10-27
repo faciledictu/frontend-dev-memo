@@ -308,9 +308,12 @@
       [plans/batch-10-react-native.md](plans/batch-10-react-native.md). Сделано
       двумя PR: RN 0.88, Expo SDK 58, OWASP MASVS 2.1; страницы раздела
       перенумерованы, ссылки на новые страницы добавлены в 15 существующих.
-- [ ] Группировка раздела React Native в подгруппы (после пачки 10 в сайдбаре 24
-      пункта), например UI, устройство, данные, релиз — отдельной правкой, не
-      вместе с пачкой.
+- [x] Группировка раздела React Native в подгруппы (после пачки 10 в сайдбаре 24
+      пункта) — отдельной правкой, не вместе с пачкой. Сделано: `fundamentals`,
+      `ui`, `animations`, `device`, `data-security`, `quality`, `release`;
+      страницы пачки 11 встают так: `brownfield` и `code-sharing` — в
+      `fundamentals`, `i18n` — в `ui`, `media` — в `device`, `testing` — в
+      `quality`.
 - [ ] 11. React Native: `brownfield`, `testing`, view flattening, `i18n`,
       `media`, `code-sharing`; рядом — проверки страниц в
       [Memo Lab](https://github.com/faciledictu/memo-lab) и находки, где React

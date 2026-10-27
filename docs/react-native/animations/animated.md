@@ -126,7 +126,7 @@ export function FadeInCard() {
 - How do you animate a color? `interpolate` with color strings in `outputRange`.
 - Does `Animated` respect Reduce Motion? No: check
   `AccessibilityInfo.isReduceMotionEnabled()` and skip or shorten the animation,
-  see [Accessibility](../accessibility.md#reduce-motion).
+  see [Accessibility](../ui/accessibility.md#reduce-motion).
 
 ## Common Mistakes
 

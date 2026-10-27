@@ -1,5 +1,5 @@
 ---
-sidebar_position: 23
+sidebar_position: 2
 description:
   React Native DevTools and its panels, LogBox, native logs from Xcode and
   logcat, crash reporting in production with source maps
@@ -130,10 +130,10 @@ after `eas update`, run `npx @sentry/expo-upload-sourcemaps dist`.
 - How do you inspect network requests of a native SDK? The Network panel sees
   only JS requests; use a proxy (Proxyman, Charles) or the native profilers. SSL
   pinning blocks such proxies, so keep it off in debug builds, see
-  [Security](./security.md#network).
+  [Security](../data-security/security.md#network).
 - How do you see which component re-rendered and why? The Profiler panel with
   "Record why each component rendered" turned on; see
-  [Re-renders](../react/rendering/re-renders.md).
+  [Re-renders](../../react/rendering/re-renders.md).
 
 ## Common Mistakes
 
@@ -146,6 +146,6 @@ after `eas update`, run `npx @sentry/expo-upload-sourcemaps dist`.
 
 ## See Also
 
-- [Performance](./performance.md)
-- [Debugging Web Applications](../web-platform/tools/debugging.md)
-- [OTA Updates](./release/ota.md)
+- [Performance](performance.md)
+- [Debugging Web Applications](../../web-platform/tools/debugging.md)
+- [OTA Updates](../release/ota.md)

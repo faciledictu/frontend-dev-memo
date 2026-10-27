@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 5
 description:
   KeyboardAvoidingView per platform, Android adjustResize / adjustPan,
   keyboardShouldPersistTaps, Keyboard API, react-native-keyboard-controller,
@@ -237,7 +237,7 @@ export function SignInForm() {
 
 ## See Also
 
-- [Core Components](./core-components.md)
-- [Safe Area and Edge-to-Edge](./safe-area.md)
-- [Lists](./lists.md)
+- [Core Components](core-components.md)
+- [Safe Area and Edge-to-Edge](safe-area.md)
+- [Lists](lists.md)
 - [Keyboard handling (Expo docs)](https://docs.expo.dev/guides/keyboard-handling/)

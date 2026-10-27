@@ -141,7 +141,7 @@ its own free space. When columns must stay aligned across lines, use
   stretch.
 - How does Flexbox differ in React Native? Column by default, `flexShrink: 0`,
   `flex` takes a single number. See
-  [Flexbox in React Native](../react-native/flexbox.md).
+  [Flexbox in React Native](../react-native/ui/flexbox.md).
 
 ## Common Mistakes
 
@@ -158,5 +158,5 @@ its own free space. When columns must stay aligned across lines, use
 
 - [CSS Grid](./grid.md)
 - [Box Model](./box-model.md)
-- [Flexbox in React Native](../react-native/flexbox.md)
+- [Flexbox in React Native](../react-native/ui/flexbox.md)
 - [MDN: Basic concepts of flexbox](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox)

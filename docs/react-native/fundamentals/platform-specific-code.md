@@ -1,5 +1,5 @@
 ---
-sidebar_position: 12
+sidebar_position: 3
 description:
   Platform-specific file extensions, Platform.OS, Platform.select and
   Platform.Version
@@ -83,5 +83,5 @@ async function askNotificationPermission() {
 
 ## See Also
 
-- [Permissions](./permissions.md)
-- [StyleSheet](./stylesheet.md)
+- [Permissions](../device/permissions.md)
+- [StyleSheet](../ui/stylesheet.md)

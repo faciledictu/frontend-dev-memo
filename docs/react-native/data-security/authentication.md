@@ -1,5 +1,5 @@
 ---
-sidebar_position: 20
+sidebar_position: 3
 description:
   OAuth and OIDC in the system browser, expo-auth-session and
   react-native-app-auth, native Apple and Google sign-in, token lifecycle and
@@ -49,9 +49,9 @@ which is what PKCE and verified links are for.
 | Fits          | Expo apps; the library the Expo guide uses                     | Bare apps, or when the AppAuth behavior is required |
 
 - PKCE and the code flow in general: see
-  [Authentication and Authorization](../web-platform/network/authentication.md).
+  [Authentication and Authorization](../../web-platform/network/authentication.md).
 - A **client secret** never goes into the app: it would be readable in the
-  bundle, see [Environment Configuration](./release/env.md). A provider that
+  bundle, see [Environment Configuration](../release/env.md). A provider that
   requires one needs the code exchange on your server.
 - OAuth does not work in Expo Go; test it in a development build.
 
@@ -63,7 +63,8 @@ which is what PKCE and verified links are for.
 | Claimed HTTPS (Universal / App Links) | `https://example.com/oauth/callback` | Preferred by RFC 8252: the domain proves the app; needs verified links |
 
 `makeRedirectUri()` in `expo-auth-session` builds the right one for the build.
-Setting up schemes and verified links: [Deep Linking](./deep-linking.md).
+Setting up schemes and verified links:
+[Deep Linking](../device/deep-linking.md).
 
 ### Native Sign-In
 
@@ -87,7 +88,7 @@ Setting up schemes and verified links: [Deep Linking](./deep-linking.md).
 ### Token Lifecycle
 
 The refresh-once pattern and rotation are the same as on the web, see
-[Authentication and Authorization](../web-platform/network/authentication.md).
+[Authentication and Authorization](../../web-platform/network/authentication.md).
 On mobile:
 
 | Step    | What happens                                                                                                                           |
@@ -100,10 +101,10 @@ On mobile:
 
 - Refresh fails with `400` / `401` (expired, revoked): clear the session and
   show the login screen; the navigator switches screens by the session, see
-  [Navigation](./navigation.md#auth-flow). A network error or `5xx` is not a
+  [Navigation](../ui/navigation.md#auth-flow). A network error or `5xx` is not a
   logout.
 - Background refresh while the device is locked needs a Keychain class that
-  allows it, see [Storage](./storage.md#secrets).
+  allows it, see [Storage](storage.md#secrets).
 
 ### Biometric Login
 
@@ -284,9 +285,9 @@ export function LoginButton({
 
 ## See Also
 
-- [Authentication and Authorization](../web-platform/network/authentication.md)
-- [Storage](./storage.md)
-- [Deep Linking](./deep-linking.md)
-- [Navigation](./navigation.md)
-- [Mobile App Security](./security.md)
+- [Authentication and Authorization](../../web-platform/network/authentication.md)
+- [Storage](storage.md)
+- [Deep Linking](../device/deep-linking.md)
+- [Navigation](../ui/navigation.md)
+- [Mobile App Security](security.md)
 - [Authentication (Expo docs)](https://docs.expo.dev/guides/authentication/)

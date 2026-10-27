@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 1
 description:
   View, Text, Image, TextInput, Pressable, ScrollView, Modal and their native
   views; text only inside Text, network images need a size, expo-image
@@ -21,18 +21,18 @@ Applies to: React Native 0.88, Expo SDK 58.
 
 ### Components
 
-| Component           | iOS / Android view                        | Use                                                                            |
-| ------------------- | ----------------------------------------- | ------------------------------------------------------------------------------ |
-| `View`              | `UIView` / `ViewGroup`                    | Layout container with Flexbox, styles, touch handling                          |
-| `Text`              | `UITextView` / `TextView`                 | All text; nested `Text` is inline                                              |
-| `Image`             | `UIImageView` / `ImageView`               | Local and network images                                                       |
-| `TextInput`         | `UITextField` / `EditText`                | Text fields; `multiline` for a text area                                       |
-| `Pressable`         | A `View` with press handling              | Buttons, rows; replaces `Touchable*`; see [Gestures](./animations/gestures.md) |
-| `ScrollView`        | `UIScrollView` / `ScrollView`             | Short scrolling content; long lists go to [Lists](./lists.md)                  |
-| `Modal`             | Presented view controller / `Dialog`      | A layer above the whole app: dialogs, pickers                                  |
-| `ActivityIndicator` | `UIActivityIndicatorView` / `ProgressBar` | Spinner                                                                        |
-| `Switch`            | `UISwitch` / `SwitchCompat`               | Boolean toggle                                                                 |
-| `SafeAreaView`      | Deprecated, iOS only                      | Use `react-native-safe-area-context`; see [Safe Area](./safe-area.md)          |
+| Component           | iOS / Android view                        | Use                                                                             |
+| ------------------- | ----------------------------------------- | ------------------------------------------------------------------------------- |
+| `View`              | `UIView` / `ViewGroup`                    | Layout container with Flexbox, styles, touch handling                           |
+| `Text`              | `UITextView` / `TextView`                 | All text; nested `Text` is inline                                               |
+| `Image`             | `UIImageView` / `ImageView`               | Local and network images                                                        |
+| `TextInput`         | `UITextField` / `EditText`                | Text fields; `multiline` for a text area                                        |
+| `Pressable`         | A `View` with press handling              | Buttons, rows; replaces `Touchable*`; see [Gestures](../animations/gestures.md) |
+| `ScrollView`        | `UIScrollView` / `ScrollView`             | Short scrolling content; long lists go to [Lists](lists.md)                     |
+| `Modal`             | Presented view controller / `Dialog`      | A layer above the whole app: dialogs, pickers                                   |
+| `ActivityIndicator` | `UIActivityIndicatorView` / `ProgressBar` | Spinner                                                                         |
+| `Switch`            | `UISwitch` / `SwitchCompat`               | Boolean toggle                                                                  |
+| `SafeAreaView`      | Deprecated, iOS only                      | Use `react-native-safe-area-context`; see [Safe Area](safe-area.md)             |
 
 `Button` exists too, but it cannot be styled beyond `color`; apps build buttons
 from `Pressable` and `Text`.
@@ -74,14 +74,14 @@ from `Pressable` and `Text`.
   and it is read on submit. Fewer re-renders in large forms.
 - Keyboard and autofill: `keyboardType` (`email-address`, `number-pad`,
   `decimal-pad`, `phone-pad`), `secureTextEntry` for passwords (see
-  [Security](./security.md#sensitive-data)), `autoComplete` for password
-  managers and SMS codes (`email`, `current-password`, `new-password`,
+  [Security](../data-security/security.md#sensitive-data)), `autoComplete` for
+  password managers and SMS codes (`email`, `current-password`, `new-password`,
   `one-time-code`; the older iOS-only `textContentType` does the same, do not
   set both), `autoCapitalize="none"` for emails.
 - Focus, the next field and the keyboard covering the input:
-  [Keyboard Handling](./keyboard.md).
+  [Keyboard Handling](keyboard.md).
 - Labels, roles, grouping and font scaling for `Pressable`, `Text` and
-  `TextInput`: [Accessibility](./accessibility.md).
+  `TextInput`: [Accessibility](accessibility.md).
 
 ### `Modal` vs a Navigation Modal
 
@@ -141,7 +141,7 @@ export function Comment({ count }: { count: number }) {
 - Can text be placed directly in a `View`? No: only `Text` creates native text
   views. On the web `<div>text</div>` works because the DOM has text nodes.
 - `ScrollView` or `FlatList`? `ScrollView` renders all children at once; for
-  long or unknown-length data use a virtualized list, see [Lists](./lists.md).
+  long or unknown-length data use a virtualized list, see [Lists](lists.md).
 - Can `require` take a dynamic path (``require(`./icons/${name}.png`)``)? No:
   Metro resolves assets at build time, so the path must be a literal; keep a map
   of static `require` calls.
@@ -158,7 +158,7 @@ export function Comment({ count }: { count: number }) {
 
 ## See Also
 
-- [StyleSheet](./stylesheet.md)
-- [Flexbox](./flexbox.md)
-- [Gestures and Touch Handling](./animations/gestures.md)
+- [StyleSheet](stylesheet.md)
+- [Flexbox](flexbox.md)
+- [Gestures and Touch Handling](../animations/gestures.md)
 - [Core components (reactnative.dev)](https://reactnative.dev/docs/components-and-apis)

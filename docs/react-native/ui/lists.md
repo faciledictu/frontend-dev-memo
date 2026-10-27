@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 7
 description:
   ScrollView vs FlatList vs SectionList vs FlashList, virtualization, FlatList
   optimization props
@@ -162,7 +162,7 @@ export function Messages({ messages }: { messages: Message[] }) {
 
 ## See Also
 
-- [Keyboard Handling](./keyboard.md)
-- [Virtualization in React](../react/performance/virtualization.md)
-- [Optimization in React](../react/performance/optimization.md)
-- [Performance in React Native](./performance.md)
+- [Keyboard Handling](keyboard.md)
+- [Virtualization in React](../../react/performance/virtualization.md)
+- [Optimization in React](../../react/performance/optimization.md)
+- [Performance in React Native](../quality/performance.md)

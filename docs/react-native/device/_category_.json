@@ -1,0 +1,9 @@
+{
+  "label": "Device",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "slug": "/react-native/device",
+    "description": "Permissions, push notifications, app lifecycle and deep linking."
+  }
+}

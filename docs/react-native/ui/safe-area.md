@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 4
 description:
   Insets for the notch, status bar and navigation bar,
   react-native-safe-area-context, edge-to-edge on Android 15+, navigators and
@@ -31,7 +31,7 @@ Applies to: React Native 0.88, Expo SDK 58, react-native-safe-area-context 5.
 | Left / right | The notch and rounded corners in landscape                                   |
 
 Insets change with rotation and window size. The keyboard is not part of the
-safe area: see [Keyboard Handling](./keyboard.md).
+safe area: see [Keyboard Handling](keyboard.md).
 
 ### `react-native-safe-area-context`
 
@@ -162,7 +162,7 @@ export default function App() {
 
 ## See Also
 
-- [StyleSheet](./stylesheet.md)
-- [Navigation](./navigation.md)
-- [Keyboard Handling](./keyboard.md)
+- [StyleSheet](stylesheet.md)
+- [Navigation](navigation.md)
+- [Keyboard Handling](keyboard.md)
 - [react-native-safe-area-context docs](https://appandflow.github.io/react-native-safe-area-context/)

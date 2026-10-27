@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 2
 description:
   StyleSheet API, how styles differ from CSS, responsive sizes with
   useWindowDimensions, custom fonts
@@ -50,18 +50,18 @@ In a style array, later entries override earlier ones; `false`, `null` and
 - `useWindowDimensions()` returns `{ width, height, scale, fontScale }` and
   re-renders the component when the window changes (rotation, split screen).
   `fontScale` is the system font size; layouts must grow with it, see
-  [Accessibility](./accessibility.md#font-scaling).
+  [Accessibility](accessibility.md#font-scaling).
 - `Dimensions.get('window')` returns the size once. Called at module level, for
   example inside `StyleSheet.create`, it never updates.
 - The window includes the areas under the status bar, the notch and the home
   indicator; keep content clear of them with insets, see
-  [Safe Area](./safe-area.md).
+  [Safe Area](safe-area.md).
 
 ### Styling Libraries
 
 `StyleSheet` is enough for many apps. On top of it: **NativeWind** (Tailwind
 classes), **Unistyles** (themes and breakpoints), `styled-components/native`.
-See [Styling approaches](../react/ecosystem/styling.md).
+See [Styling approaches](../../react/ecosystem/styling.md).
 
 ### Custom Fonts
 
@@ -129,6 +129,6 @@ const styles = StyleSheet.create({
 
 ## See Also
 
-- [Flexbox](./flexbox.md)
-- [Platform-Specific Code](./platform-specific-code.md)
-- [Styling approaches](../react/ecosystem/styling.md)
+- [Flexbox](flexbox.md)
+- [Platform-Specific Code](../fundamentals/platform-specific-code.md)
+- [Styling approaches](../../react/ecosystem/styling.md)

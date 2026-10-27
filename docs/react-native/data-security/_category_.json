@@ -1,0 +1,9 @@
+{
+  "label": "Data and Security",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "slug": "/react-native/data-security",
+    "description": "Storing data, offline support, authentication and app security."
+  }
+}
