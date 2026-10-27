@@ -40,7 +40,7 @@ const toDropdownItem = ({ id, label }: (typeof mainCategories)[number]) => ({
 const config: Config = {
   title: SITE_NAME,
   tagline: 'Information to help you prepare for a frontend developer interview',
-  favicon: '/img/logo.svg',
+  favicon: '/img/favicon.svg',
   organizationName: 'Dmitrii Zhigulin',
   projectName: SITE_NAME,
 
@@ -105,6 +105,7 @@ const config: Config = {
       logo: {
         alt: ' ',
         src: 'img/logo.svg',
+        srcDark: 'img/logo-dark.svg',
         width: 32,
         height: 32,
       },
@@ -140,7 +141,11 @@ const config: Config = {
     },
     prism: {
       theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      // Code blocks share the background of cards in the dark theme
+      darkTheme: {
+        ...prismThemes.oneDark,
+        plain: { ...prismThemes.oneDark.plain, backgroundColor: '#16142c' },
+      },
       additionalLanguages: ['bash', 'typescript'],
       magicComments: [
         {
