@@ -7,6 +7,8 @@
   --ifm-color-primary-light: #1a72ff;
   --ifm-color-primary-lighter: #267aff;
   --ifm-color-primary-lightest: #4d91ff;
+  /* Infima leaves it transparent, and the navbar and the mobile menu use it */
+  --ifm-background-color: #ffffff;
   --ifm-background-surface-color: #f5f5ff;
   --ifm-navbar-background-color: var(--ifm-background-color);
   --ifm-card-background-color: var(--ifm-background-surface-color);
