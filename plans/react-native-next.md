@@ -3,9 +3,8 @@
 Status: approved by the user. Starting point: `main` at a16c016, after batch 10
 and the Memo Lab device checks (PR #56–#61).
 
-Two tracks: new interview pages and device checks of existing pages. Findings
-where React Native behaves differently from its docs go to Field Notes, not to
-interview pages.
+Two tracks: new interview pages and device checks of existing pages. Current
+React Native bugs are not described on the site: they belong in upstream issues.
 
 ## Decisions
 
@@ -26,6 +25,12 @@ Approved by the user.
      versions. A page keeps at most a general line with the advice that works
      ("not every core component passes every `aria-*` prop on; use the
      `accessibility*` form") and the "checked on a device" mark.
+   - **No new posts about current bugs** (decided on 4 November 2026). A bug
+     post goes stale as soon as the fix ships, often within one or two releases,
+     and writing and agreeing each one costs more than it gives; bugs belong in
+     upstream issues. The eight posts of 27 October stay as they are, without
+     updates, because the marks on `keyboard` and `accessibility` link to them.
+     Field Notes takes no new posts until a different use for it is agreed.
 2. **The two tracks run in parallel.** Sidebar grouping stays a separate task.
 3. **Formatting.** A compact "checked on a device" mark (`<CheckedOnDevice>` in
    `src/components/`: platform, OS version, date, link to the post) replaces
@@ -86,5 +91,5 @@ Claims that are cheap to check and likely to be wrong or outdated:
 - `app-lifecycle`: which `AppState` events each platform really sends.
 - `animations/gestures`: a gesture inside a scroll view.
 
-Each check is a Memo Lab case; results go into the page, a finding into Field
-Notes.
+Each check is a Memo Lab case; results go into the page, a bug found on the way
+into an upstream issue.
