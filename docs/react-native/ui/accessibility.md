@@ -309,10 +309,11 @@ export function CartRow({
   `now`, and the `increment` / `decrement` actions, which VoiceOver triggers
   with a swipe up or down.
 - What is Magic Tap? A two-finger double tap in VoiceOver for the main action of
-  the screen (play / pause, answer a call); React Native exposes it as the
-  `magicTap` action in `accessibilityActions` and as the `onMagicTap` prop. On
-  the New Architecture neither may fire: check with VoiceOver on an iPhone, and
-  keep the action reachable as a normal button.
+  the screen (play / pause, answer a call). React Native exposes it as the
+  `onMagicTap` prop and the `magicTap` action in `accessibilityActions`, but in
+  current versions `onMagicTap` does not fire: the gesture goes to the system,
+  which plays or pauses music. Do not rely on Magic Tap; keep the action
+  reachable as a normal button.
 - `accessible={false}` or `aria-hidden`: what is the difference? The first only
   stops the view from being a focus stop, its children are still read; the
   second hides the whole subtree.
