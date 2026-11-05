@@ -31,12 +31,13 @@ Library bugs, behavior that differs from the library's docs and "fixed in
 version X" change with the next release, and the page would not. A page names
 them only in general terms, with the advice that works ("not every core
 component passes every `aria-*` prop on; if one has no effect, use its
-`accessibility*` form"): no versions, no upstream issues or PRs. The details go
-to [Field Notes](/field-notes) as dated posts with versions; the post format is
-in `field-notes/_template.md`.
+`accessibility*` form"): no versions, no upstream issues or PRs. The details
+belong in an upstream issue, not on the site: a post about a current bug goes
+stale with the fix, so Field Notes takes no new ones.
 
-A claim that differs from the docs and was checked on a device gets a mark that
-links to the post:
+The "checked on a device" marks on `keyboard` and `accessibility` link to the
+Field Notes posts of 27 October. With no new posts, a new mark needs a decision
+on what it links to first. The existing ones look like this:
 
 ```mdx
 <CheckedOnDevice
